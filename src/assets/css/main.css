@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* .transitionEase {
+  transition: all 0.5s ease;
+} */
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 2px;
+  background-color: #000 !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #555555;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c66065;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b86065;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.MuiInput-underline:before,
+.MuiInput-underline:after {
+  border-bottom: none !important;
+}
