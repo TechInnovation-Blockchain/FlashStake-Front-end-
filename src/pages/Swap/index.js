@@ -50,8 +50,12 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: theme.palette.text.secondary2,
     fontWeight: 700,
-    fontSize: 8,
+
+    fontSize: 10,
     marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 8,
+    },
   },
   primaryText: {
     color: theme.palette.text.primary,

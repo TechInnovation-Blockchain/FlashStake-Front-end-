@@ -10,6 +10,7 @@ import ExpandableBox from "./ExpandableBox";
 import Fade from "./Fade";
 import PageAnimation from "./PageAnimation";
 import FlashstakePausedMessage from "./FlashstakePausedMessage";
+import Accordion from "./Accordion/Accordion.js";
 
 export {
   Navbar,
@@ -24,4 +25,5 @@ export {
   Fade,
   PageAnimation,
   FlashstakePausedMessage,
+  Accordion,
 };

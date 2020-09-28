@@ -172,6 +172,9 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     marginTop: theme.spacing(2),
   },
+  comingSoon: {
+    color: theme.palette.xioRed.main,
+  },
 }));
 
 function Pool({
@@ -404,51 +407,57 @@ function Pool({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
+  const [soon, setSoon] = useState(true);
 
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.secondaryText}>
-                WHAT TOKEN DO YOU WANT TO POOL
-              </Typography>
-              <DropdownDialog
-                className={classes.dropDown}
-                items={portals}
-                selectedValue={selectedRewardToken}
-                onSelect={setSelectedRewardToken}
-                heading="ETH"
-              />
-            </Grid>
-            <Grid container item xs={12}>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  POOL QUANTITY
+          {soon ? (
+            <Typography variant="h5" className={classes.comingSoon}>
+              COMING SOON...
+            </Typography>
+          ) : (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Typography variant="h6" className={classes.secondaryText}>
+                  WHAT TOKEN DO YOU WANT TO POOL
                 </Typography>
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > additionalContractBal) ||
-                      (maxStake &&
-                        parseFloat(quantity) > Web3.utils.fromWei(maxStake))
-                    }
-                    fullWidth
-                    placeholder="0.0"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                    type="number"
-                    inputMode="numeric"
-                    pattern={regex}
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0.0")}
-                  />
-                  {/* <IconButton
+                <DropdownDialog
+                  className={classes.dropDown}
+                  items={portals}
+                  selectedValue={selectedRewardToken}
+                  onSelect={setSelectedRewardToken}
+                  heading="ETH"
+                />
+              </Grid>
+              <Grid container item xs={12}>
+                <Box flex={1}>
+                  <Typography variant="body2" className={classes.secondaryText}>
+                    POOL QUANTITY
+                  </Typography>
+                  <Box className={classes.textFieldContainer}>
+                    <TextField
+                      className={classes.textField}
+                      error={
+                        (active &&
+                          account &&
+                          parseFloat(quantity) > additionalContractBal) ||
+                        (maxStake &&
+                          parseFloat(quantity) > Web3.utils.fromWei(maxStake))
+                      }
+                      fullWidth
+                      placeholder="0.0"
+                      value={quantity}
+                      onChange={onChangeQuantity}
+                      type="number"
+                      inputMode="numeric"
+                      pattern={regex}
+                      onKeyDown={handleKeyDown}
+                      onFocus={(e) => (e.target.placeholder = "")}
+                      onBlur={(e) => (e.target.placeholder = "0.0")}
+                    />
+                    {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={
                       !(active || account) || quantity == getMaxQuantity()
@@ -457,71 +466,71 @@ function Pool({
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
+                  </Box>
                 </Box>
-              </Box>
 
-              <Typography
-                variant="body2"
-                className={classes.xIcon}
-              ></Typography>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  POOL DURATION
-                </Typography>
+                <Typography
+                  variant="body2"
+                  className={classes.xIcon}
+                ></Typography>
+                <Box flex={1}>
+                  <Typography variant="body2" className={classes.secondaryText}>
+                    POOL DURATION
+                  </Typography>
 
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={parseFloat(days) > maxDays}
-                    fullWidth
-                    placeholder="0"
-                    value={days}
-                    onChange={onChangeDays}
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0")}
-                  />
-                  {/* <IconButton
+                  <Box className={classes.textFieldContainer}>
+                    <TextField
+                      className={classes.textField}
+                      error={parseFloat(days) > maxDays}
+                      fullWidth
+                      placeholder="0"
+                      value={days}
+                      onChange={onChangeDays}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      onKeyDown={handleKeyDown}
+                      onFocus={(e) => (e.target.placeholder = "")}
+                      onBlur={(e) => (e.target.placeholder = "0")}
+                    />
+                    {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={!(active || account) || days == getMaxDays()}
                     onClick={() => setDays(getMaxDays())}
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
+              </Grid>
 
-            <Grid container item xs={12}>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  AMOUNT OF XIO REQUIRED TO POOL
-                </Typography>
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > additionalContractBal) ||
-                      (maxStake &&
-                        parseFloat(quantity) > Web3.utils.fromWei(maxStake))
-                    }
-                    fullWidth
-                    placeholder="0.0"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                    type="number"
-                    inputMode="numeric"
-                    pattern={regex}
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0.0")}
-                  />
-                  {/* <IconButton
+              <Grid container item xs={12}>
+                <Box flex={1}>
+                  <Typography variant="body2" className={classes.secondaryText}>
+                    AMOUNT OF XIO REQUIRED TO POOL
+                  </Typography>
+                  <Box className={classes.textFieldContainer}>
+                    <TextField
+                      className={classes.textField}
+                      error={
+                        (active &&
+                          account &&
+                          parseFloat(quantity) > additionalContractBal) ||
+                        (maxStake &&
+                          parseFloat(quantity) > Web3.utils.fromWei(maxStake))
+                      }
+                      fullWidth
+                      placeholder="0.0"
+                      value={quantity}
+                      onChange={onChangeQuantity}
+                      type="number"
+                      inputMode="numeric"
+                      pattern={regex}
+                      onKeyDown={handleKeyDown}
+                      onFocus={(e) => (e.target.placeholder = "")}
+                      onBlur={(e) => (e.target.placeholder = "0.0")}
+                    />
+                    {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={
                       !(active || account) || quantity == getMaxQuantity()
@@ -530,22 +539,22 @@ function Pool({
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
+              </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.infoText}>
-                YOU ARE ABOUT TO POOL
-                <span className={classes.infoTextSpan}> 5 ETH </span> +{" "}
-                <span className={classes.infoTextSpan}> 5000 xio </span>
-                <span className={classes.infoTextSpan}>75 DAYS</span>
-              </Typography>
-              <Box className={classes.btn}>
-                <Button variant="red">POOL</Button>
-              </Box>
-            </Grid>
-            {/*             
+              <Grid item xs={12}>
+                <Typography variant="h6" className={classes.infoText}>
+                  YOU ARE ABOUT TO POOL
+                  <span className={classes.infoTextSpan}> 5 ETH </span> +{" "}
+                  <span className={classes.infoTextSpan}> 5000 xio </span>
+                  <span className={classes.infoTextSpan}>75 DAYS</span>
+                </Typography>
+                <Box className={classes.btn}>
+                  <Button variant="red">POOL</Button>
+                </Box>
+              </Grid>
+              {/*             
             {selectedPortal ? (
               <Grid item xs={12}>
                 <Typography variant="body2" className={classes.secondaryText}>
@@ -899,7 +908,8 @@ function Pool({
       
           </Fragment>
        */}
-          </Grid>
+            </Grid>
+          )}
         </Box>
       </Fragment>
     </PageAnimation>
