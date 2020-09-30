@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     margin: theme.spacing(1, 2),
     padding: theme.spacing(1),
+    fontSize: 10,
     // padding: theme.spacing(0, 5),
     [theme.breakpoints.down("sm")]: {
       margin: theme.spacing(1, 1),

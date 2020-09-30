@@ -50,8 +50,11 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
-    fontSize: 8,
+    fontSize: 10,
     marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 8,
+    },
   },
   primaryText: {
     color: theme.palette.text.primary,
@@ -171,6 +174,11 @@ const useStyles = makeStyles((theme) => ({
   },
   btn: {
     marginTop: theme.spacing(2),
+  },
+  btn2: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
   },
 }));
 
@@ -505,6 +513,7 @@ function Flashstake({
                 <Button variant="red">FLASHSTAKE</Button>
               </Box>
             </Grid>
+
             {/*             
             {selectedPortal ? (
               <Grid item xs={12}>

@@ -16,6 +16,11 @@ import logo from "../../assets/xio-logo.svg";
 import logoLight from "../../assets/xio-logo-light.svg";
 import xioAnim from "../../assets/xio-animated.gif";
 import xordLogo from "../../assets/xord-logo.png";
+import { Button } from "../../component";
+import { withStyles } from "@material-ui/core/styles";
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 
 import {
   showWalletBackdrop,
@@ -54,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   contentContainer: {
     border: `1px solid ${theme.palette.border.main}`,
     backgroundColor: theme.palette.background.primary,
-    margin: theme.spacing(2, 0),
+    marginTop: theme.spacing(2),
     overflow: "hidden",
     borderRadius: "10px",
     border: "1px solid #282828",
@@ -113,7 +118,52 @@ const useStyles = makeStyles((theme) => ({
   textColor: {
     color: "#fff",
   },
+  btn: {
+    maxWidth: "250px",
+  },
+  btn2: {},
 }));
+
+const Accordion = withStyles({
+  root: {
+    border: "1px solid rgba(0, 0, 0, .125)",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    backgroundColor: "rgba(0, 0, 0, .03)",
+    borderBottom: "1px solid rgba(0, 0, 0, .125)",
+    marginBottom: -1,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
+  content: {
+    "&$expanded": {
+      margin: "12px 0",
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
 
 export let walletBtnRef = createRef();
 
@@ -128,6 +178,12 @@ function Layout({
   themeSwitchAction,
 }) {
   const classes = useStyles();
+
+  const [expanded, setExpanded] = React.useState("panel1");
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const handleClose = () => {
     showWalletBackdrop(false);
@@ -168,7 +224,27 @@ function Layout({
             onClick={handleClick}
           /> */}
           <Box className={`transitionEase ${classes.contentContainer}`}>
+            {" "}
             <Routes />
+          </Box>
+          {/* <Accordion
+            square
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+          >
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+            ></AccordionSummary>
+            <AccordionDetails></AccordionDetails>
+          </Accordion> */}
+          <Box className={classes.btn2}>
+            {/* <Button className={classes.btn} variant="red">
+              FLASHSTAKE
+            </Button> */}
+            {/* <Accordion title="A">
+              <span className="accordion-text">aaaaaa</span>
+            </Accordion> */}
           </Box>
         </Box>
 
