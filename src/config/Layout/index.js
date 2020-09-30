@@ -224,7 +224,6 @@ function Layout({
             onClick={handleClick}
           /> */}
           <Box className={`transitionEase ${classes.contentContainer}`}>
-            {" "}
             <Routes />
           </Box>
           {/* <Accordion

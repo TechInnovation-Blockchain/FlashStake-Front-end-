@@ -14,8 +14,18 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useQuery } from "@apollo/client";
+import { withStyles } from "@material-ui/core/styles";
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 
-import { Button, DropdownDialog, Dialog, PageAnimation } from "../../component";
+import {
+  Button,
+  DropdownDialog,
+  Dialog,
+  PageAnimation,
+  Table,
+} from "../../component";
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
@@ -40,10 +50,10 @@ import { JSBI } from "@uniswap/sdk";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(4, 0),
     textAlign: "center",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     // height: "200px",
   },
@@ -182,6 +192,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Accordion = withStyles({
+  root: {
+    // border: "1px solid rgba(0, 0, 0, .125)",
+    backgroundColor: "#121212",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      // margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    borderBottom: "1px solid rgba(0, 0, 0, .125)",
+    marginBottom: -1,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
+  content: {
+    "&$expanded": {
+      // margin: "12px 0",
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    // padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
+
 function Flashstake({
   getFlashstakeProps,
   stakeTokens,
@@ -227,6 +278,12 @@ function Flashstake({
     localStorage.getItem("restake") === "true"
   );
   const [additionalContractBal, setAdditionalContractBal] = useState(0);
+
+  const [expanded, setExpanded] = React.useState("panel1");
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const toggleChecked = useCallback(() => {
     setChecked(!checked);
@@ -417,46 +474,62 @@ function Flashstake({
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
-          <Grid container spacing={4}>
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.secondaryText}>
-                WHAT TOKEN DO YOU WANT TO EARN
-              </Typography>
-              <DropdownDialog
-                className={classes.dropDown}
-                items={portals}
-                selectedValue={selectedRewardToken}
-                onSelect={setSelectedRewardToken}
-                heading="ETH"
-              />
-            </Grid>
-            <Grid container item xs={12}>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  STAKE QUANTITY
-                </Typography>
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > additionalContractBal) ||
-                      (maxStake &&
-                        parseFloat(quantity) > Web3.utils.fromWei(maxStake))
-                    }
-                    fullWidth
-                    placeholder="0.0"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                    type="number"
-                    inputMode="numeric"
-                    pattern={regex}
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0.0")}
+          <Accordion
+            square
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+          >
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              // style={{ display: "none" }}
+            >
+              <Typography>Collapsible Group Item #1</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <Typography variant="h6" className={classes.secondaryText}>
+                    WHAT TOKEN DO YOU WANT TO EARN
+                  </Typography>
+                  <DropdownDialog
+                    className={classes.dropDown}
+                    items={portals}
+                    selectedValue={selectedRewardToken}
+                    onSelect={setSelectedRewardToken}
+                    heading="ETH"
                   />
-                  {/* <IconButton
+                </Grid>
+                <Grid container item xs={12}>
+                  <Box flex={1}>
+                    <Typography
+                      variant="body2"
+                      className={classes.secondaryText}
+                    >
+                      STAKE QUANTITY
+                    </Typography>
+                    <Box className={classes.textFieldContainer}>
+                      <TextField
+                        className={classes.textField}
+                        error={
+                          (active &&
+                            account &&
+                            parseFloat(quantity) > additionalContractBal) ||
+                          (maxStake &&
+                            parseFloat(quantity) > Web3.utils.fromWei(maxStake))
+                        }
+                        fullWidth
+                        placeholder="0.0"
+                        value={quantity}
+                        onChange={onChangeQuantity}
+                        type="number"
+                        inputMode="numeric"
+                        pattern={regex}
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0.0")}
+                      />
+                      {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={
                       !(active || account) || quantity == getMaxQuantity()
@@ -465,56 +538,59 @@ function Flashstake({
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
-                </Box>
-              </Box>
+                    </Box>
+                  </Box>
 
-              <Typography variant="body2" className={classes.xIcon}>
-                +
-              </Typography>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  STAKE DURATION
-                </Typography>
+                  <Typography variant="body2" className={classes.xIcon}>
+                    +
+                  </Typography>
+                  <Box flex={1}>
+                    <Typography
+                      variant="body2"
+                      className={classes.secondaryText}
+                    >
+                      STAKE DURATION
+                    </Typography>
 
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={parseFloat(days) > maxDays}
-                    fullWidth
-                    placeholder="0"
-                    value={days}
-                    onChange={onChangeDays}
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0")}
-                  />
-                  {/* <IconButton
+                    <Box className={classes.textFieldContainer}>
+                      <TextField
+                        className={classes.textField}
+                        error={parseFloat(days) > maxDays}
+                        fullWidth
+                        placeholder="0"
+                        value={days}
+                        onChange={onChangeDays}
+                        type="number"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0")}
+                      />
+                      {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={!(active || account) || days == getMaxDays()}
                     onClick={() => setDays(getMaxDays())}
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.infoText}>
-                IF YOU STAKE{" "}
-                <span className={classes.infoTextSpan}> 100 XIO </span> FOR{" "}
-                <span className={classes.infoTextSpan}>75 DAYS</span> YOU WILL
-                IMMEDIATELY GET{" "}
-                <span className={classes.infoTextSpan}> 1 ETH</span>
-              </Typography>
-              <Box className={classes.btn}>
-                <Button variant="red">FLASHSTAKE</Button>
-              </Box>
-            </Grid>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h6" className={classes.infoText}>
+                    IF YOU STAKE{" "}
+                    <span className={classes.infoTextSpan}> 100 XIO </span> FOR{" "}
+                    <span className={classes.infoTextSpan}>75 DAYS</span> YOU
+                    WILL IMMEDIATELY GET{" "}
+                    <span className={classes.infoTextSpan}> 1 ETH</span>
+                  </Typography>
+                  <Box className={classes.btn}>
+                    <Button variant="red">FLASHSTAKE</Button>
+                  </Box>
+                </Grid>
 
-            {/*             
+                {/*             
             {selectedPortal ? (
               <Grid item xs={12}>
                 <Typography variant="body2" className={classes.secondaryText}>
@@ -868,7 +944,25 @@ function Flashstake({
       
           </Fragment>
        */}
-          </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion
+            square
+            expanded={expanded === "panel2"}
+            onChange={handleChange("panel2")}
+          >
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+            >
+              <Typography>Collapsible Group Item #2</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Table />
+            </AccordionDetails>
+          </Accordion>
         </Box>
       </Fragment>
     </PageAnimation>
