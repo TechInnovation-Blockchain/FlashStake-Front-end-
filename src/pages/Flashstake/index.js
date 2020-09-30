@@ -1,7 +1,8 @@
 import React, { useEffect, useState, Fragment, useCallback } from "react";
 import Web3 from "web3";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { connect } from "react-redux";
 import {
   Box,
@@ -50,7 +51,7 @@ import { JSBI } from "@uniswap/sdk";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    padding: theme.spacing(4, 0),
+    // padding: theme.spacing(4, 0),
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
@@ -185,10 +186,13 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     marginTop: theme.spacing(2),
   },
-  btn2: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
+  btn3: {
+    backgroundColor: "#1A1A1A",
+    padding: "0 !important",
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
   },
 }));
 
@@ -197,6 +201,7 @@ const Accordion = withStyles({
     // border: "1px solid rgba(0, 0, 0, .125)",
     backgroundColor: "#121212",
     boxShadow: "none",
+
     "&:not(:last-child)": {
       borderBottom: 0,
     },
@@ -214,6 +219,7 @@ const AccordionSummary = withStyles({
   root: {
     borderBottom: "1px solid rgba(0, 0, 0, .125)",
     marginBottom: -1,
+    padding: 0,
     minHeight: 56,
     "&$expanded": {
       minHeight: 56,
@@ -279,7 +285,8 @@ function Flashstake({
   );
   const [additionalContractBal, setAdditionalContractBal] = useState(0);
 
-  const [expanded, setExpanded] = React.useState("panel1");
+  const [expanded, setExpanded] = useState("panel1");
+  const [expanded2, setExpanded2] = useState(true);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -299,6 +306,8 @@ function Flashstake({
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const [renderDualButtons, setRenderDualButtons] = useState(false);
   const regex = /^\d*(.(\d{1,18})?)?$/;
+
+  //#region functions
 
   const onChangeDays = ({ target: { value } }) => {
     if (Number(value) || value === "" || value === "0") {
@@ -470,23 +479,26 @@ function Flashstake({
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
 
+  //#endregion
+  console.log(expanded2);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Accordion
             square
-            expanded={expanded === "panel1"}
+            expanded={expanded2}
             onChange={handleChange("panel1")}
           >
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
-              // style={{ display: "none" }}
+              style={{ display: "none" }}
             >
-              <Typography>Collapsible Group Item #1</Typography>
+              {/* <Typography>Collapsible Group Item #1</Typography> */}
             </AccordionSummary>
-            <AccordionDetails>
+
+            <AccordionDetails style={{ paddingTop: "20px" }}>
               <Grid container spacing={4}>
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.secondaryText}>
@@ -950,14 +962,21 @@ function Flashstake({
 
           <Accordion
             square
-            expanded={expanded === "panel2"}
+            expanded={!expanded2}
             onChange={handleChange("panel2")}
           >
             <AccordionSummary
               aria-controls="panel2d-content"
               id="panel2d-header"
+              onClick={() => setExpanded2(!expanded2)}
+              className={classes.btn3}
             >
-              <Typography>Collapsible Group Item #2</Typography>
+              {expanded2 ? (
+                <ArrowDropUpIcon size="large" />
+              ) : (
+                <ArrowDropDownIcon size="large" />
+              )}
+              <Typography style={{ fontSize: 10 }}>STAKE DASHBOARD</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Table />
