@@ -189,10 +189,35 @@ const useStyles = makeStyles((theme) => ({
   btn3: {
     backgroundColor: "#1A1A1A",
     padding: "0 !important",
+
     "& .MuiAccordionSummary-content": {
       display: "block",
       margin: 0,
     },
+  },
+  _btn3: {
+    borderTopWidth: 1,
+    borderTopRightRadius: "10px",
+    borderTopLeftRadius: "10px",
+    backgroundColor: "#1A1A1A",
+    padding: "0 !important",
+
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  accordion: {
+    backgroundColor: "#1A1A1A",
+  },
+  stakeDashBtn: {
+    color: theme.palette.text.grey,
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 2,
+  },
+  icon: {
+    color: theme.palette.text.grey,
   },
 }));
 
@@ -969,16 +994,18 @@ function Flashstake({
               aria-controls="panel2d-content"
               id="panel2d-header"
               onClick={() => setExpanded2(!expanded2)}
-              className={classes.btn3}
+              className={expanded2 ? classes.btn3 : classes._btn3}
             >
               {expanded2 ? (
-                <ArrowDropUpIcon size="large" />
+                <ArrowDropUpIcon size="large" className={classes.icon} />
               ) : (
-                <ArrowDropDownIcon size="large" />
+                <ArrowDropDownIcon size="large" className={classes.icon} />
               )}
-              <Typography style={{ fontSize: 10 }}>STAKE DASHBOARD</Typography>
+              <Typography className={classes.stakeDashBtn}>
+                STAKE DASHBOARD
+              </Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails className={classes.accordion}>
               <Table />
             </AccordionDetails>
           </Accordion>
