@@ -415,7 +415,7 @@ function Vote({
         <Box className={classes.contentContainer}>
           {soon ? (
             <Typography variant="h5" className={classes.comingSoon}>
-              COMING SOON...
+              COMING SOON
             </Typography>
           ) : (
             <Grid container spacing={3}>
