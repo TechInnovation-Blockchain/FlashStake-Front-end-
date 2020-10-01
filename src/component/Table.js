@@ -8,6 +8,7 @@ import {
   CircularProgress,
   TablePagination,
   Checkbox,
+  Box,
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     fontWeight: 700,
+
     margin: theme.spacing(1, 0),
   },
   flexCenter: {
@@ -42,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   redText: {
     color: theme.palette.xioRed.main,
+    fontSize: 10,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
@@ -51,7 +54,9 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadItemBtn: {
     fontWeight: 700,
+    fontSize: 10,
     color: theme.palette.text.secondary,
+    display: "flex",
   },
   msgContainer: {
     color: theme.palette.text.secondary,
@@ -73,6 +78,26 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.xioRed.main,
     },
   },
+  mainHead: {
+    fontSize: 9,
+    fontWeight: 700,
+    color: theme.palette.text.grey,
+    margin: theme.spacing(2, 0),
+    textAlign: "center",
+  },
+  secHead: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: theme.palette.text.primary,
+    margin: theme.spacing(2, 0),
+    textAlign: "center",
+  },
+  sortButton: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 
 function TableComponent({
@@ -88,7 +113,7 @@ function TableComponent({
   isStakesSelected,
 }) {
   const classes = useStyles();
-  const headItems = ["EARNED", "AVAILABLE", "REMAINING"];
+  const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState("EARNED");
@@ -122,7 +147,7 @@ function TableComponent({
   const sortedData = useCallback(() => {
     let data = [];
     switch (sortBy) {
-      case "EARNED":
+      case "OUTPUT":
         data = currentStaked?.stakes?.sort(({ tokenB: a }, { tokenB: b }) => {
           if (a < b) {
             return -1;
@@ -134,7 +159,7 @@ function TableComponent({
         });
 
         break;
-      case "AVAILABLE":
+      case "UNLOCKED":
         data = currentStaked?.stakes?.sort(
           (a, b) =>
             parseFloat(a.stakeAmountAvailable) -
@@ -162,6 +187,18 @@ function TableComponent({
   );
   return (
     <Grid container>
+      <Grid container item spacing={2} xs={12} className={classes.infoGrid}>
+        <Grid item xs={6} className={classes.grid}>
+          <Typography className={classes.mainHead}>WALLET BALANCE</Typography>
+          <Typography className={classes.secHead}>10,000 XIO</Typography>
+        </Grid>
+
+        <Grid item xs={6} className={classes.grid}>
+          <Typography className={classes.mainHead}>DAPP BALANCE</Typography>
+          <Typography className={classes.secHead}>5,000 XIO</Typography>
+        </Grid>
+      </Grid>
+
       <Grid container item xs={12} className={classes.gridHead}>
         {headItems.map((headItem) => (
           <Grid item xs={4} className={classes.gridItem} key={headItem}>
@@ -169,9 +206,10 @@ function TableComponent({
               className={classes.tableHeadItemBtn}
               onClick={() => onClickSortBtn(headItem)}
             >
-              <UnfoldMore fontSize="small" className={classes.sortIcon} />
-
-              {headItem}
+              <Box className={classes.sortButton}>
+                <UnfoldMore fontSize="small" className={classes.sortIcon} />
+                {headItem}
+              </Box>
             </MuiButton>
           </Grid>
         ))}
