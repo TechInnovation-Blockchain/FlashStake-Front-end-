@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contentContainer: {
     border: `1px solid ${theme.palette.border.main}`,
-    backgroundColor: theme.palette.background.primary,
+    backgroundColor: theme.palette.background.secondary,
     marginTop: theme.spacing(2),
     overflow: "hidden",
     borderRadius: "10px",
@@ -224,7 +224,6 @@ function Layout({
             onClick={handleClick}
           /> */}
           <Box className={`transitionEase ${classes.contentContainer}`}>
-            {" "}
             <Routes />
           </Box>
           {/* <Accordion
@@ -254,7 +253,7 @@ function Layout({
           onClick={handleClose}
         ></Backdrop>
 
-        {/* <WalletConnect /> */}
+        <WalletConnect />
         <Snackbar />
       </Container>
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>

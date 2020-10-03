@@ -3,6 +3,7 @@ export const userReducer = (
     portals: [],
     stakes: [],
     currentStaked: {},
+    pools: [],
   },
   { type, payload }
 ) => {
@@ -21,6 +22,11 @@ export const userReducer = (
       return {
         ...state,
         currentStaked: payload,
+      };
+    case "POOL":
+      return {
+        ...state,
+        pools: payload,
       };
     default:
       return state;

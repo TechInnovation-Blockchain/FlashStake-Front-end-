@@ -11,7 +11,7 @@ import {
   setRefetch,
   setReCalculateExpired,
 } from "../redux/actions/dashboardActions";
-import { userDataUpdate } from "../redux/actions/userActions";
+import { userDataUpdate, updatePools } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import { getBalance } from "../redux/actions/flashstakeActions";
 
@@ -21,6 +21,7 @@ function Updater({
   account,
   chainId,
   userDataUpdate,
+  updatePools,
   refetchData,
   setRefetch,
   setLoading,
@@ -37,6 +38,10 @@ function Updater({
       account: account ? account.toString().toLowerCase() : "",
     },
   });
+
+  useEffect(() => {
+    console.log(data?.protocols);
+  }, [data]);
 
   useEffect(() => {
     loadContractData();
@@ -85,6 +90,10 @@ function Updater({
     }
   }, [refetchData, setRefetch, refetch, getBalance]);
 
+  useEffect(() => {
+    updatePools(data?.protocols[0].pools);
+  }, [data]);
+
   return null;
 }
 
@@ -107,6 +116,7 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   loadContractData,
   userDataUpdate,
+  updatePools,
   setRefetch,
   setLoading,
   setReCalculateExpired,

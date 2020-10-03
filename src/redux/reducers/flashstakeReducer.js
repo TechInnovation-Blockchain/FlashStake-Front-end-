@@ -15,6 +15,7 @@ export const flashstakeReducer = (
     stakeRequest: {
       quantity: 0,
       days: 0,
+      poolId: "",
     },
     stakeTxnHash: "",
     reset: false,

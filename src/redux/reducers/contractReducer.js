@@ -29,11 +29,11 @@ export const contractReducer = (
         ...state,
         maxStake: payload,
       };
-    case "CONTRACT_STATE":
-      return {
-        ...state,
-        contractState: payload,
-      };
+    // case "CONTRACT_STATE":
+    //   return {
+    //     ...state,
+    //     contractState: payload,
+    //   };
     default:
       return state;
   }

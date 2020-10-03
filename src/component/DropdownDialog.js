@@ -149,11 +149,20 @@ export default function DropdownDialog({
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
+  // items.map((item) => {
+  //   console.log(item?.tokenB?.symbol);
+  // });
+  console.log(items);
 
   const filteredData = useCallback(() => {
-    return items.filter((item) => item.symbol.toUpperCase().includes(search));
+    return items.filter(
+      (item) => item.tokenB?.symbol.toUpperCase().includes(search)
+      // console.log(item?.id);
+    );
   }, [search, items]);
-
+  filteredData().map((item) => {
+    console.log(item.tokenB.symbol);
+  });
   const onClose = useCallback(() => {
     setOpen(false);
   }, []);
@@ -313,27 +322,29 @@ export default function DropdownDialog({
               </IconButton>
             ) : null}
           </Box>
+
           {filteredData().length ? (
             <List className={classes.list}>
-              {filteredData().map(({ symbol: item, address }) => (
+              {filteredData().map(({ tokenB, id }) => (
                 <ListItem
                   button
                   className={classes.listItem}
-                  onClick={() => onSelectLocal(item, address)}
-                  key={item}
+                  onClick={() => onSelectLocal(tokenB.symbol, id)}
+                  key={id}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
 
                     <img
-                      src={require(`../assets/Tokens/${item}.png`)}
-                      alt={item}
+                      src={require(`../assets/Tokens/${tokenB.symbol}.png`)}
+                      alt={tokenB.symbol}
                       srcset=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {item}
+
+                    {tokenB?.symbol}
                   </Typography>
                 </ListItem>
               ))}

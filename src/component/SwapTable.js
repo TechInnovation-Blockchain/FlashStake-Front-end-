@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TableComponent({
+function SwapTable({
   currentStaked,
   openWithdrawDialog,
   loading,
@@ -111,6 +111,7 @@ function TableComponent({
   selectStake,
   selectedStakes,
   isStakesSelected,
+  pools,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -124,7 +125,7 @@ function TableComponent({
 
   useEffect(() => {
     setPage(0);
-  }, [currentStaked]);
+  }, [pools]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -143,11 +144,13 @@ function TableComponent({
     },
     [sortBy]
   );
-  console.log(currentStaked);
+
+  console.log("In Swap Table", pools);
+
   const sortedData = useCallback(() => {
     let data = [];
     switch (sortBy) {
-      case "OUTPUT":
+      case "INPUT":
         data = currentStaked?.stakes?.sort(({ tokenB: a }, { tokenB: b }) => {
           if (a < b) {
             return -1;
@@ -159,14 +162,14 @@ function TableComponent({
         });
 
         break;
-      case "UNLOCKED":
+      case "XIO":
         data = currentStaked?.stakes?.sort(
           (a, b) =>
             parseFloat(a.stakeAmountAvailable) -
             parseFloat(b.stakeAmountAvailable)
         );
         break;
-      case "REMAINING":
+      case "DATE":
         data = currentStaked?.stakes?.sort(
           (a, b) => parseFloat(a.expiry) - parseFloat(b.expiry)
         );
@@ -185,6 +188,7 @@ function TableComponent({
     },
     [page]
   );
+
   return (
     <Grid container>
       <Grid container item spacing={2} xs={12} className={classes.infoGrid}>
@@ -346,7 +350,7 @@ function TableComponent({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { currentStaked },
+  user: { currentStaked, pools },
   dashboard: { selectedStakes, isStakesSelected },
 }) => ({
   currentStaked,
@@ -355,8 +359,9 @@ const mapStateToProps = ({
   chainId,
   selectedStakes,
   isStakesSelected,
+  pools,
 });
 
 export default connect(mapStateToProps, { showWalletBackdrop, selectStake })(
-  TableComponent
+  SwapTable
 );

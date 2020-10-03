@@ -1,7 +1,8 @@
 import React, { useEffect, useState, Fragment, useCallback } from "react";
 import Web3 from "web3";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { connect } from "react-redux";
 import {
   Box,
@@ -14,8 +15,19 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useQuery } from "@apollo/client";
+import { withStyles } from "@material-ui/core/styles";
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 
-import { Button, DropdownDialog, Dialog, PageAnimation } from "../../component";
+import {
+  Button,
+  DropdownDialog,
+  Dialog,
+  PageAnimation,
+  Table,
+  SwapTable,
+} from "../../component";
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
@@ -40,17 +52,16 @@ import { JSBI } from "@uniswap/sdk";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    padding: theme.spacing(4),
+    // padding: theme.spacing(4, 0),
     textAlign: "center",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     // height: "200px",
   },
   secondaryText: {
-    color: theme.palette.text.secondary2,
+    color: theme.palette.text.secondary,
     fontWeight: 700,
-
     fontSize: 10,
     marginBottom: theme.spacing(1),
     [theme.breakpoints.down("xs")]: {
@@ -70,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   infoText: {
     fontSize: 10,
-    color: theme.palette.text.secondary2,
+    color: theme.palette.text.secondary,
   },
   infoTextSpan: {
     fontSize: 10,
@@ -176,7 +187,95 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     marginTop: theme.spacing(2),
   },
+  btn3: {
+    backgroundColor: "#1A1A1A",
+    padding: "0 !important",
+    margin: "0 !important",
+
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  _btn3: {
+    borderTopWidth: 1,
+    borderTopRightRadius: "10px",
+    borderTopLeftRadius: "10px",
+    backgroundColor: "#1A1A1A",
+    padding: "0 !important",
+
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  accordion: {
+    backgroundColor: "#1A1A1A",
+  },
+  stakeDashBtn: {
+    color: theme.palette.text.grey,
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 2,
+  },
+  icon: {
+    color: theme.palette.text.grey,
+  },
+  accordionDetails: {
+    borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+    // borderBottomWidth: 1,
+    // borderBottomColor: theme.palette.text.gray,
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+  },
 }));
+
+const Accordion = withStyles({
+  root: {
+    // border: "1px solid rgba(0, 0, 0, .125)",
+    backgroundColor: "#121212",
+    boxShadow: "none",
+
+    "&.MuiAccordion-root.Mui-expanded": {
+      margin: 0,
+    },
+
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      // margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    borderBottom: "1px solid rgba(0, 0, 0, .125)",
+    marginBottom: -1,
+    padding: 0,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
+  content: {
+    "&$expanded": {
+      // margin: "12px 0",
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    // padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
 
 function Swap({
   getFlashstakeProps,
@@ -213,6 +312,7 @@ function Swap({
   maxDays,
   maxStake,
   currentStaked,
+  pools,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -223,6 +323,13 @@ function Swap({
     localStorage.getItem("restake") === "true"
   );
   const [additionalContractBal, setAdditionalContractBal] = useState(0);
+
+  const [expanded, setExpanded] = useState("panel1");
+  const [expanded2, setExpanded2] = useState(true);
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const toggleChecked = useCallback(() => {
     setChecked(!checked);
@@ -238,6 +345,8 @@ function Swap({
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const [renderDualButtons, setRenderDualButtons] = useState(false);
   const regex = /^\d*(.(\d{1,18})?)?$/;
+
+  //#region functions
 
   const onChangeDays = ({ target: { value } }) => {
     if (Number(value) || value === "" || value === "0") {
@@ -408,52 +517,74 @@ function Swap({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
-
+  console.log("In Swap", pools);
+  //#endregion
+  console.log(expanded2);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
-          <Grid container spacing={4}>
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.secondaryText}>
-                WHAT DO YOU WANT TO SWAP FOR
-              </Typography>
-              <DropdownDialog
-                className={classes.dropDown}
-                items={portals}
-                selectedValue={selectedRewardToken}
-                onSelect={setSelectedRewardToken}
-                heading="ETH"
-              />
-            </Grid>
+          <Accordion
+            square
+            expanded={expanded2}
+            onChange={handleChange("panel1")}
+          >
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              style={{ display: "none" }}
+            >
+              {/* <Typography>Collapsible Group Item #1</Typography> */}
+            </AccordionSummary>
 
-            <Grid container item xs={12}>
-              <Box flex={1}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  SWAP QUANTITY
-                </Typography>
-                <Box className={classes.textFieldContainer}>
-                  <TextField
-                    className={classes.textField}
-                    error={
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > additionalContractBal) ||
-                      (maxStake &&
-                        parseFloat(quantity) > Web3.utils.fromWei(maxStake))
-                    }
-                    fullWidth
-                    placeholder="0.0"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                    type="number"
-                    inputMode="numeric"
-                    pattern={regex}
-                    onKeyDown={handleKeyDown}
-                    onFocus={(e) => (e.target.placeholder = "")}
-                    onBlur={(e) => (e.target.placeholder = "0.0")}
+            <AccordionDetails
+              style={{ paddingTop: "20px" }}
+              className={classes.accordionDetails}
+            >
+              <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <Typography variant="h6" className={classes.secondaryText}>
+                    WHAT DO YOU WANT TO SWAP FOR
+                  </Typography>
+                  <DropdownDialog
+                    className={classes.dropDown}
+                    items={pools}
+                    selectedValue={selectedRewardToken}
+                    onSelect={setSelectedRewardToken}
+                    heading="ETH"
                   />
-                  {/* <IconButton
+                </Grid>
+
+                <Grid container item xs={12}>
+                  <Box flex={1}>
+                    <Typography
+                      variant="body2"
+                      className={classes.secondaryText}
+                    >
+                      SWAP QUANTITY
+                    </Typography>
+                    <Box className={classes.textFieldContainer}>
+                      <TextField
+                        className={classes.textField}
+                        error={
+                          (active &&
+                            account &&
+                            parseFloat(quantity) > additionalContractBal) ||
+                          (maxStake &&
+                            parseFloat(quantity) > Web3.utils.fromWei(maxStake))
+                        }
+                        fullWidth
+                        placeholder="0.0"
+                        value={quantity}
+                        onChange={onChangeQuantity}
+                        type="number"
+                        inputMode="numeric"
+                        pattern={regex}
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0.0")}
+                      />
+                      {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={
                       !(active || account) || quantity == getMaxQuantity()
@@ -462,22 +593,22 @@ function Swap({
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
-                </Box>
-              </Box>
-            </Grid>
+                    </Box>
+                  </Box>
+                </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h6" className={classes.infoText}>
-                IF YOU STAKE{" "}
-                <span className={classes.infoTextSpan}> 5 ETH </span> YOU WILL
-                IMMEDIATELY GET{" "}
-                <span className={classes.infoTextSpan}> 5000 XIO</span>
-              </Typography>
-              <Box className={classes.btn}>
-                <Button variant="red">SWAP</Button>
-              </Box>
-            </Grid>
-            {/*             
+                <Grid item xs={12}>
+                  <Typography variant="h6" className={classes.infoText}>
+                    IF YOU STAKE{" "}
+                    <span className={classes.infoTextSpan}> 5 ETH </span> YOU
+                    WILL IMMEDIATELY GET{" "}
+                    <span className={classes.infoTextSpan}> 5000 XIO</span>
+                  </Typography>
+                  <Box className={classes.btn}>
+                    <Button variant="red">SWAP</Button>
+                  </Box>
+                </Grid>
+                {/*             
             {selectedPortal ? (
               <Grid item xs={12}>
                 <Typography variant="body2" className={classes.secondaryText}>
@@ -831,7 +962,34 @@ function Swap({
       
           </Fragment>
        */}
-          </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion
+            square
+            expanded={!expanded2}
+            onChange={handleChange("panel2")}
+          >
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+              onClick={() => setExpanded2(!expanded2)}
+              className={expanded2 ? classes.btn3 : classes._btn3}
+            >
+              {expanded2 ? (
+                <ArrowDropUpIcon size="large" className={classes.icon} />
+              ) : (
+                <ArrowDropDownIcon size="large" className={classes.icon} />
+              )}
+              <Typography className={classes.stakeDashBtn}>
+                SWAP DASHBOARD
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordion}>
+              <SwapTable />
+            </AccordionDetails>
+          </Accordion>
         </Box>
       </Fragment>
     </PageAnimation>
@@ -842,7 +1000,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading },
   web3: { active, account, chainId },
-  user: { currentStaked },
+  user: { currentStaked, pools },
   contract,
 }) => ({
   ...flashstake,
@@ -851,6 +1009,7 @@ const mapStateToProps = ({
   account,
   chainId,
   currentStaked,
+  pools,
   ...contract,
 });
 

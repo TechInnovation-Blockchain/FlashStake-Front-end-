@@ -112,6 +112,13 @@ export const userDataUpdate = (data) => async (dispatch, getState) => {
   });
 };
 
+export const updatePools = (data) => async (dispatch) => {
+  dispatch({
+    type: "POOL",
+    payload: data,
+  });
+};
+
 // export const getDashboardProps = (data) => async (dispatch) => {
 //   let stakedPortals = [];
 //   try {

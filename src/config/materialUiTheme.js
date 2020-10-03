@@ -19,7 +19,7 @@ export const darkTheme = createMuiTheme({
       // primary: "#000000",
       secondary: "#cccccc",
       secondary2: "#fff",
-      green: "#6cc79b",
+      grey: "#696969",
     },
     action: {
       hover: "#f0f0f0",

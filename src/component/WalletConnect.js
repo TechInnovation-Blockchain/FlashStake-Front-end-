@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   connectWalletButton: {
     width: 250,
     borderRadius: 0,
+    backgroundColor: theme.palette.background.primary,
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
@@ -74,6 +75,7 @@ function WalletConnect({
   const web3context = useWeb3React();
   const [openBox, setOpenBox] = useState(false);
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
 
   const addressShorten = (address) => {
     if (address) {
@@ -186,13 +188,13 @@ function WalletConnect({
                 ...transitionStyles[state],
               }}
             > */}
-        <ExpandableBox
+        {/* <ExpandableBox
           open={openBox}
           changeWallet={setOpen}
           web3context={web3context}
           // walletList={walletList}
           activateWallet={activateWallet}
-        />
+        /> */}
         {/* </span>
           )}
         </Transition> */}
@@ -203,6 +205,18 @@ function WalletConnect({
             YOU MUST CONNECT YOUR WALLET FIRST
           </Typography>
         ) : null}
+
+        <WalletsDialogue
+          // className={classes.connectWalletButton}
+          heading={"CHANGE WALLET"}
+          web3context={web3context}
+          items={walletList}
+          activate={activateWallet}
+          open={open2}
+          setOpen={setOpen2}
+
+          // address={addressShorten(web3context.account)}
+        />
 
         <WalletsDialogue
           className={classes.connectWalletButton}
@@ -225,7 +239,7 @@ function WalletConnect({
           // disabled={web3context.active || web3context.account}
 
           onClick={() => {
-            !(active || account) ? setOpen(true) : setOpenBox((val) => !val);
+            !(active || account) ? setOpen(true) : setOpen2(true);
           }}
           // onClick={() => {
           //   setOpen((val) => !val);
@@ -235,11 +249,11 @@ function WalletConnect({
           {web3context.active
             ? addressShorten(web3context.account)
             : "CONNECT WALLET"}
-          {openBox ? (
+          {/* {openBox ? (
             <ExpandMore className={classes.expandIcon} />
           ) : (
             <ExpandLess className={classes.expandIcon} />
-          )}
+          )} */}
         </Button>
       </Box>
     </Fragment>

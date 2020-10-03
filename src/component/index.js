@@ -3,6 +3,7 @@ import Button from "./Button";
 import Dialog from "./Dialog";
 import DropdownDialog from "./DropdownDialog";
 import Table from "./Table";
+import SwapTable from "./SwapTable";
 import WalletConnect from "./WalletConnect";
 import Snackbar from "./Snackbar";
 import Stepper from "./Stepper";
@@ -21,6 +22,7 @@ export {
   WalletConnect,
   Snackbar,
   Stepper,
+  SwapTable,
   ExpandableBox,
   Fade,
   PageAnimation,
