@@ -4,7 +4,8 @@ import {
   initXioPublicFactoryContract,
   baseInterestRate,
 } from "../../utils/contractFunctions/xioPublicFactoryContractFunctions";
-import { initializePublicPortalContract } from "../../utils/contractFunctions/xioPublicPortalContractFunctions";
+import { initializeXioPublicPortalContract } from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import {} from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeErc20TokenContract,
   initializeErc20TokenInfuraContract,
@@ -16,10 +17,7 @@ import {
   initializeTrade,
   getTokenAToWETHToTokenBPrice,
 } from "../../utils/UniswapSdkFunctions";
-import {
-  stakeALT,
-  initializeFlashstakeContract,
-} from "../../utils/contractFunctions/xioFlashstakeContractFunctions";
+import { stakeALT } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { setLoading } from "./uiActions";
 import { CONSTANTS } from "../../utils/constants";
 import { store } from "../../config/reduxStore";
@@ -153,10 +151,7 @@ export const getBalance = () => async (dispatch, getState) => {
   }
 };
 
-export const stake = (quantity, days, restake) => async (
-  dispatch,
-  getState
-) => {
+export const stake = (quantity, days) => async (dispatch, getState) => {
   dispatch(setLoading({ stake: true }));
   try {
     const {
@@ -166,7 +161,7 @@ export const stake = (quantity, days, restake) => async (
         selectedStakeToken,
         selectedRewardToken,
       },
-      user: { stakes },
+      user: { stakes, pools },
     } = await getState();
 
     dispatch({
@@ -174,46 +169,47 @@ export const stake = (quantity, days, restake) => async (
       payload: {
         quantity,
         days,
-        reward,
+        // reward,
+        poolId: pools.id,
         tokenA: selectedStakeToken,
         tokenB: selectedRewardToken,
       },
     });
-    await initializeFlashstakeContract();
+    await initializeXioPublicPortalContract();
     // inputXIO, calculatedReward, rewardTokenAddress, expiredIDs, days
     console.log(
       "stakeAlt params -> ",
-      Web3.utils.toWei(quantity.toString()),
-      Web3.utils.toWei(reward.toString()),
-      selectedPortal,
-      restake
-        ? stakes
-            .filter(
-              (_stake) =>
-                parseFloat(_stake.initialTimestamp) +
-                  parseFloat(_stake.endTimestamp) <
-                  parseFloat(Date.now() / 1000) &&
-                parseFloat(_stake.stakeAmount) > 0
-            )
-            .map((_stake) => _stake.id)
-        : [],
-      days
+      Web3.utils.toWei(quantity.toString())
+      // Web3.utils.toWei(reward.toString()),
+      // selectedPortal
+      //   restake
+      //     ? stakes
+      //         .filter(
+      //           (_stake) =>
+      //             parseFloat(_stake.initialTimestamp) +
+      //               parseFloat(_stake.endTimestamp) <
+      //               parseFloat(Date.now() / 1000) &&
+      //             parseFloat(_stake.stakeAmount) > 0
+      //         )
+      //         .map((_stake) => _stake.id)
+      //     : [],
+      //   days
+      // );
     );
     await stakeALT(
       Web3.utils.toWei(quantity.toString()),
-      Web3.utils.toWei(reward.toString()),
-      selectedPortal,
-      restake
-        ? stakes
-            .filter(
-              (_stake) =>
-                parseFloat(_stake.initialTimestamp) +
-                  parseFloat(_stake.endTimestamp) <
-                  parseFloat(Date.now() / 1000) &&
-                parseFloat(_stake.stakeAmount) > 0
-            )
-            .map((_stake) => _stake.id)
-        : [],
+      // Web3.utils.toWei(reward.toString()),
+      // restake
+      //   ? stakes
+      //       .filter(
+      //         (_stake) =>
+      //           parseFloat(_stake.initialTimestamp) +
+      //             parseFloat(_stake.endTimestamp) <
+      //             parseFloat(Date.now() / 1000) &&
+      //           parseFloat(_stake.stakeAmount) > 0
+      //       )
+      //       .map((_stake) => _stake.id)
+      //   : [],
       days
     );
   } catch (e) {

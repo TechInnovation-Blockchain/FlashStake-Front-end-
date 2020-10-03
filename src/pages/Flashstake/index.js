@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-evenly",
+
     // height: "200px",
   },
   secondaryText: {
@@ -189,6 +190,7 @@ const useStyles = makeStyles((theme) => ({
   btn3: {
     backgroundColor: "#1A1A1A",
     padding: "0 !important",
+    margin: "0 !important",
 
     "& .MuiAccordionSummary-content": {
       display: "block",
@@ -219,6 +221,13 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.grey,
   },
+  accordionDetails: {
+    borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+    // borderBottomWidth: 1,
+    // borderBottomColor: theme.palette.text.gray,
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+  },
 }));
 
 const Accordion = withStyles({
@@ -226,6 +235,10 @@ const Accordion = withStyles({
     // border: "1px solid rgba(0, 0, 0, .125)",
     backgroundColor: "#121212",
     boxShadow: "none",
+
+    "&.MuiAccordion-root.Mui-expanded": {
+      margin: 0,
+    },
 
     "&:not(:last-child)": {
       borderBottom: 0,
@@ -242,7 +255,6 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    borderBottom: "1px solid rgba(0, 0, 0, .125)",
     marginBottom: -1,
     padding: 0,
     minHeight: 56,
@@ -299,6 +311,7 @@ function Flashstake({
   maxDays,
   maxStake,
   currentStaked,
+  pools,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -523,7 +536,10 @@ function Flashstake({
               {/* <Typography>Collapsible Group Item #1</Typography> */}
             </AccordionSummary>
 
-            <AccordionDetails style={{ paddingTop: "20px" }}>
+            <AccordionDetails
+              style={{ paddingTop: "20px" }}
+              className={classes.accordionDetails}
+            >
               <Grid container spacing={4}>
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.secondaryText}>
@@ -531,7 +547,7 @@ function Flashstake({
                   </Typography>
                   <DropdownDialog
                     className={classes.dropDown}
-                    items={portals}
+                    items={pools}
                     selectedValue={selectedRewardToken}
                     onSelect={setSelectedRewardToken}
                     heading="ETH"
@@ -1019,7 +1035,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading },
   web3: { active, account, chainId },
-  user: { currentStaked },
+  user: { currentStaked, pools },
   contract,
 }) => ({
   ...flashstake,
@@ -1027,6 +1043,7 @@ const mapStateToProps = ({
   active,
   account,
   chainId,
+  pools,
   currentStaked,
   ...contract,
 });

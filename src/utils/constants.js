@@ -1,9 +1,9 @@
 export const CONSTANTS = {
   GRAPHQL_ENDPOINT_URI:
-    "https://api.thegraph.com/subgraphs/name/abdulsami39/flashstakev5",
+    "https://api.thegraph.com/subgraphs/name/asadnaeem1/flashstake-protocol",
   INFURA_PROJECT_ENDPOINT_URL:
     "https://rinkeby.infura.io/v3/7e0f9cd6dfa3401c8f929369731266f7",
   WETH_ERC20_ADDRESS: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
   ADDRESS_XIO_RINKEBY: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
-  FLASHSTAKE_CONTRACT_ADDRESS: "0xB3f8E74707feAc35A3C4358B951d2a34c709b0f6",
+  FLASHSTAKE_CONTRACT_ADDRESS: "0x51e6EC1d9832FeA064ddbb2B74BBFADd2aF33621",
 };

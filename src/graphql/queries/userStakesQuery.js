@@ -2,24 +2,39 @@ import { gql } from "@apollo/client";
 
 export const userStakesQuery = gql`
   query UserStakes($account: String!) {
+    protocols {
+      id
+      pools {
+        id
+        tokenB {
+          id
+          symbol
+        }
+      }
+    }
     user(id: $account) {
       id
-      stakes(where: { active: true }) {
+      swapHistory {
+        pool {
+          tokenB {
+            symbol
+          }
+        }
+        swapAmount
+        xioReceived
+        initiationTimestamp
+      }
+      stakes {
+        pool {
+          tokenB {
+            symbol
+          }
+        }
         id
         stakeAmount
-        tokenA
-        tokenB
-        initialTimestamp
-        endTimestamp
+        initiationTimestamp
+        expiredTimestamp
         active
-      }
-      stakeHistory(
-        orderBy: initialTimestamp
-        orderDirection: desc
-        first: 1000
-      ) {
-        id
-        stakeReward
       }
     }
   }

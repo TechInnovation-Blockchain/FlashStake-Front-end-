@@ -4,7 +4,8 @@ import { abi as xioPublicFactoryAbi } from "./abi/XioPublicFactoryAbi.json";
 import { abi as xioPublicPortalAbi } from "./abi/XioPublicPortalAbi.json";
 import { abi as erc20Abi } from "./abi/ERC20Abi.json";
 import { abi as uniswapv2PairAbi } from "./abi/UniswapV2PairAbi.json";
-import { abi as xioFlashstakeAbi } from "./abi/XioFlashstakeContract.json";
+import { abi as FlashStakeProtocolContractAbi } from "./abi/FlashStakeProtocolContractAbi.json";
+// import { abi as xioFlashstakeAbi } from "./abi/XioFlashstakeContract.json";
 
 import { CONSTANTS } from "../utils/constants";
 import { walletconnect } from "../utils/connectors";
@@ -85,7 +86,7 @@ export const uniswapV2PairContract = (pairAddress) => {
 export const xioFlashstakeContract = () => {
   try {
     const contract = new web3js.eth.Contract(
-      xioFlashstakeAbi,
+      FlashStakeProtocolContractAbi,
       FLASHSTAKE_CONTRACT_ADDRESS
     );
     return contract;
@@ -97,7 +98,7 @@ export const xioFlashstakeContract = () => {
 export const xioFlashstakeInfuraContract = () => {
   try {
     const contract = new web3jsInfura.eth.Contract(
-      xioFlashstakeAbi,
+      FlashStakeProtocolContractAbi,
       FLASHSTAKE_CONTRACT_ADDRESS
     );
     return contract;
