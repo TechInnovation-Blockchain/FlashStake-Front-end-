@@ -220,6 +220,10 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     color: theme.palette.text.grey,
+
+    "&:hover": {
+      color: "#fff",
+    },
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
@@ -550,7 +554,7 @@ function Flashstake({
                     items={pools}
                     selectedValue={selectedRewardToken}
                     onSelect={setSelectedRewardToken}
-                    heading="ETH"
+                    heading="SELECT TOKEN"
                   />
                 </Grid>
                 <Grid container item xs={12}>
@@ -633,14 +637,10 @@ function Flashstake({
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.infoText}>
                     IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}>
-                      {" "}
-                      {quantity} XIO{" "}
-                    </span>{" "}
-                    FOR{" "}
-                    <span className={classes.infoTextSpan}>{days} DAYS</span>{" "}
-                    YOU WILL IMMEDIATELY GET{" "}
-                    <span className={classes.infoTextSpan}> 1 ETH</span>
+                    <span className={classes.infoTextSpan}> XIO </span> FOR{" "}
+                    <span className={classes.infoTextSpan}>0 DAYS</span> YOU
+                    WILL IMMEDIATELY GET{" "}
+                    <span className={classes.infoTextSpan}> 0 ETH</span>
                   </Typography>
                   <Box className={classes.btn}>
                     <Button variant="red">FLASHSTAKE</Button>

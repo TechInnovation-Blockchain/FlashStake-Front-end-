@@ -114,7 +114,7 @@ function SwapTable({
   pools,
 }) {
   const classes = useStyles();
-  const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
+  const headItems = ["INPUT", "OUTPUT XIO", "DATE"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState("EARNED");
@@ -194,11 +194,11 @@ function SwapTable({
       <Grid container item spacing={2} xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead}>WALLET BALANCE</Typography>
-          <Typography className={classes.secHead}>10,000 XIO</Typography>
+          <Typography className={classes.secHead}>$252,503</Typography>
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead}>DAPP BALANCE</Typography>
+          <Typography className={classes.mainHead}>XIO BALANCE</Typography>
           <Typography className={classes.secHead}>5,000 XIO</Typography>
         </Grid>
       </Grid>
@@ -227,7 +227,7 @@ function SwapTable({
           onClick={showWalletHint}
         >
           <Typography variant="body2" className={classes.redText}>
-            CONNECT YOUR WALLET TO VIEW YOUR STAKES
+            CONNECT YOUR WALLET TO VIEW YOUR SWAPS
           </Typography>
         </Grid>
       ) : chainId !== 4 ? (
@@ -330,10 +330,10 @@ function SwapTable({
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="body2" className={classes.msg}>
-              NO AVAILABLE STAKES
+              NO AVAILABLE SWAPS
             </Typography>
             <Button variant="red" onClick={() => history.push("/flashstake")}>
-              FLASHSTAKE NOW
+              SWAP NOW
             </Button>
           </Grid>
         )

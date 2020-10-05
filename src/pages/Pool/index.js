@@ -410,7 +410,7 @@ function Pool({
   const [soon, setSoon] = useState(true);
 
   return (
-    <PageAnimation in={true} reverse>
+    <PageAnimation in={true}>
       <Fragment>
         <Box className={classes.contentContainer}>
           {soon ? (

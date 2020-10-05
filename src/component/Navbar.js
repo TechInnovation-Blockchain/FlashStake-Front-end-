@@ -1,24 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Divider from "@material-ui/core/Divider";
 import logo from "../assets/xio-logo.svg";
+import animatedLogo from "../assets/xio-logo.gif";
 
 const useStyles = makeStyles((theme) => ({
   navContainer: {
     display: "flex",
     // justifyContent: "space-between",
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
     paddingTop: theme.spacing(2),
+    width: "100%",
     backgroundColor: theme.palette.background.primary,
     // borderBottom: `1px solid ${theme.palette.border.main}`,
     // maxWidth: "400px",
 
     position: "relative",
   },
-  logo: {},
+  logo: {
+    transition: "easeOut",
+  },
 
   navlink: {
     textDecoration: "none",
@@ -26,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 2),
     padding: theme.spacing(1),
     fontSize: 10,
+    // width: "20%",
     // padding: theme.spacing(0, 5),
     [theme.breakpoints.down("sm")]: {
       margin: theme.spacing(1, 1),
@@ -56,17 +61,41 @@ const useStyles = makeStyles((theme) => ({
     // flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    width: "20%",
   },
+
   navLinkText: {
     fontSize: "10px",
   },
+  // fadeOut: {
+  //   opacity: 0,
+  //   width: 0,
+  //   height: 0,
+  //   transition: "width 0.5s 0.5s, height 0.5s 0.5s, opacity 0.5s",
+  // },
+  // fadeIn: {
+  //   opacity: 1,
+  //   // width:100px,
+  //   // height:100px,
+  //   transition: "width 0.5s, height 0.5s, opacity 0.5s 0.5s",
+  // },
 }));
 
 export default function Navbar() {
   const classes = useStyles();
 
+  const [animate, setAnimate] = useState(false);
+  console.log(animate);
+  const handleClick = () => {
+    setAnimate(true);
+    setTimeout(() => {
+      setAnimate(false);
+    }, 3500);
+  };
+
   return (
     <Box className={classes.navContainer}>
+      {/* <Box className={classes.navOuterBox}> */}
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/flashstake"
@@ -92,18 +121,19 @@ export default function Navbar() {
             SWAP
           </Typography>
         </NavLink>
-
-        <Box>
-          <img
-            // src={themeMode === "dark" ? logo : logoLight}
-            src={logo}
-            alt="logo"
-            width={30}
-            className={classes.logo}
-            // onClick={handleClick}
-          />
-        </Box>
       </Box>
+      {/* </Box> */}
+      <Box className={classes.navlinkBox}>
+        <img
+          // src={themeMode === "dark" ? logo : logoLight}
+          src={animate ? animatedLogo : logo}
+          alt="logo"
+          width={animate ? 30 : 30}
+          className={classes.logo}
+          onClick={handleClick}
+        />
+      </Box>
+      {/* <Box className={classes.navOuterBox}> */}
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/pool"
@@ -128,6 +158,7 @@ export default function Navbar() {
           </Typography>
         </NavLink>
       </Box>
+      {/* </Box> */}
     </Box>
   );
 }
