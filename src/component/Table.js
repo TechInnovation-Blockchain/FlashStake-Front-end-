@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function TableComponent({
-  currentStaked,
+  stakes,
   openWithdrawDialog,
   loading,
   active,
@@ -124,7 +124,7 @@ function TableComponent({
 
   useEffect(() => {
     setPage(0);
-  }, [currentStaked]);
+  }, [stakes]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -143,40 +143,53 @@ function TableComponent({
     },
     [sortBy]
   );
-  console.log(currentStaked);
+  // // console.log(currentStaked);
   const sortedData = useCallback(() => {
     let data = [];
     switch (sortBy) {
       case "OUTPUT":
-        data = currentStaked?.stakes?.sort(({ tokenB: a }, { tokenB: b }) => {
-          if (a < b) {
-            return -1;
+        data = stakes?.sort(
+          (
+            {
+              pool: {
+                tokenB: { symbol: a },
+              },
+            },
+            {
+              pool: {
+                tokenB: { symbol: b },
+              },
+            }
+          ) => {
+            if (a < b) {
+              return -1;
+            }
+            if (a > b) {
+              return 1;
+            }
+            return 0;
           }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        });
+        );
 
         break;
       case "UNLOCKED":
-        data = currentStaked?.stakes?.sort(
-          (a, b) =>
-            parseFloat(a.stakeAmountAvailable) -
-            parseFloat(b.stakeAmountAvailable)
+        data = stakes?.sort(
+          ({ stakeAmount: a }, { stakeAmount: b }) =>
+            parseFloat(Web3.utils.fromWei(a)) -
+            parseFloat(Web3.utils.fromWei(b))
         );
         break;
       case "REMAINING":
-        data = currentStaked?.stakes?.sort(
-          (a, b) => parseFloat(a.expiry) - parseFloat(b.expiry)
+        data = stakes?.sort(
+          (a, b) => parseFloat(a.expiryTime) - parseFloat(b.expiryTime)
         );
         break;
       default:
-        data = currentStaked?.stakes;
+        data = stakes;
         break;
     }
     return sortDirection ? data.reverse() : data;
-  }, [currentStaked, sortBy, sortDirection]);
+  }, [stakes, sortBy, sortDirection]);
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -233,7 +246,7 @@ function TableComponent({
           </Typography>
         </Grid>
       ) : !loading ? (
-        currentStaked?.stakes?.length ? (
+        stakes?.length ? (
           <Fragment>
             <PageAnimation in={true} key={page} reverse={reverse}>
               <Grid container>
@@ -241,7 +254,7 @@ function TableComponent({
                   .slice(page * 5, page * 5 + 5)
                   .map((_stake) => {
                     const _daysRem = Math.ceil(
-                      (_stake.expiry - Date.now() / 1000) / 60
+                      (_stake.expiryTime - Date.now() / 1000) / 60
                     );
                     return (
                       <Grid
@@ -258,32 +271,31 @@ function TableComponent({
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           >
                             <span className={classes.flexCenter}>
-                              <img
+                              {/* <img
                                 src={require(`../assets/Tokens/${_stake.tokenB}.png`)}
                                 alt="Logo"
                                 srcset=""
                                 width={15}
                                 style={{ marginRight: 5 }}
-                              />
-                              {_stake.tokenB}
+                              /> */}
+                              {_stake.pool.tokenB.symbol}
                             </span>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={4} className={classes.gridItem}>
                           <Tooltip
-                            title={`${_stake.stakeAvailable}/${_stake.stakeAmountConverted} ${_stake.tokenA}`}
+                            title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
                           >
                             <span>
-                              {trunc(_stake.stakeAvailable)}/
-                              {trunc(_stake.stakeAmountConverted)}{" "}
-                              {_stake.tokenA}
+                              {trunc(_stake.amountAvailable)}/
+                              {trunc(_stake.stakeAmount)}
                             </span>
                           </Tooltip>
                         </Grid>
 
                         <Grid item xs={4} className={classes.gridItem}>
                           {!_stake.expired ||
-                          _stake.expiry > Date.now() / 1000 ? (
+                          _stake.expiryTime > Date.now() / 1000 ? (
                             <Fragment>
                               {_daysRem} {_daysRem === 1 ? "DAY" : "DAYS"}
                             </Fragment>
@@ -317,11 +329,6 @@ function TableComponent({
                 />
               </Grid>
             ) : null}
-            <Grid item xs={12} className={classes.msgContainer}>
-              <Typography variant="body2" className={classes.secondaryText}>
-                SELECT TO WITHDRAW SPECIFIC STAKES
-              </Typography>
-            </Grid>
           </Fragment>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
@@ -346,10 +353,10 @@ function TableComponent({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { currentStaked },
+  user: { stakes },
   dashboard: { selectedStakes, isStakesSelected },
 }) => ({
-  currentStaked,
+  stakes,
   active,
   account,
   chainId,

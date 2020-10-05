@@ -172,7 +172,7 @@ function WalletsDialogue({
   const [selectedWallet, setSelectedWallet] = useState("");
   const [loader, setLoader] = useState(false);
 
-  console.log(loading.walletConnection);
+  // console.log(loading.walletConnection);
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
@@ -209,7 +209,7 @@ function WalletsDialogue({
   }, [search, walletList]);
 
   const onClose = useCallback(() => {
-    console.log("yolo onClose -> ");
+    // console.log("yolo onClose -> ");
     setOpen(false);
   }, []);
 
@@ -224,7 +224,7 @@ function WalletsDialogue({
     // );
     // if (_fortmatic) {
     //   _fortmatic.connector.on("OVERLAY_READY", onClose);
-    //   console.log("yolo");
+    //   // console.log("yolo");
     // }
     // walletsItems
     //   .find((wallet) => wallet.connectorType === FortmaticConnector)
@@ -233,11 +233,11 @@ function WalletsDialogue({
     //   });
     // if (fortmatic) {
     //   const provider = fortmatic?.getProvider();
-    //   console.log({ fortmatic, provider });
+    //   // console.log({ fortmatic, provider });
     //   const pollForOverlayReady = setInterval(() => {
     //     if (provider.overlayReady) {
     //       clearInterval(pollForOverlayReady);
-    //       console.log("yadaaaaaaaaaaaaaaaaaaaaa");
+    //       // console.log("yadaaaaaaaaaaaaaaaaaaaaa");
     //     }
     //   }, 200);
     //   return () => clearInterval(pollForOverlayReady);
@@ -320,7 +320,7 @@ function WalletsDialogue({
                   // handleClick(name, connector);
                   setSelectedWallet(name);
                   activate(connector, onClose);
-                  console.log(connector);
+                  // console.log(connector);
                   // defaultSelect(connector);
                 }}
                 className={

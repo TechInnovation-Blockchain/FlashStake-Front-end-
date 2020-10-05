@@ -28,6 +28,13 @@ export const userReducer = (
         ...state,
         pools: payload,
       };
+
+    case "USER_DATA":
+      return {
+        ...state,
+        ...payload,
+      };
+
     default:
       return state;
   }

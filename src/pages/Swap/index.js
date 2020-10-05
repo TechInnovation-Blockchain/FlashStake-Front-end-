@@ -361,12 +361,12 @@ function Swap({
   const onChangeQuantity = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
       if (value <= 800 && regex.test(value)) {
-        console.log(value, regex.test(value));
+        // console.log(value, regex.test(value));
         setQuantity(
           value[value.length - 1] === "." || !Number(value) ? value : value
         );
       }
-      console.log(value, regex.test(value), quantity);
+      // console.log(value, regex.test(value), quantity);
     } else {
       setQuantity((val) => val);
     }
@@ -451,7 +451,7 @@ function Swap({
       debouncedCalculateReward(quantity, days);
 
       const _rewardRefreshInterval = setInterval(() => {
-        console.log("Reward updated.");
+        // console.log("Reward updated.");
         debouncedCalculateReward(quantity, days, true);
       }, 60000);
       return () => {
@@ -518,9 +518,9 @@ function Swap({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
-  console.log("In Swap", pools);
+  // console.log("In Swap", pools);
   //#endregion
-  console.log(expanded2);
+  // console.log(expanded2);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>

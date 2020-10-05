@@ -47,8 +47,8 @@ export const calculateReward = (xioQuantity, days) => async (
     initializeFlashstakePoolContract(id);
     let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
     reward = await getAPY(_amountIn);
-    console.log("calculateReward -> ", reward);
-    console.log({ _amountIn, reward });
+    // console.log("calculateReward -> ", reward);
+    // console.log({ _amountIn, reward });
   } catch (e) {
     console.error("ERROR calculateReward -> ", e);
   }
@@ -66,7 +66,7 @@ export const checkAllowance = (_selectedPortal) => async (
   try {
     await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
     const _allowance = await allowance(CONSTANTS.FLASHSTAKE_CONTRACT_ADDRESS);
-    console.log("allowance -> ", _allowance);
+    // console.log("allowance -> ", _allowance);
     dispatch({
       type: "ALLOWANCE",
       payload: _allowance > 0,
@@ -127,7 +127,7 @@ export const getBalance = () => async (dispatch, getState) => {
     if (active && account) {
       await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
       balance = Web3.utils.fromWei(await balanceOf());
-      console.log("balance -> ", balance);
+      // console.log("balance -> ", balance);
     }
   } catch (e) {
     balance = 0;

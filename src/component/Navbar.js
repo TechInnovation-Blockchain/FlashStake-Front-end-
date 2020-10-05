@@ -85,7 +85,7 @@ export default function Navbar() {
   const classes = useStyles();
 
   const [animate, setAnimate] = useState(false);
-  console.log(animate);
+  // // console.log(animate);
   const handleClick = () => {
     setAnimate(true);
     setTimeout(() => {

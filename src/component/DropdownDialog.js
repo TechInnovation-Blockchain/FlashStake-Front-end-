@@ -150,18 +150,18 @@ export default function DropdownDialog({
     setSearch(value.toUpperCase());
   };
   // items.map((item) => {
-  //   console.log(item?.tokenB?.symbol);
+  //   // console.log(item?.tokenB?.symbol);
   // });
-  console.log(items);
+  // console.log(items);
 
   const filteredData = useCallback(() => {
     return items.filter(
       (item) => item.tokenB?.symbol.toUpperCase().includes(search)
-      // console.log(item?.id);
+      // // console.log(item?.id);
     );
   }, [search, items]);
   filteredData().map((item) => {
-    console.log(item.tokenB.symbol);
+    // console.log(item.tokenB.symbol);
   });
   const onClose = useCallback(() => {
     setOpen(false);
@@ -235,13 +235,13 @@ export default function DropdownDialog({
             <Typography variant="body1" className={classes.primaryText}>
               {selectedValue.id ? (
                 <Fragment>
-                  <img
+                  {/* <img
                     src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
                     alt="Logo"
                     srcset=""
                     width={15}
                     style={{ marginRight: 5 }}
-                  />
+                  /> */}
                   {selectedValue.tokenB.symbol}
                 </Fragment>
               ) : (
@@ -265,13 +265,13 @@ export default function DropdownDialog({
           <Typography variant="body1" className={classes.primaryText}>
             {selectedValue.id ? (
               <Fragment>
-                <img
+                {/* <img
                   src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
                   alt="Logo"
                   srcset=""
                   width={15}
                   style={{ marginRight: 5 }}
-                />
+                /> */}
                 {selectedValue.tokenB.symbol}
               </Fragment>
             ) : (
@@ -335,14 +335,14 @@ export default function DropdownDialog({
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
 
-                    <img
+                    {/* <img
                       src={require(`../assets/Tokens/${_pool.tokenB.symbol}.png`)}
                       alt={_pool.tokenB.symbol}
                       srcset=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
-                    />
+                    /> */}
 
                     {_pool.tokenB?.symbol}
                   </Typography>

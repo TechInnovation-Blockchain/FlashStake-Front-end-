@@ -32,6 +32,7 @@ export const userStakesQuery = gql`
         }
         id
         stakeAmount
+        rewardAmount
         initiationTimestamp
         expiredTimestamp
         active

@@ -88,7 +88,7 @@ function WalletConnect({
 
   const activateWallet = useCallback(
     (connector, onClose = () => {}) => {
-      // console.log(connector instanceof InjectedConnector);
+      // // console.log(connector instanceof InjectedConnector);
       setLoading({
         walletConnection: true,
         connector: connector ? connector : InjectedConnector,

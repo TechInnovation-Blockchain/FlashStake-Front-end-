@@ -313,9 +313,9 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
 //     //   });
 //     // // .once("receipt", (receipt) => alert("receipt"));
 //     // .once("confirmation", (confirmationNumber, reciept) =>
-//     //   console.log(confirmationNumber, reciept)
+//     //   // console.log(confirmationNumber, reciept)
 //     // );
-//     // console.log("_stakeALT", _stakeALT);
+//     // // console.log("_stakeALT", _stakeALT);
 //   } catch (e) {
 //     if (e.code === 4001) {
 //       setStakeDialogStepIndep("rejectedStake");

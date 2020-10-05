@@ -181,7 +181,7 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
       amount = JSBI.add(amount, JSBI.BigInt(_stake.stakeAmount));
       return _stake.id;
     });
-    console.log("withdrawSpecificStakes", { amount: amount.toString() });
+    // console.log("withdrawSpecificStakes", { amount: amount.toString() });
     dispatch({
       type: "WITHDRAW_REQUEST",
       payload: {
@@ -190,7 +190,7 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
       },
     });
     await initializeFlashstakeContract();
-    console.log("unstakeALT params -> ", timestamps, amount.toString());
+    // console.log("unstakeALT params -> ", timestamps, amount.toString());
     await unstakeALT(timestamps, amount.toString());
   } catch (e) {
     console.error("ERROR withdrawSpecificStakes -> ", e);

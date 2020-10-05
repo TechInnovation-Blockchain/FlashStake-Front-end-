@@ -364,12 +364,12 @@ function Flashstake({
   const onChangeQuantity = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
       if (value <= 800 && regex.test(value)) {
-        console.log(value, regex.test(value));
+        // console.log(value, regex.test(value));
         setQuantity(
           value[value.length - 1] === "." || !Number(value) ? value : value
         );
       }
-      console.log(value, regex.test(value), quantity);
+      // console.log(value, regex.test(value), quantity);
     } else {
       setQuantity((val) => val);
     }
@@ -458,7 +458,7 @@ function Flashstake({
       debouncedCalculateReward(quantity, days);
 
       const _rewardRefreshInterval = setInterval(() => {
-        console.log("Reward updated.");
+        // console.log("Reward updated.");
         debouncedCalculateReward(quantity, days);
       }, 60000);
       return () => {
@@ -527,7 +527,7 @@ function Flashstake({
   };
 
   //#endregion
-  console.log(expanded2);
+  // console.log(expanded2);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>

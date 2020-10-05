@@ -145,7 +145,7 @@ function SwapTable({
     [sortBy]
   );
 
-  console.log("In Swap Table", pools);
+  // // console.log("In Swap Table", pools);
 
   const sortedData = useCallback(() => {
     let data = [];

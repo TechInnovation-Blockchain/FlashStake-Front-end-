@@ -119,6 +119,37 @@ export const updatePools = (data) => async (dispatch) => {
   });
 };
 
+export const updateUserData = (data) => async (dispatch) => {
+  let stakes;
+  if (data) {
+    stakes = data.stakes.map((_tempData) => {
+      const {
+        initiationTimestamp,
+        expiredTimestamp,
+        stakeAmount,
+        rewardAmount,
+      } = _tempData;
+      let expiryTime =
+        parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
+      let expired = expiryTime < Date.now() / 1000;
+      return {
+        ..._tempData,
+        stakeAmount: Web3.utils.fromWei(stakeAmount),
+        rewardAmount: Web3.utils.fromWei(rewardAmount),
+        expiryTime,
+        expired,
+        amountAvailable: expired
+          ? Web3.utils.fromWei(_tempData.stakeAmount)
+          : "0",
+      };
+    });
+    dispatch({
+      type: "USER_DATA",
+      payload: { ...data, stakes },
+    });
+  }
+};
+
 // export const getDashboardProps = (data) => async (dispatch) => {
 //   let stakedPortals = [];
 //   try {
