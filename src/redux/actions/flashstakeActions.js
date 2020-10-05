@@ -23,7 +23,7 @@ import {
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeFlashstakePoolContract,
-  getAPY,
+  getAPYStake,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 import { setLoading } from "./uiActions";
 import { CONSTANTS } from "../../utils/constants";
@@ -46,9 +46,9 @@ export const calculateReward = (xioQuantity, days) => async (
     initializeFlashstakeProtocolContract();
     initializeFlashstakePoolContract(id);
     let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
-    reward = await getAPY(_amountIn);
+    reward = await getAPYStake(_amountIn);
     // console.log("calculateReward -> ", reward);
-    // console.log({ _amountIn, reward });
+    console.log({ _amountIn, reward });
   } catch (e) {
     console.error("ERROR calculateReward -> ", e);
   }

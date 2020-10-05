@@ -23,14 +23,26 @@ const checkContractInitialized = () => {
     throw new Error("ERROR Flashstake contract not initialized.");
   }
 };
-export const getAPY = async (_amountIn, _stake = true) => {
+export const getAPYStake = async (_amountIn) => {
   try {
     checkContractInitialized();
 
-    const apy = await infuraContract.methods.getAPY(_amountIn, _stake).call();
+    const apy = await infuraContract.methods.getAPYStake(_amountIn).call();
     return apy;
   } catch (e) {
-    console.error("ERROR getAPY -> ", e);
+    console.error("ERROR getAPYStake -> ", e);
+  }
+  return 0;
+};
+
+export const getAPYSwap = async (_amountIn) => {
+  try {
+    checkContractInitialized();
+
+    const apy = await infuraContract.methods.getAPYSwap(_amountIn).call();
+    return apy;
+  } catch (e) {
+    console.error("ERROR getAPYSwap -> ", e);
   }
   return 0;
 };

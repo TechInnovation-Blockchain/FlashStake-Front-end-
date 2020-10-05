@@ -313,8 +313,6 @@ function Flashstake({
   initialValues,
   showWalletBackdrop,
   portals,
-  maxDays,
-  maxStake,
   currentStaked,
   pools,
 }) {
@@ -354,16 +352,14 @@ function Flashstake({
 
   const onChangeDays = ({ target: { value } }) => {
     if (Number(value) || value === "" || value === "0") {
-      if (value <= 200) {
-        setDays(parseInt(value) || value);
-      }
+      setDays(parseInt(value) || value);
     } else {
       setDays((val) => val);
     }
   };
   const onChangeQuantity = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
-      if (value <= 800 && regex.test(value)) {
+      if (regex.test(value)) {
         // console.log(value, regex.test(value));
         setQuantity(
           value[value.length - 1] === "." || !Number(value) ? value : value
@@ -374,48 +370,6 @@ function Flashstake({
       setQuantity((val) => val);
     }
   };
-  const getMaxDays = useCallback(() => {
-    return maxDays;
-  }, [maxDays]);
-
-  const getMaxQuantity = useCallback(() => {
-    // let _additionalContractBal = JSBI.BigInt(0);
-    // _additionalContractBal = Web3.utils.fromWei(
-    //   JSBI.add(
-    //     JSBI.BigInt(Web3.utils.toWei(balance?.toString())),
-    //     JSBI.BigInt(
-    //       Web3.utils.toWei(currentStaked?.availableStakeAmount?.toString()) ||
-    //         "0"
-    //     )
-    //   ).toString()
-    // );
-    // let _additionalContractBal =
-    //   balance + parseFloat(currentStaked.availableStakeAmount || "0");
-    let _additionalContractBal = Web3.utils.fromWei(
-      JSBI.add(
-        JSBI.BigInt(Web3.utils.toWei(balance.toString())),
-        JSBI.BigInt(
-          Web3.utils.toWei(currentStaked?.availableStakeAmount || "0")
-        )
-      ).toString()
-    );
-
-    // if (checked && currentStaked.availableStakeAmount > 0) {
-    //   _additionalContractBal += parseFloat(currentStaked.availableStakeAmount);
-    // }
-    return parseFloat(Web3.utils.fromWei(maxStake)) > _additionalContractBal &&
-      active &&
-      account
-      ? _additionalContractBal
-      : Web3.utils.fromWei(maxStake);
-  }, [balance, maxStake, active, account, currentStaked.availableStakeAmount]);
-
-  const setMaxQuantity = useCallback(() => {
-    setQuantity(getMaxQuantity());
-    if (!checked) {
-      toggleChecked();
-    }
-  }, [getMaxQuantity, checked, toggleChecked]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -427,6 +381,10 @@ function Flashstake({
     document.title = "Flashstake - XIO | The Future is at Stake";
     // setLoading({ dapp: true });
   }, []);
+
+  useEffect(() => {
+    console.log("heloooooooooooooo");
+  }, [quantity, days]);
 
   useEffect(() => {
     if (selectedPortal && !allowance) {
@@ -450,13 +408,9 @@ function Flashstake({
   }, [reset, setReset, getBalance]);
 
   useEffect(() => {
-    calculateReward(quantity, days);
-  }, [quantity, days]);
-
-  useEffect(() => {
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
-
+      console.log("hello");
       const _rewardRefreshInterval = setInterval(() => {
         // console.log("Reward updated.");
         debouncedCalculateReward(quantity, days);
@@ -475,10 +429,7 @@ function Flashstake({
     setAdditionalContractBal(_additionalContractBal);
 
     setInputError(
-      (active || account) &&
-        (parseFloat(quantity) > Web3.utils.fromWei(maxStake) ||
-          parseFloat(days) > maxDays ||
-          parseFloat(quantity) > _additionalContractBal)
+      (active || account) && parseFloat(quantity) > _additionalContractBal
     );
   }, [
     active,
@@ -487,8 +438,6 @@ function Flashstake({
     days,
     quantity,
     selectedPortal,
-    maxStake,
-    maxDays,
     checked,
     currentStaked.availableStakeAmount,
   ]);
@@ -574,11 +523,9 @@ function Flashstake({
                       <TextField
                         className={classes.textField}
                         error={
-                          (active &&
-                            account &&
-                            parseFloat(quantity) > additionalContractBal) ||
-                          (maxStake &&
-                            parseFloat(quantity) > Web3.utils.fromWei(maxStake))
+                          active &&
+                          account &&
+                          parseFloat(quantity) > additionalContractBal
                         }
                         fullWidth
                         placeholder="0.0"
@@ -617,7 +564,6 @@ function Flashstake({
                     <Box className={classes.textFieldContainer}>
                       <TextField
                         className={classes.textField}
-                        error={parseFloat(days) > maxDays}
                         fullWidth
                         placeholder="0"
                         value={days}
@@ -645,15 +591,23 @@ function Flashstake({
                     <Typography variant="h6" className={classes.infoText}>
                       IF YOU STAKE{" "}
                       <span className={classes.infoTextSpan}>
-                        {quantity} XIO{" "}
+                        {quantity || 0} XIO{" "}
                       </span>{" "}
                       FOR{" "}
-                      <span className={classes.infoTextSpan}>{days} DAYS</span>{" "}
-                      YOU WILL IMMEDIATELY GET
                       <span className={classes.infoTextSpan}>
-                        {" "}
-                        {reward} ETH
-                      </span>
+                        {days || 0} DAYS
+                      </span>{" "}
+                      YOU WILL IMMEDIATELY GET{" "}
+                      <Tooltip
+                        title={`${Web3.utils.fromWei(reward)} ${
+                          selectedRewardToken?.tokenB?.symbol || ""
+                        }`}
+                      >
+                        <span className={classes.infoTextSpan}>
+                          {trunc(Web3.utils.fromWei(reward))}{" "}
+                          {selectedRewardToken?.tokenB?.symbol || ""}
+                        </span>
+                      </Tooltip>
                     </Typography>
                   )}
 

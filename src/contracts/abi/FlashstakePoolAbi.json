@@ -53,19 +53,46 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "factory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
           "name": "_amountIn",
           "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_stake",
-          "type": "bool"
         }
       ],
-      "name": "getAPY",
+      "name": "getAPYStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "result",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amountIn",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAPYSwap",
       "outputs": [
         {
           "internalType": "uint256",

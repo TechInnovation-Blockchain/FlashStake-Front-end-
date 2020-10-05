@@ -1,351 +1,407 @@
 {
-    "abi": [{
-            "inputs": [],
-            "stateMutability": "nonpayable",
-            "type": "constructor"
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_pool",
+          "type": "address"
         },
         {
-            "anonymous": false,
-            "inputs": [{
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_pool",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_amountXIO",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_amountALT",
-                    "type": "uint256"
-                }
-            ],
-            "name": "LiquidityAdded",
-            "type": "event"
+          "indexed": false,
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
         },
         {
-            "anonymous": false,
-            "inputs": [{
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_pool",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "PoolCreated",
-            "type": "event"
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amountXIO",
+          "type": "uint256"
         },
         {
-            "anonymous": false,
-            "inputs": [{
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_pair",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_staker",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_xioQuantity",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "bytes32",
-                    "name": "_id",
-                    "type": "bytes32"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_rewardAmount",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_initiationTimestamp",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_expiredTimestamp",
-                    "type": "uint256"
-                }
-            ],
-            "name": "Staked",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [{
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_staker",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "_pair",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "_xioAmount",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "bytes32",
-                    "name": "_id",
-                    "type": "bytes32"
-                }
-            ],
-            "name": "Unstaked",
-            "type": "event"
-        },
-        {
-            "inputs": [{
-                    "internalType": "uint256",
-                    "name": "_amountXIO",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_amountALT",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "addLiquidityInPool",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                    "internalType": "uint256",
-                    "name": "_xioQuantity",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_days",
-                    "type": "uint256"
-                }
-            ],
-            "name": "calculateXPY",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                "internalType": "address",
-                "name": "_address",
-                "type": "address"
-            }],
-            "name": "changeXIOV2ContractAddress",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                "internalType": "address",
-                "name": "_token",
-                "type": "address"
-            }],
-            "name": "createPool",
-            "outputs": [{
-                "internalType": "address",
-                "name": "poolAddress",
-                "type": "address"
-            }],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "getXPY",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "getpoolListLength",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }],
-            "name": "listOfpools",
-            "outputs": [{
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }],
-            "name": "pools",
-            "outputs": [{
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_xioQuantity",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_days",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "bytes32",
-                    "name": "_signature",
-                    "type": "bytes32"
-                }
-            ],
-            "name": "stake",
-            "outputs": [{
-                    "internalType": "uint256",
-                    "name": "reward",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "bytes32",
-                    "name": "id",
-                    "type": "bytes32"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                    "internalType": "uint256",
-                    "name": "_altQuantity",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "swap",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "result",
-                "type": "uint256"
-            }],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                    "internalType": "bytes32[]",
-                    "name": "_expiredIds",
-                    "type": "bytes32[]"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_xioQuantity",
-                    "type": "uint256"
-                }
-            ],
-            "name": "unstake",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "stakedTokens",
-                "type": "uint256"
-            }],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{
-                "internalType": "uint256",
-                "name": "_time",
-                "type": "uint256"
-            }],
-            "name": "updateTime",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amountALT",
+          "type": "uint256"
         }
-    ]
+      ],
+      "name": "LiquidityAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "PoolCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_pair",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_staker",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_xioQuantity",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "_id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_rewardAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_initiationTimestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_expiredTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "Staked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_staker",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_pair",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_xioAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "_id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "Unstaked",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "XIO_CONTRACT",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amountXIO",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amountALT",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "addLiquidityInPool",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amountXIO",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amountALT",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "r",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "s",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint8",
+          "name": "v",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "approveMax",
+          "type": "bool"
+        }
+      ],
+      "name": "addLiquidityInPoolWithPermit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_xioQuantity",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_days",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateXPY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "changeXIOV2ContractAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "createPool",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "poolAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getXPY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "pools",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_xioQuantity",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_days",
+          "type": "uint256"
+        }
+      ],
+      "name": "stake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "reward",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_altQuantity",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "swap",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "result",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "_expiredIds",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_xioQuantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "unstake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "stakedTokens",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_time",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateTime",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
 }
