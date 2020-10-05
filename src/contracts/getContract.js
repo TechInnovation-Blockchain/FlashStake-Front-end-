@@ -5,6 +5,7 @@ import { abi as xioPublicPortalAbi } from "./abi/XioPublicPortalAbi.json";
 import { abi as erc20Abi } from "./abi/ERC20Abi.json";
 import { abi as uniswapv2PairAbi } from "./abi/UniswapV2PairAbi.json";
 import { abi as FlashStakeProtocolContractAbi } from "./abi/FlashStakeProtocolContractAbi.json";
+import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 // import { abi as xioFlashstakeAbi } from "./abi/XioFlashstakeContract.json";
 
 import { CONSTANTS } from "../utils/constants";
@@ -104,5 +105,29 @@ export const xioFlashstakeInfuraContract = () => {
     return contract;
   } catch (e) {
     console.error("ERROR xioFlashstakeInfuraContract -> ", e);
+  }
+};
+
+export const xioFlashstakePoolContract = (_poolContractAddress) => {
+  try {
+    const contract = new web3js.eth.Contract(
+      FlashstakePoolAbi,
+      _poolContractAddress
+    );
+    return contract;
+  } catch (e) {
+    console.error("ERROR xioFlashstakePoolContract -> ", e);
+  }
+};
+
+export const xioFlashstakePoolInfuraContract = (_poolContractAddress) => {
+  try {
+    const contract = new web3jsInfura.eth.Contract(
+      FlashstakePoolAbi,
+      _poolContractAddress
+    );
+    return contract;
+  } catch (e) {
+    console.error("ERROR xioFlashstakePoolInfuraContract -> ", e);
   }
 };

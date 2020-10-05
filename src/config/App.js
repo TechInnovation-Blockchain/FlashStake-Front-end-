@@ -30,7 +30,7 @@ export default function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <ThemeProvider theme={themeMode === "dark" ? darkTheme : lightTheme}>
+          <ThemeProvider theme={themeMode === "dark" ? darkTheme : darkTheme}>
             <Updater />
             {/* <UpdaterTxns /> */}
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />

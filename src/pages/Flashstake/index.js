@@ -450,7 +450,7 @@ function Flashstake({
 
       const _rewardRefreshInterval = setInterval(() => {
         console.log("Reward updated.");
-        debouncedCalculateReward(quantity, days, true);
+        debouncedCalculateReward(quantity, days);
       }, 60000);
       return () => {
         clearInterval(_rewardRefreshInterval);
@@ -633,9 +633,13 @@ function Flashstake({
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.infoText}>
                     IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}> 100 XIO </span> FOR{" "}
-                    <span className={classes.infoTextSpan}>75 DAYS</span> YOU
-                    WILL IMMEDIATELY GET{" "}
+                    <span className={classes.infoTextSpan}>
+                      {" "}
+                      {quantity} XIO{" "}
+                    </span>{" "}
+                    FOR{" "}
+                    <span className={classes.infoTextSpan}>{days} DAYS</span>{" "}
+                    YOU WILL IMMEDIATELY GET{" "}
                     <span className={classes.infoTextSpan}> 1 ETH</span>
                   </Typography>
                   <Box className={classes.btn}>

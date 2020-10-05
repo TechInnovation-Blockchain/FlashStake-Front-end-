@@ -4,7 +4,6 @@ import {
   initXioPublicFactoryContract,
   baseInterestRate,
 } from "../../utils/contractFunctions/xioPublicFactoryContractFunctions";
-import { initializeXioPublicPortalContract } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {} from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeErc20TokenContract,
@@ -17,10 +16,47 @@ import {
   initializeTrade,
   getTokenAToWETHToTokenBPrice,
 } from "../../utils/UniswapSdkFunctions";
-import { stakeALT } from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import {
+  initializeFlashstakeProtocolContract,
+  stakeALT,
+  calculateXPY,
+} from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import {
+  initializeFlashstakePoolContract,
+  getAPY,
+} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 import { setLoading } from "./uiActions";
 import { CONSTANTS } from "../../utils/constants";
 import { store } from "../../config/reduxStore";
+
+export const calculateReward = (xioQuantity, days) => async (
+  dispatch,
+  getState
+) => {
+  let reward = 0;
+  try {
+    const {
+      flashstake: {
+        selectedRewardToken: { id },
+      },
+    } = getState();
+    if (!id || !(xioQuantity > 0 && days > 0)) {
+      return null;
+    }
+    initializeFlashstakeProtocolContract();
+    initializeFlashstakePoolContract(id);
+    let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
+    reward = await getAPY(_amountIn);
+    console.log("calculateReward -> ", reward);
+    console.log({ _amountIn, reward });
+  } catch (e) {
+    console.error("ERROR calculateReward -> ", e);
+  }
+  dispatch({
+    type: "STAKE_REWARD",
+    payload: reward,
+  });
+};
 
 export const checkAllowance = (_selectedPortal) => async (
   dispatch,
@@ -66,66 +102,19 @@ export const setSelectedStakeToken = (symbol, address) => async (
   }
 };
 
-export const setSelectedRewardToken = (symbol, address) => async (
-  dispatch,
-  getState
-) => {
+export const setSelectedRewardToken = (_pool) => async (dispatch, getState) => {
   try {
-    initializeTrade(CONSTANTS.ADDRESS_XIO_RINKEBY, address);
+    // initializeTrade(CONSTANTS.ADDRESS_XIO_RINKEBY, address);
     dispatch({
       type: "SELECTED_REWARD_TOKEN",
-      payload: symbol,
+      payload: _pool,
     });
     dispatch({
       type: "SELECTED_PORTAL",
-      payload: address || "",
+      payload: _pool.id || "",
     });
   } catch (e) {
     console.error("ERROR setSelectedStakeToken -> ", e);
-  }
-};
-
-export const calculateReward = (
-  amountTokenA,
-  days,
-  reinitialize = false
-) => async (dispatch, getState) => {
-  let reward = 0;
-  dispatch({
-    type: "REWARD",
-    payload: reward,
-  });
-  try {
-    dispatch(setLoading({ reward: true }));
-    if (amountTokenA > 0 && days > 0) {
-      const {
-        contract: { baseInterestRate },
-        flashstake: { selectedPortal },
-      } = await getState();
-      let _reward;
-      let _interest =
-        amountTokenA * Web3.utils.fromWei(baseInterestRate) * days;
-      const _executionPrice = await getTokenAToWETHToTokenBPrice(
-        _interest,
-        selectedPortal,
-        reinitialize
-      );
-      _reward = _interest * _executionPrice;
-      _reward = _reward - (_reward / 100) * 2;
-
-      reward = _reward ? _reward.toFixed(18) : _reward;
-    } else {
-      reward = 0;
-    }
-  } catch (e) {
-    reward = 0;
-    console.error("ERROR calculateReward -> ", e);
-  } finally {
-    dispatch({
-      type: "REWARD",
-      payload: reward,
-    });
-    dispatch(setLoading({ reward: false }));
   }
 };
 
@@ -175,7 +164,7 @@ export const stake = (quantity, days) => async (dispatch, getState) => {
         tokenB: selectedRewardToken,
       },
     });
-    await initializeXioPublicPortalContract();
+    // await initializeXioPublicPortalContract();
     // inputXIO, calculatedReward, rewardTokenAddress, expiredIDs, days
     console.log(
       "stakeAlt params -> ",

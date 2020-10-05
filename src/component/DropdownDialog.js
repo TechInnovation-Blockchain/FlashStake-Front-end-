@@ -137,7 +137,7 @@ export default function DropdownDialog({
   closeTimeout,
   items = [],
   onSelect = () => {},
-  selectedValue = "",
+  selectedValue = {},
   heading = "SELECT TOKEN",
   disableDrop,
   link,
@@ -167,8 +167,8 @@ export default function DropdownDialog({
     setOpen(false);
   }, []);
 
-  const onSelectLocal = (symbol, address) => {
-    onSelect(symbol, address);
+  const onSelectLocal = (_pool) => {
+    onSelect(_pool);
     onClose();
   };
 
@@ -233,16 +233,16 @@ export default function DropdownDialog({
             onClick={() => !disableDrop && !link && setOpen(true)}
           >
             <Typography variant="body1" className={classes.primaryText}>
-              {selectedValue ? (
+              {selectedValue.id ? (
                 <Fragment>
                   <img
-                    src={require(`../assets/Tokens/${selectedValue}.png`)}
+                    src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
                     alt="Logo"
                     srcset=""
                     width={15}
                     style={{ marginRight: 5 }}
                   />
-                  {selectedValue}
+                  {selectedValue.tokenB.symbol}
                 </Fragment>
               ) : (
                 <span className={classes.disabledText}>ETH</span>
@@ -263,16 +263,16 @@ export default function DropdownDialog({
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue ? (
+            {selectedValue.id ? (
               <Fragment>
                 <img
-                  src={require(`../assets/Tokens/${selectedValue}.png`)}
+                  src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
                   alt="Logo"
                   srcset=""
                   width={15}
                   style={{ marginRight: 5 }}
                 />
-                {selectedValue}
+                {selectedValue.tokenB.symbol}
               </Fragment>
             ) : (
               <span className={classes.disabledText}>SELECT</span>
@@ -325,26 +325,26 @@ export default function DropdownDialog({
 
           {filteredData().length ? (
             <List className={classes.list}>
-              {filteredData().map(({ tokenB, id }) => (
+              {filteredData().map((_pool) => (
                 <ListItem
                   button
                   className={classes.listItem}
-                  onClick={() => onSelectLocal(tokenB.symbol, id)}
-                  key={id}
+                  onClick={() => onSelectLocal(_pool)}
+                  key={_pool.id}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
 
                     <img
-                      src={require(`../assets/Tokens/${tokenB.symbol}.png`)}
-                      alt={tokenB.symbol}
+                      src={require(`../assets/Tokens/${_pool.tokenB.symbol}.png`)}
+                      alt={_pool.tokenB.symbol}
                       srcset=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
 
-                    {tokenB?.symbol}
+                    {_pool.tokenB?.symbol}
                   </Typography>
                 </ListItem>
               ))}

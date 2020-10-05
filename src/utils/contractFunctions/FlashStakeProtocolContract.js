@@ -1,7 +1,7 @@
 import Web3 from "web3";
 
 import {
-  xioPublicPortalContract,
+  xioFlashstakeContract,
   xioFlashstakeInfuraContract,
 } from "../../contracts/getContract";
 // import { baseInterestRate } from "./xioPublicFactoryContractFunctions";
@@ -30,8 +30,8 @@ let contract;
 let infuraContract;
 let isContractInitialized = false;
 
-export const initializeXioPublicPortalContract = () => {
-  contract = xioPublicPortalContract();
+export const initializeFlashstakeProtocolContract = () => {
+  contract = xioFlashstakeContract();
   if (!contract) {
     contract = xioFlashstakeInfuraContract();
   }
@@ -114,11 +114,31 @@ export const stakeALT = async (address_token, xioQuantity, days) => {
   }
 };
 
-export const getAPY = (amountIn, stake) => {};
+export const calculateXPY = async (xioQuantity, days) => {
+  try {
+    checkContractInitialized();
 
-export const calculateXPY = (xioQuantity, days) => {};
+    const xpy = await infuraContract.methods
+      .calculateXPY(xioQuantity, days)
+      .call();
+    return xpy;
+  } catch (e) {
+    console.error("ERROR calculateXPY -> ", e);
+  }
+  return 0;
+};
 
-export const getXPY = () => {};
+export const getXPY = async () => {
+  try {
+    checkContractInitialized();
+
+    const xpy = await infuraContract.methods.getXPY().call();
+    return xpy;
+  } catch (e) {
+    console.error("ERROR getXPY -> ", e);
+  }
+  return 0;
+};
 
 export const unstakeALT = (expiredIds = [], xioQuantity) => {
   try {

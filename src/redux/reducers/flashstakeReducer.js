@@ -6,7 +6,7 @@ export const flashstakeReducer = (
     stakeTokens: [],
     rewardTokens: [],
     selectedStakeToken: "XIO",
-    selectedRewardToken: "",
+    selectedRewardToken: {},
     selectedPortal: "",
     allowance: true,
     reward: 0,
@@ -102,7 +102,7 @@ export const flashstakeReducer = (
         ...state,
         reset: payload,
         selectedPortal: payload ? "" : state.selectedPortal,
-        selectedRewardToken: "",
+        selectedRewardToken: {},
         quantity: "",
         days: "",
       };
