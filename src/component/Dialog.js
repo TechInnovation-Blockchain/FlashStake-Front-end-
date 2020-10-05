@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(2),
     paddingBottom: 0,
+    backgroundColor: theme.palette.background.primary,
     "&>*": {
       marginBottom: `${theme.spacing(2)}px !important`,
     },
