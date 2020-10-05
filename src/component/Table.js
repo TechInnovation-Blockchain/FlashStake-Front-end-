@@ -262,9 +262,7 @@ function TableComponent({
                         item
                         xs={12}
                         onClick={() => selectStake(_stake.id)}
-                        className={`${classes.cursorPointer} ${
-                          selectedStakes[_stake.id] ? classes.selected : null
-                        }`}
+                        className={classes.cursorPointer}
                       >
                         <Grid item xs={4} className={classes.gridItem}>
                           <Tooltip
@@ -302,13 +300,6 @@ function TableComponent({
                           ) : (
                             "COMPLETED"
                           )}
-                          {isStakesSelected ? (
-                            <Checkbox
-                              size="small"
-                              checked={selectedStakes[_stake.id] ? true : false}
-                              className={classes.checkbox}
-                            />
-                          ) : null}
                         </Grid>
                       </Grid>
                     );

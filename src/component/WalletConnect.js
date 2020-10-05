@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   connectWalletButton: {
     width: 250,
     borderRadius: 0,
+    margin: theme.spacing(2),
     backgroundColor: theme.palette.background.primary,
   },
   wallentConnectText: {
