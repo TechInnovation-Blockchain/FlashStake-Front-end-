@@ -33,6 +33,7 @@ export const calculateReward = (xioQuantity, days) => async (
   dispatch,
   getState
 ) => {
+  dispatch(setLoading({ reward: true }));
   let reward = 0;
   try {
     const {
@@ -56,6 +57,7 @@ export const calculateReward = (xioQuantity, days) => async (
     type: "STAKE_REWARD",
     payload: reward,
   });
+  dispatch(setLoading({ reward: false }));
 };
 
 export const checkAllowance = (_selectedPortal) => async (

@@ -88,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
     fontWeight: 900,
     color: "#fff",
+    position: "relative",
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary,
@@ -232,6 +233,11 @@ const useStyles = makeStyles((theme) => ({
     // borderBottomColor: theme.palette.text.gray,
     borderBottomLeftRadius: "10px",
     borderBottomRightRadius: "10px",
+  },
+  loaderStyle: {
+    position: "absolute",
+    left: 2,
+    top: "10%",
   },
 }));
 
@@ -587,29 +593,42 @@ function Flashstake({
                 </Grid>
 
                 <Grid item xs={12}>
-                  {chainId === 4 && (
-                    <Typography variant="h6" className={classes.infoText}>
-                      IF YOU STAKE{" "}
-                      <span className={classes.infoTextSpan}>
-                        {quantity || 0} XIO{" "}
-                      </span>{" "}
-                      FOR{" "}
-                      <span className={classes.infoTextSpan}>
-                        {days || 0} DAYS
-                      </span>{" "}
-                      YOU WILL IMMEDIATELY GET{" "}
-                      <Tooltip
-                        title={`${Web3.utils.fromWei(reward)} ${
-                          selectedRewardToken?.tokenB?.symbol || ""
-                        }`}
-                      >
+                  {chainId === 4 &&
+                    (selectedRewardToken?.tokenB?.symbol ? (
+                      <Typography variant="h6" className={classes.infoText}>
+                        IF YOU STAKE{" "}
                         <span className={classes.infoTextSpan}>
-                          {trunc(Web3.utils.fromWei(reward))}{" "}
-                          {selectedRewardToken?.tokenB?.symbol || ""}
-                        </span>
-                      </Tooltip>
-                    </Typography>
-                  )}
+                          {quantity || 0} XIO{" "}
+                        </span>{" "}
+                        FOR{" "}
+                        <span className={classes.infoTextSpan}>
+                          {days || 0} DAYS
+                        </span>{" "}
+                        YOU WILL IMMEDIATELY GET{" "}
+                        <Tooltip
+                          title={`${Web3.utils.fromWei(reward)} ${
+                            selectedRewardToken?.tokenB?.symbol || ""
+                          }`}
+                        >
+                          <span className={classes.infoTextSpan}>
+                            {loadingRedux.reward ? (
+                              <CircularProgress
+                                size={12}
+                                className={classes.loaderStyle}
+                              />
+                            ) : (
+                              trunc(Web3.utils.fromWei(reward))
+                            )}
+
+                            {/* {selectedRewardToken?.tokenB?.symbol || ""} */}
+                          </span>
+                        </Tooltip>
+                      </Typography>
+                    ) : (
+                      <Typography variant="body2" className={classes.redText}>
+                        SELECT A TOKEN TO VIEW REWARDS
+                      </Typography>
+                    ))}
 
                   {/* <Box className={classes.btn}>
                     {!(active && account) ? (
