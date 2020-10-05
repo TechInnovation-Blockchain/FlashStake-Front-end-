@@ -551,7 +551,7 @@ function Swap({
                     items={pools}
                     selectedValue={selectedRewardToken}
                     onSelect={setSelectedRewardToken}
-                    heading="ETH"
+                    heading="SELECT TOKEN"
                   />
                 </Grid>
 
@@ -599,10 +599,10 @@ function Swap({
 
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.infoText}>
-                    IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}> 5 ETH </span> YOU
+                    IF YOU SWAP{" "}
+                    <span className={classes.infoTextSpan}> 0 ETH </span> YOU
                     WILL IMMEDIATELY GET{" "}
-                    <span className={classes.infoTextSpan}> 5000 XIO</span>
+                    <span className={classes.infoTextSpan}> 0 XIO</span>
                   </Typography>
                   <Box className={classes.btn}>
                     <Button variant="red">SWAP</Button>

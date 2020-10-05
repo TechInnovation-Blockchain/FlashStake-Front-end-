@@ -90,9 +90,9 @@ function Updater({
     }
   }, [refetchData, setRefetch, refetch, getBalance]);
 
-  useEffect(() => {
-    updatePools(data?.protocols[0].pools);
-  }, [data]);
+  // useEffect(() => {
+  //   updatePools(data?.protocols[0].pools);
+  // }, [data]);
 
   return null;
 }
