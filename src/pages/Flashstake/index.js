@@ -77,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   redText: {
+    fontSize: 10,
     color: theme.palette.xioRed.main,
   },
   infoText: {
@@ -449,6 +450,10 @@ function Flashstake({
   }, [reset, setReset, getBalance]);
 
   useEffect(() => {
+    calculateReward(quantity, days);
+  }, [quantity, days]);
+
+  useEffect(() => {
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
 
@@ -496,10 +501,10 @@ function Flashstake({
     }
   }, [active, account, checkAllowance, getBalance, showWalletBackdrop]);
 
-  const onClickStake = (quantity, days, restake) => {
+  const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
     setShowStakeDialog(true);
-    stake(quantity, days, restake);
+    stake(quantity, days);
   };
 
   const onClickApprove = () => {
@@ -634,20 +639,174 @@ function Flashstake({
                     </Box>
                   </Box>
                 </Grid>
+
                 <Grid item xs={12}>
-                  <Typography variant="h6" className={classes.infoText}>
-                    IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}> XIO </span> FOR{" "}
-                    <span className={classes.infoTextSpan}>0 DAYS</span> YOU
-                    WILL IMMEDIATELY GET{" "}
-                    <span className={classes.infoTextSpan}> 0 ETH</span>
-                  </Typography>
-                  <Box className={classes.btn}>
-                    <Button variant="red">FLASHSTAKE</Button>
-                  </Box>
+                  {chainId === 4 && (
+                    <Typography variant="h6" className={classes.infoText}>
+                      IF YOU STAKE{" "}
+                      <span className={classes.infoTextSpan}>
+                        {quantity} XIO{" "}
+                      </span>{" "}
+                      FOR{" "}
+                      <span className={classes.infoTextSpan}>{days} DAYS</span>{" "}
+                      YOU WILL IMMEDIATELY GET
+                      <span className={classes.infoTextSpan}>
+                        {" "}
+                        {reward} ETH
+                      </span>
+                    </Typography>
+                  )}
+
+                  {/* <Box className={classes.btn}>
+                    {!(active && account) ? (
+                      <Grid
+                        item
+                        xs={12}
+                        className={`${classes.msgContainer} ${classes.cursorPointer}`}
+                        onClick={showWalletHint}
+                      >
+                        <Typography variant="body2" className={classes.redText}>
+                          CONNECT YOUR WALLET TO VIEW YOUR STAKES
+                        </Typography>
+                      </Grid>
+                    ) : chainId !== 4 ? (
+                      <Grid item xs={12} className={classes.msgContainer}>
+                        <Typography variant="body2" className={classes.redText}>
+                          CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
+                        </Typography>
+                      </Grid>
+                    ) : (
+                      <Button
+                        variant="red"
+                        onClick={
+                          !allowance
+                            ? () => {}
+                            : () => onClickStake(quantity, days)
+                        }
+                      >
+                        FLASHSTAKE
+                      </Button>
+                    )}
+                  </Box> */}
                 </Grid>
 
-                {/*             
+                {!allowance || renderDualButtons ? (
+                  <Grid container item xs={12} onClick={showWalletHint}>
+                    <Grid item xs={6} className={classes.btnPaddingRight}>
+                      <Button
+                        fullWidth
+                        variant="red"
+                        onClick={!allowance ? onClickApprove : () => {}}
+                        disabled={
+                          allowance ||
+                          !active ||
+                          !account ||
+                          // inputError ||
+                          // quantity <= 0 ||
+                          // days <= 0 ||
+                          // reward <= 0 ||
+                          // !selectedPortal ||
+                          // loadingRedux.reward ||
+                          chainId !== 4
+                        }
+                        loading={loadingRedux.approval}
+                      >
+                        {loadingRedux.approval
+                          ? "APPROVING"
+                          : `APPROVE ${selectedStakeToken}`}
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} className={classes.btnPaddingLeft}>
+                      <Button
+                        fullWidth
+                        variant="red"
+                        onClick={
+                          !allowance
+                            ? () => {}
+                            : () => onClickStake(quantity, days, checked)
+                        }
+                        disabled={
+                          !allowance ||
+                          !active ||
+                          !account ||
+                          inputError ||
+                          !selectedPortal ||
+                          quantity <= 0 ||
+                          days <= 0 ||
+                          loadingRedux.reward ||
+                          chainId !== 4 ||
+                          reward <= 0
+                        }
+                      >
+                        FLASHSTAKE
+                      </Button>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Fragment>
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <Button
+                        fullWidth
+                        variant="red"
+                        onClick={
+                          !allowance
+                            ? () => {}
+                            : () => onClickStake(quantity, days, checked)
+                        }
+                        disabled={
+                          !active ||
+                          !account ||
+                          inputError ||
+                          !selectedPortal ||
+                          quantity <= 0 ||
+                          days <= 0 ||
+                          loadingRedux.reward ||
+                          chainId !== 4 ||
+                          reward <= 0
+                        }
+                        loading={loadingRedux.approval}
+                      >
+                        FLASHSTAKE
+                      </Button>
+                    </Grid>
+                  </Fragment>
+                )}
+
+                {!allowance &&
+                active &&
+                account &&
+                selectedRewardToken &&
+                !loadingRedux.allowance ? (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" className={classes.redText}>
+                      BEFORE YOU CAN <b>FLASHSTAKE</b>, YOU MUST{" "}
+                      <b>APPROVE XIO</b>
+                    </Typography>
+                  </Grid>
+                ) : null}
+                {!(active && account) ? (
+                  <Grid
+                    item
+                    xs={12}
+                    onClick={showWalletHint}
+                    className={classes.cursorPointer}
+                  >
+                    <Typography variant="body2" className={classes.redText}>
+                      CONNECT YOUR WALLET TO FLASHSTAKE
+                    </Typography>
+                  </Grid>
+                ) : chainId !== 4 ||
+                  web3context.error instanceof UnsupportedChainIdError ? (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" className={classes.redText}>
+                      CHANGE NETWORK TO <b>RINKEBY</b> TO START{" "}
+                      <b>FLASHSTAKING</b>
+                    </Typography>
+                  </Grid>
+                ) : null}
+
+                {/*   
+          
             {selectedPortal ? (
               <Grid item xs={12}>
                 <Typography variant="body2" className={classes.secondaryText}>
@@ -808,9 +967,46 @@ function Flashstake({
         </Box>
 
 
+        
+      
+          </Fragment>
+       */}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+
+          <Accordion
+            square
+            expanded={!expanded2}
+            onChange={handleChange("panel2")}
+          >
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+              onClick={() => setExpanded2(!expanded2)}
+              className={expanded2 ? classes.btn3 : classes._btn3}
+            >
+              {expanded2 ? (
+                <ArrowDropUpIcon size="large" className={classes.icon} />
+              ) : (
+                <ArrowDropDownIcon size="large" className={classes.icon} />
+              )}
+              <Typography className={classes.stakeDashBtn}>
+                STAKE DASHBOARD
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordion}>
+              <Table />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+
+        {/* 
+
+
         <Dialog
-          open={showStakeDialog}
-          // open={true}
+          // open={showStakeDialog}
+          open={true}
           title="FLASHSTAKE"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -998,38 +1194,8 @@ function Flashstake({
             }[dialogStep]
           }
         </Dialog>
-      
-          </Fragment>
-       */}
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion
-            square
-            expanded={!expanded2}
-            onChange={handleChange("panel2")}
-          >
-            <AccordionSummary
-              aria-controls="panel2d-content"
-              id="panel2d-header"
-              onClick={() => setExpanded2(!expanded2)}
-              className={expanded2 ? classes.btn3 : classes._btn3}
-            >
-              {expanded2 ? (
-                <ArrowDropUpIcon size="large" className={classes.icon} />
-              ) : (
-                <ArrowDropDownIcon size="large" className={classes.icon} />
-              )}
-              <Typography className={classes.stakeDashBtn}>
-                STAKE DASHBOARD
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.accordion}>
-              <Table />
-            </AccordionDetails>
-          </Accordion>
-        </Box>
+     
+      */}
       </Fragment>
     </PageAnimation>
   );

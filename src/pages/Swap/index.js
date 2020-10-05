@@ -77,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   redText: {
+    fontSize: 10,
     color: theme.palette.xioRed.main,
   },
   infoText: {
@@ -598,14 +599,36 @@ function Swap({
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Typography variant="h6" className={classes.infoText}>
-                    IF YOU SWAP{" "}
-                    <span className={classes.infoTextSpan}> 0 ETH </span> YOU
-                    WILL IMMEDIATELY GET{" "}
-                    <span className={classes.infoTextSpan}> 0 XIO</span>
-                  </Typography>
+                  {chainId === 4 && (
+                    <Typography variant="h6" className={classes.infoText}>
+                      IF YOU SWAP{" "}
+                      <span className={classes.infoTextSpan}> 0 ETH </span> YOU
+                      WILL IMMEDIATELY GET{" "}
+                      <span className={classes.infoTextSpan}> 0 XIO</span>
+                    </Typography>
+                  )}
+
                   <Box className={classes.btn}>
-                    <Button variant="red">SWAP</Button>
+                    {!(active && account) ? (
+                      <Grid
+                        item
+                        xs={12}
+                        className={`${classes.msgContainer} ${classes.cursorPointer}`}
+                        onClick={showWalletHint}
+                      >
+                        <Typography variant="body2" className={classes.redText}>
+                          CONNECT YOUR WALLET TO VIEW YOUR STAKES
+                        </Typography>
+                      </Grid>
+                    ) : chainId !== 4 ? (
+                      <Grid item xs={12} className={classes.msgContainer}>
+                        <Typography variant="body2" className={classes.redText}>
+                          CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
+                        </Typography>
+                      </Grid>
+                    ) : (
+                      <Button variant="red">SWAP</Button>
+                    )}
                   </Box>
                 </Grid>
                 {/*             
