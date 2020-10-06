@@ -35,20 +35,14 @@ import {
   calculateReward,
   checkAllowance,
   getBalance,
-  stake,
   setDialogStep,
   setReset,
   setInitialValues,
+  swapALT,
 } from "../../redux/actions/flashstakeActions";
 import { debounce } from "../../utils/debounceFunc";
-import { getExtendedFloatValue, trunc } from "../../utils/utilFunc";
+import { trunc } from "../../utils/utilFunc";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
-import MaxBtn from "../../component/MaxBtn";
-import { Link } from "@material-ui/icons";
-// import maxbtn from "../../assets/maxbtn.svg";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { JSBI } from "@uniswap/sdk";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -297,7 +291,6 @@ function Swap({
   checkAllowance,
   getBalance,
   balance,
-  stake,
   setLoading,
   dialogStep,
   setDialogStep,
@@ -314,6 +307,7 @@ function Swap({
   maxStake,
   currentStaked,
   pools,
+  swapALT,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -343,24 +337,14 @@ function Swap({
   );
 
   const [days, setDays] = useState(initialValues.days);
-  const [quantity, setQuantity] = useState(initialValues.quantity);
+  const [quantity, setQuantity] = useState("");
   const [renderDualButtons, setRenderDualButtons] = useState(false);
   const regex = /^\d*(.(\d{1,18})?)?$/;
 
   //#region functions
-
-  const onChangeDays = ({ target: { value } }) => {
-    if (Number(value) || value === "" || value === "0") {
-      if (value <= 200) {
-        setDays(parseInt(value) || value);
-      }
-    } else {
-      setDays((val) => val);
-    }
-  };
   const onChangeQuantity = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
-      if (value <= 800 && regex.test(value)) {
+      if (regex.test(value)) {
         // console.log(value, regex.test(value));
         setQuantity(
           value[value.length - 1] === "." || !Number(value) ? value : value
@@ -371,48 +355,6 @@ function Swap({
       setQuantity((val) => val);
     }
   };
-  const getMaxDays = useCallback(() => {
-    return maxDays;
-  }, [maxDays]);
-
-  const getMaxQuantity = useCallback(() => {
-    // let _additionalContractBal = JSBI.BigInt(0);
-    // _additionalContractBal = Web3.utils.fromWei(
-    //   JSBI.add(
-    //     JSBI.BigInt(Web3.utils.toWei(balance?.toString())),
-    //     JSBI.BigInt(
-    //       Web3.utils.toWei(currentStaked?.availableStakeAmount?.toString()) ||
-    //         "0"
-    //     )
-    //   ).toString()
-    // );
-    // let _additionalContractBal =
-    //   balance + parseFloat(currentStaked.availableStakeAmount || "0");
-    let _additionalContractBal = Web3.utils.fromWei(
-      JSBI.add(
-        JSBI.BigInt(Web3.utils.toWei(balance.toString())),
-        JSBI.BigInt(
-          Web3.utils.toWei(currentStaked?.availableStakeAmount || "0")
-        )
-      ).toString()
-    );
-
-    // if (checked && currentStaked.availableStakeAmount > 0) {
-    //   _additionalContractBal += parseFloat(currentStaked.availableStakeAmount);
-    // }
-    return parseFloat(Web3.utils.fromWei(maxStake)) > _additionalContractBal &&
-      active &&
-      account
-      ? _additionalContractBal
-      : Web3.utils.fromWei(maxStake);
-  }, [balance, maxStake, active, account, currentStaked.availableStakeAmount]);
-
-  const setMaxQuantity = useCallback(() => {
-    setQuantity(getMaxQuantity());
-    if (!checked) {
-      toggleChecked();
-    }
-  }, [getMaxQuantity, checked, toggleChecked]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -461,44 +403,12 @@ function Swap({
   }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
 
   useEffect(() => {
-    let _additionalContractBal = parseFloat(balance);
-    if (checked && currentStaked.availableStakeAmount > 0) {
-      _additionalContractBal += parseFloat(currentStaked.availableStakeAmount);
-    }
-    setAdditionalContractBal(_additionalContractBal);
-
-    setInputError(
-      (active || account) &&
-        (parseFloat(quantity) > Web3.utils.fromWei(maxStake) ||
-          parseFloat(days) > maxDays ||
-          parseFloat(quantity) > _additionalContractBal)
-    );
-  }, [
-    active,
-    account,
-    balance,
-    days,
-    quantity,
-    selectedPortal,
-    maxStake,
-    maxDays,
-    checked,
-    currentStaked.availableStakeAmount,
-  ]);
-
-  useEffect(() => {
     if (active && account) {
       checkAllowance();
       getBalance();
       showWalletBackdrop(false);
     }
   }, [active, account, checkAllowance, getBalance, showWalletBackdrop]);
-
-  const onClickStake = (quantity, days, restake) => {
-    setDialogStep("pendingStake");
-    setShowStakeDialog(true);
-    stake(quantity, days, restake);
-  };
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
@@ -567,13 +477,7 @@ function Swap({
                     <Box className={classes.textFieldContainer}>
                       <TextField
                         className={classes.textField}
-                        error={
-                          (active &&
-                            account &&
-                            parseFloat(quantity) > additionalContractBal) ||
-                          (maxStake &&
-                            parseFloat(quantity) > Web3.utils.fromWei(maxStake))
-                        }
+                        // error={active && account}
                         fullWidth
                         placeholder="0.0"
                         value={quantity}
@@ -602,9 +506,19 @@ function Swap({
                   {chainId === 4 && (
                     <Typography variant="h6" className={classes.infoText}>
                       IF YOU SWAP{" "}
-                      <span className={classes.infoTextSpan}> 0 ETH </span> YOU
-                      WILL IMMEDIATELY GET{" "}
-                      <span className={classes.infoTextSpan}> 0 XIO</span>
+                      <Tooltip
+                        title={`${quantity} ${
+                          selectedRewardToken?.tokenB?.symbol || ""
+                        }`}
+                      >
+                        <span className={classes.infoTextSpan}>
+                          {trunc(quantity)}{" "}
+                          {selectedRewardToken?.tokenB?.symbol || ""}
+                        </span>
+                      </Tooltip>{" "}
+                      YOU WILL{" "}
+                      <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                      EARN <span className={classes.infoTextSpan}> 0 XIO</span>
                     </Typography>
                   )}
 
@@ -627,7 +541,15 @@ function Swap({
                         </Typography>
                       </Grid>
                     ) : (
-                      <Button variant="red">SWAP</Button>
+                      <Grid item xs={12} className={classes.msgContainer}>
+                        <Button
+                          variant="red"
+                          fullWidth
+                          onClick={() => swapALT(quantity)}
+                        >
+                          SWAP
+                        </Button>
+                      </Grid>
                     )}
                   </Box>
                 </Grid>
@@ -1043,10 +965,10 @@ export default connect(mapStateToProps, {
   calculateReward,
   checkAllowance,
   getBalance,
-  stake,
   setLoading,
   setDialogStep,
   setReset,
   setInitialValues,
   showWalletBackdrop,
+  swapALT,
 })(Swap);

@@ -1,115 +1,25 @@
 import { JSBI } from "@uniswap/sdk";
 import Web3 from "web3";
+import {
+  initializeErc20TokenContract,
+  balanceOf,
+} from "../../utils/contractFunctions/erc20TokenContractFunctions";
+import { CONSTANTS } from "../../utils/constants";
 // import { store } from "../../config/reduxStore";
 
-export const userDataUpdate = (data) => async (dispatch, getState) => {
-  const burnSingleStake = (quantity, _baseInterestRate, remainingDuration) => {
-    return quantity * remainingDuration * _baseInterestRate;
-  };
+export const userDataUpdate = (data) => async (dispatch, getState) => {};
 
-  const {
-    contract: { baseInterestRate },
-  } = getState();
-  const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
-
-  let _stakes = [];
-  let currentStaked = {};
+export const updateWalletBalance = (data) => async (dispatch, getState) => {
   try {
-    _stakes = data?.user?.stakes ? data.user.stakes : [];
-    if (data?.user?.stakes) {
-      let totalStakeAmount = JSBI.BigInt(0);
-      let availableStakeAmount = JSBI.BigInt(0);
-      let expiredTimestamps = [];
-      let timestamps = [];
-      let earliest;
-      let stakeAvailable;
-
-      let stakes = data.user.stakes
-        .filter((_stake) => parseFloat(_stake.stakeAmount) > 0)
-        .map((_stake) => {
-          let expired = false;
-          let expiry =
-            parseFloat(_stake.initialTimestamp) +
-            parseFloat(_stake.endTimestamp);
-
-          totalStakeAmount = JSBI.add(
-            totalStakeAmount,
-            JSBI.BigInt(_stake.stakeAmount)
-          );
-
-          if (expiry < parseFloat(Date.now() / 1000)) {
-            availableStakeAmount = JSBI.add(
-              availableStakeAmount,
-              JSBI.BigInt(_stake.stakeAmount)
-            );
-            expired = true;
-            expiredTimestamps.push(_stake.id);
-          }
-
-          let stakeAvailable =
-            Web3.utils.fromWei(_stake.stakeAmount) -
-            burnSingleStake(
-              Web3.utils.fromWei(_stake.stakeAmount),
-              _baseInterestRate,
-
-              expiry > parseFloat(Date.now() / 1000)
-                ? (expiry - parseFloat(Date.now() / 1000)) / 60
-                : 0
-            );
-
-          timestamps.push(_stake.id);
-          return {
-            ..._stake,
-            expired,
-            expiry,
-            stakeAmountConverted: Web3.utils.fromWei(_stake.stakeAmount),
-            stakeAmountAvailable: expired
-              ? Web3.utils.fromWei(_stake.stakeAmount)
-              : "0",
-
-            stakeAvailable,
-            rewardEarned: Web3.utils.fromWei(
-              data?.user?.stakeHistory.find(
-                (_stakeHistory) => _stakeHistory.id === _stake.id
-              )?.stakeReward || "0"
-            ),
-          };
-        });
-
-      earliest = Math.min(
-        ...stakes
-          .filter((_stake) => !_stake.expired)
-          .map((_stake) => _stake.expiry)
-      );
-
-      currentStaked = {
-        totalStakeAmount: Web3.utils.fromWei(totalStakeAmount.toString()),
-        availableStakeAmount: Web3.utils.fromWei(
-          availableStakeAmount.toString()
-        ),
-        lockedStakeAmount: Web3.utils.fromWei(
-          JSBI.subtract(totalStakeAmount, availableStakeAmount).toString()
-        ),
-        expiredTimestamps,
-        timestamps,
-        stakes,
-
-        earliest: earliest !== Infinity ? earliest : null,
-      };
-    }
+    initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+    let walletBalance = await balanceOf();
+    dispatch({
+      type: "WALLET_BALANCE",
+      payload: Web3.utils.fromWei(walletBalance),
+    });
   } catch (e) {
-    _stakes = [];
-    currentStaked = {};
-    console.error("ERROR userDataUpdate -> ", e);
+    console.error("ERROR updateWalletBalance -> ", e);
   }
-  dispatch({
-    type: "STAKES",
-    payload: _stakes,
-  });
-  dispatch({
-    type: "CURRENT_STAKED",
-    payload: currentStaked,
-  });
 };
 
 export const updatePools = (data) => async (dispatch) => {
@@ -121,9 +31,12 @@ export const updatePools = (data) => async (dispatch) => {
 
 export const updateUserData = (data) => async (dispatch) => {
   let stakes;
+  let expiredTimestamps = [];
+  let dappBalance = JSBI.BigInt(0);
   if (data) {
     stakes = data.stakes.map((_tempData) => {
       const {
+        id,
         initiationTimestamp,
         expiredTimestamp,
         stakeAmount,
@@ -132,6 +45,10 @@ export const updateUserData = (data) => async (dispatch) => {
       let expiryTime =
         parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
       let expired = expiryTime < Date.now() / 1000;
+      if (expired) {
+        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
+        expiredTimestamps.push(id);
+      }
       return {
         ..._tempData,
         stakeAmount: Web3.utils.fromWei(stakeAmount),
@@ -145,7 +62,12 @@ export const updateUserData = (data) => async (dispatch) => {
     });
     dispatch({
       type: "USER_DATA",
-      payload: { ...data, stakes },
+      payload: {
+        ...data,
+        expiredTimestamps,
+        stakes,
+        dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+      },
     });
   }
 };

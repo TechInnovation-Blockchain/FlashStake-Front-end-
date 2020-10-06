@@ -17,11 +17,11 @@ const routes = [
     component: Dashboard,
   },
   {
-    path: "/flashstake",
+    path: "/stake",
     component: Flashstake,
   },
 ];
-const redirectRoute = "/flashstake";
+const redirectRoute = "/stake";
 
 function AnimatedRoutes() {
   const location = useLocation();

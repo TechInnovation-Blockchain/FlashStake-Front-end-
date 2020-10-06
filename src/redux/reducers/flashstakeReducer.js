@@ -8,7 +8,7 @@ export const flashstakeReducer = (
     selectedStakeToken: "XIO",
     selectedRewardToken: {},
     selectedPortal: "",
-    allowance: true,
+    allowanceXIO: true,
     reward: "0",
     balance: 0,
     dialogStep: "",
@@ -16,6 +16,10 @@ export const flashstakeReducer = (
       quantity: 0,
       days: 0,
       poolId: "",
+    },
+    unstakeRequest: {
+      timestamps: [],
+      quantity: "0",
     },
     stakeTxnHash: "",
     reset: false,
@@ -67,10 +71,10 @@ export const flashstakeReducer = (
         ...state,
         selectedPortal: payload,
       };
-    case "ALLOWANCE":
+    case "ALLOWANCE_XIO":
       return {
         ...state,
-        allowance: payload,
+        allowanceXIO: payload,
       };
     case "STAKE_REWARD":
       return {
@@ -92,6 +96,12 @@ export const flashstakeReducer = (
         ...state,
         stakeRequest: payload,
       };
+    case "UNSTAKE_REQUEST":
+      return {
+        ...state,
+        unstakeRequest: payload,
+      };
+
     case "STAKE_TXN_HASH":
       return {
         ...state,

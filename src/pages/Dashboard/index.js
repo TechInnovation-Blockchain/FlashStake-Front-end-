@@ -366,12 +366,12 @@ function Dashboard({
   const handleChange = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
       if (value <= 800 && regex.test(value)) {
-        // console.log(value, regex.test(value));
+        console.log(value, regex.test(value));
         setPartialWithdraw(
           value[value.length - 1] === "." || !Number(value) ? value : value
         );
       }
-      // // console.log(value, regex.test(va lue), quantity);
+      // console.log(value, regex.test(va lue), quantity);
     } else {
       setPartialWithdraw((val) => val);
     }

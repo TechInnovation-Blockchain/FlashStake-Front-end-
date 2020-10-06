@@ -23,6 +23,7 @@ import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { selectStake } from "../redux/actions/dashboardActions";
+import { unstakeXIO } from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -111,6 +112,10 @@ function TableComponent({
   selectStake,
   selectedStakes,
   isStakesSelected,
+  walletBalance,
+  dappBalance,
+  unstakeXIO,
+  onClickUnstake,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -200,15 +205,23 @@ function TableComponent({
   );
   return (
     <Grid container>
-      <Grid container item spacing={2} xs={12} className={classes.infoGrid}>
+      <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead}>WALLET BALANCE</Typography>
-          <Typography className={classes.secHead}>10,000 XIO</Typography>
+          <Typography className={classes.secHead}>
+            <Tooltip title={`${walletBalance} XIO`}>
+              <span>{trunc(walletBalance)} XIO</span>
+            </Tooltip>
+          </Typography>
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead}>DAPP BALANCE</Typography>
-          <Typography className={classes.secHead}>5,000 XIO</Typography>
+          <Typography className={classes.secHead}>
+            <Tooltip title={`${dappBalance} XIO`}>
+              <span>{trunc(dappBalance)} XIO</span>
+            </Tooltip>
+          </Typography>
         </Grid>
       </Grid>
 
@@ -242,7 +255,7 @@ function TableComponent({
       ) : chainId !== 4 ? (
         <Grid item xs={12} className={classes.msgContainer}>
           <Typography variant="body2" className={classes.redText}>
-            CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
+            CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
           </Typography>
         </Grid>
       ) : !loading ? (
@@ -265,20 +278,20 @@ function TableComponent({
                         className={classes.cursorPointer}
                       >
                         <Grid item xs={4} className={classes.gridItem}>
-                          <Tooltip
+                          {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
-                          >
-                            <span className={classes.flexCenter}>
-                              {/* <img
-                                src={require(`../assets/Tokens/${_stake.tokenB}.png`)}
-                                alt="Logo"
-                                srcset=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              /> */}
-                              {_stake.pool.tokenB.symbol}
-                            </span>
-                          </Tooltip>
+                          > */}
+                          <span className={classes.flexCenter}>
+                            <img
+                              src={require(`../assets/Tokens/${_stake.pool.tokenB.symbol}.png`)}
+                              alt="Logo"
+                              srcset=""
+                              width={15}
+                              style={{ marginRight: 5 }}
+                            />
+                            {_stake.pool.tokenB.symbol}
+                          </span>
+                          {/* </Tooltip> */}
                         </Grid>
                         <Grid item xs={4} className={classes.gridItem}>
                           <Tooltip
@@ -320,14 +333,30 @@ function TableComponent({
                 />
               </Grid>
             ) : null}
+            {sortedData().length && dappBalance > 0 ? (
+              <Grid item xs={12} className={classes.gridItem}>
+                <Button
+                  variant="red"
+                  fullWidth
+                  onClick={() => {
+                    onClickUnstake();
+                    unstakeXIO();
+                  }}
+                >
+                  <Tooltip title={`${dappBalance} XIO`}>
+                    <span>UNSTAKE {trunc(dappBalance)} XIO</span>
+                  </Tooltip>
+                </Button>
+              </Grid>
+            ) : null}
           </Fragment>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="body2" className={classes.msg}>
               NO AVAILABLE STAKES
             </Typography>
-            <Button variant="red" onClick={() => history.push("/flashstake")}>
-              FLASHSTAKE NOW
+            <Button variant="red" onClick={() => history.push("/stake")}>
+              STAKE NOW
             </Button>
           </Grid>
         )
@@ -344,8 +373,9 @@ function TableComponent({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { stakes },
+  user: { stakes, walletBalance, dappBalance },
   dashboard: { selectedStakes, isStakesSelected },
+  ui: { data },
 }) => ({
   stakes,
   active,
@@ -353,8 +383,13 @@ const mapStateToProps = ({
   chainId,
   selectedStakes,
   isStakesSelected,
+  walletBalance,
+  dappBalance,
+  loading: data,
 });
 
-export default connect(mapStateToProps, { showWalletBackdrop, selectStake })(
-  TableComponent
-);
+export default connect(mapStateToProps, {
+  showWalletBackdrop,
+  selectStake,
+  unstakeXIO,
+})(TableComponent);

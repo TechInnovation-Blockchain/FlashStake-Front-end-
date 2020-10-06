@@ -106,6 +106,7 @@ export const allowance = async (spenderAddress) => {
       .allowance(walletAddress, spenderAddress)
       .call();
     setLoadingIndep({ approval: false });
+    console.log({ _allowance });
     return _allowance;
   } catch (e) {
     setLoadingIndep({ approval: false });

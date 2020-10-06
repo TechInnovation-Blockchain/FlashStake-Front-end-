@@ -11,6 +11,7 @@ import {
 } from "./erc20TokenContractFunctions";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
+  setLoadingIndep,
   showSnackbarIndep,
   showSnackbarTxnIndep,
 } from "../../redux/actions/uiActions";
@@ -52,7 +53,8 @@ const checkContractInitialized = () => {
 
 let _txnHash = "";
 
-export const stakeALT = async (address_token, xioQuantity, days) => {
+export const stake = async (_token, xioQuantity, days) => {
+  setLoadingIndep({ stake: true });
   try {
     setStakeDialogStepIndep("pendingStake");
     showSnackbarIndep("Transaction Pending.", "info");
@@ -64,7 +66,7 @@ export const stakeALT = async (address_token, xioQuantity, days) => {
     }
     let _txnHash = "";
     contract.methods
-      .stakeALT(address_token, xioQuantity, days, "0x")
+      .stake(_token, xioQuantity, days)
       .send({
         from: walletAddress,
       })
@@ -81,8 +83,12 @@ export const stakeALT = async (address_token, xioQuantity, days) => {
         );
       })
       .then(function (receipt) {
-        setRefetchIndep(true);
+        setTimeout(() => {
+          setRefetchIndep(true);
+        }, 5000);
         setStakeDialogStepIndep("successStake");
+        setLoadingIndep({ stake: false });
+
         setResetIndep(true);
         showSnackbarTxnIndep(
           "Stake Transaction Successful.",
@@ -95,22 +101,162 @@ export const stakeALT = async (address_token, xioQuantity, days) => {
       .catch((e) => {
         if (e.code === 4001) {
           setStakeDialogStepIndep("rejectedStake");
-          showSnackbarIndep("Flashstake Transaction Rejected.", "error");
+          showSnackbarIndep("Stake Transaction Rejected.", "error");
         } else {
           setStakeDialogStepIndep("failedStake");
-          showSnackbarIndep("Flashstake Transaction Failed.", "error");
+          showSnackbarIndep("Stake Transaction Failed.", "error");
         }
-        console.error("ERROR stakeALT -> ", e);
+        setLoadingIndep({ stake: false });
+        console.error("ERROR stake -> ", e);
       });
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedStake");
-      showSnackbarIndep("Flashstake Transaction Rejected.", "error");
+      showSnackbarIndep("Stake Transaction Rejected.", "error");
     } else {
       setStakeDialogStepIndep("failedStake");
-      showSnackbarIndep("Flashstake Transaction Failed.", "error");
+      showSnackbarIndep("Stake Transaction Failed.", "error");
     }
-    console.error("ERROR stakeALT -> ", e);
+    setLoadingIndep({ stake: false });
+    console.error("ERROR stake -> ", e);
+  }
+};
+
+export const unstake = async (_expiredIds, _xioQuantity) => {
+  setLoadingIndep({ unstake: true });
+  try {
+    setStakeDialogStepIndep("pendingUnstake");
+    showSnackbarIndep("Transaction Pending.", "info");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new Error("Wallet not activated.");
+    }
+    let _txnHash = "";
+    contract.methods
+      .unstake(_expiredIds, _xioQuantity)
+      .send({
+        from: walletAddress,
+      })
+      .on("transactionHash", async (txnHash) => {
+        _txnHash = txnHash;
+        addToTxnQueueIndep(txnHash);
+        setStakeTxnHashIndep(txnHash);
+        showSnackbarTxnIndep(
+          "Transaction Pending.",
+          "info",
+          "txnEtherScan",
+          txnHash,
+          true
+        );
+      })
+      .then(function (receipt) {
+        setTimeout(() => {
+          setRefetchIndep(true);
+        }, 5000);
+        setStakeDialogStepIndep("successUnstake");
+        setLoadingIndep({ unstake: false });
+
+        setResetIndep(true);
+        showSnackbarTxnIndep(
+          "Unstake Transaction Successful.",
+          "success",
+          "txnEtherScan",
+          receipt.transactionHash,
+          false
+        );
+      })
+      .catch((e) => {
+        if (e.code === 4001) {
+          setStakeDialogStepIndep("rejectedUnstake");
+          showSnackbarIndep("Unstake Transaction Rejected.", "error");
+        } else {
+          setStakeDialogStepIndep("failedUnstake");
+          showSnackbarIndep("Unstake Transaction Failed.", "error");
+        }
+        setLoadingIndep({ unstake: false });
+        console.error("ERROR stake -> ", e);
+      });
+  } catch (e) {
+    if (e.code === 4001) {
+      setStakeDialogStepIndep("rejectedUnstake");
+      showSnackbarIndep("Unstake Transaction Rejected.", "error");
+    } else {
+      setStakeDialogStepIndep("failedUnstake");
+      showSnackbarIndep("Unstake Transaction Failed.", "error");
+    }
+    setLoadingIndep({ unstake: false });
+    console.error("ERROR Unstake -> ", e);
+  }
+};
+
+export const swap = async (_altQuantity, _token) => {
+  setLoadingIndep({ swap: true });
+  try {
+    setStakeDialogStepIndep("pendingSwap");
+    showSnackbarIndep("Transaction Pending.", "info");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new Error("Wallet not activated.");
+    }
+    let _txnHash = "";
+    contract.methods
+      .swap(_altQuantity, _token)
+      .send({
+        from: walletAddress,
+      })
+      .on("transactionHash", async (txnHash) => {
+        _txnHash = txnHash;
+        addToTxnQueueIndep(txnHash);
+        setStakeTxnHashIndep(txnHash);
+        showSnackbarTxnIndep(
+          "Transaction Pending.",
+          "info",
+          "txnEtherScan",
+          txnHash,
+          true
+        );
+      })
+      .then(function (receipt) {
+        setTimeout(() => {
+          setRefetchIndep(true);
+        }, 5000);
+        setStakeDialogStepIndep("successSwap");
+        setLoadingIndep({ swap: false });
+
+        setResetIndep(true);
+        showSnackbarTxnIndep(
+          "Swap Transaction Successful.",
+          "success",
+          "txnEtherScan",
+          receipt.transactionHash,
+          false
+        );
+      })
+      .catch((e) => {
+        if (e.code === 4001) {
+          setStakeDialogStepIndep("rejectedSwap");
+          showSnackbarIndep("Swap Transaction Rejected.", "error");
+        } else {
+          setStakeDialogStepIndep("failedSwap");
+          showSnackbarIndep("Swap Transaction Failed.", "error");
+        }
+        setLoadingIndep({ swap: false });
+        console.error("ERROR swap -> ", e);
+      });
+  } catch (e) {
+    if (e.code === 4001) {
+      setStakeDialogStepIndep("rejectedSwap");
+      showSnackbarIndep("Swap Transaction Rejected.", "error");
+    } else {
+      setStakeDialogStepIndep("failedSwap");
+      showSnackbarIndep("Swap Transaction Failed.", "error");
+    }
+    setLoadingIndep({ swap: false });
+    console.error("ERROR Swap -> ", e);
   }
 };
 

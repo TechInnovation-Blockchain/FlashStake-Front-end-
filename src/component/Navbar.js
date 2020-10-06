@@ -98,7 +98,7 @@ export default function Navbar() {
       {/* <Box className={classes.navOuterBox}> */}
       <Box className={classes.navlinkBox}>
         <NavLink
-          to="/flashstake"
+          to="/stake"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact

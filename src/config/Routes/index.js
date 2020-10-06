@@ -12,7 +12,7 @@ const getRoutes = (paused) => {
       component: Dashboard,
     },
     {
-      path: "/flashstake",
+      path: "/stake",
       component: paused ? FlashstakePausedMessage : Flashstake,
     },
     {
@@ -32,7 +32,7 @@ const getRoutes = (paused) => {
 
 function Routes({ contractState }) {
   const [routes, setRoutes] = useState(getRoutes());
-  const redirectRoute = "/flashstake";
+  const redirectRoute = "/stake";
 
   useEffect(() => {
     setRoutes(getRoutes(contractState));

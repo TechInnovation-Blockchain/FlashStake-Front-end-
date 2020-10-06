@@ -2,7 +2,11 @@ export const uiReducer = (
   state = {
     snackbar: { open: false },
     theme: localStorage.getItem("themeMode") || "dark",
-    loading: { dapp: true, themeSwitch: false, walletConnection: false },
+    loading: {
+      dapp: true,
+      themeSwitch: false,
+      walletConnection: false,
+    },
     walletBackdrop: false,
   },
   { type, payload }

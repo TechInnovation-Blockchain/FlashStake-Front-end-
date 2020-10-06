@@ -15,9 +15,13 @@ import {
   userDataUpdate,
   updatePools,
   updateUserData,
+  updateWalletBalance,
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
-import { getBalance } from "../redux/actions/flashstakeActions";
+import {
+  getBalance,
+  checkAllowanceXIO,
+} from "../redux/actions/flashstakeActions";
 
 function Updater({
   loadContractData,
@@ -37,11 +41,14 @@ function Updater({
   getBalance,
   checkContractState,
   baseInterestRate,
+  updateWalletBalance,
+  checkAllowanceXIO,
 }) {
   const { loading, error, data, refetch } = useQuery(userStakesQuery, {
     variables: {
       account: account ? account.toString().toLowerCase() : "",
     },
+    fetchPolicy: "network-only",
   });
 
   useEffect(() => {
@@ -57,6 +64,8 @@ function Updater({
     if (active && account) {
       refetch();
       getBalance();
+      updateWalletBalance();
+      checkAllowanceXIO();
     }
   }, [active, account, refetch, getBalance]);
 
@@ -99,7 +108,10 @@ function Updater({
     updatePools(data?.protocols[0].pools);
     updateUserData(data?.user);
 
-    // console.log("----------------------------------------------------", data);
+    let reCalculateInterval = setInterval(() => {
+      updateUserData(data?.user);
+    }, 60000);
+    return () => clearInterval(reCalculateInterval);
   }, [data]);
 
   return null;
@@ -131,4 +143,6 @@ export default connect(mapStateToProps, {
   setReCalculateExpired,
   getBalance,
   checkContractState,
+  checkAllowanceXIO,
+  updateWalletBalance,
 })(Updater);

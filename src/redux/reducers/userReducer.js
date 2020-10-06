@@ -4,6 +4,7 @@ export const userReducer = (
     stakes: [],
     currentStaked: {},
     pools: [],
+    walletBalance: "0",
   },
   { type, payload }
 ) => {
@@ -34,7 +35,11 @@ export const userReducer = (
         ...state,
         ...payload,
       };
-
+    case "WALLET_BALANCE":
+      return {
+        ...state,
+        walletBalance: payload,
+      };
     default:
       return state;
   }

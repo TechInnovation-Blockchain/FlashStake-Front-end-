@@ -112,6 +112,7 @@ function SwapTable({
   selectedStakes,
   isStakesSelected,
   pools,
+  walletBalance,
 }) {
   const classes = useStyles();
   const headItems = ["INPUT", "OUTPUT XIO", "DATE"];
@@ -194,12 +195,20 @@ function SwapTable({
       <Grid container item spacing={2} xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead}>WALLET BALANCE</Typography>
-          <Typography className={classes.secHead}>$252,503</Typography>
+          <Typography className={classes.secHead}>
+            <Tooltip title={`${walletBalance} XIO`}>
+              <span>{trunc(walletBalance)} XIO</span>
+            </Tooltip>
+          </Typography>
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead}>XIO BALANCE</Typography>
-          <Typography className={classes.secHead}>5,000 XIO</Typography>
+          <Typography className={classes.secHead}>
+            <Tooltip title={`${walletBalance} XIO`}>
+              <span>{trunc(walletBalance)} XIO</span>
+            </Tooltip>
+          </Typography>
         </Grid>
       </Grid>
 
@@ -332,7 +341,7 @@ function SwapTable({
             <Typography variant="body2" className={classes.msg}>
               NO AVAILABLE SWAPS
             </Typography>
-            <Button variant="red" onClick={() => history.push("/flashstake")}>
+            <Button variant="red" onClick={() => history.push("/swap")}>
               SWAP NOW
             </Button>
           </Grid>
@@ -350,7 +359,7 @@ function SwapTable({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { currentStaked, pools },
+  user: { currentStaked, pools, walletBalance },
   dashboard: { selectedStakes, isStakesSelected },
 }) => ({
   currentStaked,
@@ -360,6 +369,7 @@ const mapStateToProps = ({
   selectedStakes,
   isStakesSelected,
   pools,
+  walletBalance,
 });
 
 export default connect(mapStateToProps, { showWalletBackdrop, selectStake })(

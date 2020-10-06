@@ -30,11 +30,11 @@ import {
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApproval,
+  getApprovalXIO,
   calculateReward,
-  checkAllowance,
+  checkAllowanceXIO,
   getBalance,
-  stake,
+  stakeXIO,
   setDialogStep,
   setReset,
   setInitialValues,
@@ -48,6 +48,7 @@ import { Link } from "@material-ui/icons";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { JSBI } from "@uniswap/sdk";
+import { setRefetch } from "../../redux/actions/dashboardActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -235,9 +236,10 @@ const useStyles = makeStyles((theme) => ({
     borderBottomRightRadius: "10px",
   },
   loaderStyle: {
-    position: "absolute",
-    left: 2,
-    top: "10%",
+    marginBottom: -2,
+    // position: "absolute",
+    // left: 2,
+    // top: "10%",
   },
 }));
 
@@ -296,21 +298,22 @@ function Flashstake({
   setSelectedStakeToken,
   setSelectedRewardToken,
   selectedPortal,
-  allowance,
-  getApproval,
+  allowanceXIO,
+  getApprovalXIO,
   calculateReward,
   reward,
   loading: loadingRedux,
   active,
   account,
-  checkAllowance,
+  checkAllowanceXIO,
   getBalance,
   balance,
-  stake,
+  stakeXIO,
   setLoading,
   dialogStep,
   setDialogStep,
   stakeRequest,
+  unstakeRequest,
   reset,
   setReset,
   chainId,
@@ -321,15 +324,14 @@ function Flashstake({
   portals,
   currentStaked,
   pools,
+  walletBalance,
+  setRefetch,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
 
   const [inputError, setInputError] = useState(false);
   const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [checked, setChecked] = useState(
-    localStorage.getItem("restake") === "true"
-  );
   const [additionalContractBal, setAdditionalContractBal] = useState(0);
 
   const [expanded, setExpanded] = useState("panel1");
@@ -338,11 +340,6 @@ function Flashstake({
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-
-  const toggleChecked = useCallback(() => {
-    setChecked(!checked);
-    localStorage.setItem("restake", !checked);
-  }, [checked, setChecked]);
 
   const debouncedCalculateReward = useCallback(
     debounce(calculateReward, 200),
@@ -384,19 +381,18 @@ function Flashstake({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Flashstake - XIO | The Future is at Stake";
+    document.title = "Stake - XIO | The Future is at Stake";
     // setLoading({ dapp: true });
+    setRefetch(true);
   }, []);
 
-  useEffect(() => {
-    console.log("heloooooooooooooo");
-  }, [quantity, days]);
+  useEffect(() => {}, [quantity, days]);
 
   useEffect(() => {
-    if (selectedPortal && !allowance) {
+    if (selectedPortal && !allowanceXIO) {
       setRenderDualButtons(true);
     }
-  }, [selectedPortal, allowance]);
+  }, [selectedPortal, allowanceXIO]);
 
   useEffect(() => () => setInitialValues(quantity, days), [
     days,
@@ -416,7 +412,6 @@ function Flashstake({
   useEffect(() => {
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
-      console.log("hello");
       const _rewardRefreshInterval = setInterval(() => {
         // console.log("Reward updated.");
         debouncedCalculateReward(quantity, days);
@@ -428,44 +423,28 @@ function Flashstake({
   }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
 
   useEffect(() => {
-    let _additionalContractBal = parseFloat(balance);
-    if (checked && currentStaked.availableStakeAmount > 0) {
-      _additionalContractBal += parseFloat(currentStaked.availableStakeAmount);
-    }
-    setAdditionalContractBal(_additionalContractBal);
-
-    setInputError(
-      (active || account) && parseFloat(quantity) > _additionalContractBal
-    );
-  }, [
-    active,
-    account,
-    balance,
-    days,
-    quantity,
-    selectedPortal,
-    checked,
-    currentStaked.availableStakeAmount,
-  ]);
-
-  useEffect(() => {
     if (active && account) {
-      checkAllowance();
+      checkAllowanceXIO();
       getBalance();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowance, getBalance, showWalletBackdrop]);
+  }, [active, account, checkAllowanceXIO, getBalance, showWalletBackdrop]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
     setShowStakeDialog(true);
-    stake(quantity, days);
+    stakeXIO(quantity, days);
   };
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    getApproval();
+    getApprovalXIO();
+  };
+
+  const onClickUnstake = () => {
+    setDialogStep("pendingUnstake");
+    setShowStakeDialog(true);
   };
 
   const onClickClose = () => {
@@ -531,7 +510,7 @@ function Flashstake({
                         error={
                           active &&
                           account &&
-                          parseFloat(quantity) > additionalContractBal
+                          parseFloat(quantity) > parseFloat(walletBalance)
                         }
                         fullWidth
                         placeholder="0.0"
@@ -593,44 +572,46 @@ function Flashstake({
                 </Grid>
 
                 <Grid item xs={12}>
-                  {chainId === 4 &&
-                    (selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography variant="h6" className={classes.infoText}>
-                        IF YOU STAKE{" "}
-                        <span className={classes.infoTextSpan}>
-                          {quantity || 0} XIO{" "}
-                        </span>{" "}
-                        FOR{" "}
-                        <span className={classes.infoTextSpan}>
-                          {days || 0} DAYS
-                        </span>{" "}
-                        YOU WILL IMMEDIATELY GET{" "}
+                  {selectedRewardToken?.tokenB?.symbol ? (
+                    <Typography variant="h6" className={classes.infoText}>
+                      IF YOU STAKE{" "}
+                      <span className={classes.infoTextSpan}>
+                        {quantity || 0} XIO{" "}
+                      </span>{" "}
+                      FOR{" "}
+                      <span className={classes.infoTextSpan}>
+                        {days || 0} DAYS
+                      </span>{" "}
+                      YOU WILL{" "}
+                      <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                      GET{" "}
+                      {loadingRedux.reward ? (
+                        <CircularProgress
+                          size={12}
+                          className={classes.loaderStyle}
+                        />
+                      ) : (
                         <Tooltip
                           title={`${Web3.utils.fromWei(reward)} ${
                             selectedRewardToken?.tokenB?.symbol || ""
                           }`}
                         >
                           <span className={classes.infoTextSpan}>
-                            {loadingRedux.reward ? (
-                              <CircularProgress
-                                size={12}
-                                className={classes.loaderStyle}
-                              />
-                            ) : (
-                              trunc(Web3.utils.fromWei(reward))
-                            )}
-
-                            {/* {selectedRewardToken?.tokenB?.symbol || ""} */}
+                            {trunc(Web3.utils.fromWei(reward))}{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>
-                      </Typography>
-                    ) : (
-                      <Typography variant="body2" className={classes.redText}>
-                        SELECT A TOKEN TO VIEW REWARDS
-                      </Typography>
-                    ))}
+                      )}
+                      .
+                    </Typography>
+                  ) : (
+                    <Typography variant="body2" className={classes.redText}>
+                      SELECT A TOKEN TO VIEW REWARDS
+                    </Typography>
+                  )}
+                </Grid>
 
-                  {/* <Box className={classes.btn}>
+                {/* <Box className={classes.btn}>
                     {!(active && account) ? (
                       <Grid
                         item
@@ -661,17 +642,16 @@ function Flashstake({
                       </Button>
                     )}
                   </Box> */}
-                </Grid>
 
-                {!allowance || renderDualButtons ? (
+                {!allowanceXIO || renderDualButtons ? (
                   <Grid container item xs={12} onClick={showWalletHint}>
                     <Grid item xs={6} className={classes.btnPaddingRight}>
                       <Button
                         fullWidth
                         variant="red"
-                        onClick={!allowance ? onClickApprove : () => {}}
+                        onClick={!allowanceXIO ? onClickApprove : () => {}}
                         disabled={
-                          allowance ||
+                          allowanceXIO ||
                           !active ||
                           !account ||
                           // inputError ||
@@ -679,7 +659,7 @@ function Flashstake({
                           // days <= 0 ||
                           // reward <= 0 ||
                           // !selectedPortal ||
-                          // loadingRedux.reward ||
+                          loadingRedux.reward ||
                           chainId !== 4
                         }
                         loading={loadingRedux.approval}
@@ -694,12 +674,12 @@ function Flashstake({
                         fullWidth
                         variant="red"
                         onClick={
-                          !allowance
+                          !allowanceXIO
                             ? () => {}
-                            : () => onClickStake(quantity, days, checked)
+                            : () => onClickStake(quantity, days)
                         }
                         disabled={
-                          !allowance ||
+                          !allowanceXIO ||
                           !active ||
                           !account ||
                           inputError ||
@@ -707,11 +687,16 @@ function Flashstake({
                           quantity <= 0 ||
                           days <= 0 ||
                           loadingRedux.reward ||
+                          loadingRedux.stake ||
                           chainId !== 4 ||
-                          reward <= 0
+                          reward <= 0 ||
+                          (active &&
+                            account &&
+                            parseFloat(quantity) > parseFloat(walletBalance))
                         }
+                        loading={loadingRedux.stake}
                       >
-                        FLASHSTAKE
+                        STAKE
                       </Button>
                     </Grid>
                   </Grid>
@@ -722,9 +707,9 @@ function Flashstake({
                         fullWidth
                         variant="red"
                         onClick={
-                          !allowance
+                          !allowanceXIO
                             ? () => {}
-                            : () => onClickStake(quantity, days, checked)
+                            : () => onClickStake(quantity, days)
                         }
                         disabled={
                           !active ||
@@ -734,26 +719,29 @@ function Flashstake({
                           quantity <= 0 ||
                           days <= 0 ||
                           loadingRedux.reward ||
+                          loadingRedux.stake ||
                           chainId !== 4 ||
-                          reward <= 0
+                          reward <= 0 ||
+                          (active &&
+                            account &&
+                            parseFloat(quantity) > parseFloat(walletBalance))
                         }
-                        loading={loadingRedux.approval}
+                        loading={loadingRedux.stake}
                       >
-                        FLASHSTAKE
+                        STAKE
                       </Button>
                     </Grid>
                   </Fragment>
                 )}
 
-                {!allowance &&
+                {!allowanceXIO &&
                 active &&
                 account &&
                 selectedRewardToken &&
                 !loadingRedux.allowance ? (
                   <Grid item xs={12}>
                     <Typography variant="body2" className={classes.redText}>
-                      BEFORE YOU CAN <b>FLASHSTAKE</b>, YOU MUST{" "}
-                      <b>APPROVE XIO</b>
+                      BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
                     </Typography>
                   </Grid>
                 ) : null}
@@ -765,15 +753,14 @@ function Flashstake({
                     className={classes.cursorPointer}
                   >
                     <Typography variant="body2" className={classes.redText}>
-                      CONNECT YOUR WALLET TO FLASHSTAKE
+                      CONNECT YOUR WALLET TO STAKE
                     </Typography>
                   </Grid>
                 ) : chainId !== 4 ||
                   web3context.error instanceof UnsupportedChainIdError ? (
                   <Grid item xs={12}>
                     <Typography variant="body2" className={classes.redText}>
-                      CHANGE NETWORK TO <b>RINKEBY</b> TO START{" "}
-                      <b>FLASHSTAKING</b>
+                      CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
                     </Typography>
                   </Grid>
                 ) : null}
@@ -969,17 +956,14 @@ function Flashstake({
               </Typography>
             </AccordionSummary>
             <AccordionDetails className={classes.accordion}>
-              <Table />
+              <Table onClickUnstake={onClickUnstake} />
             </AccordionDetails>
           </Accordion>
         </Box>
 
-        {/* 
-
-
         <Dialog
-          // open={showStakeDialog}
-          open={true}
+          open={showStakeDialog}
+          // open={true}
           title="FLASHSTAKE"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -997,7 +981,7 @@ function Flashstake({
             {
               pendingApproval: (
                 <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
+                  <Typography variant="body2" className={classes.textBold}>
                     APPROVAL PENDING
                     <br />
                   </Typography>
@@ -1006,22 +990,22 @@ function Flashstake({
               flashstakeProposal: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
+                    STAKE
                     <br />
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {quantity} {selectedStakeToken} FOR {days}{" "}
-                    {days > 1 ? "DAYS" : "DAY"} TO EARN{" "}
+                    {quantity} XIO FOR {days} {days > 1 ? "DAYS" : "DAY"} TO
+                    EARN{" "}
                     <Tooltip
-                      title={`${getExtendedFloatValue(
-                        reward
-                      )} ${selectedRewardToken}`}
+                      title={`${getExtendedFloatValue(reward)} ${
+                        selectedRewardToken?.tokenB?.symbol
+                      }`}
                     >
                       <span>
-                        {trunc(reward)} {selectedRewardToken}
+                        {trunc(reward)} {selectedRewardToken?.tokenB?.symbol}
                       </span>
                     </Tooltip>{" "}
                     INSTANTLY
@@ -1030,9 +1014,9 @@ function Flashstake({
                     variant="red"
                     fullWidth
                     onClick={
-                      !allowance
+                      !allowanceXIO
                         ? () => {}
-                        : () => onClickStake(quantity, days, checked)
+                        : () => onClickStake(quantity, days)
                     }
                     disabled={
                       !active ||
@@ -1047,7 +1031,7 @@ function Flashstake({
                     }
                     loading={loadingRedux.approval}
                   >
-                    FLASHSTAKE
+                    STAKE
                   </Button>
                 </Fragment>
               ),
@@ -1078,21 +1062,20 @@ function Flashstake({
               pendingStake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE PENDING
+                    STAKE PENDING
                     <br />
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {stakeRequest.quantity} {stakeRequest.tokenA} FOR{" "}
-                    {stakeRequest.days} {stakeRequest.days > 1 ? "DAYS" : "DAY"}{" "}
-                    TO EARN{" "}
+                    {stakeRequest.quantity} XIO FOR {stakeRequest.days}{" "}
+                    {stakeRequest.days > 1 ? "DAYS" : "DAY"} TO EARN{" "}
                     <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.tokenB}`}
+                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
                       <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.tokenB}
+                        {trunc(stakeRequest.reward)} {stakeRequest.token}
                       </span>
                     </Tooltip>{" "}
                     INSTANTLY
@@ -1102,7 +1085,7 @@ function Flashstake({
               failedStake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
+                    STAKE
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
@@ -1114,7 +1097,7 @@ function Flashstake({
               rejectedStake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
+                    STAKE
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
@@ -1126,7 +1109,7 @@ function Flashstake({
               successStake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
+                    STAKE
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -1134,15 +1117,91 @@ function Flashstake({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity}{" "}
-                    {stakeRequest.tokenA} FOR {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "DAYS" : "DAY"} AND YOU WERE SENT{" "}
+                    YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity} XIO FOR{" "}
+                    {stakeRequest.days} {stakeRequest.days > 1 ? "DAYS" : "DAY"}{" "}
+                    AND YOU WERE SENT{" "}
                     <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.tokenB}`}
+                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
                       <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.tokenB}
+                        {trunc(stakeRequest.reward)} {stakeRequest.token}
                       </span>
+                    </Tooltip>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.redText}`}
+                  >
+                    <a
+                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={classes.link}
+                    >
+                      <Link fontSize="small" className={classes.linkIcon} />
+                      VIEW ON ETHERSCAN
+                    </a>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={onClickClose}>
+                    CLOSE
+                  </Button>
+                </Fragment>
+              ),
+              pendingUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE PENDING
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    UNSTAKING{" "}
+                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
+                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
+                    </Tooltip>
+                  </Typography>
+                </Fragment>
+              ),
+              failedUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.redText}>FAILED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              rejectedUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.redText}>REJECTED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              successUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    YOU HAVE SUCCESSFULLY UNSTAKED{" "}
+                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
+                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
                     </Tooltip>
                   </Typography>
                   <Typography
@@ -1167,8 +1226,6 @@ function Flashstake({
             }[dialogStep]
           }
         </Dialog>
-     
-      */}
       </Fragment>
     </PageAnimation>
   );
@@ -1178,7 +1235,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading },
   web3: { active, account, chainId },
-  user: { currentStaked, pools },
+  user: { currentStaked, pools, walletBalance },
   contract,
 }) => ({
   ...flashstake,
@@ -1188,20 +1245,22 @@ const mapStateToProps = ({
   chainId,
   pools,
   currentStaked,
+  walletBalance,
   ...contract,
 });
 
 export default connect(mapStateToProps, {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApproval,
+  getApprovalXIO,
   calculateReward,
-  checkAllowance,
+  checkAllowanceXIO,
   getBalance,
-  stake,
+  stakeXIO,
   setLoading,
   setDialogStep,
   setReset,
   setInitialValues,
+  setRefetch,
   showWalletBackdrop,
 })(Flashstake);

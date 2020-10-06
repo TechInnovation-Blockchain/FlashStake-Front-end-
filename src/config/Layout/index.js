@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     //   padding: theme.spacing(4, 18),
     // },
 
-    maxWidth: "250px",
+    maxWidth: "400px",
 
     [theme.breakpoints.down("sm")]: {
       padding: theme.spacing(4, 14),
@@ -214,7 +214,7 @@ function Layout({
 
   return (
     <Fragment>
-      <Container maxWidth="xs" className={classes.mainContainer}>
+      <Container maxWidth="sm" className={classes.mainContainer}>
         <Box>
           {/* <img
             src={themeMode === "dark" ? logo : logoLight}

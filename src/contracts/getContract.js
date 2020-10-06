@@ -10,7 +10,10 @@ import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 
 import { CONSTANTS } from "../utils/constants";
 import { walletconnect } from "../utils/connectors";
-const { INFURA_PROJECT_ENDPOINT_URL, FLASHSTAKE_CONTRACT_ADDRESS } = CONSTANTS;
+const {
+  INFURA_PROJECT_ENDPOINT_URL,
+  FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+} = CONSTANTS;
 
 let web3js;
 let web3jsInfura;
@@ -88,7 +91,7 @@ export const xioFlashstakeContract = () => {
   try {
     const contract = new web3js.eth.Contract(
       FlashStakeProtocolContractAbi,
-      FLASHSTAKE_CONTRACT_ADDRESS
+      FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
     return contract;
   } catch (e) {
@@ -100,7 +103,7 @@ export const xioFlashstakeInfuraContract = () => {
   try {
     const contract = new web3jsInfura.eth.Contract(
       FlashStakeProtocolContractAbi,
-      FLASHSTAKE_CONTRACT_ADDRESS
+      FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
     return contract;
   } catch (e) {
