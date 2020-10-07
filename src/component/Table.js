@@ -27,7 +27,7 @@ import { unstakeXIO } from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
-    borderBottom: `1px solid ${theme.palette.border.main}`,
+    borderBottom: `1px solid ${theme.palette.border.gray}`,
   },
   gridItem: {
     ...theme.typography.body2,
@@ -45,17 +45,19 @@ const useStyles = makeStyles((theme) => ({
   },
   redText: {
     color: theme.palette.xioRed.main,
-    fontSize: 10,
+    fontWeight: 700,
+    // fontSize: 10,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
+    fontWeight: 700,
   },
   sortIcon: {
     color: theme.palette.xioRed.main,
   },
   tableHeadItemBtn: {
     fontWeight: 700,
-    fontSize: 10,
+    // fontSize: 10,
     color: theme.palette.text.secondary,
     display: "flex",
   },
@@ -66,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   msg: {
     marginBottom: theme.spacing(1),
+    fontWeight: 700,
   },
   cursorPointer: {
     cursor: "pointer",
@@ -80,17 +83,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   mainHead: {
-    fontSize: 9,
+    // fontSize: 9,
     fontWeight: 700,
     color: theme.palette.text.grey,
     margin: theme.spacing(2, 0),
     textAlign: "center",
   },
   secHead: {
-    fontSize: 14,
+    // fontSize: 14,
     fontWeight: 700,
     color: theme.palette.text.primary,
-    margin: theme.spacing(2, 0),
+    // margin: theme.spacing(2, 0),
     textAlign: "center",
   },
   sortButton: {
@@ -204,11 +207,13 @@ function TableComponent({
     [page]
   );
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead}>WALLET BALANCE</Typography>
-          <Typography className={classes.secHead}>
+          <Typography className={classes.mainHead} variant="overline">
+            WALLET BALANCE
+          </Typography>
+          <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${walletBalance} XIO`}>
               <span>{trunc(walletBalance)} XIO</span>
             </Tooltip>
@@ -216,8 +221,10 @@ function TableComponent({
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead}>DAPP BALANCE</Typography>
-          <Typography className={classes.secHead}>
+          <Typography className={classes.mainHead} variant="overline">
+            DAPP BALANCE
+          </Typography>
+          <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${dappBalance} XIO`}>
               <span>{trunc(dappBalance)} XIO</span>
             </Tooltip>
@@ -225,148 +232,148 @@ function TableComponent({
         </Grid>
       </Grid>
 
-      <Grid container item xs={12} className={classes.gridHead}>
-        {headItems.map((headItem) => (
-          <Grid item xs={4} className={classes.gridItem} key={headItem}>
-            <MuiButton
-              className={classes.tableHeadItemBtn}
-              onClick={() => onClickSortBtn(headItem)}
-            >
-              <Box className={classes.sortButton}>
-                <UnfoldMore fontSize="small" className={classes.sortIcon} />
-                {headItem}
-              </Box>
-            </MuiButton>
-          </Grid>
-        ))}
-      </Grid>
+      <Grid container item xs={12}>
+        <Grid container item xs={12} className={classes.gridHead}>
+          {headItems.map((headItem) => (
+            <Grid item xs={4} className={classes.gridItem} key={headItem}>
+              <MuiButton
+                className={classes.tableHeadItemBtn}
+                onClick={() => onClickSortBtn(headItem)}
+              >
+                <Box className={classes.sortButton}>
+                  <UnfoldMore fontSize="small" className={classes.sortIcon} />
+                  {headItem}
+                </Box>
+              </MuiButton>
+            </Grid>
+          ))}
+        </Grid>
 
-      {!(active && account) ? (
-        <Grid
-          item
-          xs={12}
-          className={`${classes.msgContainer} ${classes.cursorPointer}`}
-          onClick={showWalletHint}
-        >
-          <Typography variant="body2" className={classes.redText}>
-            CONNECT YOUR WALLET TO VIEW YOUR STAKES
-          </Typography>
-        </Grid>
-      ) : chainId !== 4 ? (
-        <Grid item xs={12} className={classes.msgContainer}>
-          <Typography variant="body2" className={classes.redText}>
-            CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
-          </Typography>
-        </Grid>
-      ) : !loading ? (
-        stakes?.length ? (
-          <Fragment>
-            <PageAnimation in={true} key={page} reverse={reverse}>
-              <Grid container>
-                {sortedData()
-                  .slice(page * 5, page * 5 + 5)
-                  .map((_stake) => {
-                    const _daysRem = Math.ceil(
-                      (_stake.expiryTime - Date.now() / 1000) / 60
-                    );
-                    return (
-                      <Grid
-                        container
-                        item
-                        xs={12}
-                        onClick={() => selectStake(_stake.id)}
-                        className={classes.cursorPointer}
-                      >
-                        <Grid item xs={4} className={classes.gridItem}>
-                          {/* <Tooltip
+        {!(active && account) ? (
+          <Grid
+            item
+            xs={12}
+            className={`${classes.msgContainer} ${classes.cursorPointer}`}
+            onClick={showWalletHint}
+          >
+            <Typography variant="overline" className={classes.redText}>
+              CONNECT YOUR WALLET TO VIEW YOUR STAKES
+            </Typography>
+          </Grid>
+        ) : chainId !== 4 ? (
+          <Grid item xs={12} className={classes.msgContainer}>
+            <Typography variant="overline" className={classes.redText}>
+              CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
+            </Typography>
+          </Grid>
+        ) : !loading ? (
+          stakes?.length ? (
+            <Fragment>
+              <PageAnimation in={true} key={page} reverse={reverse}>
+                <Grid container>
+                  {sortedData()
+                    .slice(page * 5, page * 5 + 5)
+                    .map((_stake) => {
+                      const _daysRem = Math.ceil(
+                        (_stake.expiryTime - Date.now() / 1000) / 60
+                      );
+                      return (
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          onClick={() => selectStake(_stake.id)}
+                          className={classes.cursorPointer}
+                        >
+                          <Grid item xs={4} className={classes.gridItem}>
+                            {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
-                          <span className={classes.flexCenter}>
-                            <img
-                              src={require(`../assets/Tokens/${_stake.pool.tokenB.symbol}.png`)}
-                              alt="Logo"
-                              srcset=""
-                              width={15}
-                              style={{ marginRight: 5 }}
-                            />
-                            {_stake.pool.tokenB.symbol}
-                          </span>
-                          {/* </Tooltip> */}
-                        </Grid>
-                        <Grid item xs={4} className={classes.gridItem}>
-                          <Tooltip
-                            title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
-                          >
-                            <span>
-                              {trunc(_stake.amountAvailable)}/
-                              {trunc(_stake.stakeAmount)}
+                            <span className={classes.flexCenter}>
+                              <img
+                                src={require(`../assets/Tokens/${_stake.pool.tokenB.symbol}.png`)}
+                                alt="Logo"
+                                srcset=""
+                                width={15}
+                                style={{ marginRight: 5 }}
+                              />
+                              {_stake.pool.tokenB.symbol}
                             </span>
-                          </Tooltip>
-                        </Grid>
+                            {/* </Tooltip> */}
+                          </Grid>
+                          <Grid item xs={4} className={classes.gridItem}>
+                            <Tooltip
+                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
+                            >
+                              <span>
+                                {trunc(_stake.amountAvailable)}/
+                                {trunc(_stake.stakeAmount)}
+                              </span>
+                            </Tooltip>
+                          </Grid>
 
-                        <Grid item xs={4} className={classes.gridItem}>
-                          {!_stake.expired ||
-                          _stake.expiryTime > Date.now() / 1000 ? (
-                            <Fragment>
-                              {_daysRem} {_daysRem === 1 ? "DAY" : "DAYS"}
-                            </Fragment>
-                          ) : (
-                            "COMPLETED"
-                          )}
+                          <Grid item xs={4} className={classes.gridItem}>
+                            {!_stake.expired ||
+                            _stake.expiryTime > Date.now() / 1000 ? (
+                              <Fragment>
+                                {_daysRem} {_daysRem === 1 ? "DAY" : "DAYS"}
+                              </Fragment>
+                            ) : (
+                              "COMPLETED"
+                            )}
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    );
-                  })}
-              </Grid>
-            </PageAnimation>
-            {sortedData().length > 5 ? (
-              <Grid item xs={12} className={classes.gridItem}>
-                <TablePagination
-                  rowsPerPageOptions={[]}
-                  component="div"
-                  count={sortedData().length}
-                  rowsPerPage={5}
-                  page={page}
-                  onChangePage={handleChangePage}
-                  labelRowsPerPage=""
-                  nextIconButtonProps={{ color: "primary" }}
-                />
-              </Grid>
-            ) : null}
-            {sortedData().length && dappBalance > 0 ? (
-              <Grid item xs={12} className={classes.gridItem}>
-                <Button
-                  variant="red"
-                  fullWidth
-                  onClick={() => {
-                    onClickUnstake();
-                    unstakeXIO();
-                  }}
-                >
-                  <Tooltip title={`${dappBalance} XIO`}>
-                    <span>UNSTAKE {trunc(dappBalance)} XIO</span>
-                  </Tooltip>
-                </Button>
-              </Grid>
-            ) : null}
-          </Fragment>
+                      );
+                    })}
+                </Grid>
+              </PageAnimation>
+              {sortedData().length > 5 ? (
+                <Grid item xs={12} className={classes.gridItem}>
+                  <TablePagination
+                    rowsPerPageOptions={[]}
+                    component="div"
+                    count={sortedData().length}
+                    rowsPerPage={5}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    labelRowsPerPage=""
+                    nextIconButtonProps={{ color: "primary" }}
+                  />
+                </Grid>
+              ) : null}
+              {sortedData().length && dappBalance > 0 ? (
+                <Grid item xs={12} className={classes.gridItem}>
+                  <Button
+                    variant="red"
+                    fullWidth
+                    onClick={() => {
+                      onClickUnstake();
+                      unstakeXIO();
+                    }}
+                    fontSizeLocal="body2"
+                  >
+                    <Tooltip title={`${dappBalance} XIO`}>
+                      <span>UNSTAKE {trunc(dappBalance)} XIO</span>
+                    </Tooltip>
+                  </Button>
+                </Grid>
+              ) : null}
+            </Fragment>
+          ) : (
+            <Grid item xs={12} className={classes.msgContainer}>
+              <Typography variant="overline" className={classes.msg}>
+                NO AVAILABLE STAKES
+              </Typography>
+            </Grid>
+          )
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.msg}>
-              NO AVAILABLE STAKES
+            <Typography variant="overline">
+              <CircularProgress size={12} /> LOADING
             </Typography>
-            <Button variant="red" onClick={() => history.push("/stake")}>
-              STAKE NOW
-            </Button>
           </Grid>
-        )
-      ) : (
-        <Grid item xs={12} className={classes.msgContainer}>
-          <Typography variant="body2">
-            <CircularProgress size={12} /> LOADING
-          </Typography>
-        </Grid>
-      )}
+        )}
+      </Grid>
     </Grid>
   );
 }

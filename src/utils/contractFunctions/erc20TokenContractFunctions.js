@@ -64,7 +64,7 @@ export const approve = async (address, amount) => {
       })
       .then(function (receipt) {
         showSnackbarIndep("Approval Successful.", "success");
-        setDialogStepIndep("flashstakeProposal");
+        setDialogStepIndep("successApproval");
       })
       .catch((e) => {
         if (e.code === 4001) {

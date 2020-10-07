@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
   disabledText: {
     // color: theme.palette.xioRed.main,
     color: theme.palette.text.disabled,
-    fontSize: 12,
+    // fontSize: 12,
   },
   secondaryText: {
     color: theme.palette.text.secondary,

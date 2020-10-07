@@ -32,7 +32,7 @@ import { ExpandableBox } from "../../component";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
-    padding: theme.spacing(4, 0),
+    // padding: theme.spacing(4, 0),
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
@@ -40,29 +40,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     textAlign: "center",
     backgroundColor: theme.palette.background.secondary2,
-
-    // [theme.breakpoints.down("md")]: {
-    //   padding: theme.spacing(4, 12),
-    // },
-
-    // [theme.breakpoints.down("sm")]: {
-    //   padding: theme.spacing(4, 18),
-    // },
-
-    maxWidth: "400px",
-
-    [theme.breakpoints.down("sm")]: {
-      padding: theme.spacing(4, 14),
-      maxwidth: "10px",
-    },
+    maxWidth: "450px",
   },
   contentContainer: {
-    border: `1px solid ${theme.palette.border.main}`,
     backgroundColor: theme.palette.background.secondary,
     marginTop: theme.spacing(2),
     overflow: "hidden",
     borderRadius: "10px",
     border: "1px solid #282828",
+    width: "100%",
   },
   backdrop: {
     zIndex: 1,
@@ -215,18 +201,18 @@ function Layout({
   return (
     <Fragment>
       <Container maxWidth="sm" className={classes.mainContainer}>
-        <Box>
-          {/* <img
+        {/* <Box> */}
+        {/* <img
             src={themeMode === "dark" ? logo : logoLight}
             alt="logo"
             width={40}
             className={classes.logo}
             onClick={handleClick}
           /> */}
-          <Box className={`transitionEase ${classes.contentContainer}`}>
-            <Routes />
-          </Box>
-          {/* <Accordion
+        <Box className={`transitionEase ${classes.contentContainer}`}>
+          <Routes />
+        </Box>
+        {/* <Accordion
             square
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
@@ -237,15 +223,15 @@ function Layout({
             ></AccordionSummary>
             <AccordionDetails></AccordionDetails>
           </Accordion> */}
-          <Box className={classes.btn2}>
-            {/* <Button className={classes.btn} variant="red">
+        {/* <Box className={classes.btn2}> */}
+        {/* <Button className={classes.btn} variant="red">
               FLASHSTAKE
             </Button> */}
-            {/* <Accordion title="A">
+        {/* <Accordion title="A">
               <span className="accordion-text">aaaaaa</span>
             </Accordion> */}
-          </Box>
-        </Box>
+        {/* </Box> */}
+        {/* </Box> */}
 
         <Backdrop
           className={classes.backdrop2}

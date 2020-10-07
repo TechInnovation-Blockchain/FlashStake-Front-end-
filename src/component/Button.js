@@ -10,6 +10,25 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.2,
     borderRadius: 0,
     transition: "none !important",
+    "&.MuiButton-label": {
+      ...theme.typography.body1,
+    },
+    fontWeight: 700,
+  },
+  body1: {
+    "&.MuiButton-label": {
+      ...theme.typography.body1,
+    },
+  },
+  body2: {
+    "&.MuiButton-label": {
+      ...theme.typography.body2,
+    },
+  },
+  overline: {
+    "&.MuiButton-label": {
+      ...theme.typography.overline,
+    },
   },
   loadingIcon: {
     marginRight: 5,
@@ -41,14 +60,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Button(props) {
   const classes = useStyles();
-
   return (
     <MuiButton
       {...props}
       variant="outlined"
       className={`${props.className} ${classes.commonStyles} ${
         { dark: classes.darkButton, red: classes.redButton }[props.variant]
-      }`}
+      } ${props.fontSizeLocal ? classes[props.fontSizeLocal] : ""}`}
     >
       {props.loading ? (
         <CircularProgress

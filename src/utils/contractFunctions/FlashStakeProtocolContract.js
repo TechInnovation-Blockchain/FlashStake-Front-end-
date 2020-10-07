@@ -53,7 +53,7 @@ const checkContractInitialized = () => {
 
 let _txnHash = "";
 
-export const stake = async (_token, xioQuantity, days) => {
+export const stake = async (_token, xioQuantity, days, reward) => {
   setLoadingIndep({ stake: true });
   try {
     setStakeDialogStepIndep("pendingStake");
@@ -66,7 +66,7 @@ export const stake = async (_token, xioQuantity, days) => {
     }
     let _txnHash = "";
     contract.methods
-      .stake(_token, xioQuantity, days)
+      .stake(_token, xioQuantity, days, reward)
       .send({
         from: walletAddress,
       })

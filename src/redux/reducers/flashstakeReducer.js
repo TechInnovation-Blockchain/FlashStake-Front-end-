@@ -9,7 +9,9 @@ export const flashstakeReducer = (
     selectedRewardToken: {},
     selectedPortal: "",
     allowanceXIO: true,
+    allowanceALT: true,
     reward: "0",
+    swapOutput: "0",
     balance: 0,
     dialogStep: "",
     stakeRequest: {
@@ -76,10 +78,21 @@ export const flashstakeReducer = (
         ...state,
         allowanceXIO: payload,
       };
+    case "ALLOWANCE_ALT":
+      return {
+        ...state,
+        allowanceALT: payload,
+      };
+
     case "STAKE_REWARD":
       return {
         ...state,
         reward: payload,
+      };
+    case "SWAP_OUTPUT":
+      return {
+        ...state,
+        swapOutput: payload,
       };
     case "BALANCE":
       return {

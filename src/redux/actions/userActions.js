@@ -31,6 +31,7 @@ export const updatePools = (data) => async (dispatch) => {
 
 export const updateUserData = (data) => async (dispatch) => {
   let stakes;
+  let swapHistory;
   let expiredTimestamps = [];
   let dappBalance = JSBI.BigInt(0);
   if (data) {
@@ -60,6 +61,11 @@ export const updateUserData = (data) => async (dispatch) => {
           : "0",
       };
     });
+    swapHistory = data.swapHistory.map((_swapHis) => ({
+      ..._swapHis,
+      swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
+      xioReceived: Web3.utils.fromWei(_swapHis.xioReceived),
+    }));
     dispatch({
       type: "USER_DATA",
       payload: {
@@ -67,6 +73,7 @@ export const updateUserData = (data) => async (dispatch) => {
         expiredTimestamps,
         stakes,
         dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+        swapHistory,
       },
     });
   }

@@ -31,36 +31,36 @@ import {
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApproval,
+  getApprovalALT,
   calculateReward,
-  checkAllowance,
+  checkAllowanceALT,
+  calculateSwap,
   getBalance,
   setDialogStep,
   setReset,
   setInitialValues,
   swapALT,
 } from "../../redux/actions/flashstakeActions";
+import { setRefetch } from "../../redux/actions/dashboardActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    // padding: theme.spacing(4, 0),
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-evenly",
     // height: "200px",
   },
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
-    fontSize: 10,
+    // fontSize: 10,
     marginBottom: theme.spacing(1),
-    [theme.breakpoints.down("xs")]: {
-      fontSize: 8,
-    },
+    // [theme.breakpoints.down("xs")]: {
+    // fontSize: 8,
+    // },
   },
   primaryText: {
     color: theme.palette.text.primary,
@@ -71,15 +71,17 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   redText: {
-    fontSize: 10,
+    // fontSize: 10,
     color: theme.palette.xioRed.main,
+    fontWeight: 700,
   },
   infoText: {
-    fontSize: 10,
+    // fontSize: 10,
     color: theme.palette.text.secondary,
+    fontWeight: 700,
   },
   infoTextSpan: {
-    fontSize: 10,
+    // fontSize: 10,
     fontWeight: 900,
     color: "#fff",
   },
@@ -94,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.xioRed.main,
     fontWeight: 900,
     marginTop: 28,
-    fontSize: 15,
+    // fontSize: 15,
     alignSelf: "center",
     margin: theme.spacing(2),
   },
@@ -171,7 +173,7 @@ const useStyles = makeStyles((theme) => ({
   restakeText: {
     color: "#555555",
     fontWeight: 700,
-    fontSize: 11,
+    // fontSize: 11,
     cursor: "pointer",
   },
   dropDown: {
@@ -204,17 +206,21 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
     },
   },
+  dashboardAccordian: {
+    color: theme.palette.text.grey,
+    "&:hover": {
+      color: "#c66065",
+    },
+  },
   accordion: {
     backgroundColor: "#1A1A1A",
   },
   stakeDashBtn: {
-    color: theme.palette.text.grey,
-    fontSize: 10,
+    color: "inherit",
     fontWeight: 700,
-    letterSpacing: 2,
   },
   icon: {
-    color: theme.palette.text.grey,
+    color: "inherit",
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
@@ -281,14 +287,16 @@ function Swap({
   setSelectedStakeToken,
   setSelectedRewardToken,
   selectedPortal,
-  allowance,
-  getApproval,
+  allowanceALT,
+  getApprovalALT,
   calculateReward,
+  calculateSwap,
   reward,
+  swapOutput,
   loading: loadingRedux,
   active,
   account,
-  checkAllowance,
+  checkAllowanceALT,
   getBalance,
   balance,
   setLoading,
@@ -297,6 +305,7 @@ function Swap({
   stakeRequest,
   reset,
   setReset,
+  setRefetch,
   chainId,
   stakeTxnHash,
   setInitialValues,
@@ -331,10 +340,7 @@ function Swap({
     localStorage.setItem("restake", !checked);
   }, [checked, setChecked]);
 
-  const debouncedCalculateReward = useCallback(
-    debounce(calculateReward, 200),
-    []
-  );
+  const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 200), []);
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
@@ -363,15 +369,16 @@ function Swap({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Flashstake - XIO | The Future is at Stake";
+    document.title = "Swap - XIO | The Future is at Stake";
+    setRefetch();
     // setLoading({ dapp: true });
   }, []);
 
   useEffect(() => {
-    if (selectedPortal && !allowance) {
+    if (selectedPortal && !allowanceALT) {
       setRenderDualButtons(true);
     }
-  }, [selectedPortal, allowance]);
+  }, [selectedPortal, allowanceALT]);
 
   useEffect(() => () => setInitialValues(quantity, days), [
     days,
@@ -390,30 +397,36 @@ function Swap({
 
   useEffect(() => {
     if (selectedPortal) {
-      debouncedCalculateReward(quantity, days);
+      debouncedCalculateSwap(quantity);
 
       const _rewardRefreshInterval = setInterval(() => {
         // console.log("Reward updated.");
-        debouncedCalculateReward(quantity, days, true);
+        debouncedCalculateSwap(quantity);
       }, 60000);
       return () => {
         clearInterval(_rewardRefreshInterval);
       };
     }
-  }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
+  }, [setLoading, selectedPortal, quantity, debouncedCalculateSwap]);
+
+  useEffect(() => {
+    if (selectedPortal) {
+      checkAllowanceALT();
+    }
+  }, [selectedPortal, checkAllowanceALT]);
 
   useEffect(() => {
     if (active && account) {
-      checkAllowance();
+      checkAllowanceALT();
       getBalance();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowance, getBalance, showWalletBackdrop]);
+  }, [active, account, checkAllowanceALT, getBalance, showWalletBackdrop]);
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    getApproval();
+    getApprovalALT();
   };
 
   const onClickClose = () => {
@@ -438,6 +451,7 @@ function Swap({
           <Accordion
             square
             expanded={expanded2}
+            // expanded={false}
             onChange={handleChange("panel1")}
           >
             <AccordionSummary
@@ -452,9 +466,12 @@ function Swap({
               style={{ paddingTop: "20px" }}
               className={classes.accordionDetails}
             >
-              <Grid container spacing={4}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Typography variant="h6" className={classes.secondaryText}>
+                  <Typography
+                    variant="overline"
+                    className={classes.secondaryText}
+                  >
                     WHAT DO YOU WANT TO SWAP FOR
                   </Typography>
                   <DropdownDialog
@@ -469,7 +486,7 @@ function Swap({
                 <Grid container item xs={12}>
                   <Box flex={1}>
                     <Typography
-                      variant="body2"
+                      variant="overline"
                       className={classes.secondaryText}
                     >
                       SWAP QUANTITY
@@ -504,7 +521,7 @@ function Swap({
 
                 <Grid item xs={12}>
                   {chainId === 4 && (
-                    <Typography variant="h6" className={classes.infoText}>
+                    <Typography variant="overline" className={classes.infoText}>
                       IF YOU SWAP{" "}
                       <Tooltip
                         title={`${quantity} ${
@@ -518,7 +535,13 @@ function Swap({
                       </Tooltip>{" "}
                       YOU WILL{" "}
                       <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
-                      EARN <span className={classes.infoTextSpan}> 0 XIO</span>
+                      EARN{" "}
+                      <Tooltip title={`${swapOutput} XIO`}>
+                        <span className={classes.infoTextSpan}>
+                          {" "}
+                          {trunc(swapOutput)} XIO
+                        </span>
+                      </Tooltip>
                     </Typography>
                   )}
 
@@ -530,13 +553,19 @@ function Swap({
                         className={`${classes.msgContainer} ${classes.cursorPointer}`}
                         onClick={showWalletHint}
                       >
-                        <Typography variant="body2" className={classes.redText}>
-                          CONNECT YOUR WALLET TO VIEW YOUR STAKES
+                        <Typography
+                          variant="overline"
+                          className={classes.redText}
+                        >
+                          CONNECT YOUR WALLET SWAP TOKENS
                         </Typography>
                       </Grid>
                     ) : chainId !== 4 ? (
                       <Grid item xs={12} className={classes.msgContainer}>
-                        <Typography variant="body2" className={classes.redText}>
+                        <Typography
+                          variant="overline"
+                          className={classes.redText}
+                        >
                           CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
                         </Typography>
                       </Grid>
@@ -545,9 +574,18 @@ function Swap({
                         <Button
                           variant="red"
                           fullWidth
-                          onClick={() => swapALT(quantity)}
+                          onClick={
+                            !allowanceALT && selectedPortal
+                              ? onClickApprove
+                              : () => swapALT(quantity)
+                          }
+                          disabled={!selectedPortal || !(quantity > 0)}
                         >
-                          SWAP
+                          {!allowanceALT && selectedPortal
+                            ? `APPROVE ${
+                                selectedRewardToken?.tokenB?.symbol || ""
+                              }`
+                            : "SWAP"}
                         </Button>
                       </Grid>
                     )}
@@ -914,20 +952,23 @@ function Swap({
           <Accordion
             square
             expanded={!expanded2}
+            // expanded={true}
             onChange={handleChange("panel2")}
           >
             <AccordionSummary
               aria-controls="panel2d-content"
               id="panel2d-header"
               onClick={() => setExpanded2(!expanded2)}
-              className={expanded2 ? classes.btn3 : classes._btn3}
+              className={`${classes.dashboardAccordian} ${
+                expanded2 ? classes.btn3 : classes._btn3
+              }`}
             >
               {expanded2 ? (
                 <ArrowDropUpIcon size="large" className={classes.icon} />
               ) : (
                 <ArrowDropDownIcon size="large" className={classes.icon} />
               )}
-              <Typography className={classes.stakeDashBtn}>
+              <Typography variant="body2" className={classes.stakeDashBtn}>
                 SWAP DASHBOARD
               </Typography>
             </AccordionSummary>
@@ -961,9 +1002,9 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApproval,
+  getApprovalALT,
   calculateReward,
-  checkAllowance,
+  checkAllowanceALT,
   getBalance,
   setLoading,
   setDialogStep,
@@ -971,4 +1012,6 @@ export default connect(mapStateToProps, {
   setInitialValues,
   showWalletBackdrop,
   swapALT,
+  calculateSwap,
+  setRefetch,
 })(Swap);

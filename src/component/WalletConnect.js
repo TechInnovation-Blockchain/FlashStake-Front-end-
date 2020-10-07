@@ -159,7 +159,7 @@ function WalletConnect({
   }, [web3context, storeWeb3Context]);
 
   useEffect(() => {
-    activateWallet();
+    // activateWallet();
   }, []);
 
   // const duration = 300;

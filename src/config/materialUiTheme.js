@@ -28,6 +28,7 @@ export const darkTheme = createMuiTheme({
     border: {
       main: "#000",
       secondary: "#ffffff1f",
+      gray: "#121212",
     },
     button: {
       dark: "#555555",

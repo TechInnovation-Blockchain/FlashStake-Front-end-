@@ -52,22 +52,19 @@ import { setRefetch } from "../../redux/actions/dashboardActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    // padding: theme.spacing(4, 0),
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-evenly",
-
-    // height: "200px",
+    // justifyContent: "space-evenly",
   },
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
-    fontSize: 10,
+    // fontSize: 10,
     marginBottom: theme.spacing(1),
-    [theme.breakpoints.down("xs")]: {
-      fontSize: 8,
-    },
+    // [theme.breakpoints.down("xs")]: {
+    //   fontSize: 8,
+    // },
   },
   primaryText: {
     color: theme.palette.text.primary,
@@ -78,15 +75,17 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   redText: {
-    fontSize: 10,
+    // fontSize: 10,
+    fontWeight: 700,
     color: theme.palette.xioRed.main,
   },
   infoText: {
-    fontSize: 10,
+    // fontSize: 10,
     color: theme.palette.text.secondary,
+    fontWeight: 700,
   },
   infoTextSpan: {
-    fontSize: 10,
+    // fontSize: 10,
     fontWeight: 900,
     color: "#fff",
     position: "relative",
@@ -101,8 +100,8 @@ const useStyles = makeStyles((theme) => ({
   xIcon: {
     color: theme.palette.xioRed.main,
     fontWeight: 900,
-    marginTop: 28,
-    fontSize: 15,
+    marginTop: 30,
+    // fontSize: 15,
     alignSelf: "center",
     margin: theme.spacing(2),
   },
@@ -179,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
   restakeText: {
     color: "#555555",
     fontWeight: 700,
-    fontSize: 11,
+    // fontSize: 11,
     cursor: "pointer",
   },
   dropDown: {
@@ -212,21 +211,21 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
     },
   },
+  dashboardAccordian: {
+    color: theme.palette.text.grey,
+    "&:hover": {
+      color: "#c66065",
+    },
+  },
   accordion: {
     backgroundColor: "#1A1A1A",
   },
   stakeDashBtn: {
-    color: theme.palette.text.grey,
-    fontSize: 10,
+    color: "inherit",
     fontWeight: 700,
-    letterSpacing: 2,
   },
   icon: {
-    color: theme.palette.text.grey,
-
-    "&:hover": {
-      color: "#fff",
-    },
+    color: "inherit",
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
@@ -469,6 +468,7 @@ function Flashstake({
           <Accordion
             square
             expanded={expanded2}
+            // expanded={false}
             onChange={handleChange("panel1")}
           >
             <AccordionSummary
@@ -483,9 +483,12 @@ function Flashstake({
               style={{ paddingTop: "20px" }}
               className={classes.accordionDetails}
             >
-              <Grid container spacing={4}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Typography variant="h6" className={classes.secondaryText}>
+                  <Typography
+                    variant="overline"
+                    className={classes.secondaryText}
+                  >
                     WHAT TOKEN DO YOU WANT TO EARN
                   </Typography>
                   <DropdownDialog
@@ -499,7 +502,7 @@ function Flashstake({
                 <Grid container item xs={12}>
                   <Box flex={1}>
                     <Typography
-                      variant="body2"
+                      variant="overline"
                       className={classes.secondaryText}
                     >
                       STAKE QUANTITY
@@ -535,12 +538,12 @@ function Flashstake({
                     </Box>
                   </Box>
 
-                  <Typography variant="body2" className={classes.xIcon}>
+                  <Typography variant="h6" className={classes.xIcon}>
                     +
                   </Typography>
                   <Box flex={1}>
                     <Typography
-                      variant="body2"
+                      variant="overline"
                       className={classes.secondaryText}
                     >
                       STAKE DURATION
@@ -573,7 +576,7 @@ function Flashstake({
 
                 <Grid item xs={12}>
                   {selectedRewardToken?.tokenB?.symbol ? (
-                    <Typography variant="h6" className={classes.infoText}>
+                    <Typography variant="overline" className={classes.infoText}>
                       IF YOU STAKE{" "}
                       <span className={classes.infoTextSpan}>
                         {quantity || 0} XIO{" "}
@@ -605,7 +608,7 @@ function Flashstake({
                       .
                     </Typography>
                   ) : (
-                    <Typography variant="body2" className={classes.redText}>
+                    <Typography variant="overline" className={classes.redText}>
                       SELECT A TOKEN TO VIEW REWARDS
                     </Typography>
                   )}
@@ -740,7 +743,7 @@ function Flashstake({
                 selectedRewardToken &&
                 !loadingRedux.allowance ? (
                   <Grid item xs={12}>
-                    <Typography variant="body2" className={classes.redText}>
+                    <Typography variant="overline" className={classes.redText}>
                       BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
                     </Typography>
                   </Grid>
@@ -752,14 +755,14 @@ function Flashstake({
                     onClick={showWalletHint}
                     className={classes.cursorPointer}
                   >
-                    <Typography variant="body2" className={classes.redText}>
+                    <Typography variant="overline" className={classes.redText}>
                       CONNECT YOUR WALLET TO STAKE
                     </Typography>
                   </Grid>
                 ) : chainId !== 4 ||
                   web3context.error instanceof UnsupportedChainIdError ? (
                   <Grid item xs={12}>
-                    <Typography variant="body2" className={classes.redText}>
+                    <Typography variant="overline" className={classes.redText}>
                       CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
                     </Typography>
                   </Grid>
@@ -938,20 +941,23 @@ function Flashstake({
           <Accordion
             square
             expanded={!expanded2}
+            // expanded={true}
             onChange={handleChange("panel2")}
           >
             <AccordionSummary
               aria-controls="panel2d-content"
               id="panel2d-header"
               onClick={() => setExpanded2(!expanded2)}
-              className={expanded2 ? classes.btn3 : classes._btn3}
+              className={`${classes.dashboardAccordian} ${
+                expanded2 ? classes.btn3 : classes._btn3
+              }`}
             >
               {expanded2 ? (
                 <ArrowDropUpIcon size="large" className={classes.icon} />
               ) : (
                 <ArrowDropDownIcon size="large" className={classes.icon} />
               )}
-              <Typography className={classes.stakeDashBtn}>
+              <Typography variant="body2" className={classes.stakeDashBtn}>
                 STAKE DASHBOARD
               </Typography>
             </AccordionSummary>
@@ -970,10 +976,7 @@ function Flashstake({
             dialogStep.includes(item)
           )}
           step={dialogStep}
-          stepperShown={
-            dialogStep === "pendingApproval" ||
-            dialogStep === "flashstakeProposal"
-          }
+          stepperShown={false}
 
           // status="success"
         >
@@ -987,51 +990,15 @@ function Flashstake({
                   </Typography>
                 </Fragment>
               ),
-              flashstakeProposal: (
+              successApproval: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    APPROVAL
                     <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    {quantity} XIO FOR {days} {days > 1 ? "DAYS" : "DAY"} TO
-                    EARN{" "}
-                    <Tooltip
-                      title={`${getExtendedFloatValue(reward)} ${
-                        selectedRewardToken?.tokenB?.symbol
-                      }`}
-                    >
-                      <span>
-                        {trunc(reward)} {selectedRewardToken?.tokenB?.symbol}
-                      </span>
-                    </Tooltip>{" "}
-                    INSTANTLY
-                  </Typography>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    onClick={
-                      !allowanceXIO
-                        ? () => {}
-                        : () => onClickStake(quantity, days)
-                    }
-                    disabled={
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    STAKE
+                  <Button variant="red" fullWidth onClick={onClickClose}>
+                    CLOSE
                   </Button>
                 </Fragment>
               ),

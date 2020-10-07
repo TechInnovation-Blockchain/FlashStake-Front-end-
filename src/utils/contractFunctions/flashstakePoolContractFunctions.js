@@ -32,7 +32,7 @@ export const getAPYStake = async (_amountIn) => {
   } catch (e) {
     console.error("ERROR getAPYStake -> ", e);
   }
-  return 0;
+  return "0";
 };
 
 export const getAPYSwap = async (_amountIn) => {
@@ -44,5 +44,5 @@ export const getAPYSwap = async (_amountIn) => {
   } catch (e) {
     console.error("ERROR getAPYSwap -> ", e);
   }
-  return 0;
+  return "0";
 };
