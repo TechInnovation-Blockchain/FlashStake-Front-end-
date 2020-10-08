@@ -35,7 +35,7 @@ import {
   calculateReward,
   checkAllowanceALT,
   calculateSwap,
-  getBalance,
+  getBalanceALT,
   setDialogStep,
   setReset,
   setInitialValues,
@@ -284,6 +284,7 @@ function Swap({
   rewardTokens,
   selectedStakeToken,
   selectedRewardToken,
+  balanceALT,
   setSelectedStakeToken,
   setSelectedRewardToken,
   selectedPortal,
@@ -297,7 +298,7 @@ function Swap({
   active,
   account,
   checkAllowanceALT,
-  getBalance,
+  getBalanceALT,
   balance,
   setLoading,
   dialogStep,
@@ -388,12 +389,16 @@ function Swap({
 
   useEffect(() => {
     if (reset) {
-      getBalance();
+      getBalanceALT();
       setDays("");
       setQuantity("");
       setReset(false);
     }
-  }, [reset, setReset, getBalance]);
+  }, [reset, setReset, getBalanceALT]);
+
+  useEffect(() => {
+    getBalanceALT();
+  }, [selectedPortal]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -418,10 +423,10 @@ function Swap({
   useEffect(() => {
     if (active && account) {
       checkAllowanceALT();
-      getBalance();
+      getBalanceALT();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowanceALT, getBalance, showWalletBackdrop]);
+  }, [active, account, checkAllowanceALT, getBalanceALT, showWalletBackdrop]);
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
@@ -579,7 +584,11 @@ function Swap({
                               ? onClickApprove
                               : () => swapALT(quantity)
                           }
-                          disabled={!selectedPortal || !(quantity > 0)}
+                          disabled={
+                            !selectedPortal ||
+                            !(quantity > 0) ||
+                            parseFloat(balanceALT) < parseFloat(quantity)
+                          }
                         >
                           {!allowanceALT && selectedPortal
                             ? `APPROVE ${
@@ -1005,7 +1014,7 @@ export default connect(mapStateToProps, {
   getApprovalALT,
   calculateReward,
   checkAllowanceALT,
-  getBalance,
+  getBalanceALT,
   setLoading,
   setDialogStep,
   setReset,

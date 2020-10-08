@@ -177,7 +177,36 @@ export const setSelectedRewardToken = (_pool) => async (dispatch, getState) => {
   }
 };
 
-export const getBalance = () => async (dispatch, getState) => {
+export const getBalanceALT = () => async (dispatch, getState) => {
+  let balance = 0;
+  try {
+    const {
+      web3: { active, account },
+      flashstake: { selectedRewardToken },
+    } = getState();
+    if (!selectedRewardToken?.tokenB?.id) {
+      dispatch({
+        type: "BALANCE_ALT",
+        payload: balance,
+      });
+      return null;
+    }
+    if (active && account) {
+      await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
+      balance = Web3.utils.fromWei(await balanceOf());
+    }
+  } catch (e) {
+    balance = 0;
+    console.error("ERROR getBalance -> ", e);
+  } finally {
+    dispatch({
+      type: "BALANCE_ALT",
+      payload: balance,
+    });
+  }
+};
+
+export const getBalanceXIO = () => async (dispatch, getState) => {
   let balance = 0;
   try {
     const {
@@ -186,14 +215,13 @@ export const getBalance = () => async (dispatch, getState) => {
     if (active && account) {
       await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
       balance = Web3.utils.fromWei(await balanceOf());
-      // console.log("balance -> ", balance);
     }
   } catch (e) {
     balance = 0;
     console.error("ERROR getBalance -> ", e);
   } finally {
     dispatch({
-      type: "BALANCE",
+      type: "BALANCE_XIO",
       payload: balance,
     });
   }

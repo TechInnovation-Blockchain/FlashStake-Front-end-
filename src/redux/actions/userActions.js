@@ -76,6 +76,14 @@ export const updateUserData = (data) => async (dispatch) => {
         swapHistory,
       },
     });
+  } else {
+    dispatch({
+      type: "USER_DATA",
+      payload: {
+        swapHistory: [],
+        stakes: [],
+      },
+    });
   }
 };
 

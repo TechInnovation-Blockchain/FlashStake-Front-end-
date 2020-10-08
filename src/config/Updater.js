@@ -19,7 +19,7 @@ import {
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
-  getBalance,
+  getBalanceXIO,
   checkAllowanceXIO,
 } from "../redux/actions/flashstakeActions";
 
@@ -38,7 +38,7 @@ function Updater({
   currentStaked,
   reCalculateExpired,
   setReCalculateExpired,
-  getBalance,
+  getBalanceXIO,
   checkContractState,
   baseInterestRate,
   updateWalletBalance,
@@ -63,11 +63,11 @@ function Updater({
   useEffect(() => {
     if (active && account) {
       refetch();
-      getBalance();
+      getBalanceXIO();
       updateWalletBalance();
       checkAllowanceXIO();
     }
-  }, [active, account, refetch, getBalance]);
+  }, [active, account, refetch, getBalanceXIO]);
 
   useEffect(() => {
     const earliestRemaining = currentStaked.earliest - Date.now() / 1000;
@@ -99,10 +99,10 @@ function Updater({
   useEffect(() => {
     if (refetchData) {
       refetch();
-      getBalance();
+      getBalanceXIO();
       setRefetch(false);
     }
-  }, [refetchData, setRefetch, refetch, getBalance]);
+  }, [refetchData, setRefetch, refetch, getBalanceXIO]);
 
   useEffect(() => {
     updatePools(data?.protocols[0].pools);
@@ -141,7 +141,7 @@ export default connect(mapStateToProps, {
   setRefetch,
   setLoading,
   setReCalculateExpired,
-  getBalance,
+  getBalanceXIO,
   checkContractState,
   checkAllowanceXIO,
   updateWalletBalance,

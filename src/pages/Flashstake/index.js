@@ -33,7 +33,7 @@ import {
   getApprovalXIO,
   calculateReward,
   checkAllowanceXIO,
-  getBalance,
+  getBalanceXIO,
   stakeXIO,
   setDialogStep,
   setReset,
@@ -305,8 +305,8 @@ function Flashstake({
   active,
   account,
   checkAllowanceXIO,
-  getBalance,
-  balance,
+  getBalanceXIO,
+  balanceXIO,
   stakeXIO,
   setLoading,
   dialogStep,
@@ -401,12 +401,12 @@ function Flashstake({
 
   useEffect(() => {
     if (reset) {
-      getBalance();
+      getBalanceXIO();
       setDays("");
       setQuantity("");
       setReset(false);
     }
-  }, [reset, setReset, getBalance]);
+  }, [reset, setReset, getBalanceXIO]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -424,10 +424,10 @@ function Flashstake({
   useEffect(() => {
     if (active && account) {
       checkAllowanceXIO();
-      getBalance();
+      getBalanceXIO();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowanceXIO, getBalance, showWalletBackdrop]);
+  }, [active, account, checkAllowanceXIO, getBalanceXIO, showWalletBackdrop]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
@@ -1222,7 +1222,7 @@ export default connect(mapStateToProps, {
   getApprovalXIO,
   calculateReward,
   checkAllowanceXIO,
-  getBalance,
+  getBalanceXIO,
   stakeXIO,
   setLoading,
   setDialogStep,
