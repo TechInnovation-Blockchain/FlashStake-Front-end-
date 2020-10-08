@@ -225,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   icon: {
-    color: "inherit",
+    color: theme.palette.xioRed.main,
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,

@@ -30,6 +30,10 @@ export const flashstakeReducer = (
       days: "",
       quantity: "",
     },
+    swapHist: {
+      amount: "",
+      token: "",
+    },
   },
   { type, payload }
 ) => {
@@ -95,6 +99,13 @@ export const flashstakeReducer = (
         ...state,
         swapOutput: payload,
       };
+
+    case "SWAP_REQUEST":
+      return {
+        ...state,
+        swapHist: payload,
+      };
+
     case "BALANCE_XIO":
       return {
         ...state,

@@ -309,11 +309,13 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
       flashstake: { selectedRewardToken },
     } = await getState();
     if (_altQuantity > 0 && selectedRewardToken?.id) {
+      console.log(_altQuantity, selectedRewardToken?.tokenB?.symbol);
       dispatch({
         type: "SWAP_REQUEST",
         payload: {
-          timestamps: _altQuantity,
-          token: selectedRewardToken.tokenB,
+          amount: _altQuantity,
+          token: selectedRewardToken.tokenB.symbol,
+          // token: selectedRewardToken.tokenB,
         },
       });
       initializeFlashstakeProtocolContract();
