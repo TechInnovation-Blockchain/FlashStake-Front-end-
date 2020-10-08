@@ -41,6 +41,7 @@ import {
   setInitialValues,
   swapALT,
 } from "../../redux/actions/flashstakeActions";
+import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
@@ -321,6 +322,8 @@ function Swap({
   swapHist,
   pools,
   swapALT,
+  setExpandAccodion,
+  expanding,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -456,9 +459,15 @@ function Swap({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
-  // console.log("In Swap", pools);
-  //#endregion
-  // console.log(expanded2);
+
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding]);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
@@ -765,16 +774,6 @@ function Swap({
                           >
                             YOU HAVE SUCCESSFULLY SWAPPED {swapHist?.amount}{" "}
                             {swapHist?.token || ""} FOR {trunc(swapOutput)} XIO
-                            {/* {stakeRequest.days > 1 ? "DAYS" : "DAY"} AND YOU
-                            WERE SENT{" "} */}
-                            {/* <Tooltip
-                              title={`${stakeRequest.reward} ${stakeRequest.token}`}
-                            >
-                              <span>
-                                {trunc(stakeRequest.reward)}{" "}
-                                {stakeRequest.token}
-                              </span>
-                            </Tooltip> */}
                           </Typography>
                           <Typography
                             variant="body2"
@@ -844,7 +843,7 @@ function Swap({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading },
+  ui: { loading, expanding },
   web3: { active, account, chainId },
   user: { currentStaked, pools },
   flashstake: { swapHist },
@@ -854,6 +853,7 @@ const mapStateToProps = ({
   loading,
   active,
   account,
+  expanding,
   chainId,
   currentStaked,
   swapHist,
@@ -875,5 +875,6 @@ export default connect(mapStateToProps, {
   showWalletBackdrop,
   swapALT,
   calculateSwap,
+  setExpandAccodion,
   setRefetch,
 })(Swap);
