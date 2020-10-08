@@ -4,7 +4,9 @@ import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Divider from "@material-ui/core/Divider";
 import logo from "../assets/xio-logo.svg";
+import { connect } from "react-redux";
 import animatedLogo from "../assets/xio-logo.gif";
+import { setExpandAccodion } from "../redux/actions/uiActions";
 
 const useStyles = makeStyles((theme) => ({
   navContainer: {
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar() {
+function Navbar({ expanding, setExpandAccodion }) {
   const classes = useStyles();
 
   const [animate, setAnimate] = useState(false);
@@ -61,6 +63,12 @@ export default function Navbar() {
     }, 3500);
   };
 
+  const handleClick2 = () => {
+    setExpandAccodion(false);
+  };
+
+  console.log("IN  navbar=====>", expanding);
+
   return (
     <Box className={classes.navContainer}>
       {/* <Box className={classes.navOuterBox}> */}
@@ -69,6 +77,7 @@ export default function Navbar() {
           to="/stake"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
+          onClick={handleClick2}
           exact
         >
           <Typography variant="body1" className={classes.navLinkText}>
@@ -83,6 +92,7 @@ export default function Navbar() {
           to="/swap"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
+          onClick={handleClick2}
           exact
         >
           <Typography variant="body1" className={classes.navLinkText}>
@@ -108,6 +118,7 @@ export default function Navbar() {
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
+          onClick={handleClick2}
         >
           <Typography variant="body1" className={classes.navLinkText}>
             POOL
@@ -120,6 +131,7 @@ export default function Navbar() {
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
+          onClick={handleClick2}
         >
           <Typography variant="body1" className={classes.navLinkText}>
             VOTE
@@ -130,3 +142,11 @@ export default function Navbar() {
     </Box>
   );
 }
+
+const mapStateToProps = ({ ui: { expanding } }) => ({
+  expanding,
+});
+
+export default connect(mapStateToProps, {
+  setExpandAccodion,
+})(Navbar);

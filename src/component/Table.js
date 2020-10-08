@@ -102,6 +102,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
+  walletInfo: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 function TableComponent({
@@ -207,7 +210,7 @@ function TableComponent({
     [page]
   );
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">

@@ -66,6 +66,13 @@ export const setLoadingIndep = (data) => {
   store.dispatch(setLoading(data));
 };
 
+export const setExpandAccodion = (data) => {
+  return {
+    type: "EXPAND_ACCORDION",
+    payload: data,
+  };
+};
+
 export const themeSwitchAction = () => async (dispatch) => {
   dispatch(setLoading({ themeSwitch: true }));
   setTimeout(() => dispatch(setLoading({ themeSwitch: false })), 2000);

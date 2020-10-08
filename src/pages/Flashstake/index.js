@@ -39,6 +39,7 @@ import {
   setReset,
   setInitialValues,
 } from "../../redux/actions/flashstakeActions";
+import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { getExtendedFloatValue, trunc } from "../../utils/utilFunc";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
@@ -225,7 +226,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   icon: {
-    color: "inherit",
+    color: theme.palette.xioRed.main,
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
@@ -325,6 +326,8 @@ function Flashstake({
   pools,
   walletBalance,
   setRefetch,
+  setExpandAccodion,
+  expanding,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -458,6 +461,15 @@ function Flashstake({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
+
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding]);
 
   //#endregion
   // console.log(expanded2);
@@ -614,38 +626,6 @@ function Flashstake({
                   )}
                 </Grid>
 
-                {/* <Box className={classes.btn}>
-                    {!(active && account) ? (
-                      <Grid
-                        item
-                        xs={12}
-                        className={`${classes.msgContainer} ${classes.cursorPointer}`}
-                        onClick={showWalletHint}
-                      >
-                        <Typography variant="body2" className={classes.redText}>
-                          CONNECT YOUR WALLET TO VIEW YOUR STAKES
-                        </Typography>
-                      </Grid>
-                    ) : chainId !== 4 ? (
-                      <Grid item xs={12} className={classes.msgContainer}>
-                        <Typography variant="body2" className={classes.redText}>
-                          CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
-                        </Typography>
-                      </Grid>
-                    ) : (
-                      <Button
-                        variant="red"
-                        onClick={
-                          !allowance
-                            ? () => {}
-                            : () => onClickStake(quantity, days)
-                        }
-                      >
-                        FLASHSTAKE
-                      </Button>
-                    )}
-                  </Box> */}
-
                 {!allowanceXIO || renderDualButtons ? (
                   <Grid container item xs={12} onClick={showWalletHint}>
                     <Grid item xs={6} className={classes.btnPaddingRight}>
@@ -767,173 +747,6 @@ function Flashstake({
                     </Typography>
                   </Grid>
                 ) : null}
-
-                {/*   
-          
-            {selectedPortal ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  FLASHSTAKE AND GET{" "}
-                  {loadingRedux.reward ? (
-                    <CircularProgress
-                      size={12}
-                      className={classes.loaderStyle}
-                    />
-                  ) : (
-                    <Tooltip
-                      title={`${getExtendedFloatValue(
-                        reward
-                      )} ${selectedRewardToken}`}
-                    >
-                      <span className={classes.redText}>
-                        {trunc(reward)} {selectedRewardToken}
-                      </span>
-                    </Tooltip>
-                  )}{" "}
-                  INSTANTLY
-                </Typography>
-              </Grid>
-            ) : null}
-
-            {!allowance || renderDualButtons ? (
-              <Grid container item xs={12} onClick={showWalletHint}>
-                <Grid item xs={6} className={classes.btnPaddingRight}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={!allowance ? onClickApprove : () => {}}
-                    disabled={
-                      allowance ||
-                      !active ||
-                      !account ||
-                      // inputError ||
-                      // quantity <= 0 ||
-                      // days <= 0 ||
-                      // reward <= 0 ||
-                      // !selectedPortal ||
-                      // loadingRedux.reward ||
-                      chainId !== 4
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    {loadingRedux.approval
-                      ? "APPROVING"
-                      : `APPROVE ${selectedStakeToken}`}
-                  </Button>
-                </Grid>
-                <Grid item xs={6} className={classes.btnPaddingLeft}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={
-                      !allowance
-                        ? () => {}
-                        : () => onClickStake(quantity, days, checked)
-                    }
-                    disabled={
-                      !allowance ||
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                  >
-                    FLASHSTAKE
-                  </Button>
-                </Grid>
-              </Grid>
-            ) : (
-              <Fragment>
-                <Grid container item xs={12} onClick={showWalletHint}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={
-                      !allowance
-                        ? () => {}
-                        : () => onClickStake(quantity, days, checked)
-                    }
-                    disabled={
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    FLASHSTAKE
-                  </Button>
-                </Grid>
-              </Fragment>
-            )}
-            {currentStaked.availableStakeAmount > 0 && quantity > 0 ? (
-              <Grid item xs={12} className={classes.restakeableXio}>
-                <Typography
-                  className={classes.restakeText}
-                  onClick={toggleChecked}
-                >
-                  <Checkbox
-                    checked={checked}
-                    // onClick={() => setChecked((val) => !val)}
-                    className={classes.checkbox}
-                    size="small"
-                  />{" "}
-                  USE{" "}
-                  {currentStaked.availableStakeAmount > parseFloat(quantity)
-                    ? quantity
-                    : currentStaked.availableStakeAmount}{" "}
-                  XIO FROM YOUR AVAILABLE DAPP BALANCE
-                </Typography>
-              </Grid>
-            ) : null}
-            {!allowance &&
-            active &&
-            account &&
-            selectedRewardToken &&
-            !loadingRedux.allowance ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.redText}>
-                  BEFORE YOU CAN <b>FLASHSTAKE</b>, YOU MUST <b>APPROVE XIO</b>
-                </Typography>
-              </Grid>
-            ) : null}
-            {!(active && account) ? (
-              <Grid
-                item
-                xs={12}
-                onClick={showWalletHint}
-                className={classes.cursorPointer}
-              >
-                <Typography variant="body2" className={classes.redText}>
-                  CONNECT YOUR WALLET TO FLASHSTAKE
-                </Typography>
-              </Grid>
-            ) : chainId !== 4 ||
-              web3context.error instanceof UnsupportedChainIdError ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.redText}>
-                  CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>FLASHSTAKING</b>
-                </Typography>
-              </Grid>
-            ) : null}
-          </Grid>
-        </Box>
-
-
-        
-      
-          </Fragment>
-       */}
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -1200,7 +1013,7 @@ function Flashstake({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading },
+  ui: { loading, expanding },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance },
   contract,
@@ -1208,6 +1021,7 @@ const mapStateToProps = ({
   ...flashstake,
   loading,
   active,
+  expanding,
   account,
   chainId,
   pools,
@@ -1230,4 +1044,5 @@ export default connect(mapStateToProps, {
   setInitialValues,
   setRefetch,
   showWalletBackdrop,
+  setExpandAccodion,
 })(Flashstake);

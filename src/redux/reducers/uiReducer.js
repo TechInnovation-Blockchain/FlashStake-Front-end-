@@ -8,6 +8,7 @@ export const uiReducer = (
       walletConnection: false,
     },
     walletBackdrop: false,
+    expanding: true,
   },
   { type, payload }
 ) => {
@@ -45,6 +46,12 @@ export const uiReducer = (
       return {
         ...state,
         walletBackdrop: payload,
+      };
+
+    case "EXPAND_ACCORDION":
+      return {
+        ...state,
+        expanding: payload,
       };
     default:
       return state;

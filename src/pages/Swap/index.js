@@ -41,9 +41,12 @@ import {
   setInitialValues,
   swapALT,
 } from "../../redux/actions/flashstakeActions";
+import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
+import { Link } from "@material-ui/icons";
+
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -220,7 +223,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   icon: {
-    color: "inherit",
+    color: theme.palette.xioRed.main,
   },
   accordionDetails: {
     borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
@@ -316,8 +319,11 @@ function Swap({
   maxDays,
   maxStake,
   currentStaked,
+  swapHist,
   pools,
   swapALT,
+  setExpandAccodion,
+  expanding,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -340,7 +346,8 @@ function Swap({
     setChecked(!checked);
     localStorage.setItem("restake", !checked);
   }, [checked, setChecked]);
-
+  console.log("----->", swapHist?.amount);
+  console.log("----->", swapHist?.token);
   const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 200), []);
 
   const [days, setDays] = useState(initialValues.days);
@@ -434,6 +441,12 @@ function Swap({
     getApprovalALT();
   };
 
+  const onClickSwap = (quantity) => {
+    setDialogStep("pendingSwap");
+    setShowStakeDialog(true);
+    swapALT(quantity);
+  };
+
   const onClickClose = () => {
     setReset(true);
     setShowStakeDialog(false);
@@ -446,9 +459,15 @@ function Swap({
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
-  // console.log("In Swap", pools);
-  //#endregion
-  // console.log(expanded2);
+
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding]);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
@@ -487,7 +506,6 @@ function Swap({
                     heading="SELECT TOKEN"
                   />
                 </Grid>
-
                 <Grid container item xs={12}>
                   <Box flex={1}>
                     <Typography
@@ -523,7 +541,6 @@ function Swap({
                     </Box>
                   </Box>
                 </Grid>
-
                 <Grid item xs={12}>
                   {chainId === 4 && (
                     <Typography variant="overline" className={classes.infoText}>
@@ -582,7 +599,7 @@ function Swap({
                           onClick={
                             !allowanceALT && selectedPortal
                               ? onClickApprove
-                              : () => swapALT(quantity)
+                              : () => onClickSwap(quantity)
                           }
                           disabled={
                             !selectedPortal ||
@@ -600,360 +617,193 @@ function Swap({
                     )}
                   </Box>
                 </Grid>
-                {/*             
-            {selectedPortal ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.secondaryText}>
-                  FLASHSTAKE AND GET{" "}
-                  {loadingRedux.reward ? (
-                    <CircularProgress
-                      size={12}
-                      className={classes.loaderStyle}
-                    />
-                  ) : (
-                    <Tooltip
-                      title={`${getExtendedFloatValue(
-                        reward
-                      )} ${selectedRewardToken}`}
-                    >
-                      <span className={classes.redText}>
-                        {trunc(reward)} {selectedRewardToken}
-                      </span>
-                    </Tooltip>
-                  )}{" "}
-                  INSTANTLY
-                </Typography>
-              </Grid>
-            ) : null}
 
-            {!allowance || renderDualButtons ? (
-              <Grid container item xs={12} onClick={showWalletHint}>
-                <Grid item xs={6} className={classes.btnPaddingRight}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={!allowance ? onClickApprove : () => {}}
-                    disabled={
-                      allowance ||
-                      !active ||
-                      !account ||
-                      // inputError ||
-                      // quantity <= 0 ||
-                      // days <= 0 ||
-                      // reward <= 0 ||
-                      // !selectedPortal ||
-                      // loadingRedux.reward ||
-                      chainId !== 4
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    {loadingRedux.approval
-                      ? "APPROVING"
-                      : `APPROVE ${selectedStakeToken}`}
-                  </Button>
-                </Grid>
-                <Grid item xs={6} className={classes.btnPaddingLeft}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={
-                      !allowance
-                        ? () => {}
-                        : () => onClickStake(quantity, days, checked)
-                    }
-                    disabled={
-                      !allowance ||
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                  >
-                    FLASHSTAKE
-                  </Button>
-                </Grid>
-              </Grid>
-            ) : (
-              <Fragment>
-                <Grid container item xs={12} onClick={showWalletHint}>
-                  <Button
-                    fullWidth
-                    variant="red"
-                    onClick={
-                      !allowance
-                        ? () => {}
-                        : () => onClickStake(quantity, days, checked)
-                    }
-                    disabled={
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    FLASHSTAKE
-                  </Button>
-                </Grid>
-              </Fragment>
-            )}
-            {currentStaked.availableStakeAmount > 0 && quantity > 0 ? (
-              <Grid item xs={12} className={classes.restakeableXio}>
-                <Typography
-                  className={classes.restakeText}
-                  onClick={toggleChecked}
+                <Dialog
+                  open={showStakeDialog}
+                  // open={true}
+                  title="SWAP"
+                  onClose={() => setShowStakeDialog(false)}
+                  status={[
+                    "pending",
+                    "success",
+                    "failed",
+                    "rejected",
+                  ].find((item) => dialogStep.includes(item))}
+                  step={dialogStep}
+                  stepperShown={false}
+
+                  // status="success"
                 >
-                  <Checkbox
-                    checked={checked}
-                    // onClick={() => setChecked((val) => !val)}
-                    className={classes.checkbox}
-                    size="small"
-                  />{" "}
-                  USE{" "}
-                  {currentStaked.availableStakeAmount > parseFloat(quantity)
-                    ? quantity
-                    : currentStaked.availableStakeAmount}{" "}
-                  XIO FROM YOUR AVAILABLE DAPP BALANCE
-                </Typography>
-              </Grid>
-            ) : null}
-            {!allowance &&
-            active &&
-            account &&
-            selectedRewardToken &&
-            !loadingRedux.allowance ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.redText}>
-                  BEFORE YOU CAN <b>FLASHSTAKE</b>, YOU MUST <b>APPROVE XIO</b>
-                </Typography>
-              </Grid>
-            ) : null}
-            {!(active && account) ? (
-              <Grid
-                item
-                xs={12}
-                onClick={showWalletHint}
-                className={classes.cursorPointer}
-              >
-                <Typography variant="body2" className={classes.redText}>
-                  CONNECT YOUR WALLET TO FLASHSTAKE
-                </Typography>
-              </Grid>
-            ) : chainId !== 4 ||
-              web3context.error instanceof UnsupportedChainIdError ? (
-              <Grid item xs={12}>
-                <Typography variant="body2" className={classes.redText}>
-                  CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>FLASHSTAKING</b>
-                </Typography>
-              </Grid>
-            ) : null}
-          </Grid>
-        </Box>
-
-
-        <Dialog
-          open={showStakeDialog}
-          // open={true}
-          title="FLASHSTAKE"
-          onClose={() => setShowStakeDialog(false)}
-          status={["pending", "success", "failed", "rejected"].find((item) =>
-            dialogStep.includes(item)
-          )}
-          step={dialogStep}
-          stepperShown={
-            dialogStep === "pendingApproval" ||
-            dialogStep === "flashstakeProposal"
-          }
-
-          // status="success"
-        >
-          {
-            {
-              pendingApproval: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL PENDING
-                    <br />
-                  </Typography>
-                </Fragment>
-              ),
-              flashstakeProposal: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    {quantity} {selectedStakeToken} FOR {days}{" "}
-                    {days > 1 ? "DAYS" : "DAY"} TO EARN{" "}
-                    <Tooltip
-                      title={`${getExtendedFloatValue(
-                        reward
-                      )} ${selectedRewardToken}`}
-                    >
-                      <span>
-                        {trunc(reward)} {selectedRewardToken}
-                      </span>
-                    </Tooltip>{" "}
-                    INSTANTLY
-                  </Typography>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    onClick={
-                      !allowance
-                        ? () => {}
-                        : () => onClickStake(quantity, days, checked)
-                    }
-                    disabled={
-                      !active ||
-                      !account ||
-                      inputError ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      chainId !== 4 ||
-                      reward <= 0
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    FLASHSTAKE
-                  </Button>
-                </Fragment>
-              ),
-              failedApproval: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL
-                    <br />
-                    <span className={classes.redText}>FAILED</span>
-                  </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              rejectedApproval: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL
-                    <br />
-                    <span className={classes.redText}>REJECTED</span>
-                  </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              pendingStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE PENDING
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    {stakeRequest.quantity} {stakeRequest.tokenA} FOR{" "}
-                    {stakeRequest.days} {stakeRequest.days > 1 ? "DAYS" : "DAY"}{" "}
-                    TO EARN{" "}
-                    <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.tokenB}`}
-                    >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.tokenB}
-                      </span>
-                    </Tooltip>{" "}
-                    INSTANTLY
-                  </Typography>
-                </Fragment>
-              ),
-              failedStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
-                    <br />
-                    <span className={classes.redText}>FAILED</span>
-                  </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              rejectedStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
-                    <br />
-                    <span className={classes.redText}>REJECTED</span>
-                  </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              successStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    FLASHSTAKE
-                    <br />
-                    <span className={classes.greenText}>SUCCESSFUL</span>
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity}{" "}
-                    {stakeRequest.tokenA} FOR {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "DAYS" : "DAY"} AND YOU WERE SENT{" "}
-                    <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.tokenB}`}
-                    >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.tokenB}
-                      </span>
-                    </Tooltip>
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.redText}`}
-                  >
-                    <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={classes.link}
-                    >
-                      <Link fontSize="small" className={classes.linkIcon} />
-                      VIEW ON ETHERSCAN
-                    </a>
-                  </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
-                    CLOSE
-                  </Button>
-                </Fragment>
-              ),
-            }[dialogStep]
-          }
-        </Dialog>
-      
-          </Fragment>
-       */}
+                  {
+                    {
+                      pendingApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body2"
+                            className={classes.textBold}
+                          >
+                            APPROVAL PENDING
+                            <br />
+                          </Typography>
+                        </Fragment>
+                      ),
+                      successApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                      failedApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button variant="red" fullWidth onClick={closeDialog}>
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button variant="red" fullWidth onClick={closeDialog}>
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      pendingSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP PENDING
+                            <br />
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            SWAPPING {trunc(swapHist?.amount)}{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""} TO EARN{" "}
+                            {trunc(swapOutput)} XIO{" "}
+                            {/* <Tooltip
+                              title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                            >
+                              <span>
+                                {trunc(stakeRequest.reward)}{" "}
+                                {stakeRequest.token}
+                              </span>
+                            </Tooltip>{" "} */}
+                            INSTANTLY
+                          </Typography>
+                        </Fragment>
+                      ),
+                      failedSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button variant="red" fullWidth onClick={closeDialog}>
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button variant="red" fullWidth onClick={closeDialog}>
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      successSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            YOU HAVE SUCCESSFULLY SWAPPED {swapHist?.amount}{" "}
+                            {swapHist?.token || ""} FOR {trunc(swapOutput)} XIO
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            className={`${classes.textBold} ${classes.redText}`}
+                          >
+                            <a
+                              href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={classes.link}
+                            >
+                              <Link
+                                fontSize="small"
+                                className={classes.linkIcon}
+                              />
+                              VIEW ON ETHERSCAN
+                            </a>
+                          </Typography>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                    }[dialogStep]
+                  }
+                </Dialog>
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -993,17 +843,20 @@ function Swap({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading },
+  ui: { loading, expanding },
   web3: { active, account, chainId },
   user: { currentStaked, pools },
+  flashstake: { swapHist },
   contract,
 }) => ({
   ...flashstake,
   loading,
   active,
   account,
+  expanding,
   chainId,
   currentStaked,
+  swapHist,
   pools,
   ...contract,
 });
@@ -1022,5 +875,6 @@ export default connect(mapStateToProps, {
   showWalletBackdrop,
   swapALT,
   calculateSwap,
+  setExpandAccodion,
   setRefetch,
 })(Swap);
