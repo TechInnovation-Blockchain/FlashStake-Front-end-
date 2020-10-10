@@ -753,7 +753,6 @@ function Swap({
                             disabled={
                               !active ||
                               !account ||
-                              inputError ||
                               !selectedPortal ||
                               quantity <= 0 ||
                               days <= 0 ||
