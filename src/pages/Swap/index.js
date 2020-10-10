@@ -346,8 +346,6 @@ function Swap({
     setChecked(!checked);
     localStorage.setItem("restake", !checked);
   }, [checked, setChecked]);
-  console.log("----->", swapHist?.amount);
-  console.log("----->", swapHist?.token);
   const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 200), []);
 
   const [days, setDays] = useState(initialValues.days);
@@ -517,7 +515,11 @@ function Swap({
                     <Box className={classes.textFieldContainer}>
                       <TextField
                         className={classes.textField}
-                        // error={active && account}
+                        error={
+                          active &&
+                          account &&
+                          parseFloat(quantity) > parseFloat(balanceALT)
+                        }
                         fullWidth
                         placeholder="0.0"
                         value={quantity}
@@ -542,7 +544,7 @@ function Swap({
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  {chainId === 4 && (
+                  {selectedRewardToken?.tokenB?.symbol ? (
                     <Typography variant="overline" className={classes.infoText}>
                       IF YOU SWAP{" "}
                       <Tooltip
@@ -558,15 +560,93 @@ function Swap({
                       YOU WILL{" "}
                       <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
                       EARN{" "}
-                      <Tooltip title={`${swapOutput} XIO`}>
-                        <span className={classes.infoTextSpan}>
-                          {" "}
-                          {trunc(swapOutput)} XIO
-                        </span>
-                      </Tooltip>
+                      {loadingRedux.swapReward ? (
+                        <CircularProgress
+                          size={12}
+                          className={classes.loaderStyle}
+                        />
+                      ) : (
+                        <Tooltip title={`${swapOutput} XIO`}>
+                          <span className={classes.infoTextSpan}>
+                            {" "}
+                            {trunc(swapOutput)} XIO
+                          </span>
+                        </Tooltip>
+                      )}
+                      .
+                    </Typography>
+                  ) : (
+                    <Typography variant="overline" className={classes.redText}>
+                      SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
                     </Typography>
                   )}
 
+                  <Box className={classes.btn}>
+                    {!allowanceALT ? (
+                      <Grid
+                        container
+                        item
+                        xs={12}
+                        className={classes.msgContainer}
+                      >
+                        <Grid item xs={6} className={classes.btnPaddingRight}>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={onClickApprove}
+                            disabled={
+                              !selectedPortal ||
+                              chainId !== 4 ||
+                              allowanceALT ||
+                              loadingRedux.approval
+                            }
+                            loading={
+                              loadingRedux.approval && loadingRedux.approvalALT
+                            }
+                          >
+                            APPROVE {selectedRewardToken?.tokenB?.symbol || ""}
+                          </Button>
+                        </Grid>
+                        <Grid item xs={6} className={classes.btnPaddingLeft}>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={() => onClickSwap(quantity)}
+                            disabled={
+                              !selectedPortal ||
+                              !(quantity > 0) ||
+                              parseFloat(balanceALT) < parseFloat(quantity) ||
+                              !allowanceALT ||
+                              chainId !== 4 ||
+                              loadingRedux.swap
+                            }
+                            loading={loadingRedux.swap}
+                          >
+                            SWAP
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    ) : (
+                      <Grid item xs={12} className={classes.msgContainer}>
+                        <Button
+                          variant="red"
+                          fullWidth
+                          onClick={() => onClickSwap(quantity)}
+                          disabled={
+                            !selectedPortal ||
+                            !(quantity > 0) ||
+                            parseFloat(balanceALT) < parseFloat(quantity) ||
+                            !allowanceALT ||
+                            chainId !== 4 ||
+                            loadingRedux.swap
+                          }
+                          loading={loadingRedux.swap}
+                        >
+                          SWAP
+                        </Button>
+                      </Grid>
+                    )}
+                  </Box>
                   <Box className={classes.btn}>
                     {!(active && account) ? (
                       <Grid
@@ -591,30 +671,17 @@ function Swap({
                           CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
                         </Typography>
                       </Grid>
-                    ) : (
+                    ) : !allowanceALT ? (
                       <Grid item xs={12} className={classes.msgContainer}>
-                        <Button
-                          variant="red"
-                          fullWidth
-                          onClick={
-                            !allowanceALT && selectedPortal
-                              ? onClickApprove
-                              : () => onClickSwap(quantity)
-                          }
-                          disabled={
-                            !selectedPortal ||
-                            !(quantity > 0) ||
-                            parseFloat(balanceALT) < parseFloat(quantity)
-                          }
+                        <Typography
+                          variant="overline"
+                          className={classes.redText}
                         >
-                          {!allowanceALT && selectedPortal
-                            ? `APPROVE ${
-                                selectedRewardToken?.tokenB?.symbol || ""
-                              }`
-                            : "SWAP"}
-                        </Button>
+                          BEFORE YOU CAN SWAP, YOU MUST APPROVE{" "}
+                          {selectedRewardToken?.tokenB?.symbol || ""}
+                        </Typography>
                       </Grid>
-                    )}
+                    ) : null}
                   </Box>
                 </Grid>
 

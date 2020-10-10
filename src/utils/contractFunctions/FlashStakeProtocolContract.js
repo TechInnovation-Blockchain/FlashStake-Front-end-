@@ -191,7 +191,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
   }
 };
 
-export const swap = async (_altQuantity, _token) => {
+export const swap = async (_altQuantity, _token, _expectedOutput) => {
   setLoadingIndep({ swap: true });
   try {
     setStakeDialogStepIndep("pendingSwap");
@@ -204,7 +204,7 @@ export const swap = async (_altQuantity, _token) => {
     }
     let _txnHash = "";
     contract.methods
-      .swap(_altQuantity, _token)
+      .swap(_altQuantity, _token, _expectedOutput)
       .send({
         from: walletAddress,
       })
@@ -287,6 +287,8 @@ export const getXPY = async () => {
 };
 
 export const unstakeALT = (expiredIds = [], xioQuantity) => {
+  setLoadingIndep({ unstake: true });
+
   try {
     showSnackbarIndep("Transaction Pending.", "info");
     setDialogStepIndep("pending");
@@ -322,6 +324,8 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
           false
         );
         setRefetchIndep(true);
+        setLoadingIndep({ unstake: false });
+
         return receipt;
       })
       .catch((e) => {
@@ -332,6 +336,8 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
           setDialogStepIndep("failed");
           showSnackbarIndep("Withdraw Transaction Failed.", "error");
         }
+        setLoadingIndep({ unstake: false });
+
         console.error("ERROR unstakeALT -> ", e);
       });
     // .on("confirmation", (confirmationNumber, reciept) => {

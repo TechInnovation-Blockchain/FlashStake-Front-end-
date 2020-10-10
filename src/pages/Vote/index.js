@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -15,11 +15,16 @@ const useStyles = makeStyles((theme) => ({
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
+    fontWeight: 700,
   },
 }));
 
 function Vote() {
   const classes = useStyles();
+
+  useEffect(() => {
+    document.title = "Vote - XIO | The Future is at Stake";
+  }, []);
 
   return (
     <PageAnimation in={true}>

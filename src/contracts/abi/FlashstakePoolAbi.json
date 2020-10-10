@@ -187,6 +187,11 @@
           "internalType": "address",
           "name": "_staker",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_expectedOutput",
+          "type": "uint256"
         }
       ],
       "name": "swapWithFeeRewardDistribution",

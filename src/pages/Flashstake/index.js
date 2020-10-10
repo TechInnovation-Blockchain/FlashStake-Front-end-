@@ -626,13 +626,17 @@ function Flashstake({
                   )}
                 </Grid>
 
-                {!allowanceXIO || renderDualButtons ? (
+                {!allowanceXIO ? (
                   <Grid container item xs={12} onClick={showWalletHint}>
                     <Grid item xs={6} className={classes.btnPaddingRight}>
                       <Button
                         fullWidth
                         variant="red"
-                        onClick={!allowanceXIO ? onClickApprove : () => {}}
+                        onClick={
+                          !allowanceXIO && !loadingRedux.approval
+                            ? onClickApprove
+                            : () => {}
+                        }
                         disabled={
                           allowanceXIO ||
                           !active ||
@@ -643,11 +647,14 @@ function Flashstake({
                           // reward <= 0 ||
                           // !selectedPortal ||
                           loadingRedux.reward ||
+                          loadingRedux.approval ||
                           chainId !== 4
                         }
-                        loading={loadingRedux.approval}
+                        loading={
+                          loadingRedux.approval && loadingRedux.approvalXIO
+                        }
                       >
-                        {loadingRedux.approval
+                        {loadingRedux.approval && loadingRedux.approvalXIO
                           ? "APPROVING"
                           : `APPROVE ${selectedStakeToken}`}
                       </Button>

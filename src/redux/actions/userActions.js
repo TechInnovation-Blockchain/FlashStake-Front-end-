@@ -1,4 +1,5 @@
 import { JSBI } from "@uniswap/sdk";
+import axios from "axios";
 import Web3 from "web3";
 import {
   initializeErc20TokenContract,
@@ -6,6 +7,7 @@ import {
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import { CONSTANTS } from "../../utils/constants";
 // import { store } from "../../config/reduxStore";
+import { getWalletBalance } from "../../redux/actions/flashstakeActions";
 
 export const userDataUpdate = (data) => async (dispatch, getState) => {};
 
@@ -23,10 +25,30 @@ export const updateWalletBalance = (data) => async (dispatch, getState) => {
 };
 
 export const updatePools = (data) => async (dispatch) => {
-  dispatch({
-    type: "POOL",
-    payload: data,
-  });
+  let _pools = [];
+  try {
+    if (data?.length) {
+      _pools = JSON.parse(JSON.stringify(data));
+      for (let i = 0; i < _pools.length; i++) {
+        try {
+          const response = await axios.get(
+            `https://min-api.cryptocompare.com/data/price?fsym=${_pools[i].tokenB.symbol}&tsyms=USD`
+          );
+          _pools[i].tokenPrice = response.data.USD || 0;
+        } catch (e) {
+          console.error("ERROR pricingAPI -> ", e);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("ERROR updatePools -> ", e);
+  } finally {
+    dispatch({
+      type: "POOL",
+      payload: _pools,
+    });
+    dispatch(getWalletBalance());
+  }
 };
 
 export const updateUserData = (data) => async (dispatch) => {
@@ -34,6 +56,7 @@ export const updateUserData = (data) => async (dispatch) => {
   let swapHistory;
   let expiredTimestamps = [];
   let dappBalance = JSBI.BigInt(0);
+  let expiredDappBalance = JSBI.BigInt(0);
   if (data) {
     stakes = data.stakes.map((_tempData) => {
       const {
@@ -46,8 +69,12 @@ export const updateUserData = (data) => async (dispatch) => {
       let expiryTime =
         parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
       let expired = expiryTime < Date.now() / 1000;
+      dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
       if (expired) {
-        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
+        expiredDappBalance = JSBI.add(
+          expiredDappBalance,
+          JSBI.BigInt(stakeAmount)
+        );
         expiredTimestamps.push(id);
       }
       return {
@@ -74,6 +101,7 @@ export const updateUserData = (data) => async (dispatch) => {
         stakes,
         dappBalance: Web3.utils.fromWei(dappBalance.toString()),
         swapHistory,
+        expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
       },
     });
   } else {

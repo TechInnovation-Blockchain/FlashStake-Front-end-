@@ -94,7 +94,7 @@ export const approve = async (address, amount) => {
   }
 };
 
-export const allowance = async (spenderAddress) => {
+export const allowance = async (spenderAddress, loading) => {
   try {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
@@ -105,11 +105,9 @@ export const allowance = async (spenderAddress) => {
     const _allowance = await contract.methods
       .allowance(walletAddress, spenderAddress)
       .call();
-    setLoadingIndep({ approval: false });
     console.log({ _allowance });
     return _allowance;
   } catch (e) {
-    setLoadingIndep({ approval: false });
     console.error("ERROR allowance -> ", e);
   }
 };

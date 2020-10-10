@@ -14,6 +14,7 @@ export const flashstakeReducer = (
     swapOutput: "0",
     balanceXIO: 0,
     balanceALT: 0,
+    balanceUSD: 0,
     dialogStep: "",
     stakeRequest: {
       quantity: 0,
@@ -115,6 +116,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         balanceALT: payload,
+      };
+    case "WALLET_BALANCE_USD":
+      return {
+        ...state,
+        balanceUSD: payload,
       };
     case "STAKE_DIALOG_STEP":
       return {

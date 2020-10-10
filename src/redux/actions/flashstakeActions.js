@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import axios from "axios";
 import { store } from "../../config/reduxStore";
 import {
   initializeErc20TokenContract,
@@ -18,7 +19,7 @@ import {
   getAPYStake,
   getAPYSwap,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
-import { setLoading } from "./uiActions";
+import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
@@ -40,11 +41,18 @@ export const calculateReward = (xioQuantity, days) => async (
       initializeFlashstakePoolContract(id);
       let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
       reward = await getAPYStake(_amountIn);
-      console.log({ _amountIn, reward });
+      reward = JSBI.subtract(
+        JSBI.BigInt(reward),
+        JSBI.multiply(
+          JSBI.divide(JSBI.BigInt(reward), JSBI.BigInt(100)),
+          JSBI.BigInt(5)
+        )
+      ).toString();
     }
   } catch (e) {
     console.error("ERROR calculateReward -> ", e);
   }
+  console.log("stakeReward -> ", reward);
   dispatch({
     type: "STAKE_REWARD",
     payload: reward,
@@ -53,6 +61,7 @@ export const calculateReward = (xioQuantity, days) => async (
 };
 
 export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
+  dispatch(setLoading({ swapReward: true }));
   let swapAmount = "0";
   try {
     const {
@@ -63,15 +72,24 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
     if (id && altQuantity > 0) {
       initializeFlashstakePoolContract(id);
       swapAmount = await getAPYSwap(Web3.utils.toWei(altQuantity));
-      console.log({ swapAmount });
+      swapAmount = JSBI.subtract(
+        JSBI.BigInt(swapAmount),
+        JSBI.multiply(
+          JSBI.divide(JSBI.BigInt(swapAmount), JSBI.BigInt(100)),
+          JSBI.BigInt(5)
+        )
+      ).toString();
     }
   } catch (e) {
     console.error("ERROR calculateSwap -> ", e);
   }
+  console.log("swapReward -> ", swapAmount);
+
   dispatch({
     type: "SWAP_OUTPUT",
     payload: Web3.utils.fromWei(swapAmount),
   });
+  dispatch(setLoading({ swapReward: false }));
 };
 
 export const checkAllowanceXIO = () => async (dispatch, getState) => {
@@ -119,12 +137,16 @@ export const checkAllowanceALT = () => async (dispatch, getState) => {
 };
 
 export const getApprovalXIO = () => async (dispatch, getState) => {
+  setLoadingIndep({ approvalXIO: true });
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS);
     dispatch(checkAllowanceXIO());
   } catch (e) {
     console.error("ERROR getApprovalXIO -> ", e);
+  } finally {
+    setLoadingIndep({ approval: false });
+    setLoadingIndep({ approvalXIO: false });
   }
 };
 
@@ -132,6 +154,7 @@ export const getApprovalALT = (_selectedPortal) => async (
   dispatch,
   getState
 ) => {
+  setLoadingIndep({ approvalALT: true });
   try {
     const {
       flashstake: { selectedRewardToken },
@@ -144,6 +167,8 @@ export const getApprovalALT = (_selectedPortal) => async (
     dispatch(checkAllowanceALT());
   } catch (e) {
     console.error("ERROR getApprovalALT -> ", e);
+  } finally {
+    setLoadingIndep({ approvalALT: false });
   }
 };
 
@@ -199,6 +224,9 @@ export const getBalanceALT = () => async (dispatch, getState) => {
     balance = 0;
     console.error("ERROR getBalance -> ", e);
   } finally {
+    console.log({
+      balanceALT: balance,
+    });
     dispatch({
       type: "BALANCE_ALT",
       payload: balance,
@@ -220,6 +248,9 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
     balance = 0;
     console.error("ERROR getBalance -> ", e);
   } finally {
+    console.log({
+      balanceXIO: balance,
+    });
     dispatch({
       type: "BALANCE_XIO",
       payload: balance,
@@ -235,13 +266,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     if (!selectedRewardToken?.tokenB?.id) {
       throw new Error("No reward token found!");
     }
-    // let _rewardAfterSlippage = JSBI.subtract(
-    //   JSBI.BigInt(reward),
-    //   JSBI.multiply(
-    //     JSBI.divide(JSBI.BigInt(reward), JSBI.BigInt(100)),
-    //     JSBI.BigInt(5)
-    //   )
-    // ).toString();
+    console.log("rewardreward -> ", reward);
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
@@ -263,21 +288,22 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
       days,
-      // _rewardAfterSlippage
-      0
+      reward
     );
   } catch (e) {
     console.error("ERROR stakeXIO -> ", e);
+    setDialogStepIndep("failedStake");
+    showSnackbarIndep("Stake Transaction Failed.", "error");
   }
 };
 
 export const unstakeXIO = () => async (dispatch, getState) => {
   try {
     const {
-      user: { dappBalance, expiredTimestamps },
+      user: { dappBalance, expiredTimestamps, expiredDappBalance },
     } = await getState();
     if (
-      dappBalance <= 0 ||
+      expiredDappBalance <= 0 ||
       !expiredTimestamps ||
       expiredTimestamps?.length <= 0
     ) {
@@ -287,47 +313,77 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       type: "UNSTAKE_REQUEST",
       payload: {
         timestamps: expiredTimestamps,
-        quantity: dappBalance,
+        quantity: expiredDappBalance,
       },
     });
     initializeFlashstakeProtocolContract();
     console.log(
       "unstakeXIO params -> ",
       expiredTimestamps,
-      Web3.utils.fromWei(dappBalance)
+      Web3.utils.fromWei(expiredDappBalance)
     );
-    await unstake(expiredTimestamps, Web3.utils.toWei(dappBalance));
+    await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
   } catch (e) {
     console.error("ERROR unstakeXIO -> ", e);
   }
 };
 
-// function swap(uint256 _altQuantity, address _token)
 export const swapALT = (_altQuantity) => async (dispatch, getState) => {
   try {
     const {
-      flashstake: { selectedRewardToken },
+      flashstake: { selectedRewardToken, swapOutput },
     } = await getState();
     if (_altQuantity > 0 && selectedRewardToken?.id) {
-      console.log(_altQuantity, selectedRewardToken?.tokenB?.symbol);
       dispatch({
         type: "SWAP_REQUEST",
         payload: {
           amount: _altQuantity,
           token: selectedRewardToken.tokenB.symbol,
-          // token: selectedRewardToken.tokenB,
+          swapOutput,
         },
       });
       initializeFlashstakeProtocolContract();
       console.log(
         "swapALT params -> ",
         _altQuantity,
-        selectedRewardToken.tokenB.id
+        selectedRewardToken.tokenB.id,
+        Web3.utils.toWei(swapOutput)
       );
-      await swap(Web3.utils.toWei(_altQuantity), selectedRewardToken.tokenB.id);
+
+      await swap(
+        Web3.utils.toWei(_altQuantity),
+        selectedRewardToken.tokenB.id,
+        Web3.utils.toWei(swapOutput)
+      );
     }
   } catch (e) {
     console.error("ERROR swapALT -> ", e);
+    setDialogStepIndep("failedSwap");
+    showSnackbarIndep("Swap Transaction Failed.", "error");
+  }
+};
+
+export const getWalletBalance = () => async (dispatch, getState) => {
+  let _walletBalance = 0;
+  try {
+    const {
+      user: { pools },
+      web3: { active, account },
+    } = await getState();
+    if (active && account && pools?.length) {
+      for (let i = 0; i < pools.length; i++) {
+        await initializeErc20TokenContract(pools[i].tokenB.id);
+        let balance = Web3.utils.fromWei(await balanceOf());
+        _walletBalance += balance * pools[i].tokenPrice;
+      }
+    }
+  } catch (e) {
+    console.error("ERROR getWalletBalance -> ", e);
+  } finally {
+    dispatch({
+      type: "WALLET_BALANCE_USD",
+      payload: _walletBalance,
+    });
   }
 };
 

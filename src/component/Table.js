@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   walletInfo: {
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
   },
 }));
 
@@ -111,6 +111,7 @@ function TableComponent({
   stakes,
   openWithdrawDialog,
   loading,
+  loadingRedux,
   active,
   account,
   chainId,
@@ -121,6 +122,7 @@ function TableComponent({
   walletBalance,
   dappBalance,
   unstakeXIO,
+  expiredDappBalance,
   onClickUnstake,
 }) {
   const classes = useStyles();
@@ -210,7 +212,7 @@ function TableComponent({
     [page]
   );
   return (
-    <Grid container spacing={1} className={classes.walletInfo}>
+    <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
@@ -293,13 +295,13 @@ function TableComponent({
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
                             <span className={classes.flexCenter}>
-                              <img
+                              {/* <img
                                 src={require(`../assets/Tokens/${_stake.pool.tokenB.symbol}.png`)}
                                 alt="Logo"
                                 srcset=""
                                 width={15}
                                 style={{ marginRight: 5 }}
-                              />
+                              /> */}
                               {_stake.pool.tokenB.symbol}
                             </span>
                             {/* </Tooltip> */}
@@ -353,10 +355,12 @@ function TableComponent({
                       onClickUnstake();
                       unstakeXIO();
                     }}
+                    disabled={loadingRedux.unstake || !(expiredDappBalance > 0)}
                     fontSizeLocal="body2"
+                    loading={loadingRedux.unstake}
                   >
-                    <Tooltip title={`${dappBalance} XIO`}>
-                      <span>UNSTAKE {trunc(dappBalance)} XIO</span>
+                    <Tooltip title={`${expiredDappBalance} XIO`}>
+                      <span>UNSTAKE {trunc(expiredDappBalance)} XIO</span>
                     </Tooltip>
                   </Button>
                 </Grid>
@@ -383,9 +387,9 @@ function TableComponent({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { stakes, walletBalance, dappBalance },
+  user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
-  ui: { data },
+  ui: { loading },
 }) => ({
   stakes,
   active,
@@ -395,7 +399,9 @@ const mapStateToProps = ({
   isStakesSelected,
   walletBalance,
   dappBalance,
-  loading: data,
+  loading: loading.data,
+  loadingRedux: loading,
+  expiredDappBalance,
 });
 
 export default connect(mapStateToProps, {

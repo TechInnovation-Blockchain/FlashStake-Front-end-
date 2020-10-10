@@ -97,6 +97,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
+  loadingIcon: {
+    marginBottom: 2,
+    marginRight: 5,
+  },
 }));
 
 function SwapTable({
@@ -113,6 +117,7 @@ function SwapTable({
   pools,
   walletBalance,
   swapHistory,
+  balanceUSD,
 }) {
   const classes = useStyles();
   const headItems = ["INPUT", "OUTPUT XIO", "DATE"];
@@ -157,7 +162,7 @@ function SwapTable({
             parseFloat(a) - parseFloat(b)
         );
         break;
-      case "XIO":
+      case "OUTPUT XIO":
         data = swapHistory?.sort(
           ({ xioReceived: a }, { xioReceived: b }) =>
             parseFloat(a) - parseFloat(b)
@@ -185,15 +190,15 @@ function SwapTable({
   );
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={3}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
             WALLET BALANCE
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} XIO`}>
-              <span>{trunc(walletBalance)} XIO</span>
+            <Tooltip title={`$${balanceUSD}`}>
+              <span>${trunc(balanceUSD)}</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -232,14 +237,14 @@ function SwapTable({
             className={`${classes.msgContainer} ${classes.cursorPointer}`}
             onClick={showWalletHint}
           >
-            <Typography variant="body2" className={classes.redText}>
+            <Typography variant="overline" className={classes.redText}>
               CONNECT YOUR WALLET TO VIEW YOUR SWAPS
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
+            <Typography variant="overline" className={classes.redText}>
+              CHANGE NETWORK TO RINKEBY TO VIEW YOUR SWAPS
             </Typography>
           </Grid>
         ) : !loading ? (
@@ -305,8 +310,9 @@ function SwapTable({
           )
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline">
-              <CircularProgress size={12} /> LOADING
+            <Typography variant="overline" className={classes.flexCenter}>
+              <CircularProgress size={12} className={classes.loadingIcon} />{" "}
+              LOADING
             </Typography>
           </Grid>
         )}
@@ -317,9 +323,14 @@ function SwapTable({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
+  flashstake: { balanceUSD },
   user: { currentStaked, pools, walletBalance, swapHistory },
   dashboard: { selectedStakes, isStakesSelected },
+  ui: {
+    loading: { data },
+  },
 }) => ({
+  balanceUSD,
   currentStaked,
   active,
   account,
@@ -329,6 +340,7 @@ const mapStateToProps = ({
   pools,
   walletBalance,
   swapHistory,
+  loading: data,
 });
 
 export default connect(mapStateToProps, { showWalletBackdrop, selectStake })(

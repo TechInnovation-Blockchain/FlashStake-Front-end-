@@ -307,7 +307,13 @@
       "type": "function"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_xioQuantity",
+          "type": "uint256"
+        }
+      ],
       "name": "getXPY",
       "outputs": [
         {
@@ -388,6 +394,11 @@
           "internalType": "address",
           "name": "_token",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_expectedOutput",
+          "type": "uint256"
         }
       ],
       "name": "swap",
