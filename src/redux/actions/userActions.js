@@ -8,6 +8,7 @@ import {
 import { CONSTANTS } from "../../utils/constants";
 // import { store } from "../../config/reduxStore";
 import { getWalletBalance } from "../../redux/actions/flashstakeActions";
+import { setLoading } from "./uiActions";
 
 export const userDataUpdate = (data) => async (dispatch, getState) => {};
 
@@ -28,6 +29,7 @@ export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   try {
     if (data?.length) {
+      dispatch(setLoading({ dapp: false }));
       _pools = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < _pools.length; i++) {
         try {

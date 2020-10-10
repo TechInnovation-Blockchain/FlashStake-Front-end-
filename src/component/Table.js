@@ -1,24 +1,20 @@
 import React, { useState, useCallback, Fragment, useEffect } from "react";
 import {
   Button as MuiButton,
-  IconButton,
   Grid,
   Tooltip,
   Typography,
   CircularProgress,
   TablePagination,
-  Checkbox,
   Box,
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
-import { UnfoldMore, Pageview } from "@material-ui/icons";
+import { UnfoldMore } from "@material-ui/icons";
 import Web3 from "web3";
 
-import Logout from "./LogoutIcon";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
-import logout from "../assets/logout.svg";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";

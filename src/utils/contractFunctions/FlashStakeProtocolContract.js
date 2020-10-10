@@ -1,14 +1,8 @@
-import Web3 from "web3";
-
 import {
   xioFlashstakeContract,
   xioFlashstakeInfuraContract,
 } from "../../contracts/getContract";
 // import { baseInterestRate } from "./xioPublicFactoryContractFunctions";
-import {
-  initializeErc20TokenContract,
-  symbol,
-} from "./erc20TokenContractFunctions";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
   setLoadingIndep,
@@ -51,8 +45,6 @@ const checkContractInitialized = () => {
 //   throw new Error("Wallet not activated.");
 // }
 
-let _txnHash = "";
-
 export const stake = async (_token, xioQuantity, days, reward) => {
   setLoadingIndep({ stake: true });
   try {
@@ -64,14 +56,12 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
-    let _txnHash = "";
     contract.methods
       .stake(_token, xioQuantity, days, reward)
       .send({
         from: walletAddress,
       })
       .on("transactionHash", async (txnHash) => {
-        _txnHash = txnHash;
         addToTxnQueueIndep(txnHash);
         setStakeTxnHashIndep(txnHash);
         showSnackbarTxnIndep(
@@ -133,14 +123,12 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
-    let _txnHash = "";
     contract.methods
       .unstake(_expiredIds, _xioQuantity)
       .send({
         from: walletAddress,
       })
       .on("transactionHash", async (txnHash) => {
-        _txnHash = txnHash;
         addToTxnQueueIndep(txnHash);
         setStakeTxnHashIndep(txnHash);
         showSnackbarTxnIndep(
@@ -202,14 +190,12 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
-    let _txnHash = "";
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
       .send({
         from: walletAddress,
       })
       .on("transactionHash", async (txnHash) => {
-        _txnHash = txnHash;
         addToTxnQueueIndep(txnHash);
         setStakeTxnHashIndep(txnHash);
         showSnackbarTxnIndep(

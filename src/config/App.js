@@ -9,9 +9,8 @@ import { getLibrary } from "./web3-react";
 import { client } from "./apolloGraphQl";
 import Layout from "./Layout";
 import Updater from "./Updater";
-import UpdaterTxns from "./UpdaterTxns";
 import { toggleThemeModeAction } from "../redux/actions/uiActions";
-import { darkTheme, lightTheme } from "./materialUiTheme";
+import { darkTheme } from "./materialUiTheme";
 
 export default function App() {
   const theme = localStorage.getItem("themeMode") || "dark";
@@ -32,7 +31,6 @@ export default function App() {
         <Provider store={store}>
           <ThemeProvider theme={themeMode === "dark" ? darkTheme : darkTheme}>
             <Updater />
-            {/* <UpdaterTxns /> */}
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
           </ThemeProvider>
         </Provider>

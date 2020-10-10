@@ -1,6 +1,4 @@
 import React, { useEffect, useState, Fragment, useCallback } from "react";
-import Web3 from "web3";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { connect } from "react-redux";
@@ -9,12 +7,10 @@ import {
   Typography,
   TextField,
   Grid,
-  IconButton,
   Tooltip,
   CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { useQuery } from "@apollo/client";
 import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
@@ -25,7 +21,6 @@ import {
   DropdownDialog,
   Dialog,
   PageAnimation,
-  Table,
   SwapTable,
 } from "../../component";
 import {
@@ -326,43 +321,23 @@ function Swap({
   expanding,
 }) {
   const classes = useStyles();
-  const web3context = useWeb3React();
-
-  const [inputError, setInputError] = useState(false);
   const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [checked, setChecked] = useState(
-    localStorage.getItem("restake") === "true"
-  );
-  const [additionalContractBal, setAdditionalContractBal] = useState(0);
 
-  const [expanded, setExpanded] = useState("panel1");
   const [expanded2, setExpanded2] = useState(true);
 
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-
-  const toggleChecked = useCallback(() => {
-    setChecked(!checked);
-    localStorage.setItem("restake", !checked);
-  }, [checked, setChecked]);
   const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 200), []);
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
-  const [renderDualButtons, setRenderDualButtons] = useState(false);
   const regex = /^\d*(.(\d{1,18})?)?$/;
 
-  //#region functions
   const onChangeQuantity = ({ target: { value } }) => {
     if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
       if (regex.test(value)) {
-        // console.log(value, regex.test(value));
         setQuantity(
           value[value.length - 1] === "." || !Number(value) ? value : value
         );
       }
-      // console.log(value, regex.test(value), quantity);
     } else {
       setQuantity((val) => val);
     }
@@ -378,13 +353,7 @@ function Swap({
     document.title = "Swap - XIO | The Future is at Stake";
     setRefetch();
     // setLoading({ dapp: true });
-  }, []);
-
-  useEffect(() => {
-    if (selectedPortal && !allowanceALT) {
-      setRenderDualButtons(true);
-    }
-  }, [selectedPortal, allowanceALT]);
+  }, [setRefetch]);
 
   useEffect(() => () => setInitialValues(quantity, days), [
     days,
@@ -403,7 +372,7 @@ function Swap({
 
   useEffect(() => {
     getBalanceALT();
-  }, [selectedPortal]);
+  }, [selectedPortal, getBalanceALT]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -465,17 +434,12 @@ function Swap({
         setExpandAccodion(true);
       }, 500);
     }
-  }, [expanding]);
+  }, [expanding, setExpandAccodion]);
   return (
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
-          <Accordion
-            square
-            expanded={expanded2}
-            // expanded={false}
-            onChange={handleChange("panel1")}
-          >
+          <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
@@ -875,12 +839,7 @@ function Swap({
             </AccordionDetails>
           </Accordion>
 
-          <Accordion
-            square
-            expanded={!expanded2}
-            // expanded={true}
-            onChange={handleChange("panel2")}
-          >
+          <Accordion square expanded={!expanded2}>
             <AccordionSummary
               aria-controls="panel2d-content"
               id="panel2d-header"
