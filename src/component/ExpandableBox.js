@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Box, Typography, Tooltip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addressShorten = (address) => {
+export const addressShorten = (address) => {
   if (address) {
     return `${address.slice(0, 6)}...${address.slice(
       address.length - 2,

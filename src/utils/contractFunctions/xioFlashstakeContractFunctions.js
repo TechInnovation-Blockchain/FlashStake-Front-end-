@@ -1,11 +1,8 @@
-import Web3 from "web3";
-
 import {
   xioFlashstakeContract,
   xioFlashstakeInfuraContract,
 } from "../../contracts/getContract";
 import {
-  initializeErc20TokenContract,
   initializeErc20TokenInfuraContract,
   symbol,
 } from "./erc20TokenContractFunctions";
@@ -130,7 +127,6 @@ export const stakeALT = async (
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
-    let _txnHash = "";
     contract.methods
       .stakeALT(
         inputXIO,
@@ -143,7 +139,6 @@ export const stakeALT = async (
         from: walletAddress,
       })
       .on("transactionHash", async (txnHash) => {
-        _txnHash = txnHash;
         addToTxnQueueIndep(txnHash);
         setStakeTxnHashIndep(txnHash);
         showSnackbarTxnIndep(

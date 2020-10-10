@@ -2,10 +2,6 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { useQuery } from "@apollo/client";
 
-import {
-  loadContractData,
-  checkContractState,
-} from "../redux/actions/contractActions";
 import { setLoading } from "../redux/actions/uiActions";
 import {
   setRefetch,
@@ -27,7 +23,6 @@ import {
 } from "../redux/actions/flashstakeActions";
 
 function Updater({
-  loadContractData,
   active,
   account,
   chainId,
@@ -43,7 +38,6 @@ function Updater({
   setReCalculateExpired,
   getBalanceXIO,
   getBalanceALT,
-  checkContractState,
   baseInterestRate,
   updateWalletBalance,
   checkAllowanceXIO,
@@ -62,12 +56,8 @@ function Updater({
   }, [data]);
 
   useEffect(() => {
-    loadContractData();
-    checkContractState();
-  }, [loadContractData]);
-
-  useEffect(() => {
     if (active && account) {
+      console.log("active account");
       refetch();
       getBalanceXIO();
       getBalanceALT();
@@ -106,6 +96,7 @@ function Updater({
 
   useEffect(() => {
     if (refetchData) {
+      console.log("refetchData");
       refetch();
       getBalanceXIO();
       getBalanceALT();
@@ -147,7 +138,6 @@ const mapStateToProps = ({
 });
 
 export default connect(mapStateToProps, {
-  loadContractData,
   userDataUpdate,
   updatePools,
   updateUserData,
@@ -156,7 +146,6 @@ export default connect(mapStateToProps, {
   setReCalculateExpired,
   getBalanceXIO,
   getBalanceALT,
-  checkContractState,
   getWalletBalance,
   checkAllowanceXIO,
   checkAllowanceALT,

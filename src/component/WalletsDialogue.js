@@ -257,7 +257,7 @@ function WalletsDialogue({
   const addressShorten = (address) => {
     if (address) {
       return `${address.slice(0, 6)}...${address.slice(
-        address.length - 2,
+        address.length - 4,
         address.length
       )}`;
     }

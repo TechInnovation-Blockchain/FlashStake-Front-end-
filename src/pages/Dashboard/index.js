@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Box, Typography, Grid, Tooltip, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { JSBI } from "@uniswap/sdk";
-import { useQuery } from "@apollo/client";
 import Web3 from "web3";
 
 import { Table, Dialog, Button, PageAnimation } from "../../component";

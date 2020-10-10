@@ -8,7 +8,6 @@ import {
   UserRejectedRequestError,
 } from "@web3-react/injected-connector";
 import { connect } from "react-redux";
-import { isMobile } from "react-device-detect";
 
 import Button from "./Button";
 import {
@@ -17,17 +16,7 @@ import {
   setLoading,
 } from "../redux/actions/uiActions";
 import { storeWeb3Context } from "../redux/actions/web3Actions";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import ExpandableBox from "./ExpandableBox";
-import { Transition } from "react-transition-group";
 import WalletsDialogue from "./WalletsDialogue";
-import {
-  injected,
-  walletconnect,
-  walletlink,
-  fortmatic,
-  portis,
-} from "../utils/connectors";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { setWeb3Provider } from "../contracts/getContract";
@@ -74,7 +63,6 @@ function WalletConnect({
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
-  const [openBox, setOpenBox] = useState(false);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
 
@@ -89,7 +77,6 @@ function WalletConnect({
 
   const activateWallet = useCallback(
     (connector, onClose = () => {}) => {
-      // // console.log(connector instanceof InjectedConnector);
       setLoading({
         walletConnection: true,
         connector: connector ? connector : InjectedConnector,
@@ -140,12 +127,6 @@ function WalletConnect({
   );
 
   useEffect(() => {
-    if (openBox) {
-      showExpandBox();
-    }
-  }, [openBox]);
-
-  useEffect(() => {
     storeWeb3Context(web3context);
     if (web3context?.library?.provider) {
       setWeb3Provider(web3context.library.provider);
@@ -162,45 +143,9 @@ function WalletConnect({
     activateWallet();
   }, []);
 
-  // const duration = 300;
-  // // const [display,setDisplay]
-  // const defaultStyle = {
-  //   transition: `opacity ${duration}ms ease-in-out`,
-  //   opacity: 0,
-
-  //   display: openBox ? "block" : "none",
-  // };
-  // const transitionStyles = {
-  //   entering: { opacity: 1 },
-  //   entered: { opacity: 1 },
-  //   exiting: { opacity: 0 },
-  //   exited: { opacity: 0 },
-  // };
-
   return (
     <Fragment>
       <Box className={classes.connectWalletButtonContainer}>
-        {/* {openBox ? ( */}
-        {/* <Transition in={openBox} timeout={duration}>
-          {(state) => (
-            <span
-              style={{
-                ...defaultStyle,
-                ...transitionStyles[state],
-              }}
-            > */}
-        {/* <ExpandableBox
-          open={openBox}
-          changeWallet={setOpen}
-          web3context={web3context}
-          // walletList={walletList}
-          activateWallet={activateWallet}
-        /> */}
-        {/* </span>
-          )}
-        </Transition> */}
-        {/* ) : null} */}
-        {/* {openBox ? <ExpandableBox /> : null} */}
         {walletBackdrop ? (
           <Typography variant="body2" className={classes.wallentConnectText}>
             YOU MUST CONNECT YOUR WALLET FIRST
@@ -208,53 +153,32 @@ function WalletConnect({
         ) : null}
 
         <WalletsDialogue
-          // className={classes.connectWalletButton}
           heading={"CHANGE WALLET"}
           web3context={web3context}
           items={walletList}
           activate={activateWallet}
           open={open2}
           setOpen={setOpen2}
-
-          // address={addressShorten(web3context.account)}
         />
 
         <WalletsDialogue
           className={classes.connectWalletButton}
-          heading={
-            "CONNECT TO A WALLET"
-            // web3context.active || web3context.account
-            //   ? `CONNECTED TO ${addressShorten(web3context.account)}`
-            //   : "CONNECT TO A WALLET"
-          }
-          // items={isMobile ? mobileWalletList : walletList}
+          heading={"CONNECT TO A WALLET"}
           activate={activateWallet}
           open={open}
           setOpen={setOpen}
-          // address={addressShorten(web3context.account)}
         />
 
         <Button
           variant="dark"
           className={classes.connectWalletButton}
-          // disabled={web3context.active || web3context.account}
-
           onClick={() => {
             !(active || account) ? setOpen(true) : setOpen2(true);
           }}
-          // onClick={() => {
-          //   setOpen((val) => !val);
-          // }}
-          // BackdropComponent={Backdrop}
         >
           {web3context.active
             ? addressShorten(web3context.account)
             : "CONNECT WALLET"}
-          {/* {openBox ? (
-            <ExpandMore className={classes.expandIcon} />
-          ) : (
-            <ExpandLess className={classes.expandIcon} />
-          )} */}
         </Button>
       </Box>
     </Fragment>

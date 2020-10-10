@@ -1,5 +1,4 @@
 import Web3 from "web3";
-import axios from "axios";
 import { store } from "../../config/reduxStore";
 import {
   initializeErc20TokenContract,
@@ -300,7 +299,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
 export const unstakeXIO = () => async (dispatch, getState) => {
   try {
     const {
-      user: { dappBalance, expiredTimestamps, expiredDappBalance },
+      user: { expiredTimestamps, expiredDappBalance },
     } = await getState();
     if (
       expiredDappBalance <= 0 ||

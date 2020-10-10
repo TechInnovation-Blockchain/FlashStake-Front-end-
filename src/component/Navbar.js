@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import Divider from "@material-ui/core/Divider";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import animatedLogo from "../assets/xio-logo.gif";

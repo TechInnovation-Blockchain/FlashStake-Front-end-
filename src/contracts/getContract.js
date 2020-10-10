@@ -9,7 +9,6 @@ import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 // import { abi as xioFlashstakeAbi } from "./abi/XioFlashstakeContract.json";
 
 import { CONSTANTS } from "../utils/constants";
-import { walletconnect } from "../utils/connectors";
 const {
   INFURA_PROJECT_ENDPOINT_URL,
   FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
@@ -23,8 +22,6 @@ try {
     new Web3.providers.HttpProvider(INFURA_PROJECT_ENDPOINT_URL)
   );
   web3js = new Web3(window.web3.currentProvider);
-  // web3js = new Web3(Provider);
-  // web3js = new Web3(walletconnect.getProvider());
 } catch (e) {
   console.error("ERROR web3 -> ", e);
 }
