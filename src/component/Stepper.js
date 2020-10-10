@@ -92,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   stepper: {
+    backgroundColor: theme.palette.background.primary,
     padding: 0,
   },
   label: {
@@ -102,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ["APPROVE XIO", "FLASHSTAKE"];
+  return ["APPROVE XIO", "STAKE"];
 }
 
 export default function Stepper({ step }) {
@@ -113,7 +114,7 @@ export default function Stepper({ step }) {
   useEffect(() => {
     if (step === "pendingApproval") {
       setActiveStep(0);
-    } else if (step === "flashstakeProposal") {
+    } else if (step === "flashstakeProposal" || "swapProposal") {
       setActiveStep(1);
     }
   }, [step]);

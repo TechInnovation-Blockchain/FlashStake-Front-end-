@@ -136,11 +136,11 @@ export const checkAllowanceALT = () => async (dispatch, getState) => {
   }
 };
 
-export const getApprovalXIO = () => async (dispatch, getState) => {
+export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   setLoadingIndep({ approvalXIO: true });
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS);
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
     dispatch(checkAllowanceXIO());
   } catch (e) {
     console.error("ERROR getApprovalXIO -> ", e);
@@ -150,7 +150,7 @@ export const getApprovalXIO = () => async (dispatch, getState) => {
   }
 };
 
-export const getApprovalALT = (_selectedPortal) => async (
+export const getApprovalALT = (_selectedPortal, tab) => async (
   dispatch,
   getState
 ) => {
@@ -163,7 +163,7 @@ export const getApprovalALT = (_selectedPortal) => async (
       return null;
     }
     await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
-    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS);
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
     dispatch(checkAllowanceALT());
   } catch (e) {
     console.error("ERROR getApprovalALT -> ", e);

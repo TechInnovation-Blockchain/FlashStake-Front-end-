@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contentContainer: {
     backgroundColor: theme.palette.background.secondary,
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(7),
     overflow: "hidden",
     borderRadius: "10px",
     border: "1px solid #282828",

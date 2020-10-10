@@ -441,7 +441,7 @@ function Flashstake({
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    getApprovalXIO();
+    getApprovalXIO("stake");
   };
 
   const onClickUnstake = () => {
@@ -517,7 +517,7 @@ function Flashstake({
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      STAKE QUANTITY
+                      QUANTITY
                     </Typography>
                     <Box className={classes.textFieldContainer}>
                       <TextField
@@ -558,7 +558,7 @@ function Flashstake({
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      STAKE DURATION
+                      DURATION (hrs)
                     </Typography>
 
                     <Box className={classes.textFieldContainer}>
@@ -613,11 +613,10 @@ function Flashstake({
                         >
                           <span className={classes.infoTextSpan}>
                             {trunc(Web3.utils.fromWei(reward))}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
+                            {selectedRewardToken?.tokenB?.symbol || ""} .
                           </span>
                         </Tooltip>
                       )}
-                      .
                     </Typography>
                   ) : (
                     <Typography variant="overline" className={classes.redText}>
@@ -796,9 +795,26 @@ function Flashstake({
             dialogStep.includes(item)
           )}
           step={dialogStep}
-          stepperShown={false}
+          stepperShown={
+            dialogStep === "pendingApproval" ||
+            dialogStep === "flashstakeProposal"
+          }
+          // stepperShown={true}
 
           // status="success"
+
+          //successApproval: (
+          //  <Fragment>
+          //    <Typography variant="body1" className={classes.textBold}>
+          //      APPROVAL
+          //      <br />
+          //      <span className={classes.greenText}>SUCCESSFUL</span>
+          //    </Typography>
+          //    <Button variant="red" fullWidth onClick={onClickClose}>
+          //      CLOSE
+          //    </Button>
+          //  </Fragment>
+          //),
         >
           {
             {
@@ -810,15 +826,70 @@ function Flashstake({
                   </Typography>
                 </Fragment>
               ),
-              successApproval: (
+
+              flashstakeProposal: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL
+                    STAKE
                     <br />
-                    <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
-                    CLOSE
+                  <Typography variant="overline" className={classes.infoText}>
+                    IF YOU STAKE{" "}
+                    <span className={classes.infoTextSpan}>
+                      {quantity || 0} XIO{" "}
+                    </span>{" "}
+                    FOR{" "}
+                    <span className={classes.infoTextSpan}>
+                      {days || 0} DAYS
+                    </span>{" "}
+                    YOU WILL{" "}
+                    <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                    GET{" "}
+                    {loadingRedux.reward ? (
+                      <CircularProgress
+                        size={12}
+                        className={classes.loaderStyle}
+                      />
+                    ) : (
+                      <Tooltip
+                        title={`${Web3.utils.fromWei(reward)} ${
+                          selectedRewardToken?.tokenB?.symbol || ""
+                        }`}
+                      >
+                        <span className={classes.infoTextSpan}>
+                          {trunc(Web3.utils.fromWei(reward))}{" "}
+                          {selectedRewardToken?.tokenB?.symbol || ""}
+                        </span>
+                      </Tooltip>
+                    )}
+                    .
+                  </Typography>
+                  <Button
+                    variant="red"
+                    fullWidth
+                    onClick={
+                      !allowanceXIO
+                        ? () => {}
+                        : () => onClickStake(quantity, days)
+                    }
+                    disabled={
+                      !active ||
+                      !account ||
+                      inputError ||
+                      !selectedPortal ||
+                      quantity <= 0 ||
+                      days <= 0 ||
+                      loadingRedux.reward ||
+                      loadingRedux.stake ||
+                      chainId !== 4 ||
+                      reward <= 0 ||
+                      (active &&
+                        account &&
+                        parseFloat(quantity) > parseFloat(walletBalance))
+                    }
+                    loading={loadingRedux.approval}
+                  >
+                    STAKE
                   </Button>
                 </Fragment>
               ),

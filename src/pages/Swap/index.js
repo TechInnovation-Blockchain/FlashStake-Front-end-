@@ -436,7 +436,7 @@ function Swap({
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    getApprovalALT();
+    getApprovalALT("swap");
   };
 
   const onClickSwap = (quantity) => {
@@ -697,7 +697,10 @@ function Swap({
                     "rejected",
                   ].find((item) => dialogStep.includes(item))}
                   step={dialogStep}
-                  stepperShown={false}
+                  stepperShown={
+                    dialogStep === "pendingApproval" ||
+                    dialogStep === "swapProposal"
+                  }
 
                   // status="success"
                 >
@@ -714,24 +717,90 @@ function Swap({
                           </Typography>
                         </Fragment>
                       ),
-                      successApproval: (
+                      //successApproval: (
+                      //  <Fragment>
+                      //    <Typography
+                      //      variant="body1"
+                      //      className={classes.textBold}
+                      //    >
+                      //      APPROVAL
+                      //      <br />
+                      //      <span className={classes.greenText}>
+                      //        SUCCESSFUL
+                      //      </span>
+                      //    </Typography>
+                      //    <Button
+                      //      variant="red"
+                      //      fullWidth
+                      //      onClick={onClickClose}
+                      //    >
+                      //      CLOSE
+                      //    </Button>
+                      //  </Fragment>
+                      //),
+                      swapProposal: (
                         <Fragment>
                           <Typography
-                            variant="body1"
-                            className={classes.textBold}
+                            variant="overline"
+                            className={classes.infoText}
                           >
-                            APPROVAL
+                            SWAP
                             <br />
-                            <span className={classes.greenText}>
-                              SUCCESSFUL
-                            </span>
+                            <div style={{ display: "block" }}>
+                              IF YOU SWAP{" "}
+                              <Tooltip
+                                title={`${quantity} ${
+                                  selectedRewardToken?.tokenB?.symbol || ""
+                                }`}
+                              >
+                                <span className={classes.infoTextSpan}>
+                                  {trunc(quantity)}{" "}
+                                  {selectedRewardToken?.tokenB?.symbol || ""}
+                                </span>
+                              </Tooltip>{" "}
+                              YOU WILL{" "}
+                              <span className={classes.infoTextSpan}>
+                                IMMEDIATELY
+                              </span>{" "}
+                              EARN{" "}
+                              {loadingRedux.reward ? (
+                                <CircularProgress
+                                  size={12}
+                                  className={classes.loaderStyle}
+                                />
+                              ) : (
+                                <Tooltip title={`${swapOutput} XIO`}>
+                                  <span className={classes.infoTextSpan}>
+                                    {" "}
+                                    {trunc(swapOutput)} XIO .
+                                  </span>
+                                </Tooltip>
+                              )}
+                            </div>
                           </Typography>
                           <Button
                             variant="red"
                             fullWidth
-                            onClick={onClickClose}
+                            onClick={
+                              !allowanceALT
+                                ? () => {}
+                                : () => onClickSwap(quantity)
+                            }
+                            disabled={
+                              !active ||
+                              !account ||
+                              inputError ||
+                              !selectedPortal ||
+                              quantity <= 0 ||
+                              days <= 0 ||
+                              loadingRedux.reward ||
+                              loadingRedux.stake ||
+                              chainId !== 4 ||
+                              reward <= 0
+                            }
+                            loading={loadingRedux.swap}
                           >
-                            CLOSE
+                            SWAP
                           </Button>
                         </Fragment>
                       ),

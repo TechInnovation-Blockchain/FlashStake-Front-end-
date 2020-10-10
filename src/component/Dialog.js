@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "0 !important",
   },
   closeIcon: {
-    // position: "absolute",
-    // right: 0,
-    // top: "50%",
+    position: "absolute",
+    right: 0,
+    top: "50%",
     // transform: "translateY(45%)",
     // zIndex: 4,
   },

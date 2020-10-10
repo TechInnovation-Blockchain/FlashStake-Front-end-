@@ -360,7 +360,7 @@ function TableComponent({
                     loading={loadingRedux.unstake}
                   >
                     <Tooltip title={`${expiredDappBalance} XIO`}>
-                      <span>UNSTAKE {trunc(expiredDappBalance)} XIO</span>
+                      <span>UNSTAKE</span>
                     </Tooltip>
                   </Button>
                 </Grid>

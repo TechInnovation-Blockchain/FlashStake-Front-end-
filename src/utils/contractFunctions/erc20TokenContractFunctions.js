@@ -45,7 +45,7 @@ export const decimals = async () => {
   }
 };
 
-export const approve = async (address, amount) => {
+export const approve = async (address, tab, amount) => {
   try {
     setDialogStepIndep("pendingApproval");
     setLoadingIndep({ approval: true });
@@ -64,7 +64,12 @@ export const approve = async (address, amount) => {
       })
       .then(function (receipt) {
         showSnackbarIndep("Approval Successful.", "success");
-        setDialogStepIndep("successApproval");
+        {
+          tab === "stake"
+            ? setDialogStepIndep("flashstakeProposal")
+            : setDialogStepIndep("swapProposal");
+        }
+        // setDialogStepIndep("successApproval");
       })
       .catch((e) => {
         if (e.code === 4001) {
