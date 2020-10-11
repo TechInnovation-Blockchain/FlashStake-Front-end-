@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { useQuery } from "@apollo/client";
 
@@ -44,16 +44,12 @@ function Updater({
   checkAllowanceALT,
   getWalletBalance,
 }) {
-  const { loading, error, data, refetch } = useQuery(userStakesQuery, {
+  const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
       account: account ? account.toString().toLowerCase() : "",
     },
     fetchPolicy: "network-only",
   });
-
-  useEffect(() => {
-    // console.log(data?.protocols);
-  }, [data]);
 
   useEffect(() => {
     if (active && account) {
@@ -65,7 +61,16 @@ function Updater({
       checkAllowanceXIO();
       checkAllowanceALT();
     }
-  }, [active, account, refetch, getBalanceXIO]);
+  }, [
+    active,
+    account,
+    refetch,
+    getBalanceXIO,
+    checkAllowanceALT,
+    checkAllowanceXIO,
+    getBalanceALT,
+    updateWalletBalance,
+  ]);
 
   useEffect(() => {
     const earliestRemaining = currentStaked.earliest - Date.now() / 1000;
@@ -106,8 +111,17 @@ function Updater({
       updateWalletBalance();
       setRefetch(false);
     }
-  }, [refetchData, setRefetch, refetch, getBalanceXIO]);
-
+  }, [
+    refetchData,
+    setRefetch,
+    refetch,
+    getBalanceXIO,
+    checkAllowanceALT,
+    checkAllowanceXIO,
+    getBalanceALT,
+    getWalletBalance,
+    updateWalletBalance,
+  ]);
   useEffect(() => {
     updatePools(data?.protocols[0]?.pools);
     updateUserData(data?.user);
@@ -116,7 +130,7 @@ function Updater({
       updateUserData(data?.user);
     }, 60000);
     return () => clearInterval(reCalculateInterval);
-  }, [data]);
+  }, [data, updatePools, updateUserData]);
 
   return null;
 }

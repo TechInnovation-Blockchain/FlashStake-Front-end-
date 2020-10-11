@@ -9,7 +9,6 @@ import {
   Box,
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
@@ -119,8 +118,6 @@ function SwapTable({
   const [sortBy, setSortBy] = useState("EARNED");
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-
-  const history = useHistory();
 
   useEffect(() => {
     setPage(0);

@@ -1,4 +1,4 @@
-import React, { Fragment, createRef, useEffect, useState } from "react";
+import React, { Fragment, createRef, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   Container,
@@ -12,23 +12,12 @@ import { makeStyles } from "@material-ui/styles";
 import { WalletConnect, Snackbar } from "../../component";
 import Routes from "../Routes";
 import { setReset } from "../../redux/actions/flashstakeActions";
-import logo from "../../assets/xio-logo.svg";
-import logoLight from "../../assets/xio-logo-light.svg";
-import xioAnim from "../../assets/xio-animated.gif";
 import xordLogo from "../../assets/xord-logo.png";
-import { Button } from "../../component";
-import { withStyles } from "@material-ui/core/styles";
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 
 import {
   showWalletBackdrop,
   themeSwitchAction,
 } from "../../redux/actions/uiActions";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { ExpandableBox } from "../../component";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -41,10 +30,13 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     backgroundColor: theme.palette.background.secondary2,
     maxWidth: "450px",
+    padding: theme.spacing(7, 1),
+    [theme.breakpoints.down("xs")]: {
+      padding: theme.spacing(2, 1),
+    },
   },
   contentContainer: {
     backgroundColor: theme.palette.background.secondary,
-    marginTop: theme.spacing(7),
     overflow: "hidden",
     borderRadius: "10px",
     border: "1px solid #282828",
@@ -110,47 +102,6 @@ const useStyles = makeStyles((theme) => ({
   btn2: {},
 }));
 
-const Accordion = withStyles({
-  root: {
-    border: "1px solid rgba(0, 0, 0, .125)",
-    boxShadow: "none",
-    "&:not(:last-child)": {
-      borderBottom: 0,
-    },
-    "&:before": {
-      display: "none",
-    },
-    "&$expanded": {
-      margin: "auto",
-    },
-  },
-  expanded: {},
-})(MuiAccordion);
-
-const AccordionSummary = withStyles({
-  root: {
-    backgroundColor: "rgba(0, 0, 0, .03)",
-    borderBottom: "1px solid rgba(0, 0, 0, .125)",
-    marginBottom: -1,
-    minHeight: 56,
-    "&$expanded": {
-      minHeight: 56,
-    },
-  },
-  content: {
-    "&$expanded": {
-      margin: "12px 0",
-    },
-  },
-  expanded: {},
-})(MuiAccordionSummary);
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiAccordionDetails);
-
 export let walletBtnRef = createRef();
 
 function Layout({
@@ -165,28 +116,8 @@ function Layout({
 }) {
   const classes = useStyles();
 
-  const [expanded, setExpanded] = React.useState("panel1");
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
-
   const handleClose = () => {
     showWalletBackdrop(false);
-  };
-
-  const [theme, setTheme] = useState(true);
-
-  const handleClick = () => {
-    // themeSwitchAction();
-    setTheme((val) => !val);
-    if (theme === true) {
-      themeMode = "dark";
-      toggleThemeMode();
-    } else {
-      themeMode = "light";
-      toggleThemeMode();
-    }
   };
 
   useEffect(() => {

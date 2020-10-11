@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { ClearOutlined, ExpandMore, MonetizationOn } from "@material-ui/icons";
+import { ClearOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -160,9 +160,6 @@ export default function DropdownDialog({
       // // console.log(item?.id);
     );
   }, [search, items]);
-  filteredData().map((item) => {
-    // console.log(item.tokenB.symbol);
-  });
   const onClose = useCallback(() => {
     setOpen(false);
   }, []);

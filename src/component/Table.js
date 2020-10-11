@@ -9,10 +9,8 @@ import {
   Box,
 } from "@material-ui/core";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
-import Web3 from "web3";
 
 import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
@@ -129,8 +127,6 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
 
-  const history = useHistory();
-
   useEffect(() => {
     setPage(0);
   }, [stakes]);
@@ -183,9 +179,8 @@ function TableComponent({
         break;
       case "UNLOCKED":
         data = stakes?.sort(
-          ({ stakeAmount: a }, { stakeAmount: b }) =>
-            parseFloat(Web3.utils.fromWei(a)) -
-            parseFloat(Web3.utils.fromWei(b))
+          ({ amountAvailable: a }, { amountAvailable: b }) =>
+            parseFloat(a) - parseFloat(b)
         );
         break;
       case "REMAINING":

@@ -652,6 +652,7 @@ function Swap({
                 <Dialog
                   open={showStakeDialog}
                   // open={true}
+                  steps={["APPROVE XIO", "SWAP"]}
                   title="SWAP"
                   onClose={() => setShowStakeDialog(false)}
                   status={[
@@ -705,43 +706,46 @@ function Swap({
                       swapProposal: (
                         <Fragment>
                           <Typography
-                            variant="overline"
-                            className={classes.infoText}
+                            variant="body1"
+                            className={classes.textBold}
                           >
                             SWAP
-                            <br />
-                            <div style={{ display: "block" }}>
-                              IF YOU SWAP{" "}
-                              <Tooltip
-                                title={`${quantity} ${
-                                  selectedRewardToken?.tokenB?.symbol || ""
-                                }`}
-                              >
-                                <span className={classes.infoTextSpan}>
-                                  {trunc(quantity)}{" "}
-                                  {selectedRewardToken?.tokenB?.symbol || ""}
-                                </span>
-                              </Tooltip>{" "}
-                              YOU WILL{" "}
-                              <span className={classes.infoTextSpan}>
-                                IMMEDIATELY
-                              </span>{" "}
-                              EARN{" "}
-                              {loadingRedux.reward ? (
-                                <CircularProgress
-                                  size={12}
-                                  className={classes.loaderStyle}
-                                />
-                              ) : (
-                                <Tooltip title={`${swapOutput} XIO`}>
-                                  <span className={classes.infoTextSpan}>
-                                    {" "}
-                                    {trunc(swapOutput)} XIO .
-                                  </span>
-                                </Tooltip>
-                              )}
-                            </div>
                           </Typography>
+                          <Typography
+                            variant="body2"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            IF YOU SWAP{" "}
+                            <Tooltip
+                              title={`${quantity} ${
+                                selectedRewardToken?.tokenB?.symbol || ""
+                              }`}
+                            >
+                              <span className={classes.infoTextSpan}>
+                                {trunc(quantity)}{" "}
+                                {selectedRewardToken?.tokenB?.symbol || ""}
+                              </span>
+                            </Tooltip>{" "}
+                            YOU WILL{" "}
+                            <span className={classes.infoTextSpan}>
+                              IMMEDIATELY
+                            </span>{" "}
+                            EARN{" "}
+                            {loadingRedux.reward ? (
+                              <CircularProgress
+                                size={12}
+                                className={classes.loaderStyle}
+                              />
+                            ) : (
+                              <Tooltip title={`${swapOutput} XIO`}>
+                                <span className={classes.infoTextSpan}>
+                                  {" "}
+                                  {trunc(swapOutput)} XIO
+                                </span>
+                              </Tooltip>
+                            )}
+                          </Typography>
+
                           <Button
                             variant="red"
                             fullWidth
@@ -751,15 +755,12 @@ function Swap({
                                 : () => onClickSwap(quantity)
                             }
                             disabled={
-                              !active ||
-                              !account ||
                               !selectedPortal ||
-                              quantity <= 0 ||
-                              days <= 0 ||
-                              loadingRedux.reward ||
-                              loadingRedux.stake ||
+                              !(quantity > 0) ||
+                              parseFloat(balanceALT) < parseFloat(quantity) ||
+                              !allowanceALT ||
                               chainId !== 4 ||
-                              reward <= 0
+                              loadingRedux.swap
                             }
                             loading={loadingRedux.swap}
                           >

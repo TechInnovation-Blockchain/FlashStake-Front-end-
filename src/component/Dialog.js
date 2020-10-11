@@ -73,6 +73,7 @@ export default function Dialog({
   title = "",
   stepperShown,
   step,
+  steps,
 }) {
   const classes = useStyles();
 
@@ -101,7 +102,7 @@ export default function Dialog({
             <ClearOutlined />
           </IconButton>
         </Box>
-        {stepperShown ? <Stepper step={step} /> : null}
+        {stepperShown ? <Stepper step={step} steps={steps} /> : null}
         {status
           ? {
               pending: (

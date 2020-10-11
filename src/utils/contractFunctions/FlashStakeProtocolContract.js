@@ -75,7 +75,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
       .then(function (receipt) {
         setTimeout(() => {
           setRefetchIndep(true);
-        }, 5000);
+        }, 2000);
         setStakeDialogStepIndep("successStake");
         setLoadingIndep({ stake: false });
 
@@ -142,7 +142,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
       .then(function (receipt) {
         setTimeout(() => {
           setRefetchIndep(true);
-        }, 5000);
+        }, 2000);
         setStakeDialogStepIndep("successUnstake");
         setLoadingIndep({ unstake: false });
 
@@ -209,7 +209,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
       .then(function (receipt) {
         setTimeout(() => {
           setRefetchIndep(true);
-        }, 5000);
+        }, 2000);
         setStakeDialogStepIndep("successSwap");
         setLoadingIndep({ swap: false });
 
