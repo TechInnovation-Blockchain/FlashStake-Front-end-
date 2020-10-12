@@ -20,7 +20,6 @@ import {
   setResetIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
-import { ControlCameraRounded } from "@material-ui/icons";
 
 let contract;
 let infuraContract;
