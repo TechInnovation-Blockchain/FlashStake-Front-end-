@@ -560,6 +560,7 @@ function Swap({
                             onClick={onClickApprove}
                             disabled={
                               !selectedPortal ||
+                              quantity <= 0 ||
                               chainId !== 4 ||
                               allowanceALT ||
                               loadingRedux.approval

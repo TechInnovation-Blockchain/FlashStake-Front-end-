@@ -58,46 +58,55 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     }
     contract.methods
       .stake(_token, xioQuantity, days, reward)
-      .send({
-        from: walletAddress,
-      })
-      .on("transactionHash", async (txnHash) => {
-        addToTxnQueueIndep(txnHash);
-        setStakeTxnHashIndep(txnHash);
-        showSnackbarTxnIndep(
-          "Transaction Pending.",
-          "info",
-          "txnEtherScan",
-          txnHash,
-          true
-        );
-      })
-      .then(function (receipt) {
-        setTimeout(() => {
-          setRefetchIndep(true);
-        }, 5000);
-        setStakeDialogStepIndep("successStake");
-        setLoadingIndep({ stake: false });
+      .estimateGas({ gas: 10000000, from: walletAddress }, function (
+        error,
+        gasAmount
+      ) {
+        console.log(gasAmount);
+        contract.methods
+          .stake(_token, xioQuantity, days, reward)
+          .send({
+            from: walletAddress,
+            gasLimit: gasAmount || 400000,
+          })
+          .on("transactionHash", async (txnHash) => {
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 5000);
+            setStakeDialogStepIndep("successStake");
+            setLoadingIndep({ stake: false });
 
-        setResetIndep(true);
-        showSnackbarTxnIndep(
-          "Stake Transaction Successful.",
-          "success",
-          "txnEtherScan",
-          receipt.transactionHash,
-          false
-        );
-      })
-      .catch((e) => {
-        if (e.code === 4001) {
-          setStakeDialogStepIndep("rejectedStake");
-          showSnackbarIndep("Stake Transaction Rejected.", "error");
-        } else {
-          setStakeDialogStepIndep("failedStake");
-          showSnackbarIndep("Stake Transaction Failed.", "error");
-        }
-        setLoadingIndep({ stake: false });
-        console.error("ERROR stake -> ", e);
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Stake Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedStake");
+              showSnackbarIndep("Stake Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedStake");
+              showSnackbarIndep("Stake Transaction Failed.", "error");
+            }
+            setLoadingIndep({ stake: false });
+            console.error("ERROR stake -> ", e);
+          });
       });
   } catch (e) {
     if (e.code === 4001) {
@@ -125,46 +134,54 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
     }
     contract.methods
       .unstake(_expiredIds, _xioQuantity)
-      .send({
-        from: walletAddress,
-      })
-      .on("transactionHash", async (txnHash) => {
-        addToTxnQueueIndep(txnHash);
-        setStakeTxnHashIndep(txnHash);
-        showSnackbarTxnIndep(
-          "Transaction Pending.",
-          "info",
-          "txnEtherScan",
-          txnHash,
-          true
-        );
-      })
-      .then(function (receipt) {
-        setTimeout(() => {
-          setRefetchIndep(true);
-        }, 5000);
-        setStakeDialogStepIndep("successUnstake");
-        setLoadingIndep({ unstake: false });
+      .estimateGas({ gas: 10000000, from: walletAddress }, function (
+        gasAmount
+      ) {
+        console.log("Unstake gasAmount ->", gasAmount);
+        contract.methods
+          .unstake(_expiredIds, _xioQuantity)
+          .send({
+            from: walletAddress,
+            gasLimit: gasAmount || 400000,
+          })
+          .on("transactionHash", async (txnHash) => {
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 5000);
+            setStakeDialogStepIndep("successUnstake");
+            setLoadingIndep({ unstake: false });
 
-        setResetIndep(true);
-        showSnackbarTxnIndep(
-          "Unstake Transaction Successful.",
-          "success",
-          "txnEtherScan",
-          receipt.transactionHash,
-          false
-        );
-      })
-      .catch((e) => {
-        if (e.code === 4001) {
-          setStakeDialogStepIndep("rejectedUnstake");
-          showSnackbarIndep("Unstake Transaction Rejected.", "error");
-        } else {
-          setStakeDialogStepIndep("failedUnstake");
-          showSnackbarIndep("Unstake Transaction Failed.", "error");
-        }
-        setLoadingIndep({ unstake: false });
-        console.error("ERROR stake -> ", e);
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Unstake Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedUnstake");
+              showSnackbarIndep("Unstake Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedUnstake");
+              showSnackbarIndep("Unstake Transaction Failed.", "error");
+            }
+            setLoadingIndep({ unstake: false });
+            console.error("ERROR stake -> ", e);
+          });
       });
   } catch (e) {
     if (e.code === 4001) {
@@ -243,6 +260,16 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     }
     setLoadingIndep({ swap: false });
     console.error("ERROR Swap -> ", e);
+  }
+};
+
+export const paused = async () => {
+  try {
+    const _paused = await infuraContract.methods.paused().call();
+    return _paused;
+  } catch (e) {
+    console.error("ERROR paused -> ", e);
+    return true;
   }
 };
 

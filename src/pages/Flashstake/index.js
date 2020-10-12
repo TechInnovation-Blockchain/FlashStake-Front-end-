@@ -50,6 +50,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { JSBI } from "@uniswap/sdk";
 import { setRefetch } from "../../redux/actions/dashboardActions";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -331,6 +332,15 @@ function Flashstake({
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
+  const history = useHistory();
+
+  useEffect(() => {
+    // if (history.location.pathname === "/") {
+    //   setRoute(true);
+    // }
+    console.log("Called");
+    console.log(history.location.pathname);
+  }, [history.location.pathname]);
 
   const [inputError, setInputError] = useState(false);
   const [showStakeDialog, setShowStakeDialog] = useState(false);
@@ -640,11 +650,11 @@ function Flashstake({
                           allowanceXIO ||
                           !active ||
                           !account ||
-                          // inputError ||
-                          // quantity <= 0 ||
-                          // days <= 0 ||
-                          // reward <= 0 ||
-                          // !selectedPortal ||
+                          inputError ||
+                          quantity <= 0 ||
+                          days <= 0 ||
+                          reward <= 0 ||
+                          !selectedPortal ||
                           loadingRedux.reward ||
                           loadingRedux.approval ||
                           chainId !== 4

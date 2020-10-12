@@ -6,6 +6,7 @@ import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import animatedLogo from "../assets/xio-logo.gif";
 import { setExpandAccodion } from "../redux/actions/uiActions";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   navContainer: {
@@ -52,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Navbar({ expanding, setExpandAccodion }) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [animate, setAnimate] = useState(false);
   // // console.log(animate);
@@ -66,7 +68,7 @@ function Navbar({ expanding, setExpandAccodion }) {
     setExpandAccodion(false);
   };
 
-  console.log("IN  navbar=====>", expanding);
+  // console.log("IN  navbar=====>", expanding);
 
   return (
     <Box className={classes.navContainer}>
@@ -76,7 +78,10 @@ function Navbar({ expanding, setExpandAccodion }) {
           to="/stake"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
-          onClick={handleClick2}
+          onClick={() => {
+            history.push("/stake");
+            return handleClick2;
+          }}
           exact
         >
           <Typography variant="body1" className={classes.navLinkText}>
@@ -91,7 +96,10 @@ function Navbar({ expanding, setExpandAccodion }) {
           to="/swap"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
-          onClick={handleClick2}
+          onClick={() => {
+            history.push("/swap");
+            return handleClick2;
+          }}
           exact
         >
           <Typography variant="body1" className={classes.navLinkText}>
@@ -117,7 +125,12 @@ function Navbar({ expanding, setExpandAccodion }) {
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
-          onClick={handleClick2}
+          onClick={() => {
+            history.push("/pool");
+            return {
+              handleClick2,
+            };
+          }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
             POOL
@@ -130,7 +143,10 @@ function Navbar({ expanding, setExpandAccodion }) {
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
-          onClick={handleClick2}
+          onClick={() => {
+            history.push("/vote");
+            return handleClick2;
+          }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
             VOTE

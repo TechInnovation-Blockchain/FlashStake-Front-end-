@@ -2,22 +2,18 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { Dashboard, Flashstake, Swap, Pool, Vote } from "../../pages";
+import { Flashstake, Swap, Pool, Vote } from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
 
 const getRoutes = (paused) => {
   return [
-    {
-      path: "/dashboard",
-      component: Dashboard,
-    },
     {
       path: "/stake",
       component: paused ? FlashstakePausedMessage : Flashstake,
     },
     {
       path: "/swap",
-      component: Swap,
+      component: paused ? FlashstakePausedMessage : Swap,
     },
     {
       path: "/pool",
