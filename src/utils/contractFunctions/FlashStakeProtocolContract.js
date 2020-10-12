@@ -20,6 +20,7 @@ import {
   setResetIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
+import { ControlCameraRounded } from "@material-ui/icons";
 
 let contract;
 let infuraContract;
@@ -209,50 +210,54 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     }
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
-      .estimateGas({ gas: 10000000, from: walletAddress }, (gasAmount) => {
+      .estimateGas({ gas: 10000000, from: walletAddress }, function (
+        gasAmount
+      ) {
         console.log("Swap gasAmount ->", gasAmount);
-      })
-      .swap(_altQuantity, _token, _expectedOutput)
-      .send({
-        from: walletAddress,
-      })
-      .on("transactionHash", async (txnHash) => {
-        addToTxnQueueIndep(txnHash);
-        setStakeTxnHashIndep(txnHash);
-        showSnackbarTxnIndep(
-          "Transaction Pending.",
-          "info",
-          "txnEtherScan",
-          txnHash,
-          true
-        );
-      })
-      .then(function (receipt) {
-        setTimeout(() => {
-          setRefetchIndep(true);
-        }, 2000);
-        setStakeDialogStepIndep("successSwap");
-        setLoadingIndep({ swap: false });
+        contract.methods
+          .swap(_altQuantity, _token, _expectedOutput)
+          .send({
+            from: walletAddress,
+            gasLimit: gasAmount || 400000,
+          })
+          .on("transactionHash", async (txnHash) => {
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 2000);
+            setStakeDialogStepIndep("successSwap");
+            setLoadingIndep({ swap: false });
 
-        setResetIndep(true);
-        showSnackbarTxnIndep(
-          "Swap Transaction Successful.",
-          "success",
-          "txnEtherScan",
-          receipt.transactionHash,
-          false
-        );
-      })
-      .catch((e) => {
-        if (e.code === 4001) {
-          setStakeDialogStepIndep("rejectedSwap");
-          showSnackbarIndep("Swap Transaction Rejected.", "error");
-        } else {
-          setStakeDialogStepIndep("failedSwap");
-          showSnackbarIndep("Swap Transaction Failed.", "error");
-        }
-        setLoadingIndep({ swap: false });
-        console.error("ERROR swap -> ", e);
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Swap Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedSwap");
+              showSnackbarIndep("Swap Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedSwap");
+              showSnackbarIndep("Swap Transaction Failed.", "error");
+            }
+            setLoadingIndep({ swap: false });
+            console.error("ERROR swap -> ", e);
+          });
       });
   } catch (e) {
     if (e.code === 4001) {

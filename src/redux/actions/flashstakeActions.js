@@ -407,6 +407,17 @@ export const setDialogStepIndep = (step) => {
   store.dispatch(setDialogStep(step));
 };
 
+export const setDialogSwapStep = (step) => {
+  return {
+    type: "SWAP_DIALOG_STEP",
+    payload: step,
+  };
+};
+
+export const setDialogSwapStepIndep = (step) => {
+  store.dispatch(setDialogSwapStep(step));
+};
+
 export const setReset = (val) => {
   return {
     type: "RESET",

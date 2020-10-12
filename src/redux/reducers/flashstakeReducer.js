@@ -16,6 +16,8 @@ export const flashstakeReducer = (
     balanceALT: 0,
     balanceUSD: 0,
     dialogStep: "",
+    dialogStep2: "",
+
     stakeRequest: {
       quantity: 0,
       days: 0,
@@ -126,6 +128,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         dialogStep: payload,
+      };
+    case "SWAP_DIALOG_STEP":
+      return {
+        ...state,
+        dialogStep2: payload,
       };
     case "STAKE_REQUEST":
       return {

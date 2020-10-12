@@ -299,7 +299,7 @@ function Swap({
   getBalanceALT,
   balance,
   setLoading,
-  dialogStep,
+  dialogStep2,
   setDialogStep,
   stakeRequest,
   reset,
@@ -660,11 +660,11 @@ function Swap({
                     "success",
                     "failed",
                     "rejected",
-                  ].find((item) => dialogStep.includes(item))}
-                  step={dialogStep}
+                  ].find((item) => dialogStep2.includes(item))}
+                  step={dialogStep2}
                   stepperShown={
-                    dialogStep === "pendingApproval" ||
-                    dialogStep === "swapProposal"
+                    dialogStep2 === "pendingApproval" ||
+                    dialogStep2 === "swapProposal"
                   }
 
                   // status="success"
@@ -901,7 +901,7 @@ function Swap({
                           </Button>
                         </Fragment>
                       ),
-                    }[dialogStep]
+                    }[dialogStep2]
                   }
                 </Dialog>
               </Grid>
