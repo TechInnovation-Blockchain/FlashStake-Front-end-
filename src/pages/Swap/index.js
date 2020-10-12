@@ -537,7 +537,6 @@ function Swap({
                           </span>
                         </Tooltip>
                       )}
-                      .
                     </Typography>
                   ) : (
                     <Typography variant="overline" className={classes.redText}>

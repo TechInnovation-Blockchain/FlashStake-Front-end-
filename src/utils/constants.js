@@ -1,5 +1,5 @@
 export const CONSTANTS = {
-  GRAPHQL_ENDPOINT_URI: "http://143.110.192.105:4000/graphql",
+  GRAPHQL_ENDPOINT_URI: "https://server.xio.app:4000/graphql",
   INFURA_PROJECT_ENDPOINT_URL:
     "https://rinkeby.infura.io/v3/7e0f9cd6dfa3401c8f929369731266f7",
   WETH_ERC20_ADDRESS: "0xc778417E063141139Fce010982780140Aa0cD5Ab",

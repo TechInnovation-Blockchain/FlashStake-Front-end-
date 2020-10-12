@@ -597,7 +597,7 @@ function Flashstake({
                         >
                           <span className={classes.infoTextSpan}>
                             {trunc(Web3.utils.fromWei(reward))}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""} .
+                            {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>
                       )}
