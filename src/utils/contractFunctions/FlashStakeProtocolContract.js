@@ -226,7 +226,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
       .then(function (receipt) {
         setTimeout(() => {
           setRefetchIndep(true);
-        }, 5000);
+        }, 2000);
         setStakeDialogStepIndep("successSwap");
         setLoadingIndep({ swap: false });
 

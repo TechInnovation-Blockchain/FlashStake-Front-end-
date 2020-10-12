@@ -63,6 +63,7 @@ export default function Button(props) {
   return (
     <MuiButton
       {...props}
+      fontSizeLocal={undefined}
       variant="outlined"
       className={`${props.className} ${classes.commonStyles} ${
         { dark: classes.darkButton, red: classes.redButton }[props.variant]

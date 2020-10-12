@@ -64,11 +64,9 @@ export const approve = async (address, tab, amount) => {
       })
       .then(function (receipt) {
         showSnackbarIndep("Approval Successful.", "success");
-        {
-          tab === "stake"
-            ? setDialogStepIndep("flashstakeProposal")
-            : setDialogStepIndep("swapProposal");
-        }
+        tab === "stake"
+          ? setDialogStepIndep("flashstakeProposal")
+          : setDialogStepIndep("swapProposal");
         // setDialogStepIndep("successApproval");
       })
       .catch((e) => {

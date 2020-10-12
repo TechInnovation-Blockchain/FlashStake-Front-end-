@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Dialog as MuiDialog,
   IconButton,
@@ -11,14 +11,12 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { ClearOutlined, ExpandMore, MonetizationOn } from "@material-ui/icons";
-import Button from "./Button";
+import { ClearOutlined } from "@material-ui/icons";
 import { isMobile } from "react-device-detect";
 import { walletList, mobileWalletList, injected } from "../utils/connectors";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { setLoading } from "../redux/actions/uiActions";
 import { connect } from "react-redux";
-import { fortmatic } from "../utils/connectors";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButton: {
@@ -57,8 +55,9 @@ const useStyles = makeStyles((theme) => ({
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: "50%",
-    transform: "translateY(-50%)",
+    top: 0,
+    // top: "50%",
+    // transform: "translateY(-50%)",
   },
   clearSearch: {
     position: "absolute",
@@ -169,8 +168,6 @@ function WalletsDialogue({
 }) {
   const classes = useStyles();
   const [search, setSearch] = useState("");
-  const [selectedWallet, setSelectedWallet] = useState("");
-  const [loader, setLoader] = useState(false);
 
   // console.log(loading.walletConnection);
 
@@ -206,53 +203,17 @@ function WalletsDialogue({
         );
       }
     }
-  }, [search, walletList]);
+  }, [search, walletsItems]);
 
   const onClose = useCallback(() => {
-    // console.log("yolo onClose -> ");
     setOpen(false);
-  }, []);
-
-  const onSelectLocal = (symbol, address) => {
-    onSelect(symbol, address);
-    onClose();
-  };
-
-  useEffect(() => {
-    // let _fortmatic = walletsItems.find(
-    //   (_wallet) => _wallet.connectorType === FortmaticConnector
-    // );
-    // if (_fortmatic) {
-    //   _fortmatic.connector.on("OVERLAY_READY", onClose);
-    //   // console.log("yolo");
-    // }
-    // walletsItems
-    //   .find((wallet) => wallet.connectorType === FortmaticConnector)
-    //   ?.connector.on("OVERLAY_READY", () => {
-    //     setOpen(false);
-    //   });
-    // if (fortmatic) {
-    //   const provider = fortmatic?.getProvider();
-    //   // console.log({ fortmatic, provider });
-    //   const pollForOverlayReady = setInterval(() => {
-    //     if (provider.overlayReady) {
-    //       clearInterval(pollForOverlayReady);
-    //       // console.log("yadaaaaaaaaaaaaaaaaaaaaa");
-    //     }
-    //   }, 200);
-    //   return () => clearInterval(pollForOverlayReady);
-    // }
-  }, []);
+  }, [setOpen]);
 
   useEffect(() => {
     if (open && closeTimeout) {
       setTimeout(onClose, closeTimeout);
     }
   }, [closeTimeout, open, onClose]);
-
-  // useEffect(() => {
-  //   walletName(web3context ? selectedWallet : "");
-  // }, [web3context]);
 
   const addressShorten = (address) => {
     if (address) {
@@ -318,7 +279,6 @@ function WalletsDialogue({
                 key={name}
                 onClick={() => {
                   // handleClick(name, connector);
-                  setSelectedWallet(name);
                   activate(connector, onClose);
                   // console.log(connector);
                   // defaultSelect(connector);

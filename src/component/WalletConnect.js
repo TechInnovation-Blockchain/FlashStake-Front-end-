@@ -10,11 +10,7 @@ import {
 import { connect } from "react-redux";
 
 import Button from "./Button";
-import {
-  showSnackbarIndep,
-  showExpandBox,
-  setLoading,
-} from "../redux/actions/uiActions";
+import { showSnackbarIndep, setLoading } from "../redux/actions/uiActions";
 import { storeWeb3Context } from "../redux/actions/web3Actions";
 import WalletsDialogue from "./WalletsDialogue";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -34,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   connectWalletButton: {
     width: 250,
     borderRadius: 0,
-    margin: theme.spacing(2),
+    marginTop: theme.spacing(2),
     backgroundColor: theme.palette.background.primary,
   },
   wallentConnectText: {
@@ -69,7 +65,7 @@ function WalletConnect({
   const addressShorten = (address) => {
     if (address) {
       return `${address.slice(0, 6)}...${address.slice(
-        address.length - 2,
+        address.length - 4,
         address.length
       )}`;
     }
@@ -123,7 +119,7 @@ function WalletConnect({
           setLoading({ walletConnection: false });
         });
     },
-    [web3context]
+    [web3context, setLoading]
   );
 
   useEffect(() => {
@@ -141,7 +137,7 @@ function WalletConnect({
 
   useEffect(() => {
     activateWallet();
-  }, []);
+  }, [activateWallet]);
 
   return (
     <Fragment>

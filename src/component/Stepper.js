@@ -102,14 +102,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getSteps() {
-  return ["APPROVE XIO", "STAKE"];
-}
-
-export default function Stepper({ step }) {
+export default function Stepper({ step, steps = ["APPROVE XIO", "STAKE"] }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
 
   useEffect(() => {
     if (step === "pendingApproval") {

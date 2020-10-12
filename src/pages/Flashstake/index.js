@@ -9,12 +9,10 @@ import {
   Typography,
   TextField,
   Grid,
-  IconButton,
   Tooltip,
   CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { useQuery } from "@apollo/client";
 import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
@@ -41,14 +39,10 @@ import {
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
-import { getExtendedFloatValue, trunc } from "../../utils/utilFunc";
+import { trunc } from "../../utils/utilFunc";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
-import MaxBtn from "../../component/MaxBtn";
 import { Link } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { JSBI } from "@uniswap/sdk";
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 
@@ -342,16 +336,8 @@ function Flashstake({
     console.log(history.location.pathname);
   }, [history.location.pathname]);
 
-  const [inputError, setInputError] = useState(false);
   const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [additionalContractBal, setAdditionalContractBal] = useState(0);
-
-  const [expanded, setExpanded] = useState("panel1");
   const [expanded2, setExpanded2] = useState(true);
-
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
 
   const debouncedCalculateReward = useCallback(
     debounce(calculateReward, 200),
@@ -360,7 +346,6 @@ function Flashstake({
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
-  const [renderDualButtons, setRenderDualButtons] = useState(false);
   const regex = /^\d*(.(\d{1,18})?)?$/;
 
   //#region functions
@@ -396,15 +381,9 @@ function Flashstake({
     document.title = "Stake - XIO | The Future is at Stake";
     // setLoading({ dapp: true });
     setRefetch(true);
-  }, []);
+  }, [setRefetch]);
 
   useEffect(() => {}, [quantity, days]);
-
-  useEffect(() => {
-    if (selectedPortal && !allowanceXIO) {
-      setRenderDualButtons(true);
-    }
-  }, [selectedPortal, allowanceXIO]);
 
   useEffect(() => () => setInitialValues(quantity, days), [
     days,
@@ -479,7 +458,7 @@ function Flashstake({
         setExpandAccodion(true);
       }, 500);
     }
-  }, [expanding]);
+  }, [expanding, setExpandAccodion]);
 
   //#endregion
   // console.log(expanded2);
@@ -487,12 +466,7 @@ function Flashstake({
     <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
-          <Accordion
-            square
-            expanded={expanded2}
-            // expanded={false}
-            onChange={handleChange("panel1")}
-          >
+          <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
@@ -681,7 +655,6 @@ function Flashstake({
                           !allowanceXIO ||
                           !active ||
                           !account ||
-                          inputError ||
                           !selectedPortal ||
                           quantity <= 0 ||
                           days <= 0 ||
@@ -713,7 +686,6 @@ function Flashstake({
                         disabled={
                           !active ||
                           !account ||
-                          inputError ||
                           !selectedPortal ||
                           quantity <= 0 ||
                           days <= 0 ||
@@ -767,12 +739,7 @@ function Flashstake({
             </AccordionDetails>
           </Accordion>
 
-          <Accordion
-            square
-            expanded={!expanded2}
-            // expanded={true}
-            onChange={handleChange("panel2")}
-          >
+          <Accordion square expanded={!expanded2}>
             <AccordionSummary
               aria-controls="panel2d-content"
               id="panel2d-header"
@@ -799,6 +766,7 @@ function Flashstake({
         <Dialog
           open={showStakeDialog}
           // open={true}
+          steps={["APPROVE XIO", "STAKE"]}
           title="FLASHSTAKE"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -843,7 +811,10 @@ function Flashstake({
                     STAKE
                     <br />
                   </Typography>
-                  <Typography variant="overline" className={classes.infoText}>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
                     IF YOU STAKE{" "}
                     <span className={classes.infoTextSpan}>
                       {quantity || 0} XIO{" "}
@@ -872,7 +843,6 @@ function Flashstake({
                         </span>
                       </Tooltip>
                     )}
-                    .
                   </Typography>
                   <Button
                     variant="red"
@@ -885,7 +855,6 @@ function Flashstake({
                     disabled={
                       !active ||
                       !account ||
-                      inputError ||
                       !selectedPortal ||
                       quantity <= 0 ||
                       days <= 0 ||

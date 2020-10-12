@@ -68,8 +68,6 @@ function Navbar({ expanding, setExpandAccodion }) {
     setExpandAccodion(false);
   };
 
-  // console.log("IN  navbar=====>", expanding);
-
   return (
     <Box className={classes.navContainer}>
       {/* <Box className={classes.navOuterBox}> */}
