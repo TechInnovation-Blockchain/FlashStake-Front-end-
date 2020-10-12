@@ -624,7 +624,6 @@ function Flashstake({
                           allowanceXIO ||
                           !active ||
                           !account ||
-                          inputError ||
                           quantity <= 0 ||
                           days <= 0 ||
                           reward <= 0 ||

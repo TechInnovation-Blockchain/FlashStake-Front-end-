@@ -209,6 +209,10 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     }
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
+      .estimateGas({ gas: 10000000, from: walletAddress }, (gasAmount) => {
+        console.log("Swap gasAmount ->", gasAmount);
+      })
+      .swap(_altQuantity, _token, _expectedOutput)
       .send({
         from: walletAddress,
       })
@@ -314,44 +318,49 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
 
     contract.methods
       .unstakeALT(expiredIds, xioQuantity)
-      .send({
-        from: walletAddress,
-      })
-      .on("transactionHash", (txnHash) => {
-        setWithdrawTxnHashIndep(txnHash);
-        showSnackbarTxnIndep(
-          "Transaction Pending.",
-          "info",
-          "txnEtherScan",
-          txnHash,
-          true
-        );
-      })
-      .then(function (receipt) {
-        setDialogStepIndep("success");
-        showSnackbarTxnIndep(
-          "Withdraw Transaction Successful.",
-          "success",
-          "txnEtherScan",
-          receipt.transactionHash,
-          false
-        );
-        setRefetchIndep(true);
-        setLoadingIndep({ unstake: false });
+      .estimateGas({ gas: 10000000, from: walletAddress }, (gasAmount) => {
+        console.log("unstakeAlt gasAmount ->", gasAmount);
 
-        return receipt;
-      })
-      .catch((e) => {
-        if (e.code === 4001) {
-          setDialogStepIndep("rejected");
-          showSnackbarIndep("Withdraw Transaction Rejected.", "error");
-        } else {
-          setDialogStepIndep("failed");
-          showSnackbarIndep("Withdraw Transaction Failed.", "error");
-        }
-        setLoadingIndep({ unstake: false });
+        unstakeALT(expiredIds, xioQuantity)
+          .send({
+            from: walletAddress,
+          })
+          .on("transactionHash", (txnHash) => {
+            setWithdrawTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setDialogStepIndep("success");
+            showSnackbarTxnIndep(
+              "Withdraw Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+            setRefetchIndep(true);
+            setLoadingIndep({ unstake: false });
 
-        console.error("ERROR unstakeALT -> ", e);
+            return receipt;
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setDialogStepIndep("rejected");
+              showSnackbarIndep("Withdraw Transaction Rejected.", "error");
+            } else {
+              setDialogStepIndep("failed");
+              showSnackbarIndep("Withdraw Transaction Failed.", "error");
+            }
+            setLoadingIndep({ unstake: false });
+
+            console.error("ERROR unstakeALT -> ", e);
+          });
       });
     // .on("confirmation", (confirmationNumber, reciept) => {
     //   if (confirmationNumber === 1) {
