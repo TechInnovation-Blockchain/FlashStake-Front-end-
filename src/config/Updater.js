@@ -57,9 +57,10 @@ function Updater({
       refetch();
       getBalanceXIO();
       getBalanceALT();
-      updateWalletBalance();
+      const _interval = setInterval(updateWalletBalance(), 3000);
       checkAllowanceXIO();
       checkAllowanceALT();
+      return clearInterval(_interval);
     }
   }, [
     active,
