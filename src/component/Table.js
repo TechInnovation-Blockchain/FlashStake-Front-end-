@@ -303,7 +303,7 @@ function TableComponent({
                             >
                               <span>
                                 {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)}
+                                {trunc(_stake.stakeAmount)} XIO
                               </span>
                             </Tooltip>
                           </Grid>
@@ -312,7 +312,7 @@ function TableComponent({
                             {!_stake.expired ||
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "DAY" : "DAYS"}
+                                {_daysRem} {_daysRem === 1 ? "HOUR" : "HOURS"}
                               </Fragment>
                             ) : (
                               "COMPLETED"

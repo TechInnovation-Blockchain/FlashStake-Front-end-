@@ -579,7 +579,7 @@ function Flashstake({
                       </span>{" "}
                       FOR{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} DAYS
+                        {days || 0} HRS
                       </span>{" "}
                       YOU WILL{" "}
                       <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
@@ -589,7 +589,7 @@ function Flashstake({
                           size={12}
                           className={classes.loaderStyle}
                         />
-                      ) : (
+                      ) : quantity > 0 && days > 0 ? (
                         <Tooltip
                           title={`${Web3.utils.fromWei(reward)} ${
                             selectedRewardToken?.tokenB?.symbol || ""
@@ -600,6 +600,8 @@ function Flashstake({
                             {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>
+                      ) : (
+                        `0 ${selectedRewardToken?.tokenB?.symbol || ""}`
                       )}
                     </Typography>
                   ) : (
@@ -906,7 +908,7 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     {stakeRequest.quantity} XIO FOR {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "DAYS" : "DAY"} TO EARN{" "}
+                    {stakeRequest.days > 1 ? "HOURS" : "HOUR"} TO EARN{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
@@ -954,8 +956,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity} XIO FOR{" "}
-                    {stakeRequest.days} {stakeRequest.days > 1 ? "DAYS" : "DAY"}{" "}
-                    AND YOU WERE SENT{" "}
+                    {stakeRequest.days}{" "}
+                    {stakeRequest.days > 1 ? "HOURS" : "HOUR"} AND YOU WERE SENT{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >

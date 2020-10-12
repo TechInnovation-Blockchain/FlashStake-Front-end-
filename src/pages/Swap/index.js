@@ -812,7 +812,7 @@ function Swap({
                             className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                           >
                             SWAPPING {trunc(swapHist?.amount)}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""} TO EARN{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""} FOR{" "}
                             {trunc(swapOutput)} XIO{" "}
                             {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
