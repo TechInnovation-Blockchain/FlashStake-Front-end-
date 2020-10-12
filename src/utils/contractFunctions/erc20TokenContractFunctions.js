@@ -8,7 +8,10 @@ import {
   showSnackbarIndep,
   setLoadingIndep,
 } from "../../redux/actions/uiActions";
-import { setDialogStepIndep } from "../../redux/actions/flashstakeActions";
+import {
+  setDialogStepIndep,
+  setSwapDialogStepIndep,
+} from "../../redux/actions/flashstakeActions";
 
 let contract;
 let isContractInitialized = false;
@@ -47,7 +50,9 @@ export const decimals = async () => {
 
 export const approve = async (address, tab, amount) => {
   try {
-    setDialogStepIndep("pendingApproval");
+    tab === "stake"
+      ? setDialogStepIndep("pendingApproval")
+      : setSwapDialogStepIndep("pendingApproval");
     setLoadingIndep({ approval: true });
     showSnackbarIndep("Awaiting Approval.", "info");
     checkContractInitialized();
@@ -66,16 +71,20 @@ export const approve = async (address, tab, amount) => {
         showSnackbarIndep("Approval Successful.", "success");
         tab === "stake"
           ? setDialogStepIndep("flashstakeProposal")
-          : setDialogStepIndep("swapProposal");
+          : setSwapDialogStepIndep("swapProposal");
         // setDialogStepIndep("successApproval");
       })
       .catch((e) => {
         if (e.code === 4001) {
           showSnackbarIndep("Approval Rejected.", "error");
-          setDialogStepIndep("rejectedApproval");
+          tab === "stake"
+            ? setDialogStepIndep("rejectedApproval")
+            : setSwapDialogStepIndep("rejectedApproval");
         } else {
           showSnackbarIndep("Approval Failed.", "error");
-          setDialogStepIndep("failedApproval");
+          tab === "stake"
+            ? setDialogStepIndep("failedApproval")
+            : setSwapDialogStepIndep("failedApproval");
         }
         setLoadingIndep({ approval: false });
         console.error("ERROR approve -> ", e);
@@ -87,10 +96,14 @@ export const approve = async (address, tab, amount) => {
   } catch (e) {
     if (e.code === 4001) {
       showSnackbarIndep("Approval Rejected.", "error");
-      setDialogStepIndep("rejectedApproval");
+      tab === "stake"
+        ? setDialogStepIndep("rejectedApproval")
+        : setSwapDialogStepIndep("rejectedApproval");
     } else {
       showSnackbarIndep("Approval Failed.", "error");
-      setDialogStepIndep("failedApproval");
+      tab === "stake"
+        ? setDialogStepIndep("failedApproval")
+        : setSwapDialogStepIndep("failedApproval");
     }
     setLoadingIndep({ approval: false });
     console.error("ERROR approve -> ", e);

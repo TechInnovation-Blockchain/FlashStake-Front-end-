@@ -16,6 +16,7 @@ import {
 } from "../../redux/actions/dashboardActions";
 import {
   setDialogStepIndep as setStakeDialogStepIndep,
+  setSwapDialogStepIndep,
   setStakeTxnHashIndep,
   setResetIndep,
 } from "../../redux/actions/flashstakeActions";
@@ -200,7 +201,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
 export const swap = async (_altQuantity, _token, _expectedOutput) => {
   setLoadingIndep({ swap: true });
   try {
-    setStakeDialogStepIndep("pendingSwap");
+    setSwapDialogStepIndep("pendingSwap");
     showSnackbarIndep("Transaction Pending.", "info");
     checkContractInitialized();
 
@@ -235,7 +236,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             setTimeout(() => {
               setRefetchIndep(true);
             }, 2000);
-            setStakeDialogStepIndep("successSwap");
+            setSwapDialogStepIndep("successSwap");
             setLoadingIndep({ swap: false });
 
             setResetIndep(true);
@@ -249,10 +250,10 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
           })
           .catch((e) => {
             if (e.code === 4001) {
-              setStakeDialogStepIndep("rejectedSwap");
+              setSwapDialogStepIndep("rejectedSwap");
               showSnackbarIndep("Swap Transaction Rejected.", "error");
             } else {
-              setStakeDialogStepIndep("failedSwap");
+              setSwapDialogStepIndep("failedSwap");
               showSnackbarIndep("Swap Transaction Failed.", "error");
             }
             setLoadingIndep({ swap: false });
@@ -261,10 +262,10 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
       });
   } catch (e) {
     if (e.code === 4001) {
-      setStakeDialogStepIndep("rejectedSwap");
+      setSwapDialogStepIndep("rejectedSwap");
       showSnackbarIndep("Swap Transaction Rejected.", "error");
     } else {
-      setStakeDialogStepIndep("failedSwap");
+      setSwapDialogStepIndep("failedSwap");
       showSnackbarIndep("Swap Transaction Failed.", "error");
     }
     setLoadingIndep({ swap: false });

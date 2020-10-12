@@ -357,7 +357,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
     }
   } catch (e) {
     console.error("ERROR swapALT -> ", e);
-    setDialogStepIndep("failedSwap");
+    setSwapDialogStepIndep("failedSwap");
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }
 };
@@ -407,15 +407,15 @@ export const setDialogStepIndep = (step) => {
   store.dispatch(setDialogStep(step));
 };
 
-export const setDialogSwapStep = (step) => {
+export const setSwapDialogStep = (step) => {
   return {
     type: "SWAP_DIALOG_STEP",
     payload: step,
   };
 };
 
-export const setDialogSwapStepIndep = (step) => {
-  store.dispatch(setDialogSwapStep(step));
+export const setSwapDialogStepIndep = (step) => {
+  store.dispatch(setSwapDialogStep(step));
 };
 
 export const setReset = (val) => {
