@@ -189,7 +189,13 @@ export default function DropdownDialog({
   //       selectedValue;
   //   },
   // }() || <span className={classes.disabledText}>SELECT</span>}
-
+  const tryRequire = (path) => {
+    try {
+      return require(`../assets/Tokens/${path}.png`);
+    } catch (err) {
+      return require(`../assets/Tokens/NOTFOUND.png`);
+    }
+  };
   return (
     <Fragment>
       {/* <Box
@@ -232,13 +238,13 @@ export default function DropdownDialog({
             <Typography variant="body1" className={classes.primaryText}>
               {selectedValue.id ? (
                 <Fragment>
-                  {/* <img
-                    src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
+                  <img
+                    src={tryRequire(selectedValue.tokenB.symbol)}
                     alt="Logo"
                     srcset=""
                     width={15}
                     style={{ marginRight: 5 }}
-                  /> */}
+                  />
                   {selectedValue.tokenB.symbol}
                 </Fragment>
               ) : (
@@ -262,13 +268,13 @@ export default function DropdownDialog({
           <Typography variant="body1" className={classes.primaryText}>
             {selectedValue.id ? (
               <Fragment>
-                {/* <img
-                  src={require(`../assets/Tokens/${selectedValue.tokenB.symbol}.png`)}
+                <img
+                  src={tryRequire(selectedValue.tokenB.symbol)}
                   alt="Logo"
                   srcset=""
                   width={15}
                   style={{ marginRight: 5 }}
-                /> */}
+                />
                 {selectedValue.tokenB.symbol}
               </Fragment>
             ) : (
@@ -331,16 +337,16 @@ export default function DropdownDialog({
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
+                    {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
 
-                    {/* <img
-                      src={require(`../assets/Tokens/${_pool.tokenB.symbol}.png`)}
+                    <img
+                      src={tryRequire(_pool.tokenB.symbol)}
                       alt={_pool.tokenB.symbol}
                       srcset=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
-                    /> */}
-
+                    />
                     {_pool.tokenB.symbol}
                   </Typography>
                 </ListItem>

@@ -202,6 +202,15 @@ function TableComponent({
     },
     [page]
   );
+
+  const tryRequire = (path) => {
+    try {
+      return require(`../assets/Tokens/${path}.png`);
+    } catch (err) {
+      return require(`../assets/Tokens/NOTFOUND.png`);
+    }
+  };
+
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
@@ -286,13 +295,13 @@ function TableComponent({
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
                             <span className={classes.flexCenter}>
-                              {/* <img
-                                src={require(`../assets/Tokens/${_stake.pool.tokenB.symbol}.png`)}
+                              <img
+                                src={tryRequire(_stake.pool.tokenB.symbol)}
                                 alt="Logo"
                                 srcset=""
                                 width={15}
                                 style={{ marginRight: 5 }}
-                              /> */}
+                              />
                               {_stake.pool.tokenB.symbol}
                             </span>
                             {/* </Tooltip> */}

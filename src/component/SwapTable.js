@@ -179,6 +179,14 @@ function SwapTable({
     [page]
   );
 
+  const tryRequire = (path) => {
+    try {
+      return require(`../assets/Tokens/${path}.png`);
+    } catch (err) {
+      return require(`../assets/Tokens/NOTFOUND.png`);
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid container item xs={12} className={classes.infoGrid}>
@@ -257,6 +265,13 @@ function SwapTable({
                               title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
                             >
                               <span className={classes.flexCenter}>
+                                <img
+                                  src={tryRequire(_swap.pool.tokenB.symbol)}
+                                  alt="Logo"
+                                  srcset=""
+                                  width={15}
+                                  style={{ marginRight: 5 }}
+                                />{" "}
                                 {_swap.swapAmount} {_swap.pool.tokenB.symbol}
                               </span>
                             </Tooltip>

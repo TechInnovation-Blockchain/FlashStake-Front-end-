@@ -632,7 +632,7 @@ function Swap({
                           variant="overline"
                           className={classes.redText}
                         >
-                          CHANGE NETWORK TO RINKEBY TO WITHDRAW TOKENS
+                          CHANGE NETWORK TO RINKEBY TO SWAP TOKENS
                         </Typography>
                       </Grid>
                     ) : !allowanceALT ? (

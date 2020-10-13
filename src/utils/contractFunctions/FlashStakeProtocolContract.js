@@ -21,6 +21,7 @@ import {
   setResetIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
+import axios from "axios";
 
 let contract;
 let infuraContract;
@@ -59,11 +60,15 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     }
     contract.methods
       .stake(_token, xioQuantity, days, reward)
-      .estimateGas({ gas: 10000000, from: walletAddress }, function (
+      .estimateGas({ gas: 10000000, from: walletAddress }, async function (
         error,
         gasAmount
       ) {
         console.log(gasAmount);
+        // const txHash = await web3.utils.sha3(
+        //   contract.methods.stake(_token, xioQuantity, days, reward)
+        // );
+        // console.log(txHash);
         contract.methods
           .stake(_token, xioQuantity, days, reward)
           .send({
@@ -80,6 +85,25 @@ export const stake = async (_token, xioQuantity, days, reward) => {
               txnHash,
               true
             );
+
+            const data = {
+              _id: txnHash,
+              txn: {
+                amount: xioQuantity,
+                days: days,
+                selctedToken: _token,
+              },
+              type: "stake",
+            };
+
+            axios
+              .post("http://localhost:3001/addtnxhash", data)
+              .then((res) => {
+                console.log("Transaction Hash Added", res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -155,6 +179,24 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
               txnHash,
               true
             );
+
+            const data = {
+              _id: txnHash,
+              txn: {
+                _expiredIds,
+                _xioQuantity,
+              },
+              type: "unstake",
+            };
+
+            axios
+              .post("http://localhost:3001/addtnxhash", data)
+              .then((res) => {
+                console.log("Transaction Hash Added", res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -230,6 +272,25 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
               txnHash,
               true
             );
+
+            const data = {
+              _id: txnHash,
+              txn: {
+                _altQuantity,
+                _token,
+                _expectedOutput,
+              },
+              type: "swap",
+            };
+
+            axios
+              .post("http://localhost:3001/addtnxhash", data)
+              .then((res) => {
+                console.log("Transaction Hash Added", res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .then(function (receipt) {
             setTimeout(() => {
