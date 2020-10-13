@@ -32,6 +32,8 @@ export default function FlashstakePausedMessage(props) {
     case "/vote":
       name = "VOTING";
       break;
+    default:
+      break;
   }
 
   useEffect(() => {

@@ -1,0 +1,14 @@
+[debug] [2020-10-12T14:45:32.081Z] ----------------------------------------------------------------------
+[debug] [2020-10-12T14:45:32.087Z] Command:       /usr/local/bin/firebase /home/asad/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase deploy
+[debug] [2020-10-12T14:45:32.087Z] CLI Version:   7.12.1
+[debug] [2020-10-12T14:45:32.087Z] Platform:      linux
+[debug] [2020-10-12T14:45:32.087Z] Node Version:  v12.13.1
+[debug] [2020-10-12T14:45:32.093Z] Time:          Mon Oct 12 2020 19:45:32 GMT+0500 (Pakistan Standard Time)
+[debug] [2020-10-12T14:45:32.093Z] ----------------------------------------------------------------------
+[debug] [2020-10-12T14:45:32.093Z] 
+[debug] [2020-10-12T14:45:32.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-10-12T14:45:32.108Z] > authorizing via signed-in user
+[debug] [2020-10-12T14:45:32.108Z] [iam] checking project xio-stakex for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-10-12T14:45:32.110Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-10-12T14:45:32.110Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
