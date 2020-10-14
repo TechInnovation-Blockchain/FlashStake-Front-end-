@@ -76,9 +76,10 @@ function Navbar({ expanding, setExpandAccodion }) {
           to="/stake"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
+          // onClick={handleClick2}
           onClick={() => {
             history.push("/stake");
-            return handleClick2;
+            handleClick2();
           }}
           exact
         >
@@ -96,7 +97,7 @@ function Navbar({ expanding, setExpandAccodion }) {
           activeClassName={classes.activeNavlink}
           onClick={() => {
             history.push("/swap");
-            return handleClick2;
+            handleClick2();
           }}
           exact
         >
@@ -125,9 +126,7 @@ function Navbar({ expanding, setExpandAccodion }) {
           exact
           onClick={() => {
             history.push("/pool");
-            return {
-              handleClick2,
-            };
+            handleClick2();
           }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
@@ -143,7 +142,7 @@ function Navbar({ expanding, setExpandAccodion }) {
           exact
           onClick={() => {
             history.push("/vote");
-            return handleClick2;
+            handleClick2();
           }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
