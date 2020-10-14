@@ -137,7 +137,7 @@ function WalletConnect({
 
   useEffect(() => {
     activateWallet();
-  }, [activateWallet]);
+  }, []);
 
   return (
     <Fragment>

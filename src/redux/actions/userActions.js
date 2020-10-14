@@ -34,9 +34,12 @@ export const updatePools = (data) => async (dispatch) => {
       for (let i = 0; i < _pools.length; i++) {
         try {
           const response = await axios.get(
-            `https://min-api.cryptocompare.com/data/price?fsym=${_pools[i].tokenB.symbol}&tsyms=USD`
+            `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${
+              CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]
+            }&vs_currencies=USD`
+            // `https://min-api.cryptocompare.com/data/price?fsym=${_pools[i].tokenB.symbol}&tsyms=USD`
           );
-          _pools[i].tokenPrice = response.data.USD || 0;
+          _pools[i].tokenPrice = Object.values(response.data)[0].usd || 0;
         } catch (e) {
           console.error("ERROR pricingAPI -> ", e);
         }

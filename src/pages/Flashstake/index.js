@@ -11,12 +11,14 @@ import {
   Grid,
   Tooltip,
   CircularProgress,
+  IconButton,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import MaxBtn from "../../component/MaxBtn";
 
 import {
   Button,
@@ -135,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     top: "50%",
     transform: "translateY(-50%)",
-    background: theme.palette.background.secondary,
+    background: "#000",
     "&.Mui-disabled": {
       display: "none",
     },
@@ -143,7 +145,8 @@ const useStyles = makeStyles((theme) => ({
       fill: "#9191A7",
     },
     "&:hover": {
-      background: theme.palette.background.primary,
+      // background: theme.palette.background.primary,
+      background: "#000",
       "& svg": {
         fill: theme.palette.xioRed.main,
       },
@@ -326,15 +329,6 @@ function Flashstake({
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
-  const history = useHistory();
-
-  useEffect(() => {
-    // if (history.location.pathname === "/") {
-    //   setRoute(true);
-    // }
-    console.log("Called");
-    console.log(history.location.pathname);
-  }, [history.location.pathname]);
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
@@ -351,24 +345,30 @@ function Flashstake({
   //#region functions
 
   const onChangeDays = ({ target: { value } }) => {
-    if (Number(value) || value === "" || value === "0") {
-      setDays(parseInt(value) || value);
-    } else {
-      setDays((val) => val);
+    if (/^[0-9]*$/.test(value)) {
+      setDays(value);
     }
+    // if (Number(value) || value === "" || value === "0") {
+    //   setDays(parseInt(value) || value);
+    // } else {
+    //   setDays((val) => val);
+    // }
   };
   const onChangeQuantity = ({ target: { value } }) => {
-    if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
-      if (regex.test(value)) {
-        // console.log(value, regex.test(value));
-        setQuantity(
-          value[value.length - 1] === "." || !Number(value) ? value : value
-        );
-      }
-      // console.log(value, regex.test(value), quantity);
-    } else {
-      setQuantity((val) => val);
+    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+      setQuantity(value);
     }
+    // if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
+    //   if (regex.test(value)) {
+    //     // console.log(value, regex.test(value));
+    //     setQuantity(
+    //       value[value.length - 1] === "." || !Number(value) ? value : value
+    //     );
+    //   }
+    //   // console.log(value, regex.test(value), quantity);
+    // } else {
+    //   setQuantity((val) => val);
+    // }
   };
 
   const showWalletHint = useCallback(() => {
@@ -383,13 +383,9 @@ function Flashstake({
     setRefetch(true);
   }, [setRefetch]);
 
-  useEffect(() => {}, [quantity, days]);
-
-  useEffect(() => () => setInitialValues(quantity, days), [
-    days,
-    quantity,
-    setInitialValues,
-  ]);
+  useEffect(() => {
+    setInitialValues(quantity, days);
+  }, [days, quantity, setInitialValues]);
 
   useEffect(() => {
     if (reset) {
@@ -501,7 +497,7 @@ function Flashstake({
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      QUANTITY
+                      QUANTITY (XIO)
                     </Typography>
                     <Box className={classes.textFieldContainer}>
                       <TextField
@@ -522,27 +518,29 @@ function Flashstake({
                         onFocus={(e) => (e.target.placeholder = "")}
                         onBlur={(e) => (e.target.placeholder = "0.0")}
                       />
-                      {/* <IconButton
-                    className={classes.maxIconButton}
-                    disabled={
-                      !(active || account) || quantity == getMaxQuantity()
-                    }
-                    onClick={setMaxQuantity}
-                  >
-                    <MaxBtn width={10} />
-                  </IconButton> */}
+                      <IconButton
+                        className={classes.maxIconButton}
+                        disabled={
+                          !(active || account) || walletBalance == quantity
+                        }
+                        onClick={() =>
+                          onChangeQuantity({ target: { value: walletBalance } })
+                        }
+                      >
+                        <MaxBtn width={10} />
+                      </IconButton>
                     </Box>
                   </Box>
 
                   <Typography variant="h6" className={classes.xIcon}>
-                    +
+                    x
                   </Typography>
                   <Box flex={1}>
                     <Typography
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      DURATION (hrs)
+                      DURATION (MINS)
                     </Typography>
 
                     <Box className={classes.textFieldContainer}>
@@ -579,7 +577,7 @@ function Flashstake({
                       </span>{" "}
                       FOR{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} HRS
+                        {days || 0} MINS
                       </span>{" "}
                       YOU WILL{" "}
                       <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
@@ -822,7 +820,7 @@ function Flashstake({
                     </span>{" "}
                     FOR{" "}
                     <span className={classes.infoTextSpan}>
-                      {days || 0} DAYS
+                      {days || 0} MINS
                     </span>{" "}
                     YOU WILL{" "}
                     <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
@@ -908,7 +906,7 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     {stakeRequest.quantity} XIO FOR {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "HOURS" : "HOUR"} TO EARN{" "}
+                    {stakeRequest.days > 1 ? "MINS" : "MIN"} TO EARN{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
@@ -956,8 +954,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity} XIO FOR{" "}
-                    {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "HOURS" : "HOUR"} AND YOU WERE SENT{" "}
+                    {stakeRequest.days} {stakeRequest.days > 1 ? "MINS" : "MIN"}{" "}
+                    AND YOU WERE SENT{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >

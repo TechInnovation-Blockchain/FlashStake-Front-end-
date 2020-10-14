@@ -22,6 +22,7 @@ import {
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
+import { CONSTANTS } from "../constants";
 
 let contract;
 let infuraContract;
@@ -64,7 +65,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
         error,
         gasAmount
       ) {
-        console.log(gasAmount);
+        console.log("Stake gasAmount -> ", gasAmount);
         // const txHash = await web3.utils.sha3(
         //   contract.methods.stake(_token, xioQuantity, days, reward)
         // );
@@ -74,6 +75,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
           .send({
             from: walletAddress,
             gasLimit: gasAmount || 400000,
+            gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
             addToTxnQueueIndep(txnHash);
@@ -97,7 +99,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
             };
 
             axios
-              .post("http://localhost:3001/addtnxhash", data)
+              .post(CONSTANTS.TXN_SERVER, data)
               .then((res) => {
                 console.log("Transaction Hash Added", res);
               })
@@ -160,6 +162,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
     contract.methods
       .unstake(_expiredIds, _xioQuantity)
       .estimateGas({ gas: 10000000, from: walletAddress }, function (
+        error,
         gasAmount
       ) {
         console.log("Unstake gasAmount ->", gasAmount);
@@ -168,6 +171,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
           .send({
             from: walletAddress,
             gasLimit: gasAmount || 400000,
+            gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
             addToTxnQueueIndep(txnHash);
@@ -190,7 +194,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
             };
 
             axios
-              .post("http://localhost:3001/addtnxhash", data)
+              .post(CONSTANTS.TXN_SERVER, data)
               .then((res) => {
                 console.log("Transaction Hash Added", res);
               })
@@ -253,6 +257,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
       .estimateGas({ gas: 10000000, from: walletAddress }, function (
+        error,
         gasAmount
       ) {
         console.log("Swap gasAmount ->", gasAmount);
@@ -261,6 +266,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
           .send({
             from: walletAddress,
             gasLimit: gasAmount || 400000,
+            gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
             addToTxnQueueIndep(txnHash);
@@ -284,7 +290,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             };
 
             axios
-              .post("http://localhost:3001/addtnxhash", data)
+              .post(CONSTANTS.TXN_SERVER, data)
               .then((res) => {
                 console.log("Transaction Hash Added", res);
               })
@@ -384,50 +390,55 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
 
     contract.methods
       .unstakeALT(expiredIds, xioQuantity)
-      .estimateGas({ gas: 10000000, from: walletAddress }, (gasAmount) => {
-        console.log("unstakeAlt gasAmount ->", gasAmount);
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        (error, gasAmount) => {
+          console.log("unstakeAlt gasAmount ->", gasAmount);
 
-        unstakeALT(expiredIds, xioQuantity)
-          .send({
-            from: walletAddress,
-          })
-          .on("transactionHash", (txnHash) => {
-            setWithdrawTxnHashIndep(txnHash);
-            showSnackbarTxnIndep(
-              "Transaction Pending.",
-              "info",
-              "txnEtherScan",
-              txnHash,
-              true
-            );
-          })
-          .then(function (receipt) {
-            setDialogStepIndep("success");
-            showSnackbarTxnIndep(
-              "Withdraw Transaction Successful.",
-              "success",
-              "txnEtherScan",
-              receipt.transactionHash,
-              false
-            );
-            setRefetchIndep(true);
-            setLoadingIndep({ unstake: false });
+          unstakeALT(expiredIds, xioQuantity)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", (txnHash) => {
+              setWithdrawTxnHashIndep(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
+            })
+            .then(function (receipt) {
+              setDialogStepIndep("success");
+              showSnackbarTxnIndep(
+                "Withdraw Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+              setRefetchIndep(true);
+              setLoadingIndep({ unstake: false });
 
-            return receipt;
-          })
-          .catch((e) => {
-            if (e.code === 4001) {
-              setDialogStepIndep("rejected");
-              showSnackbarIndep("Withdraw Transaction Rejected.", "error");
-            } else {
-              setDialogStepIndep("failed");
-              showSnackbarIndep("Withdraw Transaction Failed.", "error");
-            }
-            setLoadingIndep({ unstake: false });
+              return receipt;
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setDialogStepIndep("rejected");
+                showSnackbarIndep("Withdraw Transaction Rejected.", "error");
+              } else {
+                setDialogStepIndep("failed");
+                showSnackbarIndep("Withdraw Transaction Failed.", "error");
+              }
+              setLoadingIndep({ unstake: false });
 
-            console.error("ERROR unstakeALT -> ", e);
-          });
-      });
+              console.error("ERROR unstakeALT -> ", e);
+            });
+        }
+      );
     // .on("confirmation", (confirmationNumber, reciept) => {
     //   if (confirmationNumber === 1) {
     //   }

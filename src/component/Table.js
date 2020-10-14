@@ -310,7 +310,14 @@ function TableComponent({
                             <Tooltip
                               title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
                             >
-                              <span>
+                              <span className={classes.flexCenter}>
+                                <img
+                                  src={tryRequire("XIO")}
+                                  alt="Logo"
+                                  srcset=""
+                                  width={15}
+                                  style={{ marginRight: 5 }}
+                                />
                                 {trunc(_stake.amountAvailable)}/
                                 {trunc(_stake.stakeAmount)} XIO
                               </span>
@@ -318,10 +325,10 @@ function TableComponent({
                           </Grid>
 
                           <Grid item xs={4} className={classes.gridItem}>
-                            {!_stake.expired ||
+                            {!_stake.expired &&
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "HOUR" : "HOURS"}
+                                {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
                               </Fragment>
                             ) : (
                               "COMPLETED"

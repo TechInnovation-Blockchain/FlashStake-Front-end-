@@ -24,7 +24,7 @@ export const userStakesQuery = gql`
         xioReceived
         initiationTimestamp
       }
-      stakes {
+      stakes(where: { active: true }) {
         pool {
           tokenB {
             symbol
