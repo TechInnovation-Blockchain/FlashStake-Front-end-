@@ -504,6 +504,7 @@ function Flashstake({
                       QUANTITY (XIO)
                     </Typography>
                     <Box className={classes.textFieldContainer}>
+                      {/* <Tooltip title="Hello world" open={true}> */}
                       <TextField
                         className={classes.textField}
                         error={
@@ -522,6 +523,7 @@ function Flashstake({
                         onFocus={(e) => (e.target.placeholder = "")}
                         onBlur={(e) => (e.target.placeholder = "0.0")}
                       />
+                      {/* </Tooltip> */}
                       <IconButton
                         className={classes.maxIconButton}
                         disabled={

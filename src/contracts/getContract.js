@@ -6,12 +6,14 @@ import { abi as erc20Abi } from "./abi/ERC20Abi.json";
 import { abi as uniswapv2PairAbi } from "./abi/UniswapV2PairAbi.json";
 import { abi as FlashStakeProtocolContractAbi } from "./abi/FlashStakeProtocolContractAbi.json";
 import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
+import { abi as BalanceContractAbi } from "./abi/BalanceContract.json";
 // import { abi as xioFlashstakeAbi } from "./abi/XioFlashstakeContract.json";
 
 import { CONSTANTS } from "../utils/constants";
 const {
   INFURA_PROJECT_ENDPOINT_URL,
   FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+  BALANCE_CONTRACT,
 } = CONSTANTS;
 
 let web3js;
@@ -129,5 +131,29 @@ export const xioFlashstakePoolInfuraContract = (_poolContractAddress) => {
     return contract;
   } catch (e) {
     console.error("ERROR xioFlashstakePoolInfuraContract -> ", e);
+  }
+};
+
+export const balanceContract = () => {
+  try {
+    const contract = new web3js.eth.Contract(
+      BalanceContractAbi,
+      BALANCE_CONTRACT
+    );
+    return contract;
+  } catch (e) {
+    console.error("ERROR balanceContract -> ", e);
+  }
+};
+
+export const balanceInfuraContract = () => {
+  try {
+    const contract = new web3jsInfura.eth.Contract(
+      BalanceContractAbi,
+      BALANCE_CONTRACT
+    );
+    return contract;
+  } catch (e) {
+    console.error("ERROR balanceInfuraContract -> ", e);
   }
 };

@@ -21,6 +21,7 @@ import {
   checkAllowanceALT,
   getWalletBalance,
 } from "../redux/actions/flashstakeActions";
+import { analytics } from "./App";
 
 function Updater({
   active,
@@ -53,26 +54,18 @@ function Updater({
 
   useEffect(() => {
     if (active && account) {
-      console.log("active account");
+      analytics.setUserId(account);
+      analytics.logEvent("USER_WALLET_ACTIVATED", {
+        address: account,
+      });
       refetch();
       getBalanceXIO();
       getBalanceALT();
       updateWalletBalance();
-      // const _interval = setInterval(updateWalletBalance(), 3000);
       checkAllowanceXIO();
       checkAllowanceALT();
-      // return clearInterval(_interval);
     }
-  }, [
-    active,
-    account,
-    refetch,
-    getBalanceXIO,
-    checkAllowanceALT,
-    checkAllowanceXIO,
-    getBalanceALT,
-    updateWalletBalance,
-  ]);
+  }, [active, account]);
 
   useEffect(() => {
     const earliestRemaining = currentStaked.earliest - Date.now() / 1000;

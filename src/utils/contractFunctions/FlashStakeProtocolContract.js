@@ -23,6 +23,7 @@ import {
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
 import { CONSTANTS } from "../constants";
+import { analytics } from "../../config/App";
 
 let contract;
 let infuraContract;
@@ -78,6 +79,13 @@ export const stake = async (_token, xioQuantity, days, reward) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_STAKE_TXN", {
+              address: walletAddress,
+              txnHash,
+              amount: xioQuantity,
+              days: days,
+              selctedToken: _token,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
@@ -174,6 +182,12 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_UNSTAKE_TXN", {
+              address: walletAddress,
+              txnHash,
+              _expiredIds,
+              _xioQuantity,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
@@ -269,6 +283,13 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_SWAP_TXN", {
+              address: walletAddress,
+              txnHash,
+              _altQuantity,
+              _token,
+              _expectedOutput,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
