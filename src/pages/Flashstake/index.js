@@ -323,6 +323,7 @@ function Flashstake({
   setRefetch,
   setExpandAccodion,
   expanding,
+  props,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -460,8 +461,8 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
-  //#endregion
-  // console.log(expanded2);
+  // props.history.location.pathname === "/swap" ? true :
+
   return (
     <PageAnimation in={true} reverse>
       <Fragment>

@@ -123,7 +123,7 @@ function TableComponent({
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
 
   const [sortDirection, setSortDirection] = useState(false);
-  const [sortBy, setSortBy] = useState("EARNED");
+  const [sortBy, setSortBy] = useState("");
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
 
@@ -189,7 +189,7 @@ function TableComponent({
         );
         break;
       default:
-        data = stakes;
+        data = stakes.reverse();
         break;
     }
     return sortDirection ? data.reverse() : data;

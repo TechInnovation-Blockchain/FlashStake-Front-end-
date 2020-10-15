@@ -27,7 +27,7 @@ function Pool() {
   }, []);
 
   return (
-    <PageAnimation in={true}>
+    <PageAnimation in={true} reverse>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Typography variant="h6" className={classes.comingSoon}>

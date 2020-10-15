@@ -165,7 +165,7 @@ function SwapTable({
         );
         break;
       default:
-        data = swapHistory;
+        data = swapHistory.reverse();
         break;
     }
     return sortDirection ? data.reverse() : data;

@@ -319,6 +319,7 @@ function Swap({
   swapALT,
   setExpandAccodion,
   expanding,
+  props,
 }) {
   const classes = useStyles();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
@@ -436,7 +437,7 @@ function Swap({
     }
   }, [expanding, setExpandAccodion]);
   return (
-    <PageAnimation in={true} reverse>
+    <PageAnimation in={true}>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Accordion square expanded={expanded2}>
