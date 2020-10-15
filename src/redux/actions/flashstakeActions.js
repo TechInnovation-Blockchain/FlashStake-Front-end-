@@ -47,6 +47,7 @@ export const calculateReward = (xioQuantity, days) => async (
           JSBI.BigInt(5)
         )
       ).toString();
+      console.log({ _amountIn, reward });
     }
   } catch (e) {
     console.error("ERROR calculateReward -> ", e);
@@ -319,7 +320,7 @@ export const unstakeXIO = () => async (dispatch, getState) => {
     console.log(
       "unstakeXIO params -> ",
       expiredTimestamps,
-      Web3.utils.fromWei(expiredDappBalance)
+      Web3.utils.toWei(expiredDappBalance)
     );
     await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
   } catch (e) {

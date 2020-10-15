@@ -61,11 +61,20 @@ export const approve = async (address, tab, amount) => {
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
-
+    let gasAmount;
+    try {
+      gasAmount = await contract.methods
+        .approve(address, amount ? amount : MaxUint256._hex)
+        .estimateGas({ gas: 10000000, from: walletAddress });
+    } catch (e) {
+      console.error("ERROR Approve gasAmount -> ", e);
+    }
     const _approve = await contract.methods
       .approve(address, amount ? amount : MaxUint256._hex)
       .send({
         from: walletAddress,
+        gasLimit: gasAmount || 400000,
+        gasPrice: "10000000000",
       })
       .then(function (receipt) {
         showSnackbarIndep("Approval Successful.", "success");

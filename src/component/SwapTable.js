@@ -272,13 +272,23 @@ function SwapTable({
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />{" "}
-                                {_swap.swapAmount} {_swap.pool.tokenB.symbol}
+                                {trunc(_swap.swapAmount)}{" "}
+                                {_swap.pool.tokenB.symbol}
                               </span>
                             </Tooltip>
                           </Grid>
                           <Grid item xs={4} className={classes.gridItem}>
                             <Tooltip title={`${_swap.xioReceived} XIO`}>
-                              <span>{trunc(_swap.xioReceived)} XIO</span>
+                              <span className={classes.flexCenter}>
+                                <img
+                                  src={tryRequire("XIO")}
+                                  alt="Logo"
+                                  srcset=""
+                                  width={15}
+                                  style={{ marginRight: 5 }}
+                                />{" "}
+                                {trunc(_swap.xioReceived)} XIO
+                              </span>
                             </Tooltip>
                           </Grid>
                           <Grid item xs={4} className={classes.gridItem}>

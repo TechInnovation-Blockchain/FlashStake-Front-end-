@@ -9,6 +9,7 @@ import {
   Grid,
   Tooltip,
   CircularProgress,
+  IconButton,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from "@material-ui/core/styles";
@@ -41,6 +42,7 @@ import { setRefetch } from "../../redux/actions/dashboardActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import { Link } from "@material-ui/icons";
+import MaxBtn from "../../component/MaxBtn";
 
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 
@@ -132,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     top: "50%",
     transform: "translateY(-50%)",
-    background: theme.palette.background.secondary,
+    background: "#000",
     "&.Mui-disabled": {
       display: "none",
     },
@@ -140,7 +142,8 @@ const useStyles = makeStyles((theme) => ({
       fill: "#9191A7",
     },
     "&:hover": {
-      background: theme.palette.background.primary,
+      // background: theme.palette.background.primary,
+      background: "#000",
       "& svg": {
         fill: theme.palette.xioRed.main,
       },
@@ -330,18 +333,21 @@ function Swap({
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
-  const regex = /^\d*(.(\d{1,18})?)?$/;
+  const regex = /^[0-9]*[.]?[0-9]*$/;
 
   const onChangeQuantity = ({ target: { value } }) => {
-    if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
-      if (regex.test(value)) {
-        setQuantity(
-          value[value.length - 1] === "." || !Number(value) ? value : value
-        );
-      }
-    } else {
-      setQuantity((val) => val);
+    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+      setQuantity(value);
     }
+    // if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
+    //   if (regex.test(value)) {
+    //     setQuantity(
+    //       value[value.length - 1] === "." || !Number(value) ? value : value
+    //     );
+    //   }
+    // } else {
+    //   setQuantity((val) => val);
+    // }
   };
 
   const showWalletHint = useCallback(() => {
@@ -459,7 +465,7 @@ function Swap({
                     variant="overline"
                     className={classes.secondaryText}
                   >
-                    WHAT DO YOU WANT TO SWAP FOR
+                    WHAT DO YOU WANT TO SWAP FOR XIO
                   </Typography>
                   <DropdownDialog
                     className={classes.dropDown}
@@ -489,13 +495,26 @@ function Swap({
                         placeholder="0.0"
                         value={quantity}
                         onChange={onChangeQuantity}
-                        type="number"
-                        inputMode="numeric"
-                        pattern={regex}
+                        // type="number"
+                        // inputMode="numeric"
+                        // pattern={regex}
                         onKeyDown={handleKeyDown}
                         onFocus={(e) => (e.target.placeholder = "")}
                         onBlur={(e) => (e.target.placeholder = "0.0")}
                       />
+                      <IconButton
+                        className={classes.maxIconButton}
+                        disabled={
+                          !(active || account) ||
+                          !selectedPortal ||
+                          balanceALT == quantity
+                        }
+                        onClick={() =>
+                          onChangeQuantity({ target: { value: balanceALT } })
+                        }
+                      >
+                        <MaxBtn width={10} />
+                      </IconButton>
                       {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={
