@@ -115,7 +115,7 @@ function SwapTable({
   const headItems = ["INPUT", "OUTPUT XIO", "DATE"];
 
   const [sortDirection, setSortDirection] = useState(false);
-  const [sortBy, setSortBy] = useState("EARNED");
+  const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
 
@@ -165,7 +165,7 @@ function SwapTable({
         );
         break;
       default:
-        data = swapHistory.reverse();
+        data = swapHistory;
         break;
     }
     return sortDirection ? data.reverse() : data;

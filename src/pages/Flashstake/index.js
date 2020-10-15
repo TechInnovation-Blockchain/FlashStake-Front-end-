@@ -326,8 +326,11 @@ function Flashstake({
   setRefetch,
   setExpandAccodion,
   expanding,
-  props,
+  animation,
+  ...props
 }) {
+  console.log(props);
+
   const classes = useStyles();
   const web3context = useWeb3React();
 
@@ -460,7 +463,7 @@ function Flashstake({
   // props.history.location.pathname === "/swap" ? true :
 
   return (
-    <PageAnimation in={true} reverse>
+    <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Accordion square expanded={expanded2}>
@@ -1070,7 +1073,7 @@ function Flashstake({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding },
+  ui: { loading, expanding, animation },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance },
   contract,
@@ -1084,6 +1087,7 @@ const mapStateToProps = ({
   pools,
   currentStaked,
   walletBalance,
+  animation,
   ...contract,
 });
 

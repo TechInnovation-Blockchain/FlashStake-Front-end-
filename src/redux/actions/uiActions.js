@@ -73,6 +73,13 @@ export const setExpandAccodion = (data) => {
   };
 };
 
+export const setAnimationDirection = (data) => {
+  return {
+    type: "ANIMATION_DIRECTION",
+    payload: data,
+  };
+};
+
 export const themeSwitchAction = () => async (dispatch) => {
   dispatch(setLoading({ themeSwitch: true }));
   setTimeout(() => dispatch(setLoading({ themeSwitch: false })), 2000);

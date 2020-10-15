@@ -5,7 +5,10 @@ import { makeStyles } from "@material-ui/styles";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import animatedLogo from "../assets/xio-logo.gif";
-import { setExpandAccodion } from "../redux/actions/uiActions";
+import {
+  setExpandAccodion,
+  setAnimationDirection,
+} from "../redux/actions/uiActions";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +54,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Navbar({ expanding, setExpandAccodion }) {
+function Navbar({
+  expanding,
+  animation,
+  setAnimationDirection,
+  setExpandAccodion,
+  ...props
+}) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -68,6 +77,12 @@ function Navbar({ expanding, setExpandAccodion }) {
     setExpandAccodion(false);
   };
 
+  let index;
+
+  const routes = ["/stake", "/swap", "/pool", "/vote"];
+
+  console.log(animation);
+  console.log("Previous route", history);
   return (
     <Box className={classes.navContainer}>
       {/* <Box className={classes.navOuterBox}> */}
@@ -78,6 +93,8 @@ function Navbar({ expanding, setExpandAccodion }) {
           activeClassName={classes.activeNavlink}
           // onClick={handleClick2}
           onClick={() => {
+            index = routes.indexOf(history.location.pathname) - 0;
+            setAnimationDirection(index);
             history.push("/stake");
             handleClick2();
           }}
@@ -96,6 +113,9 @@ function Navbar({ expanding, setExpandAccodion }) {
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           onClick={() => {
+            index = routes.indexOf(history.location.pathname) - 1;
+            setAnimationDirection(index);
+
             history.push("/swap");
             handleClick2();
           }}
@@ -125,6 +145,8 @@ function Navbar({ expanding, setExpandAccodion }) {
           activeClassName={classes.activeNavlink}
           exact
           onClick={() => {
+            index = routes.indexOf(history.location.pathname) - 2;
+            setAnimationDirection(index);
             history.push("/pool");
             handleClick2();
           }}
@@ -141,6 +163,9 @@ function Navbar({ expanding, setExpandAccodion }) {
           activeClassName={classes.activeNavlink}
           exact
           onClick={() => {
+            index = routes.indexOf(history.location.pathname) - 3;
+            setAnimationDirection(index);
+
             history.push("/vote");
             handleClick2();
           }}
@@ -155,10 +180,12 @@ function Navbar({ expanding, setExpandAccodion }) {
   );
 }
 
-const mapStateToProps = ({ ui: { expanding } }) => ({
+const mapStateToProps = ({ ui: { expanding, animation } }) => ({
   expanding,
+  animation,
 });
 
 export default connect(mapStateToProps, {
   setExpandAccodion,
+  setAnimationDirection,
 })(Navbar);

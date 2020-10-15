@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Vote() {
+function Vote({ animation }) {
   const classes = useStyles();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function Vote() {
   }, []);
 
   return (
-    <PageAnimation in={true}>
+    <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Typography variant="h6" className={classes.comingSoon}>
@@ -39,6 +39,8 @@ function Vote() {
   );
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = () => ({ ui: { animation } }) => ({
+  animation,
+});
 
 export default connect(mapStateToProps, {})(Vote);

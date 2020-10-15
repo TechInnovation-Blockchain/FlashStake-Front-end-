@@ -9,6 +9,7 @@ export const uiReducer = (
     },
     walletBackdrop: false,
     expanding: true,
+    animation: 0,
   },
   { type, payload }
 ) => {
@@ -52,6 +53,12 @@ export const uiReducer = (
       return {
         ...state,
         expanding: payload,
+      };
+
+    case "ANIMATION_DIRECTION":
+      return {
+        ...state,
+        animation: payload,
       };
     default:
       return state;

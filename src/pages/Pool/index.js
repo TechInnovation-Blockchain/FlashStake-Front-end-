@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Pool() {
+function Pool({ animation }) {
   const classes = useStyles();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function Pool() {
   }, []);
 
   return (
-    <PageAnimation in={true} reverse>
+    <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Typography variant="h6" className={classes.comingSoon}>
@@ -38,7 +38,8 @@ function Pool() {
     </PageAnimation>
   );
 }
-
-const mapStateToProps = () => ({});
+const mapStateToProps = () => ({ ui: { animation } }) => ({
+  animation,
+});
 
 export default connect(mapStateToProps, {})(Pool);

@@ -322,7 +322,8 @@ function Swap({
   swapALT,
   setExpandAccodion,
   expanding,
-  props,
+  animation,
+  ...props
 }) {
   const classes = useStyles();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
@@ -442,8 +443,11 @@ function Swap({
       }, 500);
     }
   }, [expanding, setExpandAccodion]);
+
+  console.log("Current Route:", props.location.pathname);
+  console.log("Previous Route:", props.location.state);
   return (
-    <PageAnimation in={true}>
+    <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <Box className={classes.contentContainer}>
           <Accordion square expanded={expanded2}>
@@ -958,7 +962,7 @@ function Swap({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding },
+  ui: { loading, expanding, animation },
   web3: { active, account, chainId },
   user: { currentStaked, pools },
   flashstake: { swapHist },
@@ -968,6 +972,7 @@ const mapStateToProps = ({
   loading,
   active,
   account,
+  animation,
   expanding,
   chainId,
   currentStaked,
