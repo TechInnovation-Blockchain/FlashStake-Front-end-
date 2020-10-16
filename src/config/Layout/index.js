@@ -11,8 +11,9 @@ import { makeStyles } from "@material-ui/styles";
 
 import { WalletConnect, Snackbar } from "../../component";
 import Routes from "../Routes";
-import { setReset } from "../../redux/actions/flashstakeActions";
+// import { setReset } from "../../redux/actions/flashstakeActions";
 import xordLogo from "../../assets/xord-logo.png";
+import "../../assets/css/main.css";
 
 import {
   showWalletBackdrop,
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     // backgroundColor: theme.palette.background.secondary2,
     maxWidth: "450px",
+    transition: "all 0.5s ease",
     padding: theme.spacing(7, 1),
     [theme.breakpoints.down("xs")]: {
       padding: theme.spacing(2, 1),
@@ -41,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     border: `1px solid ${theme.palette.border.secondary}`,
     width: "100%",
-    transition: "all 0.5s ease",
   },
   backdrop: {
     zIndex: 1,
@@ -108,7 +109,7 @@ export let walletBtnRef = createRef();
 function Layout({
   dapp,
   themeSwitch,
-  setReset,
+  // setReset,
   showWalletBackdrop,
   walletBackdrop,
   themeMode,
@@ -119,20 +120,6 @@ function Layout({
 
   const handleClose = () => {
     showWalletBackdrop(false);
-  };
-
-  const [theme, setTheme] = useState(true);
-
-  const handleClick = () => {
-    // themeSwitchAction();
-    setTheme((val) => !val);
-    if (theme === true) {
-      themeMode = "dark";
-      toggleThemeMode();
-    } else {
-      themeMode = "light";
-      toggleThemeMode();
-    }
   };
 
   useEffect(() => {
@@ -195,7 +182,7 @@ const mapStateToProps = ({
 }) => ({ dapp, walletBackdrop, themeSwitch });
 
 export default connect(mapStateToProps, {
-  setReset,
+  // setReset,
   showWalletBackdrop,
   themeSwitchAction,
 })(Layout);

@@ -36,7 +36,7 @@ import {
   getBalanceXIO,
   stakeXIO,
   setDialogStep,
-  setReset,
+  // setReset,
   setInitialValues,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -315,7 +315,7 @@ function Flashstake({
   stakeRequest,
   unstakeRequest,
   reset,
-  setReset,
+  // setReset,
   chainId,
   stakeTxnHash,
   setInitialValues,
@@ -395,9 +395,9 @@ function Flashstake({
     if (reset) {
       // getBalanceXIO();
       updateAllBalances();
-      setReset(false);
+      // setReset(false);
     }
-  }, [reset, setReset, getBalanceXIO]);
+  }, [reset, getBalanceXIO]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -439,7 +439,7 @@ function Flashstake({
   };
 
   const onClickClose = () => {
-    setReset(true);
+    // setReset(true);
     setShowStakeDialog(false);
   };
 
@@ -1101,7 +1101,7 @@ export default connect(mapStateToProps, {
   stakeXIO,
   setLoading,
   setDialogStep,
-  setReset,
+  // setReset,
   setInitialValues,
   setRefetch,
   showWalletBackdrop,

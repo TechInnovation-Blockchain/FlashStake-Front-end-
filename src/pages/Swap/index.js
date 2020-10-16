@@ -33,7 +33,7 @@ import {
   calculateSwap,
   getBalanceALT,
   setDialogStep,
-  setReset,
+  // setReset,
   setInitialValues,
   swapALT,
 } from "../../redux/actions/flashstakeActions";
@@ -306,7 +306,7 @@ function Swap({
   setDialogStep,
   stakeRequest,
   reset,
-  setReset,
+  // setReset,
   setRefetch,
   chainId,
   stakeTxnHash,
@@ -374,9 +374,9 @@ function Swap({
       getBalanceALT();
       setDays("");
       setQuantity("");
-      setReset(false);
+      // setReset(false);
     }
-  }, [reset, setReset, getBalanceALT]);
+  }, [reset, getBalanceALT]);
 
   useEffect(() => {
     getBalanceALT();
@@ -423,7 +423,7 @@ function Swap({
   };
 
   const onClickClose = () => {
-    setReset(true);
+    // setReset(true);
     setShowStakeDialog(false);
   };
 
@@ -987,7 +987,7 @@ export default connect(mapStateToProps, {
   getBalanceALT,
   setLoading,
   setDialogStep,
-  setReset,
+  // setReset,
   setInitialValues,
   showWalletBackdrop,
   swapALT,

@@ -385,15 +385,15 @@ export const setSwapDialogStepIndep = (step) => {
   store.dispatch(setSwapDialogStep(step));
 };
 
-export const setReset = (val) => {
-  return {
-    type: "RESET",
-    payload: val,
-  };
-};
+// export const setReset = (val) => {
+//   return {
+//     type: "RESET",
+//     payload: val,
+//   };
+// };
 
 export const setResetIndep = (val) => {
-  store.dispatch(setReset(val));
+  // store.dispatch(setReset(val));
 };
 
 export const setStakeTxnHash = (val) => {

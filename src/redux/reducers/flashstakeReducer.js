@@ -150,15 +150,15 @@ export const flashstakeReducer = (
         ...state,
         stakeTxnHash: payload,
       };
-    case "RESET":
-      return {
-        ...state,
-        reset: payload,
-        selectedPortal: payload ? "" : state.selectedPortal,
-        selectedRewardToken: {},
-        quantity: "",
-        days: "",
-      };
+    // case "RESET":
+    //   return {
+    //     ...state,
+    //     reset: payload,
+    //     selectedPortal: payload ? "" : state.selectedPortal,
+    //     selectedRewardToken: {},
+    //     quantity: "",
+    //     days: "",
+    //   };
     case "INITIAL_VALUES":
       return {
         ...state,
