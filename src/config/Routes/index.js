@@ -26,7 +26,7 @@ const getRoutes = (paused) => {
   ];
 };
 
-function Routes({ contractState }) {
+function Routes({ contractState, themeMode, toggleThemeMode }) {
   const [routes, setRoutes] = useState(getRoutes());
   const redirectRoute = "/stake";
 
@@ -36,7 +36,7 @@ function Routes({ contractState }) {
 
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
       <Switch>
         {routes.map((_route) => (
           <Route {..._route} key={_route.path} />

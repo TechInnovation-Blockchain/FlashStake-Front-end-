@@ -18,7 +18,7 @@ export const darkTheme = createMuiTheme({
       // secondary: "#d1d1d1",
       // primary: "#000000",
       green: "#6cc79b",
-      secondary: "#cccccc",
+      secondary: "#696969",
       secondary2: "#fff",
       grey: "#696969",
     },
@@ -40,13 +40,18 @@ export const darkTheme = createMuiTheme({
     },
     background: {
       primary: "#121212",
-      secondary: "#171717",
+      secondary: "#1A1A1A",
       secondary2: "#000000",
+      secondary4: "#1a1a1a",
       secondary3: "#000000",
       selected: "#171717",
     },
     xioRed: {
       main: "#c66065",
+    },
+
+    navLink: {
+      active: "#ffffff",
     },
   },
   typography: {
@@ -74,7 +79,7 @@ export const lightTheme = createMuiTheme({
     text: {
       primary: "#000000",
       // secondary: "#cccccc",
-      secondary: "#919191",
+      secondary: "#000",
       secondary2: "#000",
       green: "#6cc79b",
       primary2: "#000000",
@@ -83,10 +88,11 @@ export const lightTheme = createMuiTheme({
       main: "#c66065",
     },
     background: {
-      primary: "#f5f5f5",
-      secondary: "#ffffff",
-      secondary3: "#ffffff",
-      secondary2: "#fafafa",
+      primary: "#ffffff",
+      secondary: "#f5f5f5",
+      secondary3: "#e5e5e5",
+      secondary4: "#eeeee",
+      secondary2: "#f5f5f5",
       selected: "#e5e5e5",
     },
     button: {
@@ -101,9 +107,12 @@ export const lightTheme = createMuiTheme({
       main: "#e2e2e2",
       secondary: "#0000001f",
     },
+    navLink: {
+      active: "#c66065",
+    },
   },
   typography: {
-    fontFamily: "Lato",
+    fontFamily: "Montserrat",
     fontSize: 12,
   },
 });
@@ -129,6 +138,7 @@ export const lightTheme = createMuiTheme({
 //       // secondary: "#cccccc",
 //       secondary: "#919191",
 //       green: "#6cc79b",
+//       primary2: "#000000",
 //     },
 //     xioRed: {
 //       main: "#c66065",
@@ -147,7 +157,8 @@ export const lightTheme = createMuiTheme({
 //       red: "#ffffff",
 //     },
 //     border: {
-//       main: "#0f0f0f",
+//       main: "#e2e2e2",
+//       secondary: "#0f0f0f",
 //     },
 //   },
 //   typography: {

@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: 250,
     borderRadius: 0,
     marginTop: theme.spacing(2),
-    backgroundColor: theme.palette.background.primary,
+    backgroundColor: theme.palette.background.secondary4,
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,

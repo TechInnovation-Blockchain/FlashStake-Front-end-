@@ -82,8 +82,8 @@ const useStyles = makeStyles((theme) => ({
   },
   infoTextSpan: {
     // fontSize: 10,
+    color: theme.palette.xioRed.main,
     fontWeight: 900,
-    color: "#fff",
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary,
@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     top: "50%",
     transform: "translateY(-50%)",
-    background: "#000",
+    background: theme.palette.background.secondary2,
     "&.Mui-disabled": {
       display: "none",
     },
@@ -143,7 +143,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "&:hover": {
       // background: theme.palette.background.primary,
-      background: "#000",
+      background: theme.palette.background.secondary2,
       "& svg": {
         fill: theme.palette.xioRed.main,
       },
@@ -186,7 +186,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   btn3: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
     padding: "0 !important",
     margin: "0 !important",
 
@@ -199,7 +199,7 @@ const useStyles = makeStyles((theme) => ({
     borderTopWidth: 1,
     borderTopRightRadius: "10px",
     borderTopLeftRadius: "10px",
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
     padding: "0 !important",
 
     "& .MuiAccordionSummary-content": {
@@ -214,7 +214,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   accordion: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
   },
   stakeDashBtn: {
     color: "inherit",
@@ -232,10 +232,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     // border: "1px solid rgba(0, 0, 0, .125)",
-    backgroundColor: "#121212",
+    backgroundColor: theme.palette.background.primary,
     boxShadow: "none",
 
     "&.MuiAccordion-root.Mui-expanded": {
@@ -253,7 +253,7 @@ const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion);
+}))(MuiAccordion);
 
 const AccordionSummary = withStyles({
   root: {
@@ -545,8 +545,8 @@ function Swap({
                           {selectedRewardToken?.tokenB?.symbol || ""}
                         </span>
                       </Tooltip>{" "}
-                      YOU WILL{" "}
-                      <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                      YOU WILL IMMEDIATELY{" "}
+                      {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
                       EARN{" "}
                       {loadingRedux.swapReward ? (
                         <CircularProgress

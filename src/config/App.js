@@ -10,7 +10,7 @@ import { client } from "./apolloGraphQl";
 import Layout from "./Layout";
 import Updater from "./Updater";
 import { toggleThemeModeAction } from "../redux/actions/uiActions";
-import { darkTheme } from "./materialUiTheme";
+import { darkTheme, lightTheme } from "./materialUiTheme";
 
 export default function App() {
   const theme = localStorage.getItem("themeMode") || "dark";
@@ -29,7 +29,7 @@ export default function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <ThemeProvider theme={themeMode === "dark" ? darkTheme : darkTheme}>
+          <ThemeProvider theme={themeMode === "dark" ? darkTheme : lightTheme}>
             <Updater />
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
           </ThemeProvider>

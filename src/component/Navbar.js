@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import animatedLogo from "../assets/xio-logo.gif";
+import logoLight from "../assets/xio-logo-light.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,
@@ -37,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   navLinkText: {
-    fontWeight: 700,
+    fontWeight: 900,
   },
   activeNavlink: {
-    color: theme.palette.text.primary,
+    color: theme.palette.navLink.active,
+    fontWeight: 900,
   },
   navlinkFlash: {
     textDecoration: "none",
@@ -59,6 +61,8 @@ function Navbar({
   animation,
   setAnimationDirection,
   setExpandAccodion,
+  themeMode,
+  toggleThemeMode,
   ...props
 }) {
   const classes = useStyles();
@@ -66,15 +70,29 @@ function Navbar({
 
   const [animate, setAnimate] = useState(false);
   // // console.log(animate);
-  const handleClick = () => {
-    setAnimate(true);
-    setTimeout(() => {
-      setAnimate(false);
-    }, 3500);
-  };
+  // const handleClick = () => {
+  //   setAnimate(true);
+  //   setTimeout(() => {
+  //     setAnimate(false);
+  //   }, 3500);
+  // };
 
   const handleClick2 = () => {
     setExpandAccodion(false);
+  };
+
+  const [theme, setTheme] = useState(true);
+
+  const handleClick = () => {
+    // themeSwitchAction();
+    setTheme((val) => !val);
+    if (theme === true) {
+      themeMode = "dark";
+      toggleThemeMode();
+    } else {
+      themeMode = "light";
+      toggleThemeMode();
+    }
   };
 
   let index;
@@ -129,8 +147,7 @@ function Navbar({
       {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
-          // src={themeMode === "dark" ? logo : logoLight}
-          src={animate ? animatedLogo : logo}
+          src={themeMode === "dark" ? logo : logoLight}
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}

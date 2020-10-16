@@ -1,4 +1,4 @@
-import React, { Fragment, createRef, useEffect } from "react";
+import React, { Fragment, createRef, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Container,
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
-    backgroundColor: theme.palette.background.secondary2,
+    // backgroundColor: theme.palette.background.secondary2,
     maxWidth: "450px",
     padding: theme.spacing(7, 1),
     [theme.breakpoints.down("xs")]: {
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.secondary,
     overflow: "hidden",
     borderRadius: "10px",
-    border: "1px solid #282828",
+    border: `1px solid ${theme.palette.border.secondary}`,
     width: "100%",
   },
   backdrop: {
@@ -120,12 +120,26 @@ function Layout({
     showWalletBackdrop(false);
   };
 
+  const [theme, setTheme] = useState(true);
+
+  const handleClick = () => {
+    // themeSwitchAction();
+    setTheme((val) => !val);
+    if (theme === true) {
+      themeMode = "dark";
+      toggleThemeMode();
+    } else {
+      themeMode = "light";
+      toggleThemeMode();
+    }
+  };
+
   useEffect(() => {
     const body = document.querySelector("#body");
     // body.style.backgroundColor = "#171717";
 
     themeMode === "dark"
-      ? (body.style.backgroundColor = "#171717")
+      ? (body.style.backgroundColor = "#000000")
       : (body.style.backgroundColor = "#f5f5f5");
   }, [themeMode]);
 
@@ -141,7 +155,7 @@ function Layout({
             onClick={handleClick}
           /> */}
         <Box className={`transitionEase ${classes.contentContainer}`}>
-          <Routes />
+          <Routes themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
         </Box>
         {/* <Accordion
             square

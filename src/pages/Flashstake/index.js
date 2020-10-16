@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   infoTextSpan: {
     // fontSize: 10,
     fontWeight: 900,
-    color: "#fff",
+    color: theme.palette.xioRed.main,
     position: "relative",
   },
   secondaryTextWOMargin: {
@@ -137,7 +137,8 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     top: "50%",
     transform: "translateY(-50%)",
-    background: "#000",
+    background: theme.palette.background.secondary2,
+
     "&.Mui-disabled": {
       display: "none",
     },
@@ -146,7 +147,8 @@ const useStyles = makeStyles((theme) => ({
     },
     "&:hover": {
       // background: theme.palette.background.primary,
-      background: "#000",
+      background: theme.palette.background.secondary2,
+
       "& svg": {
         fill: theme.palette.xioRed.main,
       },
@@ -189,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   btn3: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
     padding: "0 !important",
     margin: "0 !important",
 
@@ -202,7 +204,7 @@ const useStyles = makeStyles((theme) => ({
     borderTopWidth: 1,
     borderTopRightRadius: "10px",
     borderTopLeftRadius: "10px",
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
     padding: "0 !important",
 
     "& .MuiAccordionSummary-content": {
@@ -217,7 +219,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   accordion: {
-    backgroundColor: "#1A1A1A",
+    backgroundColor: theme.palette.background.secondary,
   },
   stakeDashBtn: {
     color: "inherit",
@@ -241,10 +243,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     // border: "1px solid rgba(0, 0, 0, .125)",
-    backgroundColor: "#121212",
+    backgroundColor: theme.palette.background.primary,
     boxShadow: "none",
 
     "&.MuiAccordion-root.Mui-expanded": {
@@ -262,7 +264,7 @@ const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion);
+}))(MuiAccordion);
 
 const AccordionSummary = withStyles({
   root: {
@@ -583,8 +585,8 @@ function Flashstake({
                       <span className={classes.infoTextSpan}>
                         {days || 0} MINS
                       </span>{" "}
-                      YOU WILL{" "}
-                      <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                      YOU WILL IMMEDIATELY{" "}
+                      {/* <span className={classes.infoTextSpan}></span>{" "} */}
                       GET{" "}
                       {loadingRedux.reward ? (
                         <CircularProgress
@@ -603,7 +605,9 @@ function Flashstake({
                           </span>
                         </Tooltip>
                       ) : (
-                        `0 ${selectedRewardToken?.tokenB?.symbol || ""}`
+                        <span className={classes.infoTextSpan}>
+                          {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
+                        </span>
                       )}
                     </Typography>
                   ) : (

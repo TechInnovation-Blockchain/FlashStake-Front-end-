@@ -14,7 +14,7 @@ body,
 body {
   font-family: "Montserrat", sans-serif;
   letter-spacing: 2px;
-  background-color: #000 !important;
+  /* background-color: #000 !important; */
 }
 
 ::-webkit-scrollbar {
