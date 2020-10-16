@@ -20,6 +20,7 @@ export const darkTheme = createMuiTheme({
       green: "#6cc79b",
       secondary: "#cccccc",
       secondary2: "#cccccc",
+      secondary4: "#696969",
       grey: "#696969",
     },
     action: {
@@ -81,6 +82,7 @@ export const lightTheme = createMuiTheme({
       // secondary: "#cccccc",
       secondary: "#000",
       secondary2: "#1a1a1a",
+      secondary4: "#1a1a1a",
       green: "#6cc79b",
       primary2: "#000000",
     },

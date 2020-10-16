@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
   navlink: {
     textDecoration: "none",
-    color: theme.palette.text.secondary,
+    fontWeight: 900,
+    color: theme.palette.text.secondary4,
     [theme.breakpoints.down("sm")]: {
       margin: theme.spacing(1, 1),
     },

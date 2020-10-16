@@ -438,20 +438,13 @@ function Flashstake({
     setShowStakeDialog(true);
   };
 
-  const clearFields = () => {
-    setDays("");
-    setQuantity("");
-  };
-
   const onClickClose = () => {
     setReset(true);
     setShowStakeDialog(false);
-    clearFields();
   };
 
   const closeDialog = () => {
     setShowStakeDialog(false);
-    clearFields();
   };
 
   const handleKeyDown = (evt) => {
@@ -639,10 +632,6 @@ function Flashstake({
                           allowanceXIO ||
                           !active ||
                           !account ||
-                          quantity <= 0 ||
-                          days <= 0 ||
-                          reward <= 0 ||
-                          !selectedPortal ||
                           loadingRedux.reward ||
                           loadingRedux.approval ||
                           chainId !== 4

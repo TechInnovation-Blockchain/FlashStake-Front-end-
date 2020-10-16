@@ -425,12 +425,10 @@ function Swap({
   const onClickClose = () => {
     setReset(true);
     setShowStakeDialog(false);
-    setQuantity("");
   };
 
   const closeDialog = () => {
     setShowStakeDialog(false);
-    setQuantity("");
   };
 
   const handleKeyDown = (evt) => {
@@ -583,7 +581,6 @@ function Swap({
                             onClick={onClickApprove}
                             disabled={
                               !selectedPortal ||
-                              quantity <= 0 ||
                               chainId !== 4 ||
                               allowanceALT ||
                               loadingRedux.approval

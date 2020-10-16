@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
     textAlign: "center",
     // backgroundColor: theme.palette.background.secondary2,
@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     border: `1px solid ${theme.palette.border.secondary}`,
     width: "100%",
+    transition: "all 0.5s ease",
   },
   backdrop: {
     zIndex: 1,
@@ -155,7 +156,6 @@ function Layout({
           open={walletBackdrop}
           onClick={handleClose}
         ></Backdrop>
-
         <WalletConnect />
         <Snackbar />
       </Container>

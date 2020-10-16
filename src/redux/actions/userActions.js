@@ -11,6 +11,10 @@ import {
   initializeBalanceInfuraContract,
   getBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
+import {
+  getAPYStake,
+  initializeFlashstakePoolContract,
+} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 
 export const updatePools = (data) => async (dispatch) => {
@@ -33,6 +37,8 @@ export const updatePools = (data) => async (dispatch) => {
       }
       if (response?.data) {
         for (let i = 0; i < _pools.length; i++) {
+          // initializeFlashstakePoolContract(_pools[i].id);
+          // _pools[i].apy = await getAPYStake();
           _pools[i].tokenPrice =
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
