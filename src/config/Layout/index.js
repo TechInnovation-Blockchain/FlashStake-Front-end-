@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
     // backgroundColor: theme.palette.background.secondary2,
