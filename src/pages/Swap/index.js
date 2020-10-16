@@ -425,10 +425,12 @@ function Swap({
   const onClickClose = () => {
     setReset(true);
     setShowStakeDialog(false);
+    setQuantity("");
   };
 
   const closeDialog = () => {
     setShowStakeDialog(false);
+    setQuantity("");
   };
 
   const handleKeyDown = (evt) => {

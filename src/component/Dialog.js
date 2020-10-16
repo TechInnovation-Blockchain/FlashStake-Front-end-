@@ -86,6 +86,7 @@ export default function Dialog({
   return (
     <MuiDialog
       open={open}
+      // open={true}
       onClose={onClose}
       PaperProps={{ className: classes.dialogPaper }}
     >

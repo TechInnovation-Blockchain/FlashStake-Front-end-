@@ -146,37 +146,9 @@ function Layout({
   return (
     <Fragment>
       <Container maxWidth="sm" className={classes.mainContainer}>
-        {/* <Box> */}
-        {/* <img
-            src={themeMode === "dark" ? logo : logoLight}
-            alt="logo"
-            width={40}
-            className={classes.logo}
-            onClick={handleClick}
-          /> */}
         <Box className={`transitionEase ${classes.contentContainer}`}>
           <Routes themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
         </Box>
-        {/* <Accordion
-            square
-            expanded={expanded === "panel1"}
-            onChange={handleChange("panel1")}
-          >
-            <AccordionSummary
-              aria-controls="panel1d-content"
-              id="panel1d-header"
-            ></AccordionSummary>
-            <AccordionDetails></AccordionDetails>
-          </Accordion> */}
-        {/* <Box className={classes.btn2}> */}
-        {/* <Button className={classes.btn} variant="red">
-              FLASHSTAKE
-            </Button> */}
-        {/* <Accordion title="A">
-              <span className="accordion-text">aaaaaa</span>
-            </Accordion> */}
-        {/* </Box> */}
-        {/* </Box> */}
 
         <Backdrop
           className={classes.backdrop2}

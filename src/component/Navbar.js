@@ -70,12 +70,12 @@ function Navbar({
 
   const [animate, setAnimate] = useState(false);
   // // console.log(animate);
-  // const handleClick = () => {
-  //   setAnimate(true);
-  //   setTimeout(() => {
-  //     setAnimate(false);
-  //   }, 3500);
-  // };
+  const handleClick3 = () => {
+    setAnimate(true);
+    setTimeout(() => {
+      setAnimate(false);
+    }, 3500);
+  };
 
   const handleClick2 = () => {
     setExpandAccodion(false);
@@ -149,7 +149,10 @@ function Navbar({
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}
-          onClick={handleClick}
+          onClick={() => {
+            handleClick3();
+            handleClick();
+          }}
         />
       </Box>
       {/* <Box className={classes.navOuterBox}> */}

@@ -291,8 +291,8 @@ export default function DropdownDialog({
       )}
 
       <MuiDialog
-        // open={open}
-        open={true}
+        open={open}
+        // open={true}
         onClose={onClose}
         PaperProps={{ className: classes.dialogPaper }}
       >

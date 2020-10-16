@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   secondaryTextWOMargin: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary2,
     fontWeight: 700,
   },
   textBold: {
@@ -438,13 +438,20 @@ function Flashstake({
     setShowStakeDialog(true);
   };
 
+  const clearFields = () => {
+    setDays("");
+    setQuantity("");
+  };
+
   const onClickClose = () => {
     setReset(true);
     setShowStakeDialog(false);
+    clearFields();
   };
 
   const closeDialog = () => {
     setShowStakeDialog(false);
+    clearFields();
   };
 
   const handleKeyDown = (evt) => {
@@ -583,7 +590,7 @@ function Flashstake({
                       </span>{" "}
                       FOR{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} MINS
+                        {days || 0} {days > 1 ? "MINS" : "MIN"}
                       </span>{" "}
                       YOU WILL IMMEDIATELY{" "}
                       {/* <span className={classes.infoTextSpan}></span>{" "} */}
