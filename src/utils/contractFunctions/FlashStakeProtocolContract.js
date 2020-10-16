@@ -24,6 +24,7 @@ import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
 import { CONSTANTS } from "../constants";
 import { analytics } from "../../config/App";
+import Web3 from "web3";
 
 let contract;
 let infuraContract;
@@ -370,7 +371,9 @@ export const getXPY = async () => {
   try {
     checkContractInitialized();
 
-    const xpy = await infuraContract.methods.getXPY().call();
+    const xpy = await infuraContract.methods
+      .getXPY(Web3.utils.toWei("1"))
+      .call();
     return xpy;
   } catch (e) {
     console.error("ERROR getXPY -> ", e);
