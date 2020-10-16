@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -146,6 +147,8 @@ export default function DropdownDialog({
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+
+  const history = useHistory();
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
@@ -348,7 +351,10 @@ export default function DropdownDialog({
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {_pool.tokenB.symbol} (${_pool.tokenPrice})
+                    {_pool.tokenB.symbol}{" "}
+                    {history.location.pathname === "/swap"
+                      ? `($${_pool.tokenPrice})`
+                      : ""}
                   </Typography>
                 </ListItem>
               ))}

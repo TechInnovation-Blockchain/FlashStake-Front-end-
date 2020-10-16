@@ -117,9 +117,7 @@ function Navbar({
           }}
           exact
         >
-          <Typography variant="body1" className={classes.navLinkText}>
-            STAKE
-          </Typography>
+          <Typography className={classes.navLinkText}>STAKE</Typography>
         </NavLink>
       </Box>
       {/* <Divider orientation="vertical" flexItem /> */}
