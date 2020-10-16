@@ -330,7 +330,7 @@ function Swap({
 
   const [expanded2, setExpanded2] = useState(true);
 
-  const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 200), []);
+  const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 500), []);
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
@@ -443,9 +443,6 @@ function Swap({
       }, 500);
     }
   }, [expanding, setExpandAccodion]);
-
-  console.log("Current Route:", props.location.pathname);
-  console.log("Previous Route:", props.location.state);
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
@@ -477,6 +474,7 @@ function Swap({
                     selectedValue={selectedRewardToken}
                     onSelect={setSelectedRewardToken}
                     heading="SELECT TOKEN"
+                    type="swap"
                   />
                 </Grid>
                 <Grid container item xs={12}>

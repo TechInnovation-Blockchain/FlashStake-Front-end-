@@ -6,42 +6,36 @@ import {
   balanceOf,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import { CONSTANTS } from "../../utils/constants";
-// import { store } from "../../config/reduxStore";
-import { getWalletBalance } from "../../redux/actions/flashstakeActions";
 import { setLoading } from "./uiActions";
-
-export const userDataUpdate = (data) => async (dispatch, getState) => {};
-
-export const updateWalletBalance = (data) => async (dispatch, getState) => {
-  try {
-    initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    let walletBalance = await balanceOf();
-    dispatch({
-      type: "WALLET_BALANCE",
-      payload: Web3.utils.fromWei(walletBalance),
-    });
-  } catch (e) {
-    console.error("ERROR updateWalletBalance -> ", e);
-  }
-};
+import {
+  initializeBalanceInfuraContract,
+  getBalances,
+} from "../../utils/contractFunctions/balanceContractFunctions";
+import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
+  let _tokenList = [];
   try {
     if (data?.length) {
       dispatch(setLoading({ dapp: false }));
       _pools = JSON.parse(JSON.stringify(data));
-      for (let i = 0; i < _pools.length; i++) {
-        try {
-          const response = await axios.get(
-            `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${
-              CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]
-            }&vs_currencies=USD`
-            // `https://min-api.cryptocompare.com/data/price?fsym=${_pools[i].tokenB.symbol}&tsyms=USD`
-          );
-          _pools[i].tokenPrice = Object.values(response.data)[0].usd || 0;
-        } catch (e) {
-          console.error("ERROR pricingAPI -> ", e);
+      _tokenList = _pools.map((_pool) => _pool.tokenB.id);
+      let response;
+      try {
+        response = await axios.get(
+          `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Object.values(
+            CONSTANTS.MAINNET_ADDRESSES
+          ).join(",")}&vs_currencies=USD`
+        );
+      } catch (e) {
+        console.error("ERROR pricingAPI -> ", e);
+      }
+      if (response?.data) {
+        for (let i = 0; i < _pools.length; i++) {
+          _pools[i].tokenPrice =
+            response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
+              .usd || 0;
         }
       }
     }
@@ -52,7 +46,11 @@ export const updatePools = (data) => async (dispatch) => {
       type: "POOL",
       payload: _pools,
     });
-    dispatch(getWalletBalance());
+    dispatch({
+      type: "TOKEN_LIST",
+      payload: [CONSTANTS.ADDRESS_XIO_RINKEBY, ..._tokenList],
+    });
+    dispatch(updateAllBalances());
   }
 };
 
@@ -109,75 +107,65 @@ export const updateUserData = (data) => async (dispatch) => {
         expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
       },
     });
+    dispatch(updateAllBalances());
   } else {
     dispatch({
       type: "USER_DATA",
       payload: {
         swapHistory: [],
         stakes: [],
+        dappBalance: "0",
+        expiredDappBalance: "0",
+        expiredTimestamps: [],
       },
     });
   }
 };
 
-// export const getDashboardProps = (data) => async (dispatch) => {
-//   let stakedPortals = [];
-//   try {
-//     if (data && data.user && data.user.stakes && data.publicPortals) {
-//       let uniquePortals = data.publicPortals.map((_portal) => {
-//         let totalStakeAmount = JSBI.BigInt(0);
-//         let availableStakeAmount = JSBI.BigInt(0);
-//         let expiredTimestamps = [];
-//         let timestamps = [];
+export const clearUserData = () => (dispatch) => {
+  dispatch({
+    type: "USER_DATA",
+    payload: {
+      swapHistory: [],
+      stakes: [],
+      dappBalance: "0",
+      expiredDappBalance: "0",
+      expiredTimestamps: [],
+    },
+  });
+  dispatch({
+    type: "WALLET_BALANCE",
+    payload: "0",
+  });
+  dispatch({
+    type: "WALLET_BALANCE_USD",
+    payload: "0",
+  });
+  dispatch({
+    type: "WALLET_BALANCES",
+    payload: {},
+  });
+};
 
-//         let uniquePortalStakes = data.user.stakes
-//           .filter(
-//             (_stake) =>
-//               _stake.publicPortal === _portal.id &&
-//               parseFloat(_stake.stakeAmount) > 0
-//           )
-//           .map((_stake) => {
-//             let expired = false;
-//             totalStakeAmount = JSBI.add(
-//               totalStakeAmount,
-//               JSBI.BigInt(_stake.stakeAmount)
-//             );
-//             if (
-//               parseFloat(_stake.initialTimestamp) +
-//                 parseFloat(_stake.endTimestamp) <
-//               parseFloat(Date.now() / 1000)
-//             ) {
-//               availableStakeAmount = JSBI.add(
-//                 availableStakeAmount,
-//                 JSBI.BigInt(_stake.stakeAmount)
-//               );
-//               expired = true;
-//               expiredTimestamps.push(_stake.id);
-//             }
-//             timestamps.push(_stake.id);
-//             return { ..._stake, expired };
-//           });
-
-//         return {
-//           ..._portal,
-//           totalStakeAmount: Web3.utils.fromWei(totalStakeAmount.toString()),
-//           availableStakeAmount: Web3.utils.fromWei(
-//             availableStakeAmount.toString()
-//           ),
-//           expiredTimestamps,
-//           timestamps,
-//           stakes: uniquePortalStakes,
-//         };
-//       });
-//       stakedPortals = uniquePortals.filter((_portal) => _portal.stakes.length);
-//     }
-//   } catch (e) {
-//     stakedPortals = [];
-//     console.error("ERROR getDashboardProps -> ", e);
-//   }
-//   dispatch({
-//     type: "STAKED_PORTALS",
-//     payload: stakedPortals,
-//   });
-//   dispatch(setLoading({ dapp: false }));
-// };
+export const updateAllBalances = () => async (dispatch) => {
+  try {
+    await initializeBalanceInfuraContract();
+    const [_balances, walletBalanceUSD] = await getBalances();
+    dispatch({
+      type: "WALLET_BALANCE",
+      payload: _balances[CONSTANTS.ADDRESS_XIO_RINKEBY] || "0",
+    });
+    dispatch({
+      type: "WALLET_BALANCES",
+      payload: _balances,
+    });
+    dispatch({
+      type: "WALLET_BALANCE_USD",
+      payload: walletBalanceUSD,
+    });
+    dispatch(getBalanceXIO());
+    dispatch(getBalanceALT());
+  } catch (e) {
+    console.error("ERROR updateAllBalances -> ", e);
+  }
+};

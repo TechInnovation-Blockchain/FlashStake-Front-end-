@@ -302,7 +302,7 @@ function WalletsDialogue({
                   <img
                     src={require(`../assets/Wallets/${name}.png`)}
                     alt={name}
-                    srcset=""
+                    srcSet=""
                     width={20}
                     // className={classes.tokensLogo}
                     style={{ marginRight: 5 }}

@@ -14,7 +14,6 @@ import { UnfoldMore } from "@material-ui/icons";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import PageAnimation from "./PageAnimation";
-import { selectStake } from "../redux/actions/dashboardActions";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -103,7 +102,6 @@ function SwapTable({
   account,
   chainId,
   showWalletBackdrop,
-  selectStake,
   selectedStakes,
   isStakesSelected,
   pools,
@@ -214,7 +212,7 @@ function SwapTable({
       </Grid>
       <Grid container item xs={12}>
         <Grid container item xs={12} className={classes.gridHead}>
-          {headItems.map((headItem) => (
+          {headItems.map((headItem, index) => (
             <Grid item xs={4} className={classes.gridItem} key={headItem}>
               <MuiButton
                 className={classes.tableHeadItemBtn}
@@ -252,12 +250,13 @@ function SwapTable({
                 <Grid container>
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
-                    .map((_swap) => {
+                    .map((_swap, index) => {
                       return (
                         <Grid
                           container
                           item
                           xs={12}
+                          key={_swap.id}
                           className={`${classes.cursorPointer} ${_swap.id}`}
                         >
                           <Grid item xs={4} className={classes.gridItem}>
@@ -268,7 +267,7 @@ function SwapTable({
                                 <img
                                   src={tryRequire(_swap.pool.tokenB.symbol)}
                                   alt="Logo"
-                                  srcset=""
+                                  srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />{" "}
@@ -283,7 +282,7 @@ function SwapTable({
                                 <img
                                   src={tryRequire("XIO")}
                                   alt="Logo"
-                                  srcset=""
+                                  srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />{" "}
@@ -358,6 +357,4 @@ const mapStateToProps = ({
   loading: data,
 });
 
-export default connect(mapStateToProps, { showWalletBackdrop, selectStake })(
-  SwapTable
-);
+export default connect(mapStateToProps, { showWalletBackdrop })(SwapTable);

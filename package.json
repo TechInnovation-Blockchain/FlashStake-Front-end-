@@ -32,6 +32,7 @@
     "@web3-react/walletconnect-connector": "^6.1.6",
     "@web3-react/walletlink-connector": "^6.1.6",
     "axios": "^0.20.0",
+    "firebase": "^7.23.0",
     "graphql": "^15.3.0",
     "react": "^16.13.1",
     "react-animation": "^1.2.2",

@@ -99,8 +99,6 @@ function Navbar({
 
   const routes = ["/stake", "/swap", "/pool", "/vote"];
 
-  console.log(animation);
-  console.log("Previous route", history);
   return (
     <Box className={classes.navContainer}>
       {/* <Box className={classes.navOuterBox}> */}

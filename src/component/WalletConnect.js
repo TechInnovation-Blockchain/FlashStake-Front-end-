@@ -86,7 +86,6 @@ function WalletConnect({
       } else if (connector instanceof FortmaticConnector) {
         onClose();
       }
-
       web3context
         .activate(
           connector

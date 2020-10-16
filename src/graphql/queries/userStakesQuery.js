@@ -15,6 +15,7 @@ export const userStakesQuery = gql`
     user(id: $account) {
       id
       swapHistory(orderBy: initiationTimestamp, orderDirection: desc) {
+        id
         pool {
           tokenB {
             symbol

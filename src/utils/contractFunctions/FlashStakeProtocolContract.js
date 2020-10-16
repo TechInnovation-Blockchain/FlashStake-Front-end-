@@ -23,6 +23,7 @@ import {
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
 import { CONSTANTS } from "../constants";
+import { analytics } from "../../config/App";
 
 let contract;
 let infuraContract;
@@ -65,7 +66,6 @@ export const stake = async (_token, xioQuantity, days, reward) => {
         error,
         gasAmount
       ) {
-        console.log("Stake gasAmount -> ", gasAmount);
         // const txHash = await web3.utils.sha3(
         //   contract.methods.stake(_token, xioQuantity, days, reward)
         // );
@@ -78,6 +78,13 @@ export const stake = async (_token, xioQuantity, days, reward) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_STAKE_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              amount: xioQuantity,
+              days: days,
+              selctedToken: _token,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
@@ -98,14 +105,9 @@ export const stake = async (_token, xioQuantity, days, reward) => {
               type: "stake",
             };
 
-            axios
-              .post(CONSTANTS.TXN_SERVER, data)
-              .then((res) => {
-                console.log("Transaction Hash Added", res);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              console.log("Transaction Hash Added", res);
+            });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -165,7 +167,6 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
         error,
         gasAmount
       ) {
-        console.log("Unstake gasAmount ->", gasAmount);
         contract.methods
           .unstake(_expiredIds, _xioQuantity)
           .send({
@@ -174,6 +175,12 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_UNSTAKE_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              _expiredIds,
+              _xioQuantity,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
@@ -193,14 +200,9 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
               type: "unstake",
             };
 
-            axios
-              .post(CONSTANTS.TXN_SERVER, data)
-              .then((res) => {
-                console.log("Transaction Hash Added", res);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              console.log("Transaction Hash Added", res);
+            });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -260,7 +262,6 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
         error,
         gasAmount
       ) {
-        console.log("Swap gasAmount ->", gasAmount);
         contract.methods
           .swap(_altQuantity, _token, _expectedOutput)
           .send({
@@ -269,6 +270,13 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             gasPrice: "10000000000",
           })
           .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_SWAP_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              _altQuantity,
+              _token,
+              _expectedOutput,
+            });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
             showSnackbarTxnIndep(
@@ -289,14 +297,9 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
               type: "swap",
             };
 
-            axios
-              .post(CONSTANTS.TXN_SERVER, data)
-              .then((res) => {
-                console.log("Transaction Hash Added", res);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              console.log("Transaction Hash Added", res);
+            });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -393,8 +396,6 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
       .estimateGas(
         { gas: 10000000, from: walletAddress },
         (error, gasAmount) => {
-          console.log("unstakeAlt gasAmount ->", gasAmount);
-
           unstakeALT(expiredIds, xioQuantity)
             .send({
               from: walletAddress,
@@ -454,227 +455,3 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
     console.error("ERROR unstakeALT -> ", e);
   }
 };
-
-// export const initializePublicPortalContract = (address) => {
-//   contract = xioPublicPortalContract(address);
-//   isContractInitialized = true;
-// };
-
-// export const getPublicPortalData = async () => {
-//   let publicPortalData = {};
-//   try {
-//     checkContractInitialized();
-
-//     const portalAddress = contract.options.address;
-//     const maxDays = await contract.methods.MAX_DAYS().call();
-//     const maxStake = await contract.methods.MAX_STAKE().call();
-//     const rewardType = await contract.methods.rewardType().call();
-//     const status = await contract.methods.status().call();
-//     const tokenB = await contract.methods.tokenB().call();
-
-//     //TokenB Symbol from TokenB Address
-//     initializeErc20TokenContract(tokenB);
-//     const tokenBSymbol = await symbol(tokenB);
-
-//     const interestRate = await baseInterestRate();
-
-//     publicPortalData = {
-//       portalAddress,
-//       maxDays,
-//       maxStake,
-//       rewardType,
-//       status,
-//       tokenASymbol: "XIO",
-//       tokenB,
-//       tokenBSymbol,
-//       interestRate: parseFloat(
-//         Web3.utils.fromWei(interestRate.toString())
-//       ).toFixed(18),
-//     };
-//   } catch (e) {
-//     console.error("ERROR getPublicPortalData -> ", e);
-//   }
-//   return publicPortalData;
-// };
-
-// export const tokenB = async () => {
-//   try {
-//     checkContractInitialized();
-
-//     const tokenB = await contract.methods.tokenB().call();
-//     return tokenB;
-//   } catch (e) {
-//     console.error("ERROR tokenB -> ", e);
-//   }
-// };
-
-// export const stakeALT = async (
-//   xioQuantity,
-//   tokensBought,
-//   days,
-//   expiredTimestamps = []
-// ) => {
-//   try {
-//     setStakeDialogStepIndep("pendingStake");
-//     showSnackbarIndep("Transaction Pending.", "info");
-//     checkContractInitialized();
-
-//     const walletAddress = getWalletAddressReduxState();
-//     if (!walletAddress) {
-//       throw new Error("Wallet not activated.");
-//     }
-//     let _txnHash = "";
-//     const _stakeALT = await contract.methods
-//       .stakeALT(xioQuantity, tokensBought, expiredTimestamps, days)
-//       .send({
-//         from: walletAddress,
-//       })
-//       .on("transactionHash", async (txnHash) => {
-//         _txnHash = txnHash;
-//         setStakeTxnHashIndep(txnHash);
-//         showSnackbarTxnIndep(
-//           "Transaction Pending.",
-//           "info",
-//           "txnEtherScan",
-//           txnHash,
-//           true
-//         );
-//       });
-//     setStakeDialogStepIndep("successStake");
-//     setResetIndep(true);
-//     showSnackbarTxnIndep(
-//       "Stake Transaction Successful.",
-//       "success",
-//       "txnEtherScan",
-//       _stakeALT.transactionHash,
-//       false
-//     );
-//     //   .on("confirmation", (confirmationNumber, reciept) => {
-//     //     if (confirmationNumber === 1) {
-//     //       showSnackbarTxnIndep(
-//     //         "Stake Transaction Successful.",
-//     //         "success",
-//     //         "txnEtherScan",
-//     //         _stakeALT.transactionHash,
-//     //         false
-//     //       );
-
-//     //       return _stakeALT;
-//     //     }
-//     //   });
-//     // // .once("receipt", (receipt) => alert("receipt"));
-//     // .once("confirmation", (confirmationNumber, reciept) =>
-//     //   // console.log(confirmationNumber, reciept)
-//     // );
-//     // // console.log("_stakeALT", _stakeALT);
-//   } catch (e) {
-//     if (e.code === 4001) {
-//       setStakeDialogStepIndep("rejectedStake");
-//       showSnackbarIndep("Flashstake Transaction Rejected.", "error");
-//     } else {
-//       setStakeDialogStepIndep("failedStake");
-//       showSnackbarIndep("Flashstake Transaction Failed.", "error");
-//     }
-//     console.error("ERROR stakeALT -> ", e);
-//   }
-// };
-
-// export const unstakeALT = async (portalTimestamps = [], amount = 0) => {
-//   try {
-//     showSnackbarIndep("Transaction Pending.", "info");
-//     setDialogStepIndep("pending");
-//     checkContractInitialized();
-
-//     const walletAddress = getWalletAddressReduxState();
-//     if (!walletAddress) {
-//       throw new Error("Wallet not activated.");
-//     }
-
-//     const _unstakeALT = await contract.methods
-//       .unstakeALT(portalTimestamps, amount)
-//       .send({
-//         from: walletAddress,
-//       })
-//       .on("transactionHash", (txnHash) => {
-//         setWithdrawTxnHashIndep(txnHash);
-//         showSnackbarTxnIndep(
-//           "Transaction Pending.",
-//           "info",
-//           "txnEtherScan",
-//           txnHash,
-//           true
-//         );
-//       });
-//     // .on("confirmation", (confirmationNumber, reciept) => {
-//     //   if (confirmationNumber === 1) {
-//     //   }
-//     // });
-//     setDialogStepIndep("success");
-//     showSnackbarTxnIndep(
-//       "Withdraw Transaction Successful.",
-//       "success",
-//       "txnEtherScan",
-//       _unstakeALT.transactionHash,
-//       false
-//     );
-//     setRefetchIndep(true);
-//     return _unstakeALT;
-//   } catch (e) {
-//     if (e.code === 4001) {
-//       setDialogStepIndep("rejected");
-//       showSnackbarIndep("Withdraw Transaction Rejected.", "error");
-//     } else {
-//       setDialogStepIndep("failed");
-//       showSnackbarIndep("Withdraw Transaction Failed.", "error");
-//     }
-//     console.error("ERROR unstakeALT -> ", e);
-//   }
-// };
-
-// export const withdrawReward = async (portalTimestamps = [], amount = 0) => {
-//   try {
-//     showSnackbarIndep("Transaction Pending.", "info");
-//     checkContractInitialized();
-
-//     const walletAddress = getWalletAddressReduxState();
-//     if (!walletAddress) {
-//       throw new Error("Wallet not activated.");
-//     }
-
-//     const _withdrawReward = await contract.methods
-//       .withdrawReward(portalTimestamps, amount)
-//       .send({
-//         from: walletAddress,
-//       })
-//       .on("transactionHash", (txnHash) => {
-//         showSnackbarTxnIndep(
-//           "Transaction Pending.",
-//           "info",
-//           "txnEtherScan",
-//           txnHash,
-//           true
-//         );
-//       })
-//       .on("confirmation", (confirmationNumber, reciept) => {
-//         if (confirmationNumber === 1) {
-//           showSnackbarTxnIndep(
-//             "Withdraw Transaction Successful.",
-//             "success",
-//             "txnEtherScan",
-//             _withdrawReward.transactionHash,
-//             false
-//           );
-//           return _withdrawReward;
-//         }
-//       });
-//   } catch (e) {
-//     showSnackbarIndep("Withdraw Transaction Failed.", "error");
-//     console.error("ERROR unstakeALT -> ", e);
-//   }
-// };
-
-// const checkContractInitialized = () => {
-//   if (!isContractInitialized) {
-//     throw new Error("PublicPortalContract not initialized.");
-//   }
-// };

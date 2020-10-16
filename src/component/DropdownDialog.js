@@ -141,6 +141,7 @@ export default function DropdownDialog({
   heading = "SELECT TOKEN",
   disableDrop,
   link,
+  type = "stake",
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -181,7 +182,7 @@ export default function DropdownDialog({
   //       <img
   //         src={require(`../assets/Tokens/${selectedValue}.png`)}
   //         alt="Logo"
-  //         srcset=""
+  //         srcSet=""
   //         width={20}
   //         style={{ marginRight: 5 }}
   //       />
@@ -208,7 +209,7 @@ export default function DropdownDialog({
               <img
                 src={require(`../assets/Tokens/${selectedValue}.png`)}
                 alt="Logo"
-                srcset=""
+                srcSet=""
                 width={15}
                 style={{ marginRight: 5 }}
               />
@@ -241,7 +242,7 @@ export default function DropdownDialog({
                   <img
                     src={tryRequire(selectedValue.tokenB.symbol)}
                     alt="Logo"
-                    srcset=""
+                    srcSet=""
                     width={15}
                     style={{ marginRight: 5 }}
                   />
@@ -271,7 +272,7 @@ export default function DropdownDialog({
                 <img
                   src={tryRequire(selectedValue.tokenB.symbol)}
                   alt="Logo"
-                  srcset=""
+                  srcSet=""
                   width={15}
                   style={{ marginRight: 5 }}
                 />
@@ -290,7 +291,8 @@ export default function DropdownDialog({
       )}
 
       <MuiDialog
-        open={open}
+        // open={open}
+        open={true}
         onClose={onClose}
         PaperProps={{ className: classes.dialogPaper }}
       >
@@ -338,16 +340,15 @@ export default function DropdownDialog({
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
-
                     <img
                       src={tryRequire(_pool.tokenB.symbol)}
                       alt={_pool.tokenB.symbol}
-                      srcset=""
+                      srcSet=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {_pool.tokenB.symbol}
+                    {_pool.tokenB.symbol} (${_pool.tokenPrice})
                   </Typography>
                 </ListItem>
               ))}

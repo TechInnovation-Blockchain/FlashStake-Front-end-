@@ -27,6 +27,7 @@ export const calculateReward = (xioQuantity, days) => async (
   dispatch,
   getState
 ) => {
+  console.log("REWARDDDDDDDDDDD CALCULATE");
   dispatch(setLoading({ reward: true }));
   let reward = "0";
   try {
@@ -47,12 +48,10 @@ export const calculateReward = (xioQuantity, days) => async (
           JSBI.BigInt(5)
         )
       ).toString();
-      console.log({ _amountIn, reward });
     }
   } catch (e) {
     console.error("ERROR calculateReward -> ", e);
   }
-  console.log("stakeReward -> ", reward);
   dispatch({
     type: "STAKE_REWARD",
     payload: reward,
@@ -83,7 +82,6 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
   } catch (e) {
     console.error("ERROR calculateSwap -> ", e);
   }
-  console.log("swapReward -> ", swapAmount);
 
   dispatch({
     type: "SWAP_OUTPUT",
@@ -208,6 +206,7 @@ export const getBalanceALT = () => async (dispatch, getState) => {
     const {
       web3: { active, account },
       flashstake: { selectedRewardToken },
+      user: { walletBalances },
     } = getState();
     if (!selectedRewardToken?.tokenB?.id) {
       dispatch({
@@ -217,16 +216,12 @@ export const getBalanceALT = () => async (dispatch, getState) => {
       return null;
     }
     if (active && account) {
-      await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
-      balance = Web3.utils.fromWei(await balanceOf());
+      balance = walletBalances[selectedRewardToken.tokenB.id] || 0;
     }
   } catch (e) {
     balance = 0;
     console.error("ERROR getBalance -> ", e);
   } finally {
-    console.log({
-      balanceALT: balance,
-    });
     dispatch({
       type: "BALANCE_ALT",
       payload: balance,
@@ -239,18 +234,15 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
   try {
     const {
       web3: { active, account },
+      user: { walletBalances },
     } = getState();
     if (active && account) {
-      await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-      balance = Web3.utils.fromWei(await balanceOf());
+      balance = walletBalances[CONSTANTS.ADDRESS_XIO_RINKEBY] || 0;
     }
   } catch (e) {
     balance = 0;
     console.error("ERROR getBalance -> ", e);
   } finally {
-    console.log({
-      balanceXIO: balance,
-    });
     dispatch({
       type: "BALANCE_XIO",
       payload: balance,
@@ -266,7 +258,6 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     if (!selectedRewardToken?.tokenB?.id) {
       throw new Error("No reward token found!");
     }
-    console.log("rewardreward -> ", reward);
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
@@ -362,31 +353,6 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }
 };
-
-export const getWalletBalance = () => async (dispatch, getState) => {
-  let _walletBalance = 0;
-  try {
-    const {
-      user: { pools },
-      web3: { active, account },
-    } = await getState();
-    if (active && account && pools?.length) {
-      for (let i = 0; i < pools.length; i++) {
-        await initializeErc20TokenContract(pools[i].tokenB.id);
-        let balance = Web3.utils.fromWei(await balanceOf());
-        _walletBalance += balance * pools[i].tokenPrice;
-      }
-    }
-  } catch (e) {
-    console.error("ERROR getWalletBalance -> ", e);
-  } finally {
-    dispatch({
-      type: "WALLET_BALANCE_USD",
-      payload: _walletBalance,
-    });
-  }
-};
-
 export const setInitialValues = (quantity, days) => {
   return {
     type: "INITIAL_VALUES",
