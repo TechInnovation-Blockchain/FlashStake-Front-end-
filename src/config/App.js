@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ApolloProvider } from "@apollo/client";
-import * as firebase from "firebase";
+import firebase from "firebase/app";
 import "firebase/performance";
 import "firebase/analytics";
 

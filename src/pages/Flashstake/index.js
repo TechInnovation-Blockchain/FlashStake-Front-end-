@@ -19,7 +19,7 @@ import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import MaxBtn from "../../component/MaxBtn";
-
+import { updateAllBalances } from "../../redux/actions/userActions";
 import {
   Button,
   DropdownDialog,
@@ -327,10 +327,8 @@ function Flashstake({
   setExpandAccodion,
   expanding,
   animation,
-  ...props
+  updateAllBalances,
 }) {
-  console.log(props);
-
   const classes = useStyles();
   const web3context = useWeb3React();
 
@@ -338,7 +336,7 @@ function Flashstake({
   const [expanded2, setExpanded2] = useState(true);
 
   const debouncedCalculateReward = useCallback(
-    debounce(calculateReward, 200),
+    debounce(calculateReward, 500),
     []
   );
 
@@ -393,9 +391,8 @@ function Flashstake({
 
   useEffect(() => {
     if (reset) {
-      getBalanceXIO();
-      setDays("");
-      setQuantity("");
+      // getBalanceXIO();
+      updateAllBalances();
       setReset(false);
     }
   }, [reset, setReset, getBalanceXIO]);
@@ -404,7 +401,7 @@ function Flashstake({
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
       const _rewardRefreshInterval = setInterval(() => {
-        // console.log("Reward updated.");
+        // console.log("Stake Reward updated.");
         debouncedCalculateReward(quantity, days);
       }, 60000);
       return () => {
@@ -416,10 +413,11 @@ function Flashstake({
   useEffect(() => {
     if (active && account) {
       checkAllowanceXIO();
-      getBalanceXIO();
+      // getBalanceXIO();
+      updateAllBalances();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowanceXIO, getBalanceXIO, showWalletBackdrop]);
+  }, [active, account]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
@@ -1108,4 +1106,5 @@ export default connect(mapStateToProps, {
   setRefetch,
   showWalletBackdrop,
   setExpandAccodion,
+  updateAllBalances,
 })(Flashstake);

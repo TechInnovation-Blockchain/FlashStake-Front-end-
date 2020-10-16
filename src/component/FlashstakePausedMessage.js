@@ -35,10 +35,6 @@ export default function FlashstakePausedMessage(props) {
     default:
       break;
   }
-
-  useEffect(() => {
-    console.log(props.history.location.pathname);
-  }, [props.history.location.pathname]);
   return (
     <Box px={2} py={5} className={classes.mainContainer}>
       <Block className={classes.icon} />

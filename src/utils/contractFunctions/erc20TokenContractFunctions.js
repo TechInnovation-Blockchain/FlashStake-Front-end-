@@ -124,7 +124,8 @@ export const allowance = async (spenderAddress, loading) => {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      // throw new Error("Wallet not activated.");
+      return "0";
     }
 
     const _allowance = await contract.methods
@@ -142,7 +143,8 @@ export const balanceOf = async () => {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      // throw new Error("Wallet not activated.");
+      return "0";
     }
 
     const _balance = await contract.methods.balanceOf(walletAddress).call();

@@ -8,10 +8,10 @@ import {
   setReCalculateExpired,
 } from "../redux/actions/dashboardActions";
 import {
-  userDataUpdate,
   updatePools,
   updateUserData,
-  updateWalletBalance,
+  clearUserData,
+  updateAllBalances,
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
@@ -19,7 +19,6 @@ import {
   checkAllowanceXIO,
   getBalanceALT,
   checkAllowanceALT,
-  getWalletBalance,
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
 
@@ -27,23 +26,20 @@ function Updater({
   active,
   account,
   chainId,
-  userDataUpdate,
   updatePools,
   updateUserData,
   refetchData,
   setRefetch,
   setLoading,
-  portals,
   currentStaked,
   reCalculateExpired,
   setReCalculateExpired,
   getBalanceXIO,
   getBalanceALT,
-  baseInterestRate,
-  updateWalletBalance,
+  updateAllBalances,
   checkAllowanceXIO,
   checkAllowanceALT,
-  getWalletBalance,
+  clearUserData,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -56,14 +52,18 @@ function Updater({
     if (active && account) {
       analytics.setUserId(account);
       analytics.logEvent("USER_WALLET_ACTIVATED", {
-        address: account,
+        address: `Address -> ${account}`,
       });
       refetch();
-      getBalanceXIO();
+      const _interval = window.setInterval(() => {
+        updateAllBalances();
+      }, 30000);
       getBalanceALT();
-      updateWalletBalance();
       checkAllowanceXIO();
       checkAllowanceALT();
+      return () => window.clearInterval(_interval);
+    } else {
+      clearUserData();
     }
   }, [active, account]);
 
@@ -82,41 +82,27 @@ function Updater({
 
   useEffect(() => {
     if (reCalculateExpired && data) {
-      userDataUpdate(data);
     }
     setReCalculateExpired(false);
-  }, [reCalculateExpired, data, userDataUpdate, setReCalculateExpired]);
+  }, [reCalculateExpired, data, setReCalculateExpired]);
 
   useEffect(() => {
     setLoading({ data: loading });
     if (!loading && data) {
-      userDataUpdate(data);
     }
-  }, [loading, data, setLoading, userDataUpdate, baseInterestRate]);
+  }, [loading, data, setLoading]);
 
   useEffect(() => {
     if (refetchData) {
-      console.log("refetchData");
       refetch();
-      getBalanceXIO();
-      getBalanceALT();
+      // getBalanceXIO();
+      // getBalanceALT();
       checkAllowanceXIO();
       checkAllowanceALT();
-      getWalletBalance();
-      updateWalletBalance();
+      updateAllBalances();
       setRefetch(false);
     }
-  }, [
-    refetchData,
-    setRefetch,
-    refetch,
-    getBalanceXIO,
-    checkAllowanceALT,
-    checkAllowanceXIO,
-    getBalanceALT,
-    getWalletBalance,
-    updateWalletBalance,
-  ]);
+  }, [refetchData]);
   useEffect(() => {
     updatePools(data?.protocols[0]?.pools);
     updateUserData(data?.user);
@@ -132,7 +118,6 @@ function Updater({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  contract: { portals, baseInterestRate },
   dashboard: { refetch, reCalculateExpired },
   user: { currentStaked },
 }) => ({
@@ -140,14 +125,11 @@ const mapStateToProps = ({
   account,
   chainId,
   refetchData: refetch,
-  portals,
   currentStaked,
   reCalculateExpired,
-  baseInterestRate,
 });
 
 export default connect(mapStateToProps, {
-  userDataUpdate,
   updatePools,
   updateUserData,
   setRefetch,
@@ -155,8 +137,8 @@ export default connect(mapStateToProps, {
   setReCalculateExpired,
   getBalanceXIO,
   getBalanceALT,
-  getWalletBalance,
+  updateAllBalances,
   checkAllowanceXIO,
   checkAllowanceALT,
-  updateWalletBalance,
+  clearUserData,
 })(Updater);

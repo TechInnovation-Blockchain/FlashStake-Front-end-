@@ -1,33 +1,17 @@
+import { CONSTANTS } from "../../utils/constants";
+
 export const contractReducer = (
   state = {
-    portals: [],
-    baseInterestRate: "0",
-    maxDays: "0",
-    maxStake: "0",
     contractState: false,
+    tokenList: [CONSTANTS.ADDRESS_XIO_RINKEBY],
   },
   { type, payload }
 ) => {
   switch (type) {
-    case "PORTALS":
+    case "TOKEN_LIST":
       return {
         ...state,
-        portals: payload,
-      };
-    case "BASE_INTEREST_RATE":
-      return {
-        ...state,
-        baseInterestRate: payload,
-      };
-    case "MAX_DAYS":
-      return {
-        ...state,
-        maxDays: payload,
-      };
-    case "MAX_STAKE":
-      return {
-        ...state,
-        maxStake: payload,
+        tokenList: payload,
       };
     case "CONTRACT_STATE":
       return {

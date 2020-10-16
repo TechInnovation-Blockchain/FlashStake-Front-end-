@@ -16,7 +16,6 @@ import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
-import { selectStake } from "../redux/actions/dashboardActions";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -110,7 +109,6 @@ function TableComponent({
   account,
   chainId,
   showWalletBackdrop,
-  selectStake,
   selectedStakes,
   isStakesSelected,
   walletBalance,
@@ -287,7 +285,7 @@ function TableComponent({
                           container
                           item
                           xs={12}
-                          onClick={() => selectStake(_stake.id)}
+                          key={_stake.id}
                           className={classes.cursorPointer}
                         >
                           <Grid item xs={4} className={classes.gridItem}>
@@ -298,7 +296,7 @@ function TableComponent({
                               <img
                                 src={tryRequire(_stake.pool.tokenB.symbol)}
                                 alt="Logo"
-                                srcset=""
+                                srcSet=""
                                 width={15}
                                 style={{ marginRight: 5 }}
                               />
@@ -314,7 +312,7 @@ function TableComponent({
                                 <img
                                   src={tryRequire("XIO")}
                                   alt="Logo"
-                                  srcset=""
+                                  srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
@@ -413,6 +411,5 @@ const mapStateToProps = ({
 
 export default connect(mapStateToProps, {
   showWalletBackdrop,
-  selectStake,
   unstakeXIO,
 })(TableComponent);

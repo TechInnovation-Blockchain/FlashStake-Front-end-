@@ -58,16 +58,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Button(props) {
+export default function Button({ fontSizeLocal, ...props }) {
   const classes = useStyles();
   return (
     <MuiButton
       {...props}
-      fontSizeLocal={undefined}
       variant="outlined"
       className={`${props.className} ${classes.commonStyles} ${
         { dark: classes.darkButton, red: classes.redButton }[props.variant]
-      } ${props.fontSizeLocal ? classes[props.fontSizeLocal] : ""}`}
+      } ${fontSizeLocal ? classes[fontSizeLocal] : ""}`}
     >
       {props.loading ? (
         <CircularProgress

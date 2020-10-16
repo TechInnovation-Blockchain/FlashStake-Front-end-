@@ -11,3 +11,17 @@ export const getWalletAddressReduxState = () => {
   } = store.getState();
   return account;
 };
+
+export const getTokenList = () => {
+  const {
+    contract: { tokenList },
+  } = store.getState();
+  return tokenList;
+};
+
+export const getPools = () => {
+  const {
+    user: { pools },
+  } = store.getState();
+  return pools;
+};
