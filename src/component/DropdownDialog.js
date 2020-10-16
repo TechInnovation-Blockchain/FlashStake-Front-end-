@@ -12,6 +12,7 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
+import { trunc } from "../utils/utilFunc";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -354,7 +355,13 @@ export default function DropdownDialog({
                     {_pool.tokenB.symbol}{" "}
                     {history.location.pathname === "/swap"
                       ? `($${_pool.tokenPrice})`
-                      : ""}
+                      : `(${
+                          parseFloat(_pool.apy).toFixed(2) -
+                            parseInt(_pool.apy) >
+                          0
+                            ? parseFloat(_pool.apy).toFixed(2)
+                            : parseInt(_pool.apy)
+                        }%)`}
                   </Typography>
                 </ListItem>
               ))}
