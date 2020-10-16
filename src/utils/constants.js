@@ -1,11 +1,11 @@
 export const CONSTANTS = {
   // GRAPHQL_ENDPOINT_URI: "https://server.xio.app/graphql",
   GRAPHQL_ENDPOINT_URI:
-    "https://api.thegraph.com/subgraphs/name/asadnaeem1/flashstake-protocol",
+    "https://api.thegraph.com/subgraphs/name/asadnaeem1/flashstake-protocol-v2",
   WETH_ERC20_ADDRESS: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
-  ADDRESS_XIO_RINKEBY: "0x394cE20c29022b31E9dc0e930b404C82e737CC0A",
+  ADDRESS_XIO_RINKEBY: "0x6bdC644E0dA75E59da0587e13fC806BFB61764Cb",
   FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS:
-    "0x2F47984BD0a14e08EA37d0087173bfa4dED944e6",
+    "0xb8c4B90904b24738aF01DA6e8bc07590F003aC7f",
   TXN_SERVER: "https://stakexserver.xio.app:3000/addtxnhash",
   MAINNET_ADDRESSES: {
     UNI: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
