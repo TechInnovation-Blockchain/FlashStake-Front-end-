@@ -9,18 +9,12 @@ import { CONSTANTS } from "../utils/constants";
 const { FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, BALANCE_CONTRACT } = CONSTANTS;
 
 let web3js;
-let web3jsInfura1;
-let web3jsInfura2;
+let web3jsInfura;
 
 try {
-  web3jsInfura1 = new Web3(
+  web3jsInfura = new Web3(
     new Web3.providers.HttpProvider(
-      `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`
-    )
-  );
-  web3jsInfura2 = new Web3(
-    new Web3.providers.HttpProvider(
-      `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY2}`
+      `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
     )
   );
   web3js = new Web3(window.web3.currentProvider);
@@ -34,7 +28,7 @@ export const setWeb3Provider = (provider) => {
 
 export const erc20TokenInfuraContract = (tokenAddress) => {
   try {
-    const contract = new web3jsInfura2.eth.Contract(erc20Abi, tokenAddress);
+    const contract = new web3jsInfura.eth.Contract(erc20Abi, tokenAddress);
     return contract;
   } catch (e) {
     console.error("ERROR erc20TokenInfuraContract -> ", e);
@@ -64,7 +58,7 @@ export const xioFlashstakeContract = () => {
 
 export const xioFlashstakeInfuraContract = () => {
   try {
-    const contract = new web3jsInfura1.eth.Contract(
+    const contract = new web3jsInfura.eth.Contract(
       FlashStakeProtocolContractAbi,
       FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
@@ -88,7 +82,7 @@ export const xioFlashstakePoolContract = (_poolContractAddress) => {
 
 export const xioFlashstakePoolInfuraContract = (_poolContractAddress) => {
   try {
-    const contract = new web3jsInfura1.eth.Contract(
+    const contract = new web3jsInfura.eth.Contract(
       FlashstakePoolAbi,
       _poolContractAddress
     );
@@ -112,7 +106,7 @@ export const balanceContract = () => {
 
 export const balanceInfuraContract = () => {
   try {
-    const contract = new web3jsInfura2.eth.Contract(
+    const contract = new web3jsInfura.eth.Contract(
       BalanceContractAbi,
       BALANCE_CONTRACT
     );

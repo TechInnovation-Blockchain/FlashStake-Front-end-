@@ -4,9 +4,9 @@ import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 
-const REACT_APP_NETWORK_URL1 = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
+const REACT_APP_NETWORK_URL1 = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
 // const REACT_APP_NETWORK_URL3 = `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
-const REACT_APP_NETWORK_URL4 = `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
+const REACT_APP_NETWORK_URL4 = `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
 // const REACT_APP_NETWORK_URL5 = `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
 // const REACT_APP_NETWORK_URL42 = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
 
