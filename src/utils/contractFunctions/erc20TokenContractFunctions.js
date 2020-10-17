@@ -11,7 +11,9 @@ import {
 import {
   setDialogStepIndep,
   setSwapDialogStepIndep,
+  checkAllowance,
 } from "../../redux/actions/flashstakeActions";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
@@ -77,6 +79,7 @@ export const approve = async (address, tab, amount) => {
         gasPrice: "10000000000",
       })
       .then(function (receipt) {
+        store.dispatch(checkAllowance());
         showSnackbarIndep("Approval Successful.", "success");
         tab === "stake"
           ? setDialogStepIndep("flashstakeProposal")
@@ -131,10 +134,10 @@ export const allowance = async (spenderAddress, loading) => {
     const _allowance = await contract.methods
       .allowance(walletAddress, spenderAddress)
       .call();
-    console.log({ _allowance });
     return _allowance;
   } catch (e) {
     console.error("ERROR allowance -> ", e);
+    return "0";
   }
 };
 

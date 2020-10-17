@@ -32,7 +32,7 @@ import {
   setSelectedRewardToken,
   getApprovalXIO,
   calculateReward,
-  checkAllowanceXIO,
+  checkAllowance,
   getBalanceXIO,
   stakeXIO,
   setDialogStep,
@@ -305,7 +305,7 @@ function Flashstake({
   loading: loadingRedux,
   active,
   account,
-  checkAllowanceXIO,
+  checkAllowance,
   getBalanceXIO,
   balanceXIO,
   stakeXIO,
@@ -414,7 +414,7 @@ function Flashstake({
 
   useEffect(() => {
     if (active && account) {
-      checkAllowanceXIO();
+      checkAllowance();
       // getBalanceXIO();
       updateAllBalances();
       showWalletBackdrop(false);
@@ -583,7 +583,7 @@ function Flashstake({
                       </span>{" "}
                       FOR{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} {days > 1 ? "MINS" : "MIN"}
+                        {days || 0} {days > 1 ? "MINUTES" : "MINUTE"}
                       </span>{" "}
                       YOU WILL IMMEDIATELY{" "}
                       {/* <span className={classes.infoTextSpan}></span>{" "} */}
@@ -1096,7 +1096,7 @@ export default connect(mapStateToProps, {
   setSelectedRewardToken,
   getApprovalXIO,
   calculateReward,
-  checkAllowanceXIO,
+  checkAllowance,
   getBalanceXIO,
   stakeXIO,
   setLoading,

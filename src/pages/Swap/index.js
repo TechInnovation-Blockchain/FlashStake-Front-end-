@@ -29,7 +29,7 @@ import {
   setSelectedRewardToken,
   getApprovalALT,
   calculateReward,
-  checkAllowanceALT,
+  checkAllowance,
   calculateSwap,
   getBalanceALT,
   setDialogStep,
@@ -298,7 +298,7 @@ function Swap({
   loading: loadingRedux,
   active,
   account,
-  checkAllowanceALT,
+  checkAllowance,
   getBalanceALT,
   balance,
   setLoading,
@@ -398,17 +398,17 @@ function Swap({
 
   useEffect(() => {
     if (selectedPortal) {
-      checkAllowanceALT();
+      checkAllowance();
     }
-  }, [selectedPortal, checkAllowanceALT]);
+  }, [selectedPortal]);
 
   useEffect(() => {
     if (active && account) {
-      checkAllowanceALT();
+      checkAllowance();
       getBalanceALT();
       showWalletBackdrop(false);
     }
-  }, [active, account, checkAllowanceALT, getBalanceALT, showWalletBackdrop]);
+  }, [active, account, getBalanceALT, showWalletBackdrop]);
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");
@@ -983,7 +983,7 @@ export default connect(mapStateToProps, {
   setSelectedRewardToken,
   getApprovalALT,
   calculateReward,
-  checkAllowanceALT,
+  checkAllowance,
   getBalanceALT,
   setLoading,
   setDialogStep,

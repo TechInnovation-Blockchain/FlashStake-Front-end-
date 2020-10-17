@@ -52,12 +52,12 @@ const checkContractInitialized = () => {
 
 export const stake = async (_token, xioQuantity, days, reward) => {
   setLoadingIndep({ stake: true });
+  const walletAddress = getWalletAddressReduxState();
   try {
     setStakeDialogStepIndep("pendingStake");
     showSnackbarIndep("Transaction Pending.", "info");
     checkContractInitialized();
 
-    const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
@@ -143,6 +143,12 @@ export const stake = async (_token, xioQuantity, days, reward) => {
       setStakeDialogStepIndep("rejectedStake");
       showSnackbarIndep("Stake Transaction Rejected.", "error");
     } else {
+      analytics.logEvent("USER_STAKE_FAILED", {
+        address: `Address -> ${walletAddress}`,
+        amount: xioQuantity,
+        days: days,
+        selctedToken: _token,
+      });
       setStakeDialogStepIndep("failedStake");
       showSnackbarIndep("Stake Transaction Failed.", "error");
     }
@@ -153,12 +159,12 @@ export const stake = async (_token, xioQuantity, days, reward) => {
 
 export const unstake = async (_expiredIds, _xioQuantity) => {
   setLoadingIndep({ unstake: true });
+  const walletAddress = getWalletAddressReduxState();
   try {
     setStakeDialogStepIndep("pendingUnstake");
     showSnackbarIndep("Transaction Pending.", "info");
     checkContractInitialized();
 
-    const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
@@ -238,6 +244,11 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
       setStakeDialogStepIndep("rejectedUnstake");
       showSnackbarIndep("Unstake Transaction Rejected.", "error");
     } else {
+      analytics.logEvent("USER_UNSTAKE_FAILED", {
+        address: `Address -> ${walletAddress}`,
+        _expiredIds,
+        _xioQuantity,
+      });
       setStakeDialogStepIndep("failedUnstake");
       showSnackbarIndep("Unstake Transaction Failed.", "error");
     }
@@ -248,12 +259,12 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
 
 export const swap = async (_altQuantity, _token, _expectedOutput) => {
   setLoadingIndep({ swap: true });
+  const walletAddress = getWalletAddressReduxState();
   try {
     setSwapDialogStepIndep("pendingSwap");
     showSnackbarIndep("Transaction Pending.", "info");
     checkContractInitialized();
 
-    const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
       throw new Error("Wallet not activated.");
     }
@@ -335,6 +346,12 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
       setSwapDialogStepIndep("rejectedSwap");
       showSnackbarIndep("Swap Transaction Rejected.", "error");
     } else {
+      analytics.logEvent("USER_SWAP_FAILED", {
+        address: `Address -> ${walletAddress}`,
+        _altQuantity,
+        _token,
+        _expectedOutput,
+      });
       setSwapDialogStepIndep("failedSwap");
       showSnackbarIndep("Swap Transaction Failed.", "error");
     }

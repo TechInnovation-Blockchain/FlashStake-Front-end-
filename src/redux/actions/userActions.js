@@ -40,11 +40,11 @@ export const updatePools = (data) => async (dispatch) => {
         console.error("ERROR pricingAPI -> ", e);
       }
       if (response?.data) {
-        initializeFlashstakeProtocolContract();
-        const _xpy = await getXPY();
+        // initializeFlashstakeProtocolContract();
+        // const _xpy = await getXPY();
         for (let i = 0; i < _pools.length; i++) {
-          initializeFlashstakePoolContract(_pools[i].id);
-          _pools[i].apy = Web3.utils.fromWei(await getAPYStake(_xpy));
+          // initializeFlashstakePoolContract(_pools[i].id);
+          // _pools[i].apy = Web3.utils.fromWei(await getAPYStake(_xpy));
           _pools[i].tokenPrice =
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
