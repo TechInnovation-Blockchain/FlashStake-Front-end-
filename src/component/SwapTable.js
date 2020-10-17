@@ -113,7 +113,7 @@ function SwapTable({
   const headItems = ["INPUT", "OUTPUT XIO", "DATE"];
 
   const [sortDirection, setSortDirection] = useState(false);
-  const [sortBy, setSortBy] = useState();
+  const [sortBy, setSortBy] = useState("DATE");
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
 
@@ -159,7 +159,7 @@ function SwapTable({
       case "DATE":
         data = swapHistory?.sort(
           ({ initiationTimestamp: a }, { initiationTimestamp: b }) =>
-            parseFloat(a) - parseFloat(b)
+            parseFloat(b) - parseFloat(a)
         );
         break;
       default:

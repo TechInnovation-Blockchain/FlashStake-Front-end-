@@ -187,7 +187,7 @@ function TableComponent({
         );
         break;
       default:
-        data = stakes;
+        data = stakes.reverse();
         break;
     }
     return sortDirection ? data.reverse() : data;

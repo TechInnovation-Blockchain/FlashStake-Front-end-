@@ -683,9 +683,15 @@ function Swap({
                     "rejected",
                   ].find((item) => dialogStep2.includes(item))}
                   step={dialogStep2}
+                  // stepperShown={
+                  //   dialogStep2 === "pendingApproval" ||
+                  //   dialogStep2 === "swapProposal"
+                  // }
                   stepperShown={
-                    dialogStep2 === "pendingApproval" ||
-                    dialogStep2 === "swapProposal"
+                    quantity > 0
+                      ? dialogStep2 === "pendingApproval" ||
+                        dialogStep2 === "swapProposal"
+                      : null
                   }
 
                   // status="success"
