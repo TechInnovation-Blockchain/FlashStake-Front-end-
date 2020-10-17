@@ -349,6 +349,19 @@ function Flashstake({
 
   //#region functions
 
+  useEffect(() => {
+    document
+      .querySelector("input[type='number']")
+      .addEventListener("keypress", (evt) => {
+        if (evt.which === 8) {
+          return;
+        }
+        if (evt.which < 48 || evt.which > 57) {
+          evt.preventDefault();
+        }
+      });
+  }, []);
+
   const onChangeDays = ({ target: { value } }) => {
     if (/^[0-9]*$/.test(value)) {
       setDays(value);
@@ -580,11 +593,11 @@ function Flashstake({
                     <Typography variant="overline" className={classes.infoText}>
                       IF YOU STAKE{" "}
                       <span className={classes.infoTextSpan}>
-                        {quantity || 0} XIO{" "}
+                        {trunc(quantity) || 0} XIO{" "}
                       </span>{" "}
                       FOR{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} {days > 1 ? "MINUTES" : "MINUTE"}
+                        {trunc(days) || 0} {days > 1 ? "MINUTES" : "MINUTE"}
                       </span>{" "}
                       YOU WILL IMMEDIATELY{" "}
                       {/* <span className={classes.infoTextSpan}></span>{" "} */}

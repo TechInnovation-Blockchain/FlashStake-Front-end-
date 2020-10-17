@@ -187,7 +187,12 @@ function TableComponent({
         );
         break;
       default:
-        data = stakes.reverse();
+        data = stakes.sort(
+          (a, b) =>
+            parseFloat(b.initiationTimestamp) -
+            parseFloat(a.initiationTimestamp)
+        );
+        // data = stakes.reverse();
         break;
     }
     return sortDirection ? data.reverse() : data;

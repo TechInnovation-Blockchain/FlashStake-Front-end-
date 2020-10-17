@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { PageAnimation } from "../../component";
+import { CSSTransition } from "react-transition-group";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-evenly",
     // height: "200px",
+    transition: "all 0.5s ease",
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
