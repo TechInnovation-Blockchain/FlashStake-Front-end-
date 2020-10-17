@@ -16,9 +16,8 @@ import {
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
   getBalanceXIO,
-  checkAllowanceXIO,
   getBalanceALT,
-  checkAllowanceALT,
+  checkAllowance,
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
 
@@ -37,8 +36,7 @@ function Updater({
   getBalanceXIO,
   getBalanceALT,
   updateAllBalances,
-  checkAllowanceXIO,
-  checkAllowanceALT,
+  checkAllowance,
   clearUserData,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
@@ -59,8 +57,7 @@ function Updater({
         updateAllBalances();
       }, 30000);
       getBalanceALT();
-      checkAllowanceXIO();
-      checkAllowanceALT();
+      checkAllowance();
       return () => window.clearInterval(_interval);
     } else {
       clearUserData();
@@ -97,8 +94,7 @@ function Updater({
       refetch();
       // getBalanceXIO();
       // getBalanceALT();
-      checkAllowanceXIO();
-      checkAllowanceALT();
+      checkAllowance();
       updateAllBalances();
       setRefetch(false);
     }
@@ -138,7 +134,6 @@ export default connect(mapStateToProps, {
   getBalanceXIO,
   getBalanceALT,
   updateAllBalances,
-  checkAllowanceXIO,
-  checkAllowanceALT,
+  checkAllowance,
   clearUserData,
 })(Updater);

@@ -14,7 +14,7 @@ export const userStakesQuery = gql`
     }
     user(id: $account) {
       id
-      swapHistory(orderBy: initiationTimestamp, orderDirection: desc) {
+      swapHistory {
         id
         pool {
           tokenB {
@@ -25,11 +25,7 @@ export const userStakesQuery = gql`
         xioReceived
         initiationTimestamp
       }
-      stakes(
-        where: { active: true }
-        orderBy: initiationTimestamp
-        orderDirection: desc
-      ) {
+      stakes {
         pool {
           tokenB {
             symbol

@@ -27,7 +27,6 @@ export const calculateReward = (xioQuantity, days) => async (
   dispatch,
   getState
 ) => {
-  console.log("REWARDDDDDDDDDDD CALCULATE");
   dispatch(setLoading({ reward: true }));
   let reward = "0";
   try {
@@ -90,17 +89,33 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
   dispatch(setLoading({ swapReward: false }));
 };
 
-export const checkAllowanceXIO = () => async (dispatch, getState) => {
+export const checkAllowance = () => async (dispatch, getState) => {
   dispatch(setLoading({ allowance: true }));
   try {
+    const {
+      flashstake: { selectedRewardToken },
+    } = getState();
     await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
     const _allowance = await allowance(
       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
-    // console.log("allowance -> ", _allowance);
+    // console.log({ allowanceXIO: _allowance });
     dispatch({
       type: "ALLOWANCE_XIO",
       payload: _allowance > 0,
+    });
+
+    if (!selectedRewardToken?.tokenB?.id) {
+      return null;
+    }
+    await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
+    const _allowance2 = await allowance(
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
+    );
+    // console.log({ allowanceALT: _allowance2 });
+    dispatch({
+      type: "ALLOWANCE_ALT",
+      payload: _allowance2 > 0,
     });
   } catch (e) {
     console.error("ERROR checkAllowance -> ", e);
@@ -109,37 +124,56 @@ export const checkAllowanceXIO = () => async (dispatch, getState) => {
   }
 };
 
-export const checkAllowanceALT = () => async (dispatch, getState) => {
-  dispatch(setLoading({ allowance: true }));
-  try {
-    const {
-      flashstake: { selectedRewardToken },
-    } = getState();
-    if (!selectedRewardToken?.tokenB?.id) {
-      return null;
-    }
-    await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
-    const _allowance = await allowance(
-      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
-    );
-    console.log({ allowanceALT: _allowance });
-    dispatch({
-      type: "ALLOWANCE_ALT",
-      payload: _allowance > 0,
-    });
-  } catch (e) {
-    console.error("ERROR checkAllowance -> ", e);
-  } finally {
-    dispatch(setLoading({ allowance: false }));
-  }
-};
+// export const checkAllowanceXIO = () => async (dispatch, getState) => {
+//   dispatch(setLoading({ allowance: true }));
+//   try {
+//     await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+//     const _allowance = await allowance(
+//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
+//     );
+//     console.log("allowance -> ", _allowance);
+//     dispatch({
+//       type: "ALLOWANCE_XIO",
+//       payload: _allowance > 0,
+//     });
+//   } catch (e) {
+//     console.error("ERROR checkAllowance -> ", e);
+//   } finally {
+//     dispatch(setLoading({ allowance: false }));
+//   }
+// };
+
+// export const checkAllowanceALT = () => async (dispatch, getState) => {
+//   dispatch(setLoading({ allowance: true }));
+//   try {
+//     const {
+//       flashstake: { selectedRewardToken },
+//     } = getState();
+//     if (!selectedRewardToken?.tokenB?.id) {
+//       return null;
+//     }
+//     await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
+//     const _allowance = await allowance(
+//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
+//     );
+//     console.log({ allowanceALT: _allowance });
+//     dispatch({
+//       type: "ALLOWANCE_ALT",
+//       payload: _allowance > 0,
+//     });
+//   } catch (e) {
+//     console.error("ERROR checkAllowance -> ", e);
+//   } finally {
+//     dispatch(setLoading({ allowance: false }));
+//   }
+// };
 
 export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   setLoadingIndep({ approvalXIO: true });
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
-    dispatch(checkAllowanceXIO());
+    // dispatch(checkAllowanceXIO());
   } catch (e) {
     console.error("ERROR getApprovalXIO -> ", e);
   } finally {
@@ -162,7 +196,7 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
     }
     await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
-    dispatch(checkAllowanceALT());
+    // dispatch(checkAllowanceALT());
   } catch (e) {
     console.error("ERROR getApprovalALT -> ", e);
   } finally {
@@ -269,7 +303,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     });
     initializeFlashstakeProtocolContract();
     console.log(
-      "stakeXIO params -> ",
+      "stake params -> ",
       selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
       days,
@@ -282,7 +316,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       reward
     );
   } catch (e) {
-    console.error("ERROR stakeXIO -> ", e);
+    console.error("ERROR stake -> ", e);
     setDialogStepIndep("failedStake");
     showSnackbarIndep("Stake Transaction Failed.", "error");
   }
@@ -309,13 +343,13 @@ export const unstakeXIO = () => async (dispatch, getState) => {
     });
     initializeFlashstakeProtocolContract();
     console.log(
-      "unstakeXIO params -> ",
+      "unstake params -> ",
       expiredTimestamps,
       Web3.utils.toWei(expiredDappBalance)
     );
     await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
   } catch (e) {
-    console.error("ERROR unstakeXIO -> ", e);
+    console.error("ERROR unstake -> ", e);
   }
 };
 
@@ -335,7 +369,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
       });
       initializeFlashstakeProtocolContract();
       console.log(
-        "swapALT params -> ",
+        "swap params -> ",
         _altQuantity,
         selectedRewardToken.tokenB.id,
         Web3.utils.toWei(swapOutput)
@@ -348,7 +382,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
       );
     }
   } catch (e) {
-    console.error("ERROR swapALT -> ", e);
+    console.error("ERROR swap -> ", e);
     setSwapDialogStepIndep("failedSwap");
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }

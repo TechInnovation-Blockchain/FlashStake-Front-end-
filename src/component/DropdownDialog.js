@@ -353,15 +353,18 @@ export default function DropdownDialog({
                       style={{ marginRight: 5 }}
                     />
                     {_pool.tokenB.symbol}{" "}
-                    {history.location.pathname === "/swap"
-                      ? `($${_pool.tokenPrice})`
-                      : `(${
-                          parseFloat(_pool.apy).toFixed(2) -
-                            parseInt(_pool.apy) >
-                          0
-                            ? parseFloat(_pool.apy).toFixed(2)
-                            : parseInt(_pool.apy)
-                        }%)`}
+                    {
+                      history.location.pathname === "/swap"
+                        ? `($${_pool.tokenPrice})`
+                        : null
+                      // `(${
+                      //     parseFloat(_pool.apy).toFixed(2) -
+                      //       parseInt(_pool.apy) >
+                      //     0
+                      //       ? parseFloat(_pool.apy).toFixed(2)
+                      //       : parseInt(_pool.apy)
+                      //   }%)`
+                    }
                   </Typography>
                 </ListItem>
               ))}
