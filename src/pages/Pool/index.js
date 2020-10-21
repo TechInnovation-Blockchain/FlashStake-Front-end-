@@ -12,8 +12,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    // height: "200px",
-    transition: "all 0.5s ease",
+    height: "20px",
+    transition: "height 15s ease",
+    // overflow: hidden,
   },
   comingSoon: {
     color: theme.palette.xioRed.main,

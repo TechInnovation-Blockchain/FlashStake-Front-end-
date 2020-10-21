@@ -5,7 +5,9 @@ body,
 #root {
   height: 100%;
   margin: 0;
+  /* transition: all 2s ease, */
 }
+
 /* 
 .transitionEase {
   transition: all 0.5s ease;
@@ -17,6 +19,22 @@ body {
 
   /* background-color: #000 !important; */
 }
+
+
+.small-input {
+  -moz-appearance: textfield;
+}
+
+.small-input::-webkit-inner-spin-button {
+  display: none;
+}
+
+.small-input::-webkit-outer-spin-button,
+.small-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 ::-webkit-scrollbar {
   width: 5px;

@@ -356,11 +356,27 @@ function Flashstake({
         if (evt.which === 8) {
           return;
         }
+        if (evt.which === 46) {
+          return;
+        }
         if (evt.which < 48 || evt.which > 57) {
           evt.preventDefault();
         }
       });
   }, []);
+
+  // useEffect(() => {
+  //   document
+  //     .querySelector("input[type='tel']")
+  //     .addEventListener("keypress", (evt) => {
+  //       if (evt.which === 8) {
+  //         return;
+  //       }
+  //       if (evt.which < 48 || evt.which > 57) {
+  //         evt.preventDefault();
+  //       }
+  //     });
+  // }, []);
 
   const onChangeDays = ({ target: { value } }) => {
     if (/^[0-9]*$/.test(value)) {
@@ -463,6 +479,23 @@ function Flashstake({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
+    console.log(evt.which);
+    // if (evt.which === 8 || evt.which === 110) {
+    //   return;
+    // }
+    // // if (evt.which < 48 || evt.which > 57 || evt.which !== 190) {
+    // //   evt.preventDefault();
+    // // }
+    // // console.log(evt.which === 8, evt.which < 48 || evt.which > 57);
+    // if (
+    //   !(evt.which >= 96 && evt.which <= 105) &&
+    //   evt.which !== 110 &&
+    //   evt.which !== 8 &&
+    //   evt.which !== 17 &&
+    //   evt.which !== 65
+    // ) {
+    //   evt.preventDefault();
+    // }
   };
 
   useEffect(() => {
@@ -570,7 +603,7 @@ function Flashstake({
                         placeholder="0"
                         value={days}
                         onChange={onChangeDays}
-                        type="number"
+                        type="tel"
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onKeyDown={handleKeyDown}

@@ -31,11 +31,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     // backgroundColor: theme.palette.background.secondary2,
     maxWidth: "450px",
-    transition: "all 0.5s ease",
+    // transition: "all 0.5s ease",
     padding: theme.spacing(7, 1),
     [theme.breakpoints.down("xs")]: {
       padding: theme.spacing(2, 1),
     },
+    // transition: "all 2s ease",
   },
   contentContainer: {
     backgroundColor: theme.palette.background.secondary,
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     border: `1px solid ${theme.palette.border.secondary}`,
     width: "100%",
+    minHeight: "100%",
   },
   backdrop: {
     zIndex: 1,

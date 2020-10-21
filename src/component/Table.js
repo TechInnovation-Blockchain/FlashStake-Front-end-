@@ -292,7 +292,9 @@ function TableComponent({
                           xs={12}
                           key={_stake.id}
                           className={classes.cursorPointer}
+                          // onClick={}
                         >
+                          {console.log(_stake)}
                           <Grid item xs={4} className={classes.gridItem}>
                             {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
