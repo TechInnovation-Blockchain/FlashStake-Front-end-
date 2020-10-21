@@ -92,6 +92,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 2,
     marginRight: 5,
   },
+  link: {
+    textDecoration: "none",
+    display: "contents",
+  },
 }));
 
 function SwapTable({
@@ -251,51 +255,60 @@ function SwapTable({
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
                     .map((_swap, index) => {
+                      {
+                        /* console.log(swapHistory); */
+                      }
                       return (
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_swap.id}
-                          className={`${classes.cursorPointer} ${_swap.id}`}
+                        <a
+                          href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}
+                          className={classes.link}
+                          target="_blank"
                         >
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip
-                              title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
-                            >
-                              <span className={classes.flexCenter}>
-                                <img
-                                  src={tryRequire(_swap.pool.tokenB.symbol)}
-                                  alt="Logo"
-                                  srcSet=""
-                                  width={15}
-                                  style={{ marginRight: 5 }}
-                                />{" "}
-                                {trunc(_swap.swapAmount)}{" "}
-                                {_swap.pool.tokenB.symbol}
-                              </span>
-                            </Tooltip>
+                          <Grid
+                            container
+                            item
+                            xs={12}
+                            key={_swap.id}
+                            className={`${classes.cursorPointer} ${_swap.id}`}
+                          >
+                            <Grid item xs={4} className={classes.gridItem}>
+                              <Tooltip
+                                title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
+                              >
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    src={tryRequire(_swap.pool.tokenB.symbol)}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />{" "}
+                                  {trunc(_swap.swapAmount)}{" "}
+                                  {_swap.pool.tokenB.symbol}
+                                </span>
+                              </Tooltip>
+                            </Grid>
+                            <Grid item xs={4} className={classes.gridItem}>
+                              <Tooltip title={`${_swap.xioReceived} XIO`}>
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    src={tryRequire("XIO")}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />{" "}
+                                  {trunc(_swap.xioReceived)} XIO
+                                </span>
+                              </Tooltip>
+                            </Grid>
+                            <Grid item xs={4} className={classes.gridItem}>
+                              {new Date(
+                                _swap.initiationTimestamp * 1000
+                              ).toLocaleDateString()}
+                            </Grid>
                           </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip title={`${_swap.xioReceived} XIO`}>
-                              <span className={classes.flexCenter}>
-                                <img
-                                  src={tryRequire("XIO")}
-                                  alt="Logo"
-                                  srcSet=""
-                                  width={15}
-                                  style={{ marginRight: 5 }}
-                                />{" "}
-                                {trunc(_swap.xioReceived)} XIO
-                              </span>
-                            </Tooltip>
-                          </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {new Date(
-                              _swap.initiationTimestamp * 1000
-                            ).toLocaleDateString()}
-                          </Grid>
-                        </Grid>
+                        </a>
                       );
                     })}
                 </Grid>

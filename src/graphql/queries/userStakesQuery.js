@@ -21,11 +21,12 @@ export const userStakesQuery = gql`
             symbol
           }
         }
+        transactionHash
         swapAmount
         xioReceived
         initiationTimestamp
       }
-      stakes(where: { active: true }) {
+      stakes {
         pool {
           tokenB {
             symbol
@@ -37,6 +38,7 @@ export const userStakesQuery = gql`
         initiationTimestamp
         expiredTimestamp
         active
+        transactionHash
       }
     }
   }

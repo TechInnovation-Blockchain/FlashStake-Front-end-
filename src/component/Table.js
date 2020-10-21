@@ -17,6 +17,7 @@ import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -97,6 +98,14 @@ const useStyles = makeStyles((theme) => ({
   },
   walletInfo: {
     // marginBottom: theme.spacing(2),
+  },
+  link: {
+    textDecoration: "none",
+    display: "contents",
+
+    "&link": {
+      textDecoration: "none",
+    },
   },
 }));
 
@@ -286,60 +295,65 @@ function TableComponent({
                         (_stake.expiryTime - Date.now() / 1000) / 60
                       );
                       return (
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_stake.id}
-                          className={classes.cursorPointer}
-                          // onClick={}
+                        <a
+                          href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
+                          className={classes.link}
+                          target="_blank"
                         >
-                          {console.log(_stake)}
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {/* <Tooltip
+                          <Grid
+                            container
+                            item
+                            xs={12}
+                            key={_stake.id}
+                            className={classes.cursorPointer}
+                          >
+                            {/* {console.log("Stake -- > ", _stake)} */}
+                            <Grid item xs={4} className={classes.gridItem}>
+                              {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
-                            <span className={classes.flexCenter}>
-                              <img
-                                src={tryRequire(_stake.pool.tokenB.symbol)}
-                                alt="Logo"
-                                srcSet=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              />
-                              {_stake.pool.tokenB.symbol}
-                            </span>
-                            {/* </Tooltip> */}
-                          </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip
-                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
-                            >
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("XIO")}
+                                  src={tryRequire(_stake.pool.tokenB.symbol)}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
-                                {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)} XIO
+                                {_stake.pool.tokenB.symbol}
                               </span>
-                            </Tooltip>
-                          </Grid>
+                              {/* </Tooltip> */}
+                            </Grid>
+                            <Grid item xs={4} className={classes.gridItem}>
+                              <Tooltip
+                                title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
+                              >
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    src={tryRequire("XIO")}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />
+                                  {trunc(_stake.amountAvailable)}/
+                                  {trunc(_stake.stakeAmount)} XIO
+                                </span>
+                              </Tooltip>
+                            </Grid>
 
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {!_stake.expired &&
-                            _stake.expiryTime > Date.now() / 1000 ? (
-                              <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
-                              </Fragment>
-                            ) : (
-                              "COMPLETED"
-                            )}
+                            <Grid item xs={4} className={classes.gridItem}>
+                              {!_stake.expired &&
+                              _stake.expiryTime > Date.now() / 1000 ? (
+                                <Fragment>
+                                  {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
+                                </Fragment>
+                              ) : (
+                                "COMPLETED"
+                              )}
+                            </Grid>
                           </Grid>
-                        </Grid>
+                        </a>
                       );
                     })}
                 </Grid>
