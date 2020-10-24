@@ -1,4 +1,4 @@
-import React, { Fragment, createRef, useEffect, useState } from "react";
+import React, { Fragment, createRef, useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import {
   Container,
@@ -8,12 +8,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import "./smooth.css";
 
 import { WalletConnect, Snackbar } from "../../component";
 import Routes from "../Routes";
 // import { setReset } from "../../redux/actions/flashstakeActions";
 import xordLogo from "../../assets/xord-logo.png";
 import "../../assets/css/main.css";
+import AnimateHeight from "react-animate-height";
 
 import {
   showWalletBackdrop,
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
     border: `1px solid ${theme.palette.border.secondary}`,
     width: "100%",
+    // minHeight: 420,
     minHeight: "100%",
   },
   backdrop: {
@@ -117,8 +120,17 @@ function Layout({
   themeMode,
   toggleThemeMode,
   themeSwitchAction,
+  animation,
 }) {
   const classes = useStyles();
+
+  // const [height2, setHeight2] = useState(0);
+  // const ref = useRef(null);
+
+  // useEffect(() => {
+  //   setHeight2(ref?.current?.clientHeight);
+  //   console.log("Height-->", height2);
+  // }, [ref?.current?.clientHeight]);
 
   const handleClose = () => {
     showWalletBackdrop(false);
@@ -136,7 +148,10 @@ function Layout({
   return (
     <Fragment>
       <Container maxWidth="sm" className={classes.mainContainer}>
-        <Box className={`transitionEase ${classes.contentContainer}`}>
+        <Box
+          // ref={ref}
+          className={`transitionEase ${classes.contentContainer} contentContainer1 `}
+        >
           <Routes themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
         </Box>
 
@@ -180,6 +195,7 @@ const mapStateToProps = ({
   ui: {
     loading: { dapp, themeSwitch },
     walletBackdrop,
+    animation,
   },
 }) => ({ dapp, walletBackdrop, themeSwitch });
 
