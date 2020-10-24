@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { PageAnimation } from "../../component";
-import { CSSTransition } from "react-transition-group";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {

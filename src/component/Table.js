@@ -146,7 +146,6 @@ function TableComponent({
     },
     [sortBy]
   );
-  // // console.log(currentStaked);
   const sortedData = useCallback(() => {
     let data = [];
     switch (sortBy) {

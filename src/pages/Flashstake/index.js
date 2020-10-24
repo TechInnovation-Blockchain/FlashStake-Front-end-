@@ -46,7 +46,6 @@ import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { Link } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
 import { setRefetch } from "../../redux/actions/dashboardActions";
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -336,7 +335,6 @@ function Flashstake({
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
-  const [showStepper, setShowStepper] = useState(false);
 
   const debouncedCalculateReward = useCallback(
     debounce(calculateReward, 500),
@@ -378,12 +376,10 @@ function Flashstake({
     }
     // if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
     //   if (regex.test(value)) {
-    //     // console.log(value, regex.test(value));
     //     setQuantity(
     //       value[value.length - 1] === "." || !Number(value) ? value : value
     //     );
     //   }
-    //   // console.log(value, regex.test(value), quantity);
     // } else {
     //   setQuantity((val) => val);
     // }
@@ -417,7 +413,6 @@ function Flashstake({
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
       const _rewardRefreshInterval = setInterval(() => {
-        // console.log("Stake Reward updated.");
         debouncedCalculateReward(quantity, days);
       }, 60000);
       return () => {

@@ -8,6 +8,7 @@ import {
   getPools,
 } from "../../redux/state";
 import Web3 from "web3";
+import { _error } from "../log";
 
 let contract;
 let isContractInitialized = false;
@@ -27,7 +28,7 @@ export const getBalances = async () => {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      // throw new Error("Wallet not activated.");
+      // throw new _error("Wallet not activated.");
       return [{}, 0];
     }
     const _tokenList = getTokenList();
@@ -47,13 +48,13 @@ export const getBalances = async () => {
     });
     return [_balancesObj, walletBalanceUSD];
   } catch (e) {
-    console.error("ERROR getBalances -> ", e);
+    _error("ERROR getBalances -> ", e);
     return [{}, 0];
   }
 };
 
 const checkContractInitialized = () => {
   if (!isContractInitialized) {
-    throw new Error("Balance contract not initialized.");
+    throw new _error("Balance contract not initialized.");
   }
 };

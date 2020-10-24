@@ -12,7 +12,6 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
-import { trunc } from "../utils/utilFunc";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -154,15 +153,10 @@ export default function DropdownDialog({
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
-  // items.map((item) => {
-  //   // console.log(item?.tokenB?.symbol);
-  // });
-  // console.log(items);
 
   const filteredData = useCallback(() => {
-    return items.filter(
-      (item) => item.tokenB?.symbol.toUpperCase().includes(search)
-      // // console.log(item?.id);
+    return items.filter((item) =>
+      item.tokenB?.symbol.toUpperCase().includes(search)
     );
   }, [search, items]);
   const onClose = useCallback(() => {

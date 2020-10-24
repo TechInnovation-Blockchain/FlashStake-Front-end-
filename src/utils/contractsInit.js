@@ -12,7 +12,7 @@ export default class ContractInit {
         network: this.getNetwork,
       };
     } catch (e) {
-      console.error("ERROR ContractsInit -> ", e);
+      _error("ERROR ContractsInit -> ", e);
     }
   };
 }

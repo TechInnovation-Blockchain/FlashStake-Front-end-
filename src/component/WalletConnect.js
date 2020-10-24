@@ -17,6 +17,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { setWeb3Provider } from "../contracts/getContract";
 import { walletList } from "../utils/connectors";
+import { _error } from "../utils/log";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -114,7 +115,7 @@ function WalletConnect({
             error = "An Error Occurred";
           }
           showSnackbarIndep(error, "error");
-          console.error("ERROR activateWallet -> ", e);
+          _error("ERROR activateWallet -> ", e);
           setLoading({ walletConnection: false });
         });
     },

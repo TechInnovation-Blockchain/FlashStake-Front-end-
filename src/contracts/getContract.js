@@ -6,6 +6,7 @@ import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 import { abi as BalanceContractAbi } from "./abi/BalanceContract.json";
 
 import { CONSTANTS } from "../utils/constants";
+import { _error } from "../utils/log";
 const { FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, BALANCE_CONTRACT } = CONSTANTS;
 
 let web3js;
@@ -19,7 +20,7 @@ try {
   );
   web3js = new Web3(window.web3.currentProvider);
 } catch (e) {
-  console.error("ERROR web3 -> ", e);
+  _error("ERROR web3 -> ", e);
 }
 
 export const setWeb3Provider = (provider) => {
@@ -31,7 +32,7 @@ export const erc20TokenInfuraContract = (tokenAddress) => {
     const contract = new web3jsInfura.eth.Contract(erc20Abi, tokenAddress);
     return contract;
   } catch (e) {
-    console.error("ERROR erc20TokenInfuraContract -> ", e);
+    _error("ERROR erc20TokenInfuraContract -> ", e);
   }
 };
 
@@ -40,7 +41,7 @@ export const erc20TokenContract = (tokenAddress) => {
     const contract = new web3js.eth.Contract(erc20Abi, tokenAddress);
     return contract;
   } catch (e) {
-    console.error("ERROR erc20TokenContract -> ", e);
+    _error("ERROR erc20TokenContract -> ", e);
   }
 };
 
@@ -52,7 +53,7 @@ export const xioFlashstakeContract = () => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR xioFlashstakeContract -> ", e);
+    _error("ERROR xioFlashstakeContract -> ", e);
   }
 };
 
@@ -64,7 +65,7 @@ export const xioFlashstakeInfuraContract = () => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR xioFlashstakeInfuraContract -> ", e);
+    _error("ERROR xioFlashstakeInfuraContract -> ", e);
   }
 };
 
@@ -76,7 +77,7 @@ export const xioFlashstakePoolContract = (_poolContractAddress) => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR xioFlashstakePoolContract -> ", e);
+    _error("ERROR xioFlashstakePoolContract -> ", e);
   }
 };
 
@@ -88,7 +89,7 @@ export const xioFlashstakePoolInfuraContract = (_poolContractAddress) => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR xioFlashstakePoolInfuraContract -> ", e);
+    _error("ERROR xioFlashstakePoolInfuraContract -> ", e);
   }
 };
 
@@ -100,7 +101,7 @@ export const balanceContract = () => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR balanceContract -> ", e);
+    _error("ERROR balanceContract -> ", e);
   }
 };
 
@@ -112,6 +113,6 @@ export const balanceInfuraContract = () => {
     );
     return contract;
   } catch (e) {
-    console.error("ERROR balanceInfuraContract -> ", e);
+    _error("ERROR balanceInfuraContract -> ", e);
   }
 };

@@ -1,25 +1,14 @@
 import { JSBI } from "@uniswap/sdk";
 import axios from "axios";
 import Web3 from "web3";
-import {
-  initializeErc20TokenContract,
-  balanceOf,
-} from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import { CONSTANTS } from "../../utils/constants";
 import { setLoading } from "./uiActions";
 import {
   initializeBalanceInfuraContract,
   getBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
-import {
-  getAPYStake,
-  initializeFlashstakePoolContract,
-} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
-import {
-  initializeFlashstakeProtocolContract,
-  getXPY,
-} from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
+import { _error } from "../../utils/log";
 
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
@@ -37,7 +26,7 @@ export const updatePools = (data) => async (dispatch) => {
           ).join(",")}&vs_currencies=USD`
         );
       } catch (e) {
-        console.error("ERROR pricingAPI -> ", e);
+        _error("ERROR pricingAPI -> ", e);
       }
       if (response?.data) {
         // initializeFlashstakeProtocolContract();
@@ -52,7 +41,7 @@ export const updatePools = (data) => async (dispatch) => {
       }
     }
   } catch (e) {
-    console.error("ERROR updatePools -> ", e);
+    _error("ERROR updatePools -> ", e);
   } finally {
     dispatch({
       type: "POOL",
@@ -178,6 +167,6 @@ export const updateAllBalances = () => async (dispatch) => {
     dispatch(getBalanceXIO());
     dispatch(getBalanceALT());
   } catch (e) {
-    console.error("ERROR updateAllBalances -> ", e);
+    _error("ERROR updateAllBalances -> ", e);
   }
 };

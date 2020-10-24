@@ -9,7 +9,7 @@ export const checkContractState = () => async (dispatch) => {
     initializeFlashstakeProtocolContract();
     contractState = await paused();
   } catch (e) {
-    console.error("ERROR checkContractState -> ", e);
+    _error("ERROR checkContractState -> ", e);
   }
   dispatch({
     type: "CONTRACT_STATE",

@@ -1,6 +1,3 @@
-import { setLoading } from "./uiActions";
-import { JSBI } from "@uniswap/sdk";
-import Web3 from "web3";
 import { store } from "../../config/reduxStore";
 
 export const setDialogStep = (step) => {

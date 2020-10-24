@@ -25,6 +25,7 @@ import axios from "axios";
 import { CONSTANTS } from "../constants";
 import { analytics } from "../../config/App";
 import Web3 from "web3";
+import { _log, _error } from "../log";
 
 let contract;
 let infuraContract;
@@ -41,13 +42,13 @@ export const initializeFlashstakeProtocolContract = () => {
 
 const checkContractInitialized = () => {
   if (!isContractInitialized) {
-    throw new Error("ERROR Flashstake contract not initialized.");
+    throw new _error("ERROR Flashstake contract not initialized.");
   }
 };
 
 // const walletAddress = getWalletAddressReduxState();
 // if (!walletAddress) {
-//   throw new Error("Wallet not activated.");
+//   throw new _error("Wallet not activated.");
 // }
 
 export const stake = async (_token, xioQuantity, days, reward) => {
@@ -59,7 +60,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     checkContractInitialized();
 
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      throw new _error("Wallet not activated.");
     }
     contract.methods
       .stake(_token, xioQuantity, days, reward)
@@ -70,7 +71,6 @@ export const stake = async (_token, xioQuantity, days, reward) => {
         // const txHash = await web3.utils.sha3(
         //   contract.methods.stake(_token, xioQuantity, days, reward)
         // );
-        // console.log(txHash);
         contract.methods
           .stake(_token, xioQuantity, days, reward)
           .send({
@@ -107,7 +107,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
             };
 
             axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              console.log("Transaction Hash Added", res);
+              _log("Transaction Hash Added", res);
             });
           })
           .then(function (receipt) {
@@ -135,7 +135,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
               showSnackbarIndep("Stake Transaction Failed.", "error");
             }
             setLoadingIndep({ stake: false });
-            console.error("ERROR stake -> ", e);
+            _error("ERROR stake -> ", e);
           });
       });
   } catch (e) {
@@ -153,7 +153,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
       showSnackbarIndep("Stake Transaction Failed.", "error");
     }
     setLoadingIndep({ stake: false });
-    console.error("ERROR stake -> ", e);
+    _error("ERROR stake -> ", e);
   }
 };
 
@@ -166,7 +166,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
     checkContractInitialized();
 
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      throw new _error("Wallet not activated.");
     }
     contract.methods
       .unstake(_expiredIds, _xioQuantity)
@@ -208,7 +208,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
             };
 
             axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              console.log("Transaction Hash Added", res);
+              _log("Transaction Hash Added", res);
             });
           })
           .then(function (receipt) {
@@ -236,7 +236,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
               showSnackbarIndep("Unstake Transaction Failed.", "error");
             }
             setLoadingIndep({ unstake: false });
-            console.error("ERROR stake -> ", e);
+            _error("ERROR stake -> ", e);
           });
       });
   } catch (e) {
@@ -253,7 +253,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
       showSnackbarIndep("Unstake Transaction Failed.", "error");
     }
     setLoadingIndep({ unstake: false });
-    console.error("ERROR Unstake -> ", e);
+    _error("ERROR Unstake -> ", e);
   }
 };
 
@@ -266,7 +266,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     checkContractInitialized();
 
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      throw new _error("Wallet not activated.");
     }
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
@@ -310,7 +310,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             };
 
             axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              console.log("Transaction Hash Added", res);
+              _log("Transaction Hash Added", res);
             });
           })
           .then(function (receipt) {
@@ -338,7 +338,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
               showSnackbarIndep("Swap Transaction Failed.", "error");
             }
             setLoadingIndep({ swap: false });
-            console.error("ERROR swap -> ", e);
+            _error("ERROR swap -> ", e);
           });
       });
   } catch (e) {
@@ -356,7 +356,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
       showSnackbarIndep("Swap Transaction Failed.", "error");
     }
     setLoadingIndep({ swap: false });
-    console.error("ERROR Swap -> ", e);
+    _error("ERROR Swap -> ", e);
   }
 };
 
@@ -365,7 +365,7 @@ export const paused = async () => {
     const _paused = await infuraContract.methods.paused().call();
     return _paused;
   } catch (e) {
-    console.error("ERROR paused -> ", e);
+    _error("ERROR paused -> ", e);
     return true;
   }
 };
@@ -379,7 +379,7 @@ export const calculateXPY = async (xioQuantity, days) => {
       .call();
     return xpy;
   } catch (e) {
-    console.error("ERROR calculateXPY -> ", e);
+    _error("ERROR calculateXPY -> ", e);
   }
   return 0;
 };
@@ -393,7 +393,7 @@ export const getXPY = async () => {
       .call();
     return xpy;
   } catch (e) {
-    console.error("ERROR getXPY -> ", e);
+    _error("ERROR getXPY -> ", e);
   }
   return 0;
 };
@@ -408,7 +408,7 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
 
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      throw new _error("Wallet not activated.");
     }
 
     contract.methods
@@ -456,7 +456,7 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
               }
               setLoadingIndep({ unstake: false });
 
-              console.error("ERROR unstakeALT -> ", e);
+              _error("ERROR unstakeALT -> ", e);
             });
         }
       );
@@ -472,6 +472,6 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
       setDialogStepIndep("failed");
       showSnackbarIndep("Withdraw Transaction Failed.", "error");
     }
-    console.error("ERROR unstakeALT -> ", e);
+    _error("ERROR unstakeALT -> ", e);
   }
 };
