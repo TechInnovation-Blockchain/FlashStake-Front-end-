@@ -368,7 +368,7 @@ function Swap({
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
-  const regex = /^[0-9]*[.]?[0-9]*$/;
+  // const regex = /^[0-9]*[.]?[0-9]*$/;
 
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
@@ -412,7 +412,6 @@ function Swap({
       debouncedCalculateSwap(quantity);
 
       const _rewardRefreshInterval = setInterval(() => {
-        // console.log("Reward updated.");
         debouncedCalculateSwap(quantity);
       }, 60000);
       return () => {

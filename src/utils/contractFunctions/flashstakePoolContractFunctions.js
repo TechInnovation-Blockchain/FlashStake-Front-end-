@@ -2,6 +2,7 @@ import {
   xioFlashstakePoolContract,
   xioFlashstakePoolInfuraContract,
 } from "../../contracts/getContract";
+import { _error } from "../log";
 
 let contract;
 let infuraContract;
@@ -18,7 +19,7 @@ export const initializeFlashstakePoolContract = (_address) => {
 
 const checkContractInitialized = () => {
   if (!isContractInitialized) {
-    throw new Error("ERROR Flashstake contract not initialized.");
+    throw new _error("ERROR Flashstake contract not initialized.");
   }
 };
 export const getAPYStake = async (_amountIn) => {
@@ -28,7 +29,7 @@ export const getAPYStake = async (_amountIn) => {
     const apy = await infuraContract.methods.getAPYStake(_amountIn).call();
     return apy;
   } catch (e) {
-    console.error("ERROR getAPYStake -> ", e);
+    _error("ERROR getAPYStake -> ", e);
   }
   return "0";
 };
@@ -40,7 +41,7 @@ export const getAPYSwap = async (_amountIn) => {
     const apy = await infuraContract.methods.getAPYSwap(_amountIn).call();
     return apy;
   } catch (e) {
-    console.error("ERROR getAPYSwap -> ", e);
+    _error("ERROR getAPYSwap -> ", e);
   }
   return "0";
 };

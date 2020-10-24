@@ -32,6 +32,7 @@
     "@web3-react/walletconnect-connector": "^6.1.6",
     "@web3-react/walletlink-connector": "^6.1.6",
     "axios": "^0.20.0",
+    "debug": "^4.2.0",
     "firebase": "^7.23.0",
     "graphql": "^15.3.0",
     "react": "^16.13.1",
@@ -54,7 +55,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "firebase deploy --only hosting:xio-stakex-v2"
+    "deploy": "react-scripts build && firebase deploy --only hosting:xio-stakex-v2"
   },
   "eslintConfig": {
     "extends": "react-app"

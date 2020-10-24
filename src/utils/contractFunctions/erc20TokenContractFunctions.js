@@ -14,6 +14,7 @@ import {
   checkAllowance,
 } from "../../redux/actions/flashstakeActions";
 import { store } from "../../config/reduxStore";
+import { _error } from "../log";
 
 let contract;
 let isContractInitialized = false;
@@ -35,7 +36,7 @@ export const symbol = async () => {
     const symbol = await contract.methods.symbol().call();
     return symbol;
   } catch (e) {
-    console.error("ERROR symbol -> ", e);
+    _error("ERROR symbol -> ", e);
   }
 };
 
@@ -46,7 +47,7 @@ export const decimals = async () => {
     const decimals = await contract.methods.decimals().call();
     return decimals;
   } catch (e) {
-    console.error("ERROR symbol -> ", e);
+    _error("ERROR symbol -> ", e);
   }
 };
 
@@ -61,7 +62,7 @@ export const approve = async (address, tab, amount) => {
 
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      throw new Error("Wallet not activated.");
+      throw new _error("Wallet not activated.");
     }
     let gasAmount;
     try {
@@ -69,7 +70,7 @@ export const approve = async (address, tab, amount) => {
         .approve(address, amount ? amount : MaxUint256._hex)
         .estimateGas({ gas: 10000000, from: walletAddress });
     } catch (e) {
-      console.error("ERROR Approve gasAmount -> ", e);
+      _error("ERROR Approve gasAmount -> ", e);
     }
     const _approve = await contract.methods
       .approve(address, amount ? amount : MaxUint256._hex)
@@ -99,7 +100,7 @@ export const approve = async (address, tab, amount) => {
             : setSwapDialogStepIndep("failedApproval");
         }
         setLoadingIndep({ approval: false });
-        console.error("ERROR approve -> ", e);
+        _error("ERROR approve -> ", e);
       });
 
     // setDialogStepIndep("successApproval");
@@ -118,7 +119,7 @@ export const approve = async (address, tab, amount) => {
         : setSwapDialogStepIndep("failedApproval");
     }
     setLoadingIndep({ approval: false });
-    console.error("ERROR approve -> ", e);
+    _error("ERROR approve -> ", e);
   }
 };
 
@@ -127,7 +128,7 @@ export const allowance = async (spenderAddress, loading) => {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      // throw new Error("Wallet not activated.");
+      // throw new _error("Wallet not activated.");
       return "0";
     }
 
@@ -136,7 +137,7 @@ export const allowance = async (spenderAddress, loading) => {
       .call();
     return _allowance;
   } catch (e) {
-    console.error("ERROR allowance -> ", e);
+    _error("ERROR allowance -> ", e);
     return "0";
   }
 };
@@ -146,19 +147,19 @@ export const balanceOf = async () => {
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
-      // throw new Error("Wallet not activated.");
+      // throw new _error("Wallet not activated.");
       return "0";
     }
 
     const _balance = await contract.methods.balanceOf(walletAddress).call();
     return _balance;
   } catch (e) {
-    console.error("ERROR balanceOf -> ", e);
+    _error("ERROR balanceOf -> ", e);
   }
 };
 
 const checkContractInitialized = () => {
   if (!isContractInitialized) {
-    throw new Error("PublicPortalContract not initialized.");
+    throw new _error("PublicPortalContract not initialized.");
   }
 };

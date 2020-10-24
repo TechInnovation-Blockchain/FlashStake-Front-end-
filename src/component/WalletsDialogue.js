@@ -169,8 +169,6 @@ function WalletsDialogue({
   const classes = useStyles();
   const [search, setSearch] = useState("");
 
-  // console.log(loading.walletConnection);
-
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
@@ -280,7 +278,6 @@ function WalletsDialogue({
                 onClick={() => {
                   // handleClick(name, connector);
                   activate(connector, onClose);
-                  // console.log(connector);
                   // defaultSelect(connector);
                 }}
                 className={

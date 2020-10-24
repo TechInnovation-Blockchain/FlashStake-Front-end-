@@ -5,7 +5,6 @@ import {
   initializeErc20TokenInfuraContract,
   allowance,
   approve,
-  balanceOf,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import {
   initializeFlashstakeProtocolContract,
@@ -22,6 +21,7 @@ import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
+import { _log, _error } from "../../utils/log";
 
 export const calculateReward = (xioQuantity, days) => async (
   dispatch,
@@ -49,7 +49,7 @@ export const calculateReward = (xioQuantity, days) => async (
       ).toString();
     }
   } catch (e) {
-    console.error("ERROR calculateReward -> ", e);
+    _error("ERROR calculateReward -> ", e);
   }
   dispatch({
     type: "STAKE_REWARD",
@@ -79,7 +79,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
       ).toString();
     }
   } catch (e) {
-    console.error("ERROR calculateSwap -> ", e);
+    _error("ERROR calculateSwap -> ", e);
   }
 
   dispatch({
@@ -99,7 +99,6 @@ export const checkAllowance = () => async (dispatch, getState) => {
     const _allowance = await allowance(
       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
-    // console.log({ allowanceXIO: _allowance });
     dispatch({
       type: "ALLOWANCE_XIO",
       payload: _allowance > 0,
@@ -112,13 +111,12 @@ export const checkAllowance = () => async (dispatch, getState) => {
     const _allowance2 = await allowance(
       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
     );
-    // console.log({ allowanceALT: _allowance2 });
     dispatch({
       type: "ALLOWANCE_ALT",
       payload: _allowance2 > 0,
     });
   } catch (e) {
-    console.error("ERROR checkAllowance -> ", e);
+    _error("ERROR checkAllowance -> ", e);
   } finally {
     dispatch(setLoading({ allowance: false }));
   }
@@ -131,13 +129,12 @@ export const checkAllowance = () => async (dispatch, getState) => {
 //     const _allowance = await allowance(
 //       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
 //     );
-//     console.log("allowance -> ", _allowance);
 //     dispatch({
 //       type: "ALLOWANCE_XIO",
 //       payload: _allowance > 0,
 //     });
 //   } catch (e) {
-//     console.error("ERROR checkAllowance -> ", e);
+//     _error("ERROR checkAllowance -> ", e);
 //   } finally {
 //     dispatch(setLoading({ allowance: false }));
 //   }
@@ -156,13 +153,12 @@ export const checkAllowance = () => async (dispatch, getState) => {
 //     const _allowance = await allowance(
 //       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
 //     );
-//     console.log({ allowanceALT: _allowance });
 //     dispatch({
 //       type: "ALLOWANCE_ALT",
 //       payload: _allowance > 0,
 //     });
 //   } catch (e) {
-//     console.error("ERROR checkAllowance -> ", e);
+//     _error("ERROR checkAllowance -> ", e);
 //   } finally {
 //     dispatch(setLoading({ allowance: false }));
 //   }
@@ -175,7 +171,7 @@ export const getApprovalXIO = (tab) => async (dispatch, getState) => {
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
     // dispatch(checkAllowanceXIO());
   } catch (e) {
-    console.error("ERROR getApprovalXIO -> ", e);
+    _error("ERROR getApprovalXIO -> ", e);
   } finally {
     setLoadingIndep({ approval: false });
     setLoadingIndep({ approvalXIO: false });
@@ -198,7 +194,7 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
     // dispatch(checkAllowanceALT());
   } catch (e) {
-    console.error("ERROR getApprovalALT -> ", e);
+    _error("ERROR getApprovalALT -> ", e);
   } finally {
     setLoadingIndep({ approvalALT: false });
   }
@@ -214,7 +210,7 @@ export const setSelectedStakeToken = (symbol, address) => async (
       payload: symbol,
     });
   } catch (e) {
-    console.error("ERROR setSelectedStakeToken -> ", e);
+    _error("ERROR setSelectedStakeToken -> ", e);
   }
 };
 
@@ -230,7 +226,7 @@ export const setSelectedRewardToken = (_pool) => async (dispatch, getState) => {
       payload: _pool.id || "",
     });
   } catch (e) {
-    console.error("ERROR setSelectedStakeToken -> ", e);
+    _error("ERROR setSelectedStakeToken -> ", e);
   }
 };
 
@@ -254,7 +250,7 @@ export const getBalanceALT = () => async (dispatch, getState) => {
     }
   } catch (e) {
     balance = 0;
-    console.error("ERROR getBalance -> ", e);
+    _error("ERROR getBalance -> ", e);
   } finally {
     dispatch({
       type: "BALANCE_ALT",
@@ -275,7 +271,7 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
     }
   } catch (e) {
     balance = 0;
-    console.error("ERROR getBalance -> ", e);
+    _error("ERROR getBalance -> ", e);
   } finally {
     dispatch({
       type: "BALANCE_XIO",
@@ -290,7 +286,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       flashstake: { selectedRewardToken, reward },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
-      throw new Error("No reward token found!");
+      throw new _error("No reward token found!");
     }
     dispatch({
       type: "STAKE_REQUEST",
@@ -302,7 +298,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    console.log(
+    _log(
       "stake params -> ",
       selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
@@ -316,7 +312,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       reward
     );
   } catch (e) {
-    console.error("ERROR stake -> ", e);
+    _error("ERROR stake -> ", e);
     setDialogStepIndep("failedStake");
     showSnackbarIndep("Stake Transaction Failed.", "error");
   }
@@ -332,7 +328,7 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       !expiredTimestamps ||
       expiredTimestamps?.length <= 0
     ) {
-      throw new Error("No stake to withdraw!");
+      throw new _error("No stake to withdraw!");
     }
     dispatch({
       type: "UNSTAKE_REQUEST",
@@ -342,14 +338,15 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    console.log(
+    console.log(expiredTimestamps);
+    _log(
       "unstake params -> ",
       expiredTimestamps,
       Web3.utils.toWei(expiredDappBalance)
     );
     await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
   } catch (e) {
-    console.error("ERROR unstake -> ", e);
+    _error("ERROR unstake -> ", e);
   }
 };
 
@@ -368,7 +365,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
         },
       });
       initializeFlashstakeProtocolContract();
-      console.log(
+      _log(
         "swap params -> ",
         _altQuantity,
         selectedRewardToken.tokenB.id,
@@ -382,7 +379,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
       );
     }
   } catch (e) {
-    console.error("ERROR swap -> ", e);
+    _error("ERROR swap -> ", e);
     setSwapDialogStepIndep("failedSwap");
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }

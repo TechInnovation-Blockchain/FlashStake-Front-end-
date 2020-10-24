@@ -27,14 +27,14 @@ try {
     new Web3.providers.HttpProvider(CONSTANTS.INFURA_PROJECT_ENDPOINT_URL)
   );
 } catch (e) {
-  console.error("ERROR web3 -> ", e);
+  _error("ERROR web3 -> ", e);
 }
 
 export const isAddress = (address) => {
   try {
     return Web3.utils.isAddress(address, ChainId.RINKEBY);
   } catch (e) {
-    console.error("ERROR isAddress -> ", e);
+    _error("ERROR isAddress -> ", e);
   }
 };
 
@@ -43,7 +43,7 @@ export const isContract = async (address) => {
     const code = await web3js.eth.getCode(address);
     return code !== "0x";
   } catch (e) {
-    console.error("ERROR getContract -> ", e);
+    _error("ERROR getContract -> ", e);
   }
 };
 
@@ -54,7 +54,7 @@ export const getToken = async (address) => {
     const _symbol = await symbol();
     return new Token(ChainId.RINKEBY, address, _decimals, _symbol);
   } catch (e) {
-    console.error("ERROR getToken -> ", e);
+    _error("ERROR getToken -> ", e);
   }
 };
 
@@ -80,7 +80,7 @@ export const getPair = async (token0Address, token1Address) => {
       return;
     }
   } catch (e) {
-    console.error("ERROR getPair -> ", e);
+    _error("ERROR getPair -> ", e);
   }
 };
 
@@ -88,7 +88,7 @@ export const getRoute = async (uniswapPair) => {
   try {
     return new Route([uniswapPair], uniswapPair.token0);
   } catch (e) {
-    console.error("ERROR getRoute -> ", e);
+    _error("ERROR getRoute -> ", e);
   }
 };
 
@@ -105,7 +105,7 @@ export const getTrade = async (
       TradeType.EXACT_INPUT
     );
   } catch (e) {
-    console.error("ERROR getTrade -> ", e);
+    _error("ERROR getTrade -> ", e);
   }
 };
 
@@ -113,7 +113,7 @@ export const getExecutionPrice = async (uniswapTrade) => {
   try {
     return uniswapTrade.executionPrice;
   } catch (e) {
-    console.error("ERROR getExecutionPrice -> ", e);
+    _error("ERROR getExecutionPrice -> ", e);
   }
 };
 
@@ -137,7 +137,7 @@ export const getExecutionPriceUsingAddresses = async (
     const _uniswapExecutionPrice = await getExecutionPrice(_uniswapTrade);
     return _uniswapExecutionPrice.toSignificant(18);
   } catch (e) {
-    console.error("ERROR getExecutionPriceUsingAddresses -> ", e);
+    _error("ERROR getExecutionPriceUsingAddresses -> ", e);
   }
 };
 
@@ -164,6 +164,6 @@ export const getTokenAToWETHToTokenBPrice = async (
     );
     return _tokenAToWethPrice * _wethToTokenBPrice;
   } catch (e) {
-    console.error("ERROR getTokenAToWETHToTokenBPrice -> ", e);
+    _error("ERROR getTokenAToWETHToTokenBPrice -> ", e);
   }
 };

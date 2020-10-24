@@ -368,7 +368,6 @@ function Flashstake({
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
-  const [showStepper, setShowStepper] = useState(false);
 
   const debouncedCalculateReward = useCallback(
     debounce(calculateReward, 500),
@@ -442,7 +441,6 @@ function Flashstake({
     if (selectedPortal) {
       debouncedCalculateReward(quantity, days);
       const _rewardRefreshInterval = setInterval(() => {
-        // console.log("Stake Reward updated.");
         debouncedCalculateReward(quantity, days);
       }, 60000);
       return () => {
