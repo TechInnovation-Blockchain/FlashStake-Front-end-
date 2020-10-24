@@ -10,6 +10,7 @@ export const uiReducer = (
     walletBackdrop: false,
     expanding: true,
     animation: 0,
+    heightVal: "",
   },
   { type, payload }
 ) => {
@@ -60,6 +61,12 @@ export const uiReducer = (
         ...state,
         animation: payload,
       };
+    case "HEIGHT_VALUE":
+      return {
+        ...state,
+        heightVal: payload,
+      };
+
     default:
       return state;
   }

@@ -1,4 +1,10 @@
-import React, { useEffect, useState, Fragment, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+  useRef,
+} from "react";
 import Web3 from "web3";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
@@ -42,10 +48,16 @@ import {
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
-import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
+import {
+  setLoading,
+  showWalletBackdrop,
+  setHeightValue,
+} from "../../redux/actions/uiActions";
 import { Link } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
 import { setRefetch } from "../../redux/actions/dashboardActions";
+import { useHistory } from "react-router-dom";
+import AnimateHeight from "react-animate-height";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -329,9 +341,30 @@ function Flashstake({
   expanding,
   animation,
   updateAllBalances,
+  heightVal,
+  setHeightValue,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
+
+  const history = useHistory();
+  const [height, setHeight] = useState(heightVal);
+  const ref = useRef(null);
+  useEffect(() => {
+    setHeightValue(ref.current.clientHeight);
+    console.log("Height -->", heightVal);
+  });
+
+  const toggle = () => {
+    setHeight(height > 300 ? heightVal : "100%");
+  };
+
+  useEffect(() => {
+    if (history.location.pathname === "/stake") {
+      toggle();
+    }
+  }, [history.location.pathname]);
+  console.log(history.location.pathname);
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
@@ -344,6 +377,7 @@ function Flashstake({
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
+  const [height2, setHeight2] = useState(0);
 
   //#region functions
 
@@ -352,6 +386,9 @@ function Flashstake({
       .querySelector("input[type='number']")
       .addEventListener("keypress", (evt) => {
         if (evt.which === 8) {
+          return;
+        }
+        if (evt.which === 46) {
           return;
         }
         if (evt.which < 48 || evt.which > 57) {
@@ -374,15 +411,6 @@ function Flashstake({
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
     }
-    // if (Number(value) || value === "" || /^[0]?[.]?$/.test(value)) {
-    //   if (regex.test(value)) {
-    //     setQuantity(
-    //       value[value.length - 1] === "." || !Number(value) ? value : value
-    //     );
-    //   }
-    // } else {
-    //   setQuantity((val) => val);
-    // }
   };
 
   const showWalletHint = useCallback(() => {
@@ -458,6 +486,7 @@ function Flashstake({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
+    console.log(evt.which);
   };
 
   useEffect(() => {
@@ -474,307 +503,332 @@ function Flashstake({
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <Box className={classes.contentContainer}>
-          <Accordion square expanded={expanded2}>
-            <AccordionSummary
-              aria-controls="panel1d-content"
-              id="panel1d-header"
-              style={{ display: "none" }}
-            >
-              {/* <Typography>Collapsible Group Item #1</Typography> */}
-            </AccordionSummary>
+        <AnimateHeight
+          id="example-panel"
+          duration={700}
+          height={heightVal} // see props documentation below
+        >
+          <Box
+            ref={ref}
+            className={`${classes.contentContainer} contentContainer1`}
+          >
+            <Accordion square expanded={expanded2}>
+              <AccordionSummary
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                style={{ display: "none" }}
+              >
+                {/* <Typography>Collapsible Group Item #1</Typography> */}
+              </AccordionSummary>
 
-            <AccordionDetails
-              style={{ paddingTop: "20px" }}
-              className={classes.accordionDetails}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography
-                    variant="overline"
-                    className={classes.secondaryText}
-                  >
-                    WHAT TOKEN DO YOU WANT TO EARN
-                  </Typography>
-                  <DropdownDialog
-                    className={classes.dropDown}
-                    items={pools}
-                    selectedValue={selectedRewardToken}
-                    onSelect={setSelectedRewardToken}
-                    heading="SELECT TOKEN"
-                  />
-                </Grid>
-                <Grid container item xs={12}>
-                  <Box flex={1}>
+              <AccordionDetails
+                style={{ paddingTop: "20px" }}
+                className={classes.accordionDetails}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
                     <Typography
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      QUANTITY (XIO)
+                      WHAT TOKEN DO YOU WANT TO EARN
                     </Typography>
-                    <Box className={classes.textFieldContainer}>
-                      {/* <Tooltip title="Hello world" open={true}> */}
-                      <TextField
-                        className={classes.textField}
-                        error={
-                          active &&
-                          account &&
-                          parseFloat(quantity) > parseFloat(walletBalance)
-                        }
-                        fullWidth
-                        placeholder="0.0"
-                        value={quantity}
-                        onChange={onChangeQuantity}
-                        type="number"
-                        inputMode="numeric"
-                        pattern={regex}
-                        onKeyDown={handleKeyDown}
-                        onFocus={(e) => (e.target.placeholder = "")}
-                        onBlur={(e) => (e.target.placeholder = "0.0")}
-                      />
-                      {/* </Tooltip> */}
-                      <IconButton
-                        className={classes.maxIconButton}
-                        disabled={
-                          !(active || account) || walletBalance == quantity
-                        }
-                        onClick={() =>
-                          onChangeQuantity({ target: { value: walletBalance } })
-                        }
+                    <DropdownDialog
+                      className={classes.dropDown}
+                      items={pools}
+                      selectedValue={selectedRewardToken}
+                      onSelect={setSelectedRewardToken}
+                      heading="SELECT TOKEN"
+                    />
+                  </Grid>
+                  <Grid container item xs={12}>
+                    <Box flex={1}>
+                      <Typography
+                        variant="overline"
+                        className={classes.secondaryText}
                       >
-                        <MaxBtn width={10} />
-                      </IconButton>
+                        QUANTITY (XIO)
+                      </Typography>
+                      <Box className={classes.textFieldContainer}>
+                        {/* <Tooltip title="Hello world" open={true}> */}
+                        <TextField
+                          className={classes.textField}
+                          error={
+                            active &&
+                            account &&
+                            parseFloat(quantity) > parseFloat(walletBalance)
+                          }
+                          fullWidth
+                          placeholder="0.0"
+                          value={quantity}
+                          onChange={onChangeQuantity}
+                          type="number"
+                          inputMode="numeric"
+                          pattern={regex}
+                          onKeyDown={handleKeyDown}
+                          onFocus={(e) => (e.target.placeholder = "")}
+                          onBlur={(e) => (e.target.placeholder = "0.0")}
+                        />
+                        {/* </Tooltip> */}
+                        <IconButton
+                          className={classes.maxIconButton}
+                          disabled={
+                            !(active || account) || walletBalance == quantity
+                          }
+                          onClick={() =>
+                            onChangeQuantity({
+                              target: { value: walletBalance },
+                            })
+                          }
+                        >
+                          <MaxBtn width={10} />
+                        </IconButton>
+                      </Box>
                     </Box>
-                  </Box>
 
-                  <Typography variant="h6" className={classes.xIcon}>
-                    x
-                  </Typography>
-                  <Box flex={1}>
-                    <Typography
-                      variant="overline"
-                      className={classes.secondaryText}
-                    >
-                      DURATION (MINS)
+                    <Typography variant="h6" className={classes.xIcon}>
+                      x
                     </Typography>
+                    <Box flex={1}>
+                      <Typography
+                        variant="overline"
+                        className={classes.secondaryText}
+                      >
+                        DURATION (MINS)
+                      </Typography>
 
-                    <Box className={classes.textFieldContainer}>
-                      <TextField
-                        className={classes.textField}
-                        fullWidth
-                        placeholder="0"
-                        value={days}
-                        onChange={onChangeDays}
-                        type="number"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        onKeyDown={handleKeyDown}
-                        onFocus={(e) => (e.target.placeholder = "")}
-                        onBlur={(e) => (e.target.placeholder = "0")}
-                      />
-                      {/* <IconButton
+                      <Box className={classes.textFieldContainer}>
+                        <TextField
+                          className={classes.textField}
+                          fullWidth
+                          placeholder="0"
+                          value={days}
+                          onChange={onChangeDays}
+                          type="tel"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          onKeyDown={handleKeyDown}
+                          onFocus={(e) => (e.target.placeholder = "")}
+                          onBlur={(e) => (e.target.placeholder = "0")}
+                        />
+                        {/* <IconButton
                     className={classes.maxIconButton}
                     disabled={!(active || account) || days == getMaxDays()}
                     onClick={() => setDays(getMaxDays())}
                   >
                     <MaxBtn width={10} />
                   </IconButton> */}
+                      </Box>
                     </Box>
-                  </Box>
-                </Grid>
+                  </Grid>
 
-                <Grid item xs={12}>
-                  {selectedRewardToken?.tokenB?.symbol ? (
-                    <Typography variant="overline" className={classes.infoText}>
-                      IF YOU STAKE{" "}
-                      <span className={classes.infoTextSpan}>
-                        {trunc(quantity) || 0} XIO{" "}
-                      </span>{" "}
-                      FOR{" "}
-                      <span className={classes.infoTextSpan}>
-                        {trunc(days) || 0} {days > 1 ? "MINUTES" : "MINUTE"}
-                      </span>{" "}
-                      YOU WILL IMMEDIATELY{" "}
-                      {/* <span className={classes.infoTextSpan}></span>{" "} */}
-                      GET{" "}
-                      {loadingRedux.reward ? (
-                        <CircularProgress
-                          size={12}
-                          className={classes.loaderStyle}
-                        />
-                      ) : quantity > 0 && days > 0 ? (
-                        <Tooltip
-                          title={`${Web3.utils.fromWei(reward)} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
-                        >
-                          <span className={classes.infoTextSpan}>
-                            {trunc(Web3.utils.fromWei(reward))}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
-                          </span>
-                        </Tooltip>
-                      ) : (
+                  <Grid item xs={12}>
+                    {selectedRewardToken?.tokenB?.symbol ? (
+                      <Typography
+                        variant="overline"
+                        className={classes.infoText}
+                      >
+                        IF YOU STAKE{" "}
                         <span className={classes.infoTextSpan}>
-                          {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
-                        </span>
-                      )}
-                    </Typography>
-                  ) : (
-                    <Typography variant="overline" className={classes.redText}>
-                      SELECT A TOKEN TO VIEW REWARDS
-                    </Typography>
-                  )}
-                </Grid>
-
-                {!allowanceXIO ? (
-                  <Grid container item xs={12} onClick={showWalletHint}>
-                    <Grid item xs={6} className={classes.btnPaddingRight}>
-                      <Button
-                        fullWidth
-                        variant="red"
-                        onClick={
-                          !allowanceXIO && !loadingRedux.approval
-                            ? onClickApprove
-                            : () => {}
-                        }
-                        disabled={
-                          allowanceXIO ||
-                          !active ||
-                          !account ||
-                          loadingRedux.reward ||
-                          loadingRedux.approval ||
-                          chainId !== 4
-                        }
-                        loading={
-                          loadingRedux.approval && loadingRedux.approvalXIO
-                        }
+                          {trunc(quantity) || 0} XIO{" "}
+                        </span>{" "}
+                        FOR{" "}
+                        <span className={classes.infoTextSpan}>
+                          {trunc(days) || 0} {days > 1 ? "MINUTES" : "MINUTE"}
+                        </span>{" "}
+                        YOU WILL IMMEDIATELY{" "}
+                        {/* <span className={classes.infoTextSpan}></span>{" "} */}
+                        GET{" "}
+                        {loadingRedux.reward ? (
+                          <CircularProgress
+                            size={12}
+                            className={classes.loaderStyle}
+                          />
+                        ) : quantity > 0 && days > 0 ? (
+                          <Tooltip
+                            title={`${Web3.utils.fromWei(reward)} ${
+                              selectedRewardToken?.tokenB?.symbol || ""
+                            }`}
+                          >
+                            <span className={classes.infoTextSpan}>
+                              {trunc(Web3.utils.fromWei(reward))}{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""}
+                            </span>
+                          </Tooltip>
+                        ) : (
+                          <span className={classes.infoTextSpan}>
+                            {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
+                          </span>
+                        )}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
                       >
-                        {loadingRedux.approval && loadingRedux.approvalXIO
-                          ? "APPROVING"
-                          : `APPROVE ${selectedStakeToken}`}
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6} className={classes.btnPaddingLeft}>
-                      <Button
-                        fullWidth
-                        variant="red"
-                        onClick={
-                          !allowanceXIO
-                            ? () => {}
-                            : () => onClickStake(quantity, days)
-                        }
-                        disabled={
-                          !allowanceXIO ||
-                          !active ||
-                          !account ||
-                          !selectedPortal ||
-                          quantity <= 0 ||
-                          days <= 0 ||
-                          loadingRedux.reward ||
-                          loadingRedux.stake ||
-                          chainId !== 4 ||
-                          reward <= 0 ||
-                          (active &&
-                            account &&
-                            parseFloat(quantity) > parseFloat(walletBalance))
-                        }
-                        loading={loadingRedux.stake}
-                      >
-                        STAKE
-                      </Button>
-                    </Grid>
+                        SELECT A TOKEN TO VIEW REWARDS
+                      </Typography>
+                    )}
                   </Grid>
-                ) : (
-                  <Fragment>
+
+                  {!allowanceXIO ? (
                     <Grid container item xs={12} onClick={showWalletHint}>
-                      <Button
-                        fullWidth
-                        variant="red"
-                        onClick={
-                          !allowanceXIO
-                            ? () => {}
-                            : () => onClickStake(quantity, days)
-                        }
-                        disabled={
-                          !active ||
-                          !account ||
-                          !selectedPortal ||
-                          quantity <= 0 ||
-                          days <= 0 ||
-                          loadingRedux.reward ||
-                          loadingRedux.stake ||
-                          chainId !== 4 ||
-                          reward <= 0 ||
-                          (active &&
-                            account &&
-                            parseFloat(quantity) > parseFloat(walletBalance))
-                        }
-                        loading={loadingRedux.stake}
-                      >
-                        STAKE
-                      </Button>
+                      <Grid item xs={6} className={classes.btnPaddingRight}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          onClick={
+                            !allowanceXIO && !loadingRedux.approval
+                              ? onClickApprove
+                              : () => {}
+                          }
+                          disabled={
+                            allowanceXIO ||
+                            !active ||
+                            !account ||
+                            loadingRedux.reward ||
+                            loadingRedux.approval ||
+                            chainId !== 4
+                          }
+                          loading={
+                            loadingRedux.approval && loadingRedux.approvalXIO
+                          }
+                        >
+                          {loadingRedux.approval && loadingRedux.approvalXIO
+                            ? "APPROVING"
+                            : `APPROVE ${selectedStakeToken}`}
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6} className={classes.btnPaddingLeft}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          onClick={
+                            !allowanceXIO
+                              ? () => {}
+                              : () => onClickStake(quantity, days)
+                          }
+                          disabled={
+                            !allowanceXIO ||
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4 ||
+                            reward <= 0 ||
+                            (active &&
+                              account &&
+                              parseFloat(quantity) > parseFloat(walletBalance))
+                          }
+                          loading={loadingRedux.stake}
+                        >
+                          STAKE
+                        </Button>
+                      </Grid>
                     </Grid>
-                  </Fragment>
+                  ) : (
+                    <Fragment>
+                      <Grid container item xs={12} onClick={showWalletHint}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          onClick={
+                            !allowanceXIO
+                              ? () => {}
+                              : () => onClickStake(quantity, days)
+                          }
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4 ||
+                            reward <= 0 ||
+                            (active &&
+                              account &&
+                              parseFloat(quantity) > parseFloat(walletBalance))
+                          }
+                          loading={loadingRedux.stake}
+                        >
+                          STAKE
+                        </Button>
+                      </Grid>
+                    </Fragment>
+                  )}
+
+                  {!allowanceXIO &&
+                  active &&
+                  account &&
+                  selectedRewardToken &&
+                  !loadingRedux.allowance ? (
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                  {!(active && account) ? (
+                    <Grid
+                      item
+                      xs={12}
+                      onClick={showWalletHint}
+                      className={classes.cursorPointer}
+                    >
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        CONNECT YOUR WALLET TO STAKE
+                      </Typography>
+                    </Grid>
+                  ) : chainId !== 4 ||
+                    web3context.error instanceof UnsupportedChainIdError ? (
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion square expanded={!expanded2}>
+              <AccordionSummary
+                aria-controls="panel2d-content"
+                id="panel2d-header"
+                onClick={() => setExpanded2(!expanded2)}
+                className={`${classes.dashboardAccordian} ${
+                  expanded2 ? classes.btn3 : classes._btn3
+                }`}
+              >
+                {expanded2 ? (
+                  <ArrowDropUpIcon size="large" className={classes.icon} />
+                ) : (
+                  <ArrowDropDownIcon size="large" className={classes.icon} />
                 )}
-
-                {!allowanceXIO &&
-                active &&
-                account &&
-                selectedRewardToken &&
-                !loadingRedux.allowance ? (
-                  <Grid item xs={12}>
-                    <Typography variant="overline" className={classes.redText}>
-                      BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
-                    </Typography>
-                  </Grid>
-                ) : null}
-                {!(active && account) ? (
-                  <Grid
-                    item
-                    xs={12}
-                    onClick={showWalletHint}
-                    className={classes.cursorPointer}
-                  >
-                    <Typography variant="overline" className={classes.redText}>
-                      CONNECT YOUR WALLET TO STAKE
-                    </Typography>
-                  </Grid>
-                ) : chainId !== 4 ||
-                  web3context.error instanceof UnsupportedChainIdError ? (
-                  <Grid item xs={12}>
-                    <Typography variant="overline" className={classes.redText}>
-                      CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
-                    </Typography>
-                  </Grid>
-                ) : null}
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion square expanded={!expanded2}>
-            <AccordionSummary
-              aria-controls="panel2d-content"
-              id="panel2d-header"
-              onClick={() => setExpanded2(!expanded2)}
-              className={`${classes.dashboardAccordian} ${
-                expanded2 ? classes.btn3 : classes._btn3
-              }`}
-            >
-              {expanded2 ? (
-                <ArrowDropUpIcon size="large" className={classes.icon} />
-              ) : (
-                <ArrowDropDownIcon size="large" className={classes.icon} />
-              )}
-              <Typography variant="body2" className={classes.stakeDashBtn}>
-                STAKE DASHBOARD
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.accordion}>
-              <Table onClickUnstake={onClickUnstake} />
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-
+                <Typography variant="body2" className={classes.stakeDashBtn}>
+                  STAKE DASHBOARD
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordion}>
+                <Table onClickUnstake={onClickUnstake} />
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+        </AnimateHeight>
         <Dialog
           open={showStakeDialog}
           // open={true}
@@ -1084,7 +1138,7 @@ function Flashstake({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation },
+  ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance },
   contract,
@@ -1099,6 +1153,7 @@ const mapStateToProps = ({
   currentStaked,
   walletBalance,
   animation,
+  heightVal,
   ...contract,
 });
 
@@ -1118,4 +1173,5 @@ export default connect(mapStateToProps, {
   showWalletBackdrop,
   setExpandAccodion,
   updateAllBalances,
+  setHeightValue,
 })(Flashstake);

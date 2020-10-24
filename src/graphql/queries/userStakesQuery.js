@@ -21,6 +21,7 @@ export const userStakesQuery = gql`
             symbol
           }
         }
+        transactionHash
         swapAmount
         xioReceived
         initiationTimestamp
@@ -37,6 +38,7 @@ export const userStakesQuery = gql`
         initiationTimestamp
         expiredTimestamp
         active
+        transactionHash
       }
     }
   }

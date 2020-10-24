@@ -1,8 +1,12 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { PageAnimation } from "../../component";
+import { CSSTransition } from "react-transition-group";
+import AnimateHeight from "react-animate-height";
+import { useHistory } from "react-router-dom";
+import { setHeightValue } from "../../redux/actions/uiActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -11,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    // height: "200px",
-    transition: "all 0.5s ease",
+
+    // overflow: hidden,
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
@@ -20,9 +24,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Pool({ animation }) {
+function Pool({ animation, setHeightValue, heightVal }) {
   const classes = useStyles();
+  const history = useHistory();
+  const [height2, setHeight2] = useState(0);
+  const ref = useRef(null);
+  const [height, setHeight] = useState(heightVal);
 
+  useEffect(() => {
+    setHeightValue(ref.current.clientHeight);
+    console.log("Height -->", heightVal);
+  });
+
+  const toggle = () => {
+    setHeight(height < 300 ? heightVal : "100%");
+  };
+
+  useEffect(() => {
+    if (history.location.pathname === "/pool") {
+      toggle();
+    }
+  }, [history.location.pathname]);
+  console.log(history.location.pathname);
   useEffect(() => {
     document.title = "Pool - XIO | The Future is at Stake";
   }, []);
@@ -30,17 +53,27 @@ function Pool({ animation }) {
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <Box className={classes.contentContainer}>
-          <Typography variant="h6" className={classes.comingSoon}>
-            COMING SOON
-          </Typography>
-        </Box>
+        <AnimateHeight
+          id="example-panel"
+          duration={700}
+          height={heightVal} // see props documentation below
+        >
+          <Box
+            ref={ref}
+            className={`${classes.contentContainer} contentContainer1`}
+          >
+            <Typography variant="h6" className={classes.comingSoon}>
+              COMING SOON
+            </Typography>
+          </Box>
+        </AnimateHeight>
       </Fragment>
     </PageAnimation>
   );
 }
-const mapStateToProps = () => ({ ui: { animation } }) => ({
+const mapStateToProps = () => ({ ui: { animation, heightVal } }) => ({
   animation,
+  heightVal,
 });
 
-export default connect(mapStateToProps, {})(Pool);
+export default connect(mapStateToProps, { setHeightValue })(Pool);
