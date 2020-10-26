@@ -352,7 +352,7 @@ function Flashstake({
   const ref = useRef(null);
   useEffect(() => {
     setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
+    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {
@@ -364,7 +364,7 @@ function Flashstake({
       toggle();
     }
   }, [history.location.pathname]);
-  console.log(history.location.pathname);
+  // console.log(history.location.pathname);
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
@@ -486,7 +486,7 @@ function Flashstake({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    console.log(evt.which);
+    // console.log(evt.which);
   };
 
   useEffect(() => {

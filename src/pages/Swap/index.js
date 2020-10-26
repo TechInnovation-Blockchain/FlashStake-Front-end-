@@ -347,7 +347,6 @@ function Swap({
   const ref = useRef(null);
   useEffect(() => {
     setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
   });
 
   const toggle = () => {

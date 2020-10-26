@@ -9,6 +9,14 @@ import {
 } from "../../utils/contractFunctions/balanceContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 import { _error } from "../../utils/log";
+import {
+  initializeFlashstakeProtocolContract,
+  getXPY,
+} from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import {
+  initializeFlashstakePoolContract,
+  getAPYStake,
+} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
@@ -29,14 +37,38 @@ export const updatePools = (data) => async (dispatch) => {
         _error("ERROR pricingAPI -> ", e);
       }
       if (response?.data) {
-        // initializeFlashstakeProtocolContract();
-        // const _xpy = await getXPY();
+        initializeFlashstakeProtocolContract();
+        const _xpy = await getXPY();
+        // console.log("xpy-------->", _xpy);
         for (let i = 0; i < _pools.length; i++) {
-          // initializeFlashstakePoolContract(_pools[i].id);
-          // _pools[i].apy = Web3.utils.fromWei(await getAPYStake(_xpy));
+          initializeFlashstakePoolContract(_pools[i].id);
           _pools[i].tokenPrice =
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
+          const _apyStake = Web3.utils.fromWei(await getAPYStake(_xpy));
+          _pools[i].apy =
+            (_apyStake * _pools[i].tokenPrice) /
+              response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0;
+          console.log("============", {
+            _xpy: Web3.utils.fromWei(_xpy),
+            tokenPrice: _pools[i].tokenPrice,
+            symbol: _pools[i].tokenB.symbol,
+            xioPrice: response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd,
+            _apyStake,
+          });
+          // _pools[i].apyCalc = parseFloat(
+          //   (_pools[i].apy * _pools[i].tokenPrice) /
+          //     response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd
+          // ).toFixed(2);
+          // console.log(
+          //   "--------->",
+          //   _pools[i].apyCalc,
+          //   _pools[i].tokenB.symbol,
+          //   _pools[i].apy,
+          //   _pools[i].tokenPrice,
+          //   _pools[i].apy * _pools[i].tokenPrice,
+          //   response.data[CONSTANTS.MAINNET_ADDRESSES.XIO]
+          // );
         }
       }
     }
