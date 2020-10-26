@@ -338,7 +338,7 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    console.log(expiredTimestamps);
+    // console.log(expiredTimestamps);
     _log(
       "unstake params -> ",
       expiredTimestamps,

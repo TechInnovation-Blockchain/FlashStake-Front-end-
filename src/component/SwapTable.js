@@ -254,7 +254,7 @@ function SwapTable({
                     .slice(page * 5, page * 5 + 5)
                     .map((_swap, index) => {
                       {
-                        /* console.log(swapHistory); */
+                        console.log(_swap.transactionHash);
                       }
                       return (
                         <a

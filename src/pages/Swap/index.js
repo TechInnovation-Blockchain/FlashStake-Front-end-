@@ -346,19 +346,19 @@ function Swap({
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
   useEffect(() => {
-    setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
+    setTimeout(() => {
+      setHeightValue(ref?.current?.clientHeight);
+    }, 100);
+    // console.log("Height -->", heightVal);
   });
 
-  const toggle = () => {
-    setHeight(height > 300 ? heightVal : "100%");
-  };
+  const toggle = () => {};
 
   useEffect(() => {
     if (history.location.pathname === "/swap") {
       toggle();
     }
-  }, [history.location.pathname]);
+  }, [history.location.pathname, heightVal]);
 
   //#region
 
@@ -550,15 +550,6 @@ function Swap({
                         >
                           <MaxBtn width={10} />
                         </IconButton>
-                        {/* <IconButton
-                    className={classes.maxIconButton}
-                    disabled={
-                      !(active || account) || quantity == getMaxQuantity()
-                    }
-                    onClick={setMaxQuantity}
-                  >
-                    <MaxBtn width={10} />
-                  </IconButton> */}
                       </Box>
                     </Box>
                   </Grid>

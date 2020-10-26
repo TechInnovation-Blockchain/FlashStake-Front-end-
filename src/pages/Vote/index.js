@@ -30,7 +30,7 @@ function Vote({ animation, heightVal, setHeightValue }) {
 
   useEffect(() => {
     setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
+    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {

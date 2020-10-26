@@ -33,7 +33,7 @@ function Pool({ animation, setHeightValue, heightVal }) {
 
   useEffect(() => {
     setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
+    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {
@@ -45,7 +45,7 @@ function Pool({ animation, setHeightValue, heightVal }) {
       toggle();
     }
   }, [history.location.pathname]);
-  console.log(history.location.pathname);
+  // console.log(history.location.pathname);
   useEffect(() => {
     document.title = "Pool - XIO | The Future is at Stake";
   }, []);

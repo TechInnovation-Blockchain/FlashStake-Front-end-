@@ -1,3 +1,5 @@
+//#region imports and styling
+
 import React, {
   useEffect,
   useState,
@@ -300,6 +302,8 @@ const AccordionDetails = withStyles((theme) => ({
   },
 }))(MuiAccordionDetails);
 
+//#endregion
+
 function Flashstake({
   getFlashstakeProps,
   stakeTokens,
@@ -343,16 +347,19 @@ function Flashstake({
   updateAllBalances,
   heightVal,
   setHeightValue,
+  ...props
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
-
+  // console.log(props);
   const history = useHistory();
   const [height, setHeight] = useState(heightVal);
   const ref = useRef(null);
   useEffect(() => {
-    setHeightValue(ref.current.clientHeight);
-    console.log("Height -->", heightVal);
+    setTimeout(() => {
+      setHeightValue(ref?.current?.clientHeight);
+    }, 100);
+    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {
@@ -364,7 +371,7 @@ function Flashstake({
       toggle();
     }
   }, [history.location.pathname]);
-  console.log(history.location.pathname);
+  // console.log(history.location.pathname);
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
@@ -378,8 +385,6 @@ function Flashstake({
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
   const [height2, setHeight2] = useState(0);
-
-  //#region functions
 
   useEffect(() => {
     document
@@ -401,11 +406,6 @@ function Flashstake({
     if (/^[0-9]*$/.test(value)) {
       setDays(value);
     }
-    // if (Number(value) || value === "" || value === "0") {
-    //   setDays(parseInt(value) || value);
-    // } else {
-    //   setDays((val) => val);
-    // }
   };
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
@@ -486,7 +486,7 @@ function Flashstake({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    console.log(evt.which);
+    // console.log(evt.which);
   };
 
   useEffect(() => {
