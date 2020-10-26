@@ -359,7 +359,6 @@ function Flashstake({
     setTimeout(() => {
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
-    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {

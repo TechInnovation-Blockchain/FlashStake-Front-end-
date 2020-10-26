@@ -349,7 +349,6 @@ function Swap({
     setTimeout(() => {
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
-    // console.log("Height -->", heightVal);
   });
 
   const toggle = () => {};
