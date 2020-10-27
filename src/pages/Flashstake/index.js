@@ -450,9 +450,9 @@ function Flashstake({
 
   useEffect(() => {
     if (active && account) {
-      checkAllowance();
+      // checkAllowance();
       // getBalanceXIO();
-      updateAllBalances();
+      // updateAllBalances();
       showWalletBackdrop(false);
     }
   }, [active, account]);

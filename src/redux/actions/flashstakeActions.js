@@ -10,14 +10,13 @@ import {
   initializeFlashstakeProtocolContract,
   stake,
   unstake,
-  calculateXPY,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeFlashstakePoolContract,
-  getAPYStake,
   getAPYSwap,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
+import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
@@ -36,14 +35,51 @@ export const calculateReward = (xioQuantity, days) => async (
       },
     } = getState();
     if (id && xioQuantity > 0 && days > 0) {
-      initializeFlashstakeProtocolContract();
-      initializeFlashstakePoolContract(id);
-      let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
-      reward = await getAPYStake(_amountIn);
-      reward = JSBI.subtract(
-        JSBI.BigInt(reward),
+      const data = await getQueryData(id);
+      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
+      const _annualRate = JSBI.divide(
+        JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
+        JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
+      );
+      const _xpy = JSBI.greaterThan(
+        _annualRate,
+        JSBI.BigInt(Web3.utils.toWei("50"))
+      )
+        ? JSBI.BigInt(Web3.utils.toWei("50"))
+        : _annualRate;
+      const _calculateXpyTemp = JSBI.divide(
+        JSBI.multiply(JSBI.multiply(_quantity, JSBI.BigInt(days)), _xpy),
+        JSBI.multiply(_precision, JSBI.BigInt("36500"))
+      );
+      const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
+      const _calculateXpy = JSBI.greaterThan(_calculateXpyTemp, _limit)
+        ? _limit
+        : _calculateXpyTemp;
+
+      const _reward = JSBI.divide(
         JSBI.multiply(
-          JSBI.divide(JSBI.BigInt(reward), JSBI.BigInt(100)),
+          JSBI.multiply(_calculateXpy, JSBI.BigInt("900")),
+          JSBI.BigInt(data.reserveAltAmount)
+        ),
+        JSBI.add(
+          JSBI.multiply(
+            JSBI.BigInt(data.reserveXioAmount),
+            JSBI.BigInt("1000")
+          ),
+          JSBI.multiply(_calculateXpy, JSBI.BigInt("900"))
+        )
+      );
+      // reward = String(_reward);
+      // initializeFlashstakeProtocolContract();
+      // initializeFlashstakePoolContract(id);
+      // let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
+      // reward = await getAPYStake(_amountIn);
+      // console.log({ _reward: String(_reward), reward });
+      reward = JSBI.subtract(
+        JSBI.BigInt(_reward),
+        JSBI.multiply(
+          JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100)),
           JSBI.BigInt(5)
         )
       ).toString();

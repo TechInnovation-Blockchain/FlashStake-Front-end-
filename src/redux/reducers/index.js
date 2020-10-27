@@ -6,6 +6,7 @@ import { dashboardReducer } from "./dashboardReducer";
 import { contractReducer } from "./contractReducer";
 import { userReducer } from "./userReducer";
 import { txnsReducer } from "./txnsReducer";
+import { queryReducer } from "./queryReducer";
 
 export const rootReducer = combineReducers({
   ui: uiReducer,
@@ -15,4 +16,5 @@ export const rootReducer = combineReducers({
   contract: contractReducer,
   user: userReducer,
   txns: txnsReducer,
+  query: queryReducer,
 });

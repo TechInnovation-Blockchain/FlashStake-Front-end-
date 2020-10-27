@@ -4,10 +4,15 @@ import { abi as erc20Abi } from "./abi/ERC20Abi.json";
 import { abi as FlashStakeProtocolContractAbi } from "./abi/FlashStakeProtocolContractAbi.json";
 import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 import { abi as BalanceContractAbi } from "./abi/BalanceContract.json";
+import { abi as QueryContractAbi } from "./abi/QueryContractAbi.json";
 
 import { CONSTANTS } from "../utils/constants";
 import { _error } from "../utils/log";
-const { FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, BALANCE_CONTRACT } = CONSTANTS;
+const {
+  FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+  BALANCE_CONTRACT,
+  QUERY_CONTRACT,
+} = CONSTANTS;
 
 let web3js;
 let web3jsInfura;
@@ -15,7 +20,9 @@ let web3jsInfura;
 try {
   web3jsInfura = new Web3(
     new Web3.providers.HttpProvider(
-      `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
+      // `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
+      // "http://localhost:3001"
+      "https://ethereum.xio.app:3000"
     )
   );
   web3js = new Web3(window.web3.currentProvider);
@@ -114,5 +121,26 @@ export const balanceInfuraContract = () => {
     return contract;
   } catch (e) {
     _error("ERROR balanceInfuraContract -> ", e);
+  }
+};
+
+export const queryContract = () => {
+  try {
+    const contract = new web3js.eth.Contract(QueryContractAbi, QUERY_CONTRACT);
+    return contract;
+  } catch (e) {
+    _error("ERROR queryContract -> ", e);
+  }
+};
+
+export const queryInfuraContract = () => {
+  try {
+    const contract = new web3jsInfura.eth.Contract(
+      QueryContractAbi,
+      QUERY_CONTRACT
+    );
+    return contract;
+  } catch (e) {
+    _error("ERROR queryInfuraContract -> ", e);
   }
 };

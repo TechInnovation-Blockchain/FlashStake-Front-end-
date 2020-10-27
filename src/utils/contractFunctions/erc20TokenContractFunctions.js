@@ -152,6 +152,7 @@ export const balanceOf = async () => {
     }
 
     const _balance = await contract.methods.balanceOf(walletAddress).call();
+    console.log("----------->", { _balance });
     return _balance;
   } catch (e) {
     _error("ERROR balanceOf -> ", e);

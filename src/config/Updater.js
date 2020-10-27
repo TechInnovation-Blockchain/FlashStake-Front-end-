@@ -55,7 +55,8 @@ function Updater({
       refetch();
       const _interval = window.setInterval(() => {
         updateAllBalances();
-      }, 30000);
+      }, 60000);
+      updateAllBalances();
       getBalanceALT();
       checkAllowance();
       return () => window.clearInterval(_interval);
