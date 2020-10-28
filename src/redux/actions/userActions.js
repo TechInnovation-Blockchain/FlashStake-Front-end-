@@ -1,4 +1,5 @@
 import { JSBI } from "@uniswap/sdk";
+import _ from "lodash";
 import axios from "axios";
 import Web3 from "web3";
 import { CONSTANTS } from "../../utils/constants";
@@ -18,6 +19,27 @@ import {
   getAPYStake,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 
+export const _getTokenPrice = _.memoize(async () => {
+  const response = await axios.get(
+    `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Object.values(
+      CONSTANTS.MAINNET_ADDRESSES
+    ).join(",")}&vs_currencies=USD`
+  );
+  return response;
+});
+
+export const _getXPY = _.memoize(async () => {
+  await initializeFlashstakeProtocolContract();
+  const _xpy = await getXPY();
+  return _xpy;
+});
+
+export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
+  await initializeFlashstakePoolContract(_pool);
+  const _apyStake = Web3.utils.fromWei(await getAPYStake(_xpy));
+  return _apyStake;
+});
+
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   let _tokenList = [];
@@ -28,47 +50,20 @@ export const updatePools = (data) => async (dispatch) => {
       _tokenList = _pools.map((_pool) => _pool.tokenB.id);
       let response;
       try {
-        response = await axios.get(
-          `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Object.values(
-            CONSTANTS.MAINNET_ADDRESSES
-          ).join(",")}&vs_currencies=USD`
-        );
+        response = await _getTokenPrice();
       } catch (e) {
         _error("ERROR pricingAPI -> ", e);
       }
       if (response?.data) {
-        initializeFlashstakeProtocolContract();
-        const _xpy = await getXPY();
-        // console.log("xpy-------->", _xpy);
+        const _xpy = await _getXPY();
         for (let i = 0; i < _pools.length; i++) {
-          initializeFlashstakePoolContract(_pools[i].id);
           _pools[i].tokenPrice =
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
-          const _apyStake = Web3.utils.fromWei(await getAPYStake(_xpy));
+          const _apyStake = await _getAPYStake(_pools[i].id, _xpy);
           _pools[i].apy =
             (_apyStake * _pools[i].tokenPrice) /
               response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0;
-          console.log("============", {
-            _xpy: Web3.utils.fromWei(_xpy),
-            tokenPrice: _pools[i].tokenPrice,
-            symbol: _pools[i].tokenB.symbol,
-            xioPrice: response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd,
-            _apyStake,
-          });
-          // _pools[i].apyCalc = parseFloat(
-          //   (_pools[i].apy * _pools[i].tokenPrice) /
-          //     response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd
-          // ).toFixed(2);
-          // console.log(
-          //   "--------->",
-          //   _pools[i].apyCalc,
-          //   _pools[i].tokenB.symbol,
-          //   _pools[i].apy,
-          //   _pools[i].tokenPrice,
-          //   _pools[i].apy * _pools[i].tokenPrice,
-          //   response.data[CONSTANTS.MAINNET_ADDRESSES.XIO]
-          // );
         }
       }
     }
@@ -180,10 +175,34 @@ export const clearUserData = () => (dispatch) => {
   });
 };
 
-export const updateAllBalances = () => async (dispatch) => {
+const getBalancesIntervaled = (function () {
+  let _lastCalledTimestamp = 0;
+  let _lastOutput;
+  let _account = "";
+  return async (account) => {
+    if (Date.now() - _lastCalledTimestamp >= 15000 || _account !== account) {
+      try {
+        await initializeBalanceInfuraContract();
+        _lastOutput = await getBalances();
+        _lastCalledTimestamp = Date.now();
+        _account = account;
+        return _lastOutput;
+      } catch (e) {
+        _error("ERROR getBalancesIntervaled -> ", e);
+        _lastCalledTimestamp = 0;
+      }
+    } else {
+      return _lastOutput;
+    }
+  };
+})();
+
+export const updateAllBalances = () => async (dispatch, getState) => {
   try {
-    await initializeBalanceInfuraContract();
-    const [_balances, walletBalanceUSD] = await getBalances();
+    const {
+      web3: { account },
+    } = await getState();
+    const [_balances, walletBalanceUSD] = await getBalancesIntervaled(account);
     dispatch({
       type: "WALLET_BALANCE",
       payload: _balances[CONSTANTS.ADDRESS_XIO_RINKEBY] || "0",
