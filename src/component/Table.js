@@ -19,7 +19,14 @@ import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
 import { Link } from "react-router-dom";
-import { selectStake } from "../redux/actions/dashboardActions";
+import {
+  selectStake,
+  calculateBurn,
+  calculateBurnStakes,
+  withdrawSpecificStakes,
+} from "../redux/actions/dashboardActions";
+import { JSBI } from "@uniswap/sdk";
+import Web3 from "web3";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -138,6 +145,7 @@ function TableComponent({
   expiredDappBalance,
   onClickUnstake,
   selectStake,
+  onClickUnstake2,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -147,6 +155,12 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
   const [earlyWith, setEarlyWith] = useState(false);
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
+  const [_selectedStakesWtihdraw, set_selectedStakesWtihdraw] = useState([]);
+  const [
+    selectedStakesWithdrawValues,
+    setSelectedStakesWithdrawValues,
+  ] = useState({});
 
   useEffect(() => {
     setPage(0);
@@ -228,6 +242,10 @@ function TableComponent({
     [page]
   );
 
+  const toggleTable = () => {
+    setEarlyWith(!earlyWith);
+  };
+
   const tryRequire = (path) => {
     try {
       return require(`../assets/Tokens/${path}.png`);
@@ -236,83 +254,176 @@ function TableComponent({
     }
   };
 
+  const withdrawSelected = useCallback(() => {
+    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
+    set_selectedStakesWtihdraw(_selectedStakes);
+    let amount = JSBI.BigInt(0);
+    _selectedStakes.map((_stake) => {
+      amount = JSBI.add(amount, JSBI.BigInt(_stake.stakeAmount));
+      return null;
+    });
+    amount = Web3.utils.fromWei(amount.toString());
+    if (
+      _selectedStakes.find(
+        (_stake) =>
+          !_stake.expired && _stake.expiry > parseFloat(Date.now() / 1000)
+      )
+    ) {
+      let burn = calculateBurnStakes(_selectedStakes);
+      setSelectedStakesWithdrawValues({
+        amount,
+        burn,
+        maxAmount: (parseFloat(amount) - parseFloat(burn)).toFixed(18),
+      });
+      onClickUnstake2();
+    } else {
+      setSelectedStakesWithdrawValues({
+        amount,
+      });
+      // setDialogStep("confirmSelectedWithdraw");
+    }
+    // setShowWithdrawDialog(true);
+  }, [stakes, selectedStakes]);
+
   return (
-    <Grid container spacing={3} className={classes.walletInfo}>
-      <Grid container item xs={12} className={classes.infoGrid}>
-        <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            WALLET BALANCE
-          </Typography>
-          <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} XIO`}>
-              <span>{trunc(walletBalance)} XIO</span>
-            </Tooltip>
-          </Typography>
+    <Fragment>
+      <Grid container spacing={3} className={classes.walletInfo}>
+        <Grid container item xs={12} className={classes.infoGrid}>
+          <Grid item xs={6} className={classes.grid}>
+            <Typography className={classes.mainHead} variant="overline">
+              WALLET BALANCE
+            </Typography>
+            <Typography className={classes.secHead} variant="h6">
+              <Tooltip title={`${walletBalance} XIO`}>
+                <span>{trunc(walletBalance)} XIO</span>
+              </Tooltip>
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6} className={classes.grid}>
+            <Typography className={classes.mainHead} variant="overline">
+              DAPP BALANCE
+            </Typography>
+            <Typography className={classes.secHead} variant="h6">
+              <Tooltip title={`${dappBalance} XIO`}>
+                <span>{trunc(dappBalance)} XIO</span>
+              </Tooltip>
+            </Typography>
+          </Grid>
         </Grid>
 
-        <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            DAPP BALANCE
-          </Typography>
-          <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} XIO`}>
-              <span>{trunc(dappBalance)} XIO</span>
-            </Tooltip>
-          </Typography>
-        </Grid>
-      </Grid>
+        <Grid container item xs={12}>
+          <Grid container item xs={12} className={classes.gridHead}>
+            {headItems.map((headItem) => (
+              <Grid item xs={4} className={classes.gridItem} key={headItem}>
+                <MuiButton
+                  className={classes.tableHeadItemBtn}
+                  onClick={() => onClickSortBtn(headItem)}
+                >
+                  <Box className={classes.sortButton}>
+                    <UnfoldMore fontSize="small" className={classes.sortIcon} />
+                    {headItem}
+                  </Box>
+                </MuiButton>
+              </Grid>
+            ))}
+          </Grid>
 
-      <Grid container item xs={12}>
-        <Grid container item xs={12} className={classes.gridHead}>
-          {headItems.map((headItem) => (
-            <Grid item xs={4} className={classes.gridItem} key={headItem}>
-              <MuiButton
-                className={classes.tableHeadItemBtn}
-                onClick={() => onClickSortBtn(headItem)}
-              >
-                <Box className={classes.sortButton}>
-                  <UnfoldMore fontSize="small" className={classes.sortIcon} />
-                  {headItem}
-                </Box>
-              </MuiButton>
+          {!(active && account) ? (
+            <Grid
+              item
+              xs={12}
+              className={`${classes.msgContainer} ${classes.cursorPointer}`}
+              onClick={showWalletHint}
+            >
+              <Typography variant="overline" className={classes.redText}>
+                CONNECT YOUR WALLET TO VIEW YOUR STAKES
+              </Typography>
             </Grid>
-          ))}
-        </Grid>
+          ) : chainId !== 4 ? (
+            <Grid item xs={12} className={classes.msgContainer}>
+              <Typography variant="overline" className={classes.redText}>
+                CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
+              </Typography>
+            </Grid>
+          ) : !loading ? (
+            stakes?.length ? (
+              <Fragment>
+                <PageAnimation in={true} key={page} reverse={reverse}>
+                  <Grid container>
+                    {sortedData()
+                      .slice(page * 5, page * 5 + 5)
+                      .map((_stake) => {
+                        const _daysRem = Math.ceil(
+                          (_stake.expiryTime - Date.now() / 1000) / 60
+                        );
+                        return !earlyWith ? (
+                          <a
+                            href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
+                            className={classes.link}
+                            target="_blank"
+                          >
+                            <Grid
+                              container
+                              item
+                              xs={12}
+                              key={_stake.id}
+                              className={classes.cursorPointer}
+                              // onClick={() => selectStake(_stake.id)}
+                              // className={`${classes.cursorPointer} ${
+                              //   selectedStakes[_stake.id]
+                              //     ? classes.selected
+                              //     : null
+                              // }`}
+                            >
+                              {/* {console.log("Stake -- > ", _stake)} */}
+                              <Grid item xs={4} className={classes.gridItem}>
+                                {/* <Tooltip
+                            title={`${_stake.rewardEarned} ${_stake.tokenB}`}
+                          > */}
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    src={tryRequire(_stake.pool.tokenB.symbol)}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />
+                                  {_stake.pool.tokenB.symbol}
+                                </span>
+                                {/* </Tooltip> */}
+                              </Grid>
+                              <Grid item xs={4} className={classes.gridItem}>
+                                <Tooltip
+                                  title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
+                                >
+                                  <span className={classes.flexCenter}>
+                                    <img
+                                      src={tryRequire("XIO")}
+                                      alt="Logo"
+                                      srcSet=""
+                                      width={15}
+                                      style={{ marginRight: 5 }}
+                                    />
+                                    {trunc(_stake.amountAvailable)}/
+                                    {trunc(_stake.stakeAmount)} XIO
+                                  </span>
+                                </Tooltip>
+                              </Grid>
 
-        {!(active && account) ? (
-          <Grid
-            item
-            xs={12}
-            className={`${classes.msgContainer} ${classes.cursorPointer}`}
-            onClick={showWalletHint}
-          >
-            <Typography variant="overline" className={classes.redText}>
-              CONNECT YOUR WALLET TO VIEW YOUR STAKES
-            </Typography>
-          </Grid>
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.redText}>
-              CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
-            </Typography>
-          </Grid>
-        ) : !loading ? (
-          stakes?.length ? (
-            <Fragment>
-              <PageAnimation in={true} key={page} reverse={reverse}>
-                <Grid container>
-                  {sortedData()
-                    .slice(page * 5, page * 5 + 5)
-                    .map((_stake) => {
-                      const _daysRem = Math.ceil(
-                        (_stake.expiryTime - Date.now() / 1000) / 60
-                      );
-                      return !earlyWith ? (
-                        <a
-                          href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
-                          className={classes.link}
-                          target="_blank"
-                        >
+                              <Grid item xs={4} className={classes.gridItem}>
+                                {!_stake.expired &&
+                                _stake.expiryTime > Date.now() / 1000 ? (
+                                  <Fragment>
+                                    {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
+                                  </Fragment>
+                                ) : (
+                                  "COMPLETED"
+                                )}
+                              </Grid>
+                            </Grid>
+                          </a>
+                        ) : (
                           <Grid
                             container
                             item
@@ -370,7 +481,7 @@ function TableComponent({
                               ) : (
                                 "COMPLETED"
                               )}
-                              {isStakesSelected ? (
+                              {earlyWith ? (
                                 <Checkbox
                                   size="small"
                                   checked={
@@ -381,135 +492,82 @@ function TableComponent({
                               ) : null}
                             </Grid>
                           </Grid>
-                        </a>
-                      ) : (
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_stake.id}
-                          className={classes.cursorPointer}
-                          onClick={() => selectStake(_stake.id)}
-                          className={`${classes.cursorPointer} ${
-                            selectedStakes[_stake.id] ? classes.selected : null
-                          }`}
-                        >
-                          {/* {console.log("Stake -- > ", _stake)} */}
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {/* <Tooltip
-                            title={`${_stake.rewardEarned} ${_stake.tokenB}`}
-                          > */}
-                            <span className={classes.flexCenter}>
-                              <img
-                                src={tryRequire(_stake.pool.tokenB.symbol)}
-                                alt="Logo"
-                                srcSet=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              />
-                              {_stake.pool.tokenB.symbol}
-                            </span>
-                            {/* </Tooltip> */}
-                          </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip
-                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
-                            >
-                              <span className={classes.flexCenter}>
-                                <img
-                                  src={tryRequire("XIO")}
-                                  alt="Logo"
-                                  srcSet=""
-                                  width={15}
-                                  style={{ marginRight: 5 }}
-                                />
-                                {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)} XIO
-                              </span>
-                            </Tooltip>
-                          </Grid>
-
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {!_stake.expired &&
-                            _stake.expiryTime > Date.now() / 1000 ? (
-                              <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
-                              </Fragment>
-                            ) : (
-                              "COMPLETED"
-                            )}
-                            {isStakesSelected ? (
-                              <Checkbox
-                                size="small"
-                                checked={
-                                  selectedStakes[_stake.id] ? true : false
-                                }
-                                className={classes.checkbox}
-                              />
-                            ) : null}
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
-                </Grid>
-              </PageAnimation>
-              {sortedData().length > 5 ? (
-                <Grid item xs={12} className={classes.gridItem}>
-                  <TablePagination
-                    rowsPerPageOptions={[]}
-                    component="div"
-                    count={sortedData().length}
-                    rowsPerPage={5}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    labelRowsPerPage=""
-                    nextIconButtonProps={{ color: "primary" }}
-                  />
-                </Grid>
-              ) : null}
-              {sortedData().length && dappBalance > 0 ? (
-                <Grid item xs={12} className={classes.gridItem2}>
-                  <Typography
-                    variant="overline"
-                    className={classes.redText}
-                    onClick={(val) => setEarlyWith(!val)}
-                  >
-                    UNSTAKE SPECIFIC STAKE
-                  </Typography>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    onClick={() => {
-                      onClickUnstake();
-                      unstakeXIO();
-                    }}
-                    disabled={loadingRedux.unstake || !(expiredDappBalance > 0)}
-                    fontSizeLocal="body2"
-                    loading={loadingRedux.unstake}
-                  >
-                    <Tooltip title={`${expiredDappBalance} XIO`}>
-                      <span>UNSTAKE</span>
-                    </Tooltip>
-                  </Button>
-                </Grid>
-              ) : null}
-            </Fragment>
+                        );
+                      })}
+                  </Grid>
+                </PageAnimation>
+                {sortedData().length > 5 ? (
+                  <Grid item xs={12} className={classes.gridItem}>
+                    <TablePagination
+                      rowsPerPageOptions={[]}
+                      component="div"
+                      count={sortedData().length}
+                      rowsPerPage={5}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      labelRowsPerPage=""
+                      nextIconButtonProps={{ color: "primary" }}
+                    />
+                  </Grid>
+                ) : null}
+                {sortedData().length && dappBalance > 0 ? (
+                  <Grid item xs={12} className={classes.gridItem2}>
+                    {!earlyWith ? (
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                        onClick={toggleTable}
+                      >
+                        UNSTAKE SPECIFIC STAKE
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                        onClick={toggleTable}
+                      >
+                        UNSTAKE ALL
+                      </Typography>
+                    )}
+                    <Button
+                      variant="red"
+                      fullWidth
+                      onClick={() => {
+                        onClickUnstake();
+                        earlyWith ? withdrawSelected() : unstakeXIO();
+                      }}
+                      disabled={
+                        !earlyWith
+                          ? loadingRedux.unstake || !(expiredDappBalance > 0)
+                          : !isStakesSelected
+                      }
+                      fontSizeLocal="body2"
+                      loading={loadingRedux.unstake}
+                    >
+                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                        <span>UNSTAKE</span>
+                      </Tooltip>
+                    </Button>
+                  </Grid>
+                ) : null}
+              </Fragment>
+            ) : (
+              <Grid item xs={12} className={classes.msgContainer}>
+                <Typography variant="overline" className={classes.msg}>
+                  NO AVAILABLE STAKES
+                </Typography>
+              </Grid>
+            )
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
-              <Typography variant="overline" className={classes.msg}>
-                NO AVAILABLE STAKES
+              <Typography variant="overline">
+                <CircularProgress size={12} /> LOADING
               </Typography>
             </Grid>
-          )
-        ) : (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline">
-              <CircularProgress size={12} /> LOADING
-            </Typography>
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </Fragment>
   );
 }
 

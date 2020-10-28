@@ -474,6 +474,15 @@ function Flashstake({
     setShowStakeDialog(true);
   };
 
+  const onClickUnstake2 = () => {
+    setDialogStep("confirmSelectedWithdrawBurn");
+    setShowStakeDialog(true);
+  };
+  const onClickUnstake3 = () => {
+    setDialogStep("confirmSelectedWithdraw");
+    setShowStakeDialog(true);
+  };
+
   const onClickClose = () => {
     // setReset(true);
     setShowStakeDialog(false);
@@ -823,7 +832,11 @@ function Flashstake({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <Table onClickUnstake={onClickUnstake} />
+                <Table
+                  onClickUnstake={onClickUnstake}
+                  onClickUnstake2={onClickUnstake2}
+                  onClickUnstake3={onClickUnstake3}
+                />
               </AccordionDetails>
             </Accordion>
           </Box>
