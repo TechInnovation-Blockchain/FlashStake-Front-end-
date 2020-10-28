@@ -9,11 +9,11 @@ export const ogTrunc = (val, test) => {
   let decimal = 0;
   if (_val < 0.000001) {
     decimal = 7;
-    return parseFloat(val).toFixed(7);
+    return parseFloat(val).toFixed(4);
   } else if (_val < 0.00001) {
-    decimal = 6;
+    decimal = 4;
   } else if (_val < 0.0001) {
-    decimal = 5;
+    decimal = 4;
   } else if (_val < 0.001) {
     decimal = 4;
   } else if (_val < 0.01) {

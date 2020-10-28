@@ -34,16 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
     margin: theme.spacing(1, 0),
   },
-  gridItem2: {
-    ...theme.typography.body2,
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
-    fontWeight: 700,
-    cursor: "pointer",
-
-    margin: theme.spacing(1, 0),
-  },
   flexCenter: {
     display: "flex",
     justifyContent: "center",
@@ -121,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TableComponent({
+function PoolTable({
   stakes,
   openWithdrawDialog,
   loading,
@@ -140,7 +130,7 @@ function TableComponent({
   selectStake,
 }) {
   const classes = useStyles();
-  const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
+  const headItems = ["POOL", "BALANCE", "REMAINING"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState();
@@ -241,22 +231,24 @@ function TableComponent({
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
-            WALLET BALANCE
+            LOCKED POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${walletBalance} XIO`}>
-              <span>{trunc(walletBalance)} XIO</span>
+              <span> 2 </span>
+              {/* <span>{trunc(walletBalance)} XIO</span> */}
             </Tooltip>
           </Typography>
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
-            DAPP BALANCE
+            COMPLETED POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${dappBalance} XIO`}>
-              <span>{trunc(dappBalance)} XIO</span>
+              <span> 2 </span>
+              {/* <span>{trunc(dappBalance)} XIO</span> */}
             </Tooltip>
           </Typography>
         </Grid>
@@ -307,7 +299,7 @@ function TableComponent({
                       const _daysRem = Math.ceil(
                         (_stake.expiryTime - Date.now() / 1000) / 60
                       );
-                      return !earlyWith ? (
+                      return (
                         <a
                           href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
                           className={classes.link}
@@ -319,12 +311,10 @@ function TableComponent({
                             xs={12}
                             key={_stake.id}
                             className={classes.cursorPointer}
-                            onClick={() => selectStake(_stake.id)}
-                            className={`${classes.cursorPointer} ${
-                              selectedStakes[_stake.id]
-                                ? classes.selected
-                                : null
-                            }`}
+                            // onClick={() => selectStake(_stake.id)}
+                            // className={`${classes.cursorPointer} ${
+                            //   selectedStakes[_stake.id] ? classes.selected : null
+                            // }`}
                           >
                             {/* {console.log("Stake -- > ", _stake)} */}
                             <Grid item xs={4} className={classes.gridItem}>
@@ -382,73 +372,6 @@ function TableComponent({
                             </Grid>
                           </Grid>
                         </a>
-                      ) : (
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_stake.id}
-                          className={classes.cursorPointer}
-                          onClick={() => selectStake(_stake.id)}
-                          className={`${classes.cursorPointer} ${
-                            selectedStakes[_stake.id] ? classes.selected : null
-                          }`}
-                        >
-                          {/* {console.log("Stake -- > ", _stake)} */}
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {/* <Tooltip
-                            title={`${_stake.rewardEarned} ${_stake.tokenB}`}
-                          > */}
-                            <span className={classes.flexCenter}>
-                              <img
-                                src={tryRequire(_stake.pool.tokenB.symbol)}
-                                alt="Logo"
-                                srcSet=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              />
-                              {_stake.pool.tokenB.symbol}
-                            </span>
-                            {/* </Tooltip> */}
-                          </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip
-                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
-                            >
-                              <span className={classes.flexCenter}>
-                                <img
-                                  src={tryRequire("XIO")}
-                                  alt="Logo"
-                                  srcSet=""
-                                  width={15}
-                                  style={{ marginRight: 5 }}
-                                />
-                                {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)} XIO
-                              </span>
-                            </Tooltip>
-                          </Grid>
-
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {!_stake.expired &&
-                            _stake.expiryTime > Date.now() / 1000 ? (
-                              <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
-                              </Fragment>
-                            ) : (
-                              "COMPLETED"
-                            )}
-                            {isStakesSelected ? (
-                              <Checkbox
-                                size="small"
-                                checked={
-                                  selectedStakes[_stake.id] ? true : false
-                                }
-                                className={classes.checkbox}
-                              />
-                            ) : null}
-                          </Grid>
-                        </Grid>
                       );
                     })}
                 </Grid>
@@ -468,14 +391,7 @@ function TableComponent({
                 </Grid>
               ) : null}
               {sortedData().length && dappBalance > 0 ? (
-                <Grid item xs={12} className={classes.gridItem2}>
-                  <Typography
-                    variant="overline"
-                    className={classes.redText}
-                    onClick={(val) => setEarlyWith(!val)}
-                  >
-                    UNSTAKE SPECIFIC STAKE
-                  </Typography>
+                <Grid item xs={12} className={classes.gridItem}>
                   <Button
                     variant="red"
                     fullWidth
@@ -488,7 +404,7 @@ function TableComponent({
                     loading={loadingRedux.unstake}
                   >
                     <Tooltip title={`${expiredDappBalance} XIO`}>
-                      <span>UNSTAKE</span>
+                      <span>WITHDRAW</span>
                     </Tooltip>
                   </Button>
                 </Grid>
@@ -536,4 +452,4 @@ export default connect(mapStateToProps, {
   showWalletBackdrop,
   unstakeXIO,
   selectStake,
-})(TableComponent);
+})(PoolTable);

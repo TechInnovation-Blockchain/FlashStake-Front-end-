@@ -48,3 +48,9 @@ export const toggleAccordianExpanded = (val) => {
     type: "TOGGLE_ACCORDIAN_EXPANDED",
   };
 };
+export const selectStake = (id) => {
+  return {
+    type: "SELECT_STAKE",
+    payload: id,
+  };
+};

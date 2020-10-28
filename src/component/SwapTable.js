@@ -253,9 +253,6 @@ function SwapTable({
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
                     .map((_swap, index) => {
-                      {
-                        console.log(_swap.transactionHash);
-                      }
                       return (
                         <a
                           href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}

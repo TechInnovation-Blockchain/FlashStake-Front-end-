@@ -4,6 +4,7 @@ import Dialog from "./Dialog";
 import DropdownDialog from "./DropdownDialog";
 import Table from "./Table";
 import SwapTable from "./SwapTable";
+import PoolTable from "./PoolTable";
 import WalletConnect from "./WalletConnect";
 import Snackbar from "./Snackbar";
 import Stepper from "./Stepper";
@@ -23,6 +24,7 @@ export {
   Snackbar,
   Stepper,
   SwapTable,
+  PoolTable,
   ExpandableBox,
   Fade,
   PageAnimation,

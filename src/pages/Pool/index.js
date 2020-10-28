@@ -1,39 +1,378 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+  useRef,
+} from "react";
+import Web3 from "web3";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { connect } from "react-redux";
-import { Box, Typography } from "@material-ui/core";
+import {
+  Box,
+  Typography,
+  TextField,
+  Grid,
+  Tooltip,
+  CircularProgress,
+  IconButton,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { PageAnimation } from "../../component";
-import { CSSTransition } from "react-transition-group";
-import AnimateHeight from "react-animate-height";
+import { withStyles } from "@material-ui/core/styles";
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import MaxBtn from "../../component/MaxBtn";
+import { updateAllBalances } from "../../redux/actions/userActions";
+import {
+  Button,
+  DropdownDialog,
+  Dialog,
+  PageAnimation,
+  PoolTable,
+} from "../../component";
+import {
+  setSelectedStakeToken,
+  setSelectedRewardToken,
+  getApprovalXIO,
+  calculateReward,
+  checkAllowance,
+  getBalanceXIO,
+  stakeXIO,
+  setDialogStep,
+  // setReset,
+  setInitialValues,
+} from "../../redux/actions/flashstakeActions";
+import { setExpandAccodion } from "../../redux/actions/uiActions";
+import { debounce } from "../../utils/debounceFunc";
+import { trunc } from "../../utils/utilFunc";
+import {
+  setLoading,
+  showWalletBackdrop,
+  setHeightValue,
+} from "../../redux/actions/uiActions";
+import { Link } from "@material-ui/icons";
+// import maxbtn from "../../assets/maxbtn.svg";
+import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
-import { setHeightValue } from "../../redux/actions/uiActions";
+import AnimateHeight from "react-animate-height";
+
+// const useStyles = makeStyles((theme) => ({
+//   contentContainer: {
+//     padding: theme.spacing(4),
+//     textAlign: "center",
+//     display: "flex",
+//     flexDirection: "row",
+//     justifyContent: "space-evenly",
+
+//     // overflow: hidden,
+//   },
+//   comingSoon: {
+//     color: theme.palette.xioRed.main,
+//     fontWeight: 700,
+//   },
+
+// }));
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
-    padding: theme.spacing(4),
     textAlign: "center",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-
-    // overflow: hidden,
+    flexDirection: "column",
+    // justifyContent: "space-evenly",
   },
-  comingSoon: {
-    color: theme.palette.xioRed.main,
+  secondaryText: {
+    color: theme.palette.text.secondary,
     fontWeight: 700,
+    // fontSize: 10,
+    marginBottom: theme.spacing(1),
+    // [theme.breakpoints.down("xs")]: {
+    //   fontSize: 8,
+    // },
+  },
+  primaryText: {
+    color: theme.palette.text.primary,
+    fontWeight: 700,
+  },
+  greenText: {
+    color: theme.palette.text.green,
+    fontWeight: 700,
+  },
+  redText: {
+    // fontSize: 10,
+    fontWeight: 700,
+    color: theme.palette.xioRed.main,
+  },
+  infoText: {
+    // fontSize: 10,
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+  },
+  infoTextSpan: {
+    // fontSize: 10,
+    fontWeight: 900,
+    color: theme.palette.xioRed.main,
+    position: "relative",
+  },
+  secondaryTextWOMargin: {
+    color: theme.palette.text.secondary2,
+    fontWeight: 700,
+  },
+  textBold: {
+    fontWeight: 700,
+  },
+  xIcon: {
+    color: theme.palette.xioRed.main,
+    fontWeight: 900,
+    marginTop: 30,
+    // fontSize: 15,
+    alignSelf: "center",
+    margin: theme.spacing(2),
+  },
+  checkbox: {
+    padding: 0,
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  textField: {
+    background: theme.palette.background.secondary2,
+    "& .MuiInputBase-input": {
+      height: 36,
+      fontWeight: "700 !important",
+      padding: theme.spacing(0, 1),
+      lineHeight: 1.5,
+      textAlign: "center",
+    },
+    "& .Mui-error": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  link: {
+    color: "inherit",
+    textDecoration: "none",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textFieldContainer: {
+    position: "relative",
+  },
+  maxIconButton: {
+    position: "absolute",
+    right: 0,
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: theme.palette.background.secondary2,
+
+    "&.Mui-disabled": {
+      display: "none",
+    },
+    "& svg": {
+      fill: "#9191A7",
+    },
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      background: theme.palette.background.secondary2,
+
+      "& svg": {
+        fill: theme.palette.xioRed.main,
+      },
+    },
+    transition: "none !important",
+  },
+  linkIcon: {
+    color: theme.palette.xioRed.main,
+    paddingRight: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnPaddingLeft: {
+    paddingLeft: theme.spacing(1),
+  },
+  btnPaddingRight: {
+    paddingRight: theme.spacing(1),
+  },
+  cursorPointer: {
+    cursor: "pointer",
+  },
+  restakeableXio: {
+    display: "flex",
+
+    justifyContent: "center",
+    alignItems: "center ",
+  },
+  restakeText: {
+    color: "#555555",
+    fontWeight: 700,
+    // fontSize: 11,
+    cursor: "pointer",
+  },
+  dropDown: {
+    "& .makeStyles-dropdown": {
+      backgroundColor: "#000",
+    },
+  },
+  btn: {
+    marginTop: theme.spacing(2),
+  },
+  btn3: {
+    backgroundColor: theme.palette.background.secondary,
+    padding: "0 !important",
+    margin: "0 !important",
+
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  _btn3: {
+    borderTopWidth: 1,
+    borderTopRightRadius: "10px",
+    borderTopLeftRadius: "10px",
+    backgroundColor: theme.palette.background.secondary,
+    padding: "0 !important",
+
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  dashboardAccordian: {
+    color: theme.palette.text.grey,
+    "&:hover": {
+      color: "#c66065",
+    },
+  },
+  accordion: {
+    backgroundColor: theme.palette.background.secondary,
+  },
+  stakeDashBtn: {
+    color: "inherit",
+    fontWeight: 700,
+  },
+  icon: {
+    color: theme.palette.xioRed.main,
+  },
+  accordionDetails: {
+    borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+    // borderBottomWidth: 1,
+    // borderBottomColor: theme.palette.text.gray,
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+  },
+  loaderStyle: {
+    marginBottom: -2,
+    // position: "absolute",
+    // left: 2,
+    // top: "10%",
   },
 }));
 
-function Pool({ animation, setHeightValue, heightVal }) {
+const Accordion = withStyles((theme) => ({
+  root: {
+    // border: "1px solid rgba(0, 0, 0, .125)",
+    backgroundColor: theme.palette.background.primary,
+    boxShadow: "none",
+
+    "&.MuiAccordion-root.Mui-expanded": {
+      margin: 0,
+    },
+
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      // margin: "auto",
+    },
+  },
+  expanded: {},
+}))(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    marginBottom: -1,
+    padding: 0,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
+  content: {
+    "&$expanded": {
+      // margin: "12px 0",
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    // padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
+
+function Pool({
+  animation,
+  setHeightValue,
+  heightVal,
+  getFlashstakeProps,
+  stakeTokens,
+  rewardTokens,
+  selectedStakeToken,
+  selectedRewardToken,
+  setSelectedStakeToken,
+  setSelectedRewardToken,
+  selectedPortal,
+  allowanceXIO,
+  getApprovalXIO,
+  calculateReward,
+  reward,
+  loading: loadingRedux,
+  active,
+  account,
+  checkAllowance,
+  getBalanceXIO,
+  balanceXIO,
+  stakeXIO,
+  setLoading,
+  dialogStep,
+  setDialogStep,
+  stakeRequest,
+  unstakeRequest,
+  reset,
+  // setReset,
+  chainId,
+  stakeTxnHash,
+  setInitialValues,
+  initialValues,
+  showWalletBackdrop,
+  portals,
+  currentStaked,
+  pools,
+  walletBalance,
+  setRefetch,
+  setExpandAccodion,
+  expanding,
+  updateAllBalances,
+  ...props
+}) {
   const classes = useStyles();
   const history = useHistory();
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
+  const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
 
   useEffect(() => {
-    setHeightValue(ref.current.clientHeight);
-    // console.log("Height -->", heightVal);
+    setTimeout(() => {
+      setHeightValue(ref?.current?.clientHeight);
+    }, 100);
   });
 
   const toggle = () => {
@@ -50,6 +389,131 @@ function Pool({ animation, setHeightValue, heightVal }) {
     document.title = "Pool - XIO | The Future is at Stake";
   }, []);
 
+  const [showStakeDialog, setShowStakeDialog] = useState(false);
+  const [expanded2, setExpanded2] = useState(true);
+
+  const debouncedCalculateReward = useCallback(
+    debounce(calculateReward, 500),
+    []
+  );
+
+  const [days, setDays] = useState(initialValues.days);
+  const [quantity, setQuantity] = useState(initialValues.quantity);
+  const regex = /^\d*(.(\d{1,18})?)?$/;
+  // const [height2, setHeight2] = useState(0);
+
+  useEffect(() => {
+    document
+      .querySelector("input[type='number']")
+      .addEventListener("keypress", (evt) => {
+        if (evt.which === 8) {
+          return;
+        }
+        if (evt.which === 46) {
+          return;
+        }
+        if (evt.which < 48 || evt.which > 57) {
+          evt.preventDefault();
+        }
+      });
+  }, []);
+
+  const onChangeDays = ({ target: { value } }) => {
+    if (/^[0-9]*$/.test(value)) {
+      setDays(value);
+    }
+  };
+  const onChangeQuantity = ({ target: { value } }) => {
+    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+      setQuantity(value);
+    }
+  };
+
+  const showWalletHint = useCallback(() => {
+    if (!(active && account)) {
+      showWalletBackdrop(true);
+    }
+  }, [active, account, showWalletBackdrop]);
+
+  useEffect(() => {
+    document.title = "Stake - XIO | The Future is at Stake";
+    // setLoading({ dapp: true });
+    setRefetch(true);
+  }, [setRefetch]);
+
+  useEffect(() => {
+    setInitialValues(quantity, days);
+  }, [days, quantity, setInitialValues]);
+
+  useEffect(() => {
+    if (reset) {
+      // getBalanceXIO();
+      updateAllBalances();
+      // setReset(false);
+    }
+  }, [reset, getBalanceXIO]);
+
+  useEffect(() => {
+    if (selectedPortal) {
+      debouncedCalculateReward(quantity, days);
+      const _rewardRefreshInterval = setInterval(() => {
+        debouncedCalculateReward(quantity, days);
+      }, 60000);
+      return () => {
+        clearInterval(_rewardRefreshInterval);
+      };
+    }
+  }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
+
+  useEffect(() => {
+    if (active && account) {
+      checkAllowance();
+      // getBalanceXIO();
+      updateAllBalances();
+      showWalletBackdrop(false);
+    }
+  }, [active, account]);
+
+  const onClickStake = (quantity, days) => {
+    setDialogStep("pendingStake");
+    setShowStakeDialog(true);
+    stakeXIO(quantity, days);
+  };
+
+  const onClickApprove = () => {
+    setDialogStep("pendingApproval");
+    setShowStakeDialog(true);
+    getApprovalXIO("stake");
+  };
+
+  const onClickUnstake = () => {
+    setDialogStep("pendingUnstake");
+    setShowStakeDialog(true);
+  };
+
+  const onClickClose = () => {
+    // setReset(true);
+    setShowStakeDialog(false);
+  };
+
+  const closeDialog = () => {
+    setShowStakeDialog(false);
+  };
+
+  const handleKeyDown = (evt) => {
+    ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
+    // console.log(evt.which);
+  };
+
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding, setExpandAccodion]);
+
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
@@ -62,18 +526,329 @@ function Pool({ animation, setHeightValue, heightVal }) {
             ref={ref}
             className={`${classes.contentContainer} contentContainer1`}
           >
-            <Typography variant="h6" className={classes.comingSoon}>
-              COMING SOON
-            </Typography>
+            <Accordion square expanded={expanded2}>
+              <AccordionSummary
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                style={{ display: "none" }}
+              >
+                {/* <Typography>Collapsible Group Item #1</Typography> */}
+              </AccordionSummary>
+
+              <AccordionDetails
+                style={{ paddingTop: "20px" }}
+                className={classes.accordionDetails}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="overline"
+                      className={classes.secondaryText}
+                    >
+                      WHAT TOKEN DO YOU WANT TO POOL
+                    </Typography>
+                    <DropdownDialog
+                      className={classes.dropDown}
+                      items={pools}
+                      selectedValue={selectedRewardToken}
+                      onSelect={setSelectedRewardToken}
+                      heading="SELECT TOKEN"
+                    />
+                  </Grid>
+                  <Grid container item xs={12}>
+                    <Box flex={1}>
+                      <Typography
+                        variant="overline"
+                        className={classes.secondaryText}
+                      >
+                        POOL QUANTITY
+                      </Typography>
+                      <Box className={classes.textFieldContainer}>
+                        {/* <Tooltip title="Hello world" open={true}> */}
+                        <TextField
+                          className={classes.textField}
+                          error={
+                            active &&
+                            account &&
+                            parseFloat(quantity) > parseFloat(walletBalance)
+                          }
+                          fullWidth
+                          placeholder="0.0"
+                          value={quantity}
+                          onChange={onChangeQuantity}
+                          type="number"
+                          inputMode="numeric"
+                          pattern={regex}
+                          onKeyDown={handleKeyDown}
+                          onFocus={(e) => (e.target.placeholder = "")}
+                          onBlur={(e) => (e.target.placeholder = "0.0")}
+                        />
+                        {/* </Tooltip> */}
+                        <IconButton
+                          className={classes.maxIconButton}
+                          disabled={
+                            !(active || account) || walletBalance == quantity
+                          }
+                          onClick={() =>
+                            onChangeQuantity({
+                              target: { value: walletBalance },
+                            })
+                          }
+                        >
+                          <MaxBtn width={10} />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid container item xs={12}>
+                    <Box flex={1}>
+                      <Typography
+                        variant="overline"
+                        className={classes.secondaryText}
+                      >
+                        AMOUNT OF XIO REQUIRED TO POOL
+                      </Typography>
+                      <Box className={classes.textFieldContainer}>
+                        {/* <Tooltip title="Hello world" open={true}> */}
+                        <TextField
+                          className={classes.textField}
+                          disabled={true}
+                          fullWidth
+                          placeholder="0.0"
+                          value="5000 XIO"
+                          // onChange={onChangeQuantity}
+                          // type="number"
+                          // inputMode="numeric"
+                          // pattern={regex}
+                          // onKeyDown={handleKeyDown}
+                          // onFocus={(e) => (e.target.placeholder = "")}
+                          // onBlur={(e) => (e.target.placeholder = "0.0")}
+                        />
+                        {/* </Tooltip> */}
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {selectedRewardToken?.tokenB?.symbol ? (
+                      <Typography
+                        variant="overline"
+                        className={classes.infoText}
+                      >
+                        YOU ARE ABOUT TO POOL 0 ETH + 5,000 XIO FOR 75 DAYS
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        SELECT A TOKEN TO VIEW REWARDS
+                      </Typography>
+                    )}
+                  </Grid>
+                  {/* {!allowanceXIO ? (
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <Grid item xs={6} className={classes.btnPaddingRight}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          onClick={
+                            !allowanceXIO && !loadingRedux.approval
+                              ? onClickApprove
+                              : () => {}
+                          }
+                          disabled={
+                            allowanceXIO ||
+                            !active ||
+                            !account ||
+                            loadingRedux.reward ||
+                            loadingRedux.approval ||
+                            chainId !== 4
+                          }
+                          loading={
+                            loadingRedux.approval && loadingRedux.approvalXIO
+                          }
+                        >
+                          {loadingRedux.approval && loadingRedux.approvalXIO
+                            ? "APPROVING"
+                            : `APPROVE ${selectedStakeToken}`}
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6} className={classes.btnPaddingLeft}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          onClick={
+                            !allowanceXIO
+                              ? () => {}
+                              : () => onClickStake(quantity, days)
+                          }
+                          disabled={
+                            !allowanceXIO ||
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4 ||
+                            reward <= 0 ||
+                            (active &&
+                              account &&
+                              parseFloat(quantity) > parseFloat(walletBalance))
+                          }
+                          loading={loadingRedux.stake}
+                        >
+                          POOL
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  ) : ( */}
+                  <Fragment>
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <Button
+                        fullWidth
+                        variant="red"
+                        // onClick={
+                        //   !allowanceXIO
+                        //     ? () => {}
+                        //     : () => onClickStake(quantity, days)
+                        // }
+                        // disabled={
+                        //   !active ||
+                        //   !account ||
+                        //   !selectedPortal ||
+                        //   quantity <= 0 ||
+                        //   days <= 0 ||
+                        //   loadingRedux.reward ||
+                        //   loadingRedux.stake ||
+                        //   chainId !== 4 ||
+                        //   reward <= 0 ||
+                        //   (active &&
+                        //     account &&
+                        //     parseFloat(quantity) > parseFloat(walletBalance))
+                        // }
+                        loading={loadingRedux.stake}
+                      >
+                        POOL
+                      </Button>
+                    </Grid>
+                  </Fragment>
+
+                  {!allowanceXIO &&
+                  active &&
+                  account &&
+                  selectedRewardToken &&
+                  !loadingRedux.allowance ? (
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                  {!(active && account) ? (
+                    <Grid
+                      item
+                      xs={12}
+                      onClick={showWalletHint}
+                      className={classes.cursorPointer}
+                    >
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        CONNECT YOUR WALLET TO STAKE
+                      </Typography>
+                    </Grid>
+                  ) : chainId !== 4 ||
+                    web3context.error instanceof UnsupportedChainIdError ? (
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                      >
+                        CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion square expanded={!expanded2}>
+              <AccordionSummary
+                aria-controls="panel2d-content"
+                id="panel2d-header"
+                onClick={() => setExpanded2(!expanded2)}
+                className={`${classes.dashboardAccordian} ${
+                  expanded2 ? classes.btn3 : classes._btn3
+                }`}
+              >
+                {expanded2 ? (
+                  <ArrowDropUpIcon size="large" className={classes.icon} />
+                ) : (
+                  <ArrowDropDownIcon size="large" className={classes.icon} />
+                )}
+                <Typography variant="body2" className={classes.stakeDashBtn}>
+                  POOL DASHBOARD
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordion}>
+                <PoolTable onClickUnstake={onClickUnstake} />
+              </AccordionDetails>
+            </Accordion>
           </Box>
         </AnimateHeight>
       </Fragment>
     </PageAnimation>
   );
 }
-const mapStateToProps = () => ({ ui: { animation, heightVal } }) => ({
+// const mapStateToProps = () => ({ ui: { animation, heightVal } }) => ({
+//   animation,
+//   heightVal,
+// });
+
+// export default connect(mapStateToProps, { setHeightValue })(Pool);
+
+const mapStateToProps = ({
+  flashstake,
+  ui: { loading, expanding, animation, heightVal },
+  web3: { active, account, chainId },
+  user: { currentStaked, pools, walletBalance },
+  contract,
+}) => ({
+  ...flashstake,
+  loading,
+  active,
+  expanding,
+  account,
+  chainId,
+  pools,
+  currentStaked,
+  walletBalance,
   animation,
   heightVal,
+  ...contract,
 });
 
-export default connect(mapStateToProps, { setHeightValue })(Pool);
+export default connect(mapStateToProps, {
+  setSelectedStakeToken,
+  setSelectedRewardToken,
+  getApprovalXIO,
+  calculateReward,
+  checkAllowance,
+  getBalanceXIO,
+  stakeXIO,
+  setLoading,
+  setDialogStep,
+  // setReset,
+  setInitialValues,
+  setRefetch,
+  showWalletBackdrop,
+  setExpandAccodion,
+  updateAllBalances,
+  setHeightValue,
+})(Pool);
