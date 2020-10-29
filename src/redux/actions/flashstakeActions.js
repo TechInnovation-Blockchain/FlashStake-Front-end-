@@ -126,16 +126,23 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
   dispatch(setLoading({ swapReward: false }));
 };
 
-const checkAllowanceMemo = _.memoize(
-  async (_address, _tokenAddress, _walletAddress) => {
-    _log("Account", { _address, _tokenAddress, _walletAddress });
-    await initializeErc20TokenInfuraContract(_tokenAddress);
-    const _allowance = await allowance(_address);
-    return _allowance;
-  },
-  (_address, _tokenAddress, _walletAddress) =>
-    _address + _tokenAddress + _walletAddress
-);
+// const checkAllowanceMemo = _.memoize(
+//   async (_address, _tokenAddress, _walletAddress, flag = false) => {
+//     _log("Account", { _address, _tokenAddress, _walletAddress });
+//     await initializeErc20TokenInfuraContract(_tokenAddress);
+//     const _allowance = await allowance(_address);
+//     return _allowance;
+//   },
+//   (_address, _tokenAddress, _walletAddress, flag = false) =>
+//     _address + _tokenAddress + _walletAddress + flag
+// );
+
+const checkAllowanceMemo = async (_address, _tokenAddress, _walletAddress) => {
+  _log("Account", { _address, _tokenAddress, _walletAddress });
+  await initializeErc20TokenInfuraContract(_tokenAddress);
+  const _allowance = await allowance(_address);
+  return _allowance;
+};
 
 export const checkAllowance = () => async (dispatch, getState) => {
   dispatch(setLoading({ allowance: true }));
@@ -260,7 +267,7 @@ export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
-    // dispatch(checkAllowanceXIO());
+    dispatch(checkAllowance());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
   } finally {
@@ -283,7 +290,7 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
     }
     await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
-    // dispatch(checkAllowanceALT());
+    dispatch(checkAllowance());
   } catch (e) {
     _error("ERROR getApprovalALT -> ", e);
   } finally {
