@@ -158,6 +158,37 @@ export const checkAllowance = () => async (dispatch, getState) => {
   }
 };
 
+export const checkAllowancePool = () => async (dispatch, getState) => {
+  dispatch(setLoading({ allowance: true }));
+  try {
+    const {
+      flashstake: { selectedRewardToken },
+    } = getState();
+    if (!selectedRewardToken?.tokenB?.id) {
+      return null;
+    }
+    await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+    const _allowance = await allowance(selectedRewardToken.id);
+    console.log(_allowance);
+    dispatch({
+      type: "ALLOWANCE_XIO_POOL",
+      payload: _allowance > 0,
+    });
+
+    await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
+    const _allowance2 = await allowance(selectedRewardToken.id);
+    console.log(_allowance2);
+    dispatch({
+      type: "ALLOWANCE_ALT_POOL",
+      payload: _allowance2 > 0,
+    });
+  } catch (e) {
+    _error("ERROR checkAllowance -> ", e);
+  } finally {
+    dispatch(setLoading({ allowance: false }));
+  }
+};
+
 // export const checkAllowanceXIO = () => async (dispatch, getState) => {
 //   dispatch(setLoading({ allowance: true }));
 //   try {
@@ -229,6 +260,46 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
     await initializeErc20TokenContract(selectedRewardToken.tokenB.id);
     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, tab);
     // dispatch(checkAllowanceALT());
+  } catch (e) {
+    _error("ERROR getApprovalALT -> ", e);
+  } finally {
+    setLoadingIndep({ approvalALT: false });
+  }
+};
+
+export const getApprovalXIOPool = (tab) => async (dispatch, getState) => {
+  setLoadingIndep({ approvalXIO: true });
+  try {
+    const {
+      flashstake: { selectedRewardToken },
+    } = getState();
+    await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+    await approve(selectedRewardToken?.id, tab);
+    dispatch(checkAllowancePool());
+  } catch (e) {
+    _error("ERROR getApprovalXIO -> ", e);
+  } finally {
+    setLoadingIndep({ approval: false });
+    setLoadingIndep({ approvalXIO: false });
+  }
+};
+
+export const getApprovalALTPool = (_selectedPortal, tab) => async (
+  dispatch,
+  getState
+) => {
+  setLoadingIndep({ approvalALT: true });
+  try {
+    const {
+      flashstake: { selectedRewardToken },
+    } = getState();
+    if (!selectedRewardToken?.tokenB?.id) {
+      return null;
+    }
+    await initializeErc20TokenContract(selectedRewardToken?.tokenB?.id);
+    await approve(selectedRewardToken?.id, tab);
+
+    dispatch(checkAllowancePool());
   } catch (e) {
     _error("ERROR getApprovalALT -> ", e);
   } finally {
@@ -498,9 +569,19 @@ export const setSwapDialogStep = (step) => {
     payload: step,
   };
 };
+export const setPoolDialogStep = (step) => {
+  return {
+    type: "POOL_DIALOG_STEP",
+    payload: step,
+  };
+};
 
 export const setSwapDialogStepIndep = (step) => {
   store.dispatch(setSwapDialogStep(step));
+};
+
+export const setPoolDialogStepIndep = (step) => {
+  store.dispatch(setPoolDialogStep(step));
 };
 
 // export const setReset = (val) => {

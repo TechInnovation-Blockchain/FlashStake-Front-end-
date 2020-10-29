@@ -42,7 +42,9 @@ import {
   getBalanceXIO,
   stakeXIO,
   setDialogStep,
-  // setReset,
+  checkAllowancePool,
+  getApprovalXIOPool,
+  getApprovalALTPool,
   setInitialValues,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -58,23 +60,6 @@ import { Link } from "@material-ui/icons";
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
-
-// const useStyles = makeStyles((theme) => ({
-//   contentContainer: {
-//     padding: theme.spacing(4),
-//     textAlign: "center",
-//     display: "flex",
-//     flexDirection: "row",
-//     justifyContent: "space-evenly",
-
-//     // overflow: hidden,
-//   },
-//   comingSoon: {
-//     color: theme.palette.xioRed.main,
-//     fontWeight: 700,
-//   },
-
-// }));
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -330,18 +315,20 @@ function Pool({
   setSelectedRewardToken,
   selectedPortal,
   allowanceXIO,
+  allowanceALT,
   getApprovalXIO,
+  getApprovalALT,
   calculateReward,
   reward,
   loading: loadingRedux,
   active,
   account,
-  checkAllowance,
+  checkAllowancePool,
   getBalanceXIO,
   balanceXIO,
   stakeXIO,
   setLoading,
-  dialogStep,
+  dialogStep3,
   setDialogStep,
   stakeRequest,
   unstakeRequest,
@@ -360,6 +347,10 @@ function Pool({
   setExpandAccodion,
   expanding,
   updateAllBalances,
+  allowanceXIOPool,
+  allowanceALTPool,
+  getApprovalXIOPool,
+  getApprovalALTPool,
   ...props
 }) {
   const classes = useStyles();
@@ -467,12 +458,12 @@ function Pool({
 
   useEffect(() => {
     if (active && account) {
-      checkAllowance();
+      checkAllowancePool();
       // getBalanceXIO();
-      updateAllBalances();
+      // updateAllBalances();
       showWalletBackdrop(false);
     }
-  }, [active, account]);
+  }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
@@ -480,10 +471,16 @@ function Pool({
     stakeXIO(quantity, days);
   };
 
-  const onClickApprove = () => {
+  const onClickApprove = async () => {
     setDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    getApprovalXIO("stake");
+    console.log(allowanceXIOPool);
+    console.log(allowanceALTPool);
+    if (!allowanceXIOPool) {
+      await getApprovalXIOPool("pool");
+    } else if (!allowanceALTPool) {
+      await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
+    }
   };
 
   const onClickUnstake = () => {
@@ -645,19 +642,21 @@ function Pool({
                       </Typography>
                     )}
                   </Grid>
-                  {/* {!allowanceXIO ? (
+                  {!allowanceXIOPool || !allowanceALTPool ? (
                     <Grid container item xs={12} onClick={showWalletHint}>
                       <Grid item xs={6} className={classes.btnPaddingRight}>
                         <Button
                           fullWidth
                           variant="red"
                           onClick={
-                            !allowanceXIO && !loadingRedux.approval
+                            (!allowanceXIOPool || !allowanceALTPool) &&
+                            !loadingRedux.approval
                               ? onClickApprove
                               : () => {}
                           }
                           disabled={
-                            allowanceXIO ||
+                            !selectedPortal ||
+                            // allowanceXIOPool ||
                             !active ||
                             !account ||
                             loadingRedux.reward ||
@@ -670,29 +669,31 @@ function Pool({
                         >
                           {loadingRedux.approval && loadingRedux.approvalXIO
                             ? "APPROVING"
-                            : `APPROVE ${selectedStakeToken}`}
+                            : !allowanceXIOPool
+                            ? `APPROVE ${selectedStakeToken}`
+                            : `APPROVE ${
+                                selectedRewardToken.tokenB.symbol || ""
+                              }`}
                         </Button>
                       </Grid>
                       <Grid item xs={6} className={classes.btnPaddingLeft}>
                         <Button
                           fullWidth
                           variant="red"
-                          onClick={
-                            !allowanceXIO
-                              ? () => {}
-                              : () => onClickStake(quantity, days)
-                          }
+                          // onClick={
+                          //   !allowanceXIO
+                          //     ? () => {}
+                          //     : () => onClickStake(quantity, days)
+                          // }
                           disabled={
-                            !allowanceXIO ||
+                            !allowanceXIOPool ||
                             !active ||
                             !account ||
                             !selectedPortal ||
                             quantity <= 0 ||
-                            days <= 0 ||
                             loadingRedux.reward ||
                             loadingRedux.stake ||
                             chainId !== 4 ||
-                            reward <= 0 ||
                             (active &&
                               account &&
                               parseFloat(quantity) > parseFloat(walletBalance))
@@ -703,39 +704,39 @@ function Pool({
                         </Button>
                       </Grid>
                     </Grid>
-                  ) : ( */}
-                  <Fragment>
-                    <Grid container item xs={12} onClick={showWalletHint}>
-                      <Button
-                        fullWidth
-                        variant="red"
-                        // onClick={
-                        //   !allowanceXIO
-                        //     ? () => {}
-                        //     : () => onClickStake(quantity, days)
-                        // }
-                        // disabled={
-                        //   !active ||
-                        //   !account ||
-                        //   !selectedPortal ||
-                        //   quantity <= 0 ||
-                        //   days <= 0 ||
-                        //   loadingRedux.reward ||
-                        //   loadingRedux.stake ||
-                        //   chainId !== 4 ||
-                        //   reward <= 0 ||
-                        //   (active &&
-                        //     account &&
-                        //     parseFloat(quantity) > parseFloat(walletBalance))
-                        // }
-                        loading={loadingRedux.stake}
-                      >
-                        POOL
-                      </Button>
-                    </Grid>
-                  </Fragment>
-
-                  {!allowanceXIO &&
+                  ) : (
+                    <Fragment>
+                      <Grid container item xs={12} onClick={showWalletHint}>
+                        <Button
+                          fullWidth
+                          variant="red"
+                          // onClick={
+                          //   !allowanceXIO
+                          //     ? () => {}
+                          //     : () => onClickStake(quantity, days)
+                          // }
+                          // disabled={
+                          //   !active ||
+                          //   !account ||
+                          //   !selectedPortal ||
+                          //   quantity <= 0 ||
+                          //   days <= 0 ||
+                          //   loadingRedux.reward ||
+                          //   loadingRedux.stake ||
+                          //   chainId !== 4 ||
+                          //   reward <= 0 ||
+                          //   (active &&
+                          //     account &&
+                          //     parseFloat(quantity) > parseFloat(walletBalance))
+                          // }
+                          loading={loadingRedux.stake}
+                        >
+                          POOL
+                        </Button>
+                      </Grid>
+                    </Fragment>
+                  )}
+                  {!allowanceXIOPool &&
                   active &&
                   account &&
                   selectedRewardToken &&
@@ -802,6 +803,308 @@ function Pool({
             </Accordion>
           </Box>
         </AnimateHeight>
+
+        <Dialog
+          open={showStakeDialog}
+          // open={true}
+          steps={["APPROVE XIO", "POOL"]}
+          title="POOL"
+          onClose={() => setShowStakeDialog(false)}
+          status={["pending", "success", "failed", "rejected"].find((item) =>
+            dialogStep3.includes(item)
+          )}
+          step={dialogStep3}
+          stepperShown={
+            quantity > 0 && days > 0
+              ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "poolProposal"
+              : null
+          }
+          // stepperShown={true}
+
+          // status="success"
+
+          //successApproval: (
+          //  <Fragment>
+          //    <Typography variant="body1" className={classes.textBold}>
+          //      APPROVAL
+          //      <br />
+          //      <span className={classes.greenText}>SUCCESSFUL</span>
+          //    </Typography>
+          //    <Button variant="red" fullWidth onClick={onClickClose}>
+          //      CLOSE
+          //    </Button>
+          //  </Fragment>
+          //),
+        >
+          {
+            {
+              pendingApproval: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVAL PENDING
+                    <br />
+                  </Typography>
+                </Fragment>
+              ),
+              poolProposal: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    POOOL
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    IF YOU STAKE{" "}
+                    <span className={classes.infoTextSpan}>
+                      {quantity || 0} XIO{" "}
+                    </span>{" "}
+                    FOR{" "}
+                    <span className={classes.infoTextSpan}>
+                      {days || 0} MINS
+                    </span>{" "}
+                    YOU WILL{" "}
+                    <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                    GET{" "}
+                    {loadingRedux.reward ? (
+                      <CircularProgress
+                        size={12}
+                        className={classes.loaderStyle}
+                      />
+                    ) : (
+                      <Tooltip
+                        title={`${Web3.utils.fromWei(reward)} ${
+                          selectedRewardToken?.tokenB?.symbol || ""
+                        }`}
+                      >
+                        <span className={classes.infoTextSpan}>
+                          {trunc(Web3.utils.fromWei(reward))}{" "}
+                          {selectedRewardToken?.tokenB?.symbol || ""}
+                        </span>
+                      </Tooltip>
+                    )}
+                  </Typography>
+                  <Button
+                    variant="red"
+                    fullWidth
+                    onClick={
+                      !allowanceXIO
+                        ? () => {}
+                        : () => onClickStake(quantity, days)
+                    }
+                    disabled={
+                      !active ||
+                      !account ||
+                      !selectedPortal ||
+                      quantity <= 0 ||
+                      days <= 0 ||
+                      loadingRedux.reward ||
+                      loadingRedux.stake ||
+                      chainId !== 4 ||
+                      reward <= 0 ||
+                      (active &&
+                        account &&
+                        parseFloat(quantity) > parseFloat(walletBalance))
+                    }
+                    loading={loadingRedux.approval}
+                  >
+                    STAKE
+                  </Button>
+                </Fragment>
+              ),
+              failedApproval: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    APPROVAL
+                    <br />
+                    <span className={classes.redText}>FAILED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              rejectedApproval: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    APPROVAL
+                    <br />
+                    <span className={classes.redText}>REJECTED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              pendingStake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    STAKE PENDING
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    {stakeRequest.quantity} XIO FOR {stakeRequest.days}{" "}
+                    {stakeRequest.days > 1 ? "MINS" : "MIN"} TO EARN{" "}
+                    <Tooltip
+                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                    >
+                      <span>
+                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                      </span>
+                    </Tooltip>{" "}
+                    INSTANTLY
+                  </Typography>
+                </Fragment>
+              ),
+              failedStake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    STAKE
+                    <br />
+                    <span className={classes.redText}>FAILED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              rejectedStake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    STAKE
+                    <br />
+                    <span className={classes.redText}>REJECTED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              successStake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    STAKE
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity} XIO FOR{" "}
+                    {stakeRequest.days} {stakeRequest.days > 1 ? "MINS" : "MIN"}{" "}
+                    AND YOU WERE SENT{" "}
+                    <Tooltip
+                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                    >
+                      <span>
+                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                      </span>
+                    </Tooltip>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.redText}`}
+                  >
+                    <a
+                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={classes.link}
+                    >
+                      <Link fontSize="small" className={classes.linkIcon} />
+                      VIEW ON ETHERSCAN
+                    </a>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={onClickClose}>
+                    CLOSE
+                  </Button>
+                </Fragment>
+              ),
+              pendingUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE PENDING
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    UNSTAKING{" "}
+                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
+                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
+                    </Tooltip>
+                  </Typography>
+                </Fragment>
+              ),
+              failedUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.redText}>FAILED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              rejectedUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.redText}>REJECTED</span>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              successUnstake: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    YOU HAVE SUCCESSFULLY UNSTAKED{" "}
+                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
+                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
+                    </Tooltip>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.redText}`}
+                  >
+                    <a
+                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={classes.link}
+                    >
+                      <Link fontSize="small" className={classes.linkIcon} />
+                      VIEW ON ETHERSCAN
+                    </a>
+                  </Typography>
+                  <Button variant="red" fullWidth onClick={onClickClose}>
+                    CLOSE
+                  </Button>
+                </Fragment>
+              ),
+            }[dialogStep3]
+          }
+        </Dialog>
       </Fragment>
     </PageAnimation>
   );
@@ -837,9 +1140,10 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApprovalXIO,
+  getApprovalXIOPool,
+  getApprovalALTPool,
   calculateReward,
-  checkAllowance,
+  checkAllowancePool,
   getBalanceXIO,
   stakeXIO,
   setLoading,

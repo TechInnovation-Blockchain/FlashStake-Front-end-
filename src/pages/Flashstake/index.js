@@ -847,6 +847,7 @@ function Flashstake({
             </Accordion>
           </Box>
         </AnimateHeight>
+
         <Dialog
           open={showStakeDialog}
           // open={true}

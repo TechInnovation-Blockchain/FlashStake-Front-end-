@@ -10,6 +10,8 @@ export const flashstakeReducer = (
     selectedPortal: "",
     allowanceXIO: true,
     allowanceALT: true,
+    allowanceXIOPool: true,
+    allowanceALTPool: true,
     reward: "0",
     swapOutput: "0",
     balanceXIO: 0,
@@ -17,6 +19,7 @@ export const flashstakeReducer = (
     balanceUSD: 0,
     dialogStep: "",
     dialogStep2: "",
+    dialogStep3: "",
 
     stakeRequest: {
       quantity: 0,
@@ -92,6 +95,17 @@ export const flashstakeReducer = (
         allowanceALT: payload,
       };
 
+    case "ALLOWANCE_XIO_POOL":
+      return {
+        ...state,
+        allowanceXIOPool: payload,
+      };
+    case "ALLOWANCE_ALT_POOL":
+      return {
+        ...state,
+        allowanceALTPool: payload,
+      };
+
     case "STAKE_REWARD":
       return {
         ...state,
@@ -133,6 +147,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         dialogStep2: payload,
+      };
+    case "POOL_DIALOG_STEP":
+      return {
+        ...state,
+        dialogStep3: payload,
       };
     case "STAKE_REQUEST":
       return {
