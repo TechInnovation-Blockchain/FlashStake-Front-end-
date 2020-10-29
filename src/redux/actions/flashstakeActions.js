@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import { store } from "../../config/reduxStore";
+import _ from "lodash";
 import {
   initializeErc20TokenContract,
   initializeErc20TokenInfuraContract,
@@ -125,15 +126,28 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
   dispatch(setLoading({ swapReward: false }));
 };
 
+const checkAllowanceMemo = _.memoize(
+  async (_address, _tokenAddress, _walletAddress) => {
+    _log("Account", { _address, _tokenAddress, _walletAddress });
+    await initializeErc20TokenInfuraContract(_tokenAddress);
+    const _allowance = await allowance(_address);
+    return _allowance;
+  },
+  (_address, _tokenAddress, _walletAddress) =>
+    _address + _tokenAddress + _walletAddress
+);
+
 export const checkAllowance = () => async (dispatch, getState) => {
   dispatch(setLoading({ allowance: true }));
   try {
     const {
       flashstake: { selectedRewardToken },
+      web3: { account },
     } = getState();
-    await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    const _allowance = await allowance(
-      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
+    const _allowance = await checkAllowanceMemo(
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+      CONSTANTS.ADDRESS_XIO_RINKEBY,
+      account
     );
     dispatch({
       type: "ALLOWANCE_XIO",
@@ -143,9 +157,10 @@ export const checkAllowance = () => async (dispatch, getState) => {
     if (!selectedRewardToken?.tokenB?.id) {
       return null;
     }
-    await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
-    const _allowance2 = await allowance(
-      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
+    const _allowance2 = await checkAllowanceMemo(
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+      selectedRewardToken.tokenB.id,
+      account
     );
     dispatch({
       type: "ALLOWANCE_ALT",
@@ -163,21 +178,30 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
   try {
     const {
       flashstake: { selectedRewardToken },
+      web3: { account },
     } = getState();
     if (!selectedRewardToken?.tokenB?.id) {
       return null;
     }
-    await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    const _allowance = await allowance(selectedRewardToken.id);
+    const _allowance = await checkAllowanceMemo(
+      selectedRewardToken.id,
+      CONSTANTS.ADDRESS_XIO_RINKEBY,
+      account
+    );
+    _log(_allowance);
+
     console.log(_allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
     });
 
-    await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
-    const _allowance2 = await allowance(selectedRewardToken.id);
-    console.log(_allowance2);
+    const _allowance2 = await checkAllowanceMemo(
+      selectedRewardToken.id,
+      selectedRewardToken.tokenB.id,
+      account
+    );
+    _log(_allowance2);
     dispatch({
       type: "ALLOWANCE_ALT_POOL",
       payload: _allowance2 > 0,

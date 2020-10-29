@@ -230,7 +230,7 @@ const useStyles = makeStyles((theme) => ({
   dashboardAccordian: {
     color: theme.palette.text.grey,
     "&:hover": {
-      color: "#c66065",
+      color: "#D89C74",
     },
   },
   accordion: {

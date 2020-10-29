@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.buttonText.red,
     "&:hover": {
       // background: theme.palette.xioRed.main,
-      background: "#cd545a",
+      background: "#e2874a",
     },
     "&.Mui-disabled": {
       background: theme.palette.border.main,

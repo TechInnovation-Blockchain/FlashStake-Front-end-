@@ -46,11 +46,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c66065;
+  background: #D89C74;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b86065;
+  background: #D89C74;
 }
 
 input[type="number"] {

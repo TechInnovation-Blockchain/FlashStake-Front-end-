@@ -4,7 +4,7 @@ export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: "#c66065",
+      main: "#D89C74",
     },
     secondary: {
       main: "#171717",
@@ -33,7 +33,7 @@ export const darkTheme = createMuiTheme({
     },
     button: {
       dark: "#555555",
-      red: "#c66065",
+      red: "#D89C74",
     },
     buttonText: {
       dark: "#ffffff",
@@ -48,7 +48,7 @@ export const darkTheme = createMuiTheme({
       selected: "#171717",
     },
     xioRed: {
-      main: "#c66065",
+      main: "#D89C74",
     },
 
     navLink: {
@@ -87,7 +87,7 @@ export const lightTheme = createMuiTheme({
       primary2: "#000000",
     },
     xioRed: {
-      main: "#c66065",
+      main: "#e2874a",
     },
     background: {
       primary: "#ffffff",
@@ -99,7 +99,7 @@ export const lightTheme = createMuiTheme({
     },
     button: {
       dark: "#555555",
-      red: "#c66065",
+      red: "#e2874a",
     },
     buttonText: {
       dark: "#ffffff",
@@ -110,7 +110,7 @@ export const lightTheme = createMuiTheme({
       secondary: "#0000001f",
     },
     navLink: {
-      active: "#c66065",
+      active: "#e2874a",
     },
   },
   typography: {
@@ -143,7 +143,7 @@ export const lightTheme = createMuiTheme({
 //       primary2: "#000000",
 //     },
 //     xioRed: {
-//       main: "#c66065",
+//       main: "#D89C74",
 //     },
 //     background: {
 //       primary: "#000000",
@@ -152,7 +152,7 @@ export const lightTheme = createMuiTheme({
 //     },
 //     button: {
 //       dark: "#555555",
-//       red: "#c66065",
+//       red: "#D89C74",
 //     },
 //     buttonText: {
 //       dark: "#ffffff",
