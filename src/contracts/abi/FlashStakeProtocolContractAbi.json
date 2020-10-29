@@ -18,13 +18,19 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "_amountXIO",
+          "name": "_amountFLASH",
           "type": "uint256"
         },
         {
           "indexed": false,
           "internalType": "uint256",
           "name": "_amountALT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_liquidity",
           "type": "uint256"
         }
       ],
@@ -35,32 +41,37 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": true,
+          "indexed": false,
           "internalType": "address",
-          "name": "previousOwner",
+          "name": "_pool",
           "type": "address"
         },
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
           "indexed": false,
           "internalType": "address",
-          "name": "account",
+          "name": "_token",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amountFLASH",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amountALT",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_liquidity",
+          "type": "uint256"
         }
       ],
-      "name": "Paused",
+      "name": "LiquidityRemoved",
       "type": "event"
     },
     {
@@ -106,7 +117,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "_xioQuantity",
+          "name": "_flashQuantity",
           "type": "uint256"
         },
         {
@@ -161,7 +172,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "_xioReceived",
+          "name": "_flashReceived",
           "type": "uint256"
         },
         {
@@ -186,19 +197,6 @@
         {
           "indexed": false,
           "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "Unpaused",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
           "name": "_staker",
           "type": "address"
         },
@@ -211,7 +209,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "_xioAmount",
+          "name": "_flashAmount",
           "type": "uint256"
         },
         {
@@ -226,7 +224,20 @@
     },
     {
       "inputs": [],
-      "name": "XIO_CONTRACT",
+      "name": "FLASH_CONTRACT",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "FLASH_PROTOCOL",
       "outputs": [
         {
           "internalType": "address",
@@ -241,12 +252,22 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_amountXIO",
+          "name": "_amountFLASH",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
           "name": "_amountALT",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amountFLASHMin",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amountALTMin",
           "type": "uint256"
         },
         {
@@ -258,73 +279,6 @@
       "name": "addLiquidityInPool",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_amountXIO",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_amountALT",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "r",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "s",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "uint8",
-          "name": "v",
-          "type": "uint8"
-        },
-        {
-          "internalType": "bool",
-          "name": "approveMax",
-          "type": "bool"
-        }
-      ],
-      "name": "addLiquidityInPoolWithPermit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_xioQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_days",
-          "type": "uint256"
-        }
-      ],
-      "name": "calculateXPY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -350,11 +304,11 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_xioQuantity",
+          "name": "_amountIn",
           "type": "uint256"
         }
       ],
-      "name": "getXPY",
+      "name": "getFPYFromProtocol",
       "outputs": [
         {
           "internalType": "uint256",
@@ -366,33 +320,24 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
+      "inputs": [
         {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "_amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_days",
+          "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "pauseContract",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "paused",
+      "name": "getMintAmountFromProtocol",
       "outputs": [
         {
-          "internalType": "bool",
+          "internalType": "uint256",
           "name": "",
-          "type": "bool"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -418,8 +363,52 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "renounceOwnership",
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_expireAfter",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_mintedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_staker",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_receiver",
+          "type": "address"
+        }
+      ],
+      "name": "receiveFlash",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_liquidity",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "removeLiquidityInPool",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -433,7 +422,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_xioQuantity",
+          "name": "_flashQuantity",
           "type": "uint256"
         },
         {
@@ -451,16 +440,84 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "reward",
+          "name": "mintAmount",
           "type": "uint256"
         },
         {
           "internalType": "bytes32",
           "name": "id",
           "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reward",
+          "type": "uint256"
         }
       ],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "stakerBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "stakerData",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "flashQuantity",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expiration",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initiation",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "altAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "staker",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -495,57 +552,19 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "unpauseContract",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "bytes32[]",
           "name": "_expiredIds",
           "type": "bytes32[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_xioQuantity",
-          "type": "uint256"
         }
       ],
       "name": "unstake",
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "stakedTokens",
+          "name": "withdrawAmount",
           "type": "uint256"
         }
       ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_time",
-          "type": "uint256"
-        }
-      ],
-      "name": "updateTime",
-      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }

@@ -63,6 +63,12 @@ export const dashboardReducer = (
         selectedStakes,
         isStakesSelected: Object.values(selectedStakes).find((i) => i),
       };
+    case "CLEAR_SELECTION":
+      return {
+        ...state,
+        selectedStakes: {},
+        isStakesSelected: false,
+      };
     default:
       return state;
   }

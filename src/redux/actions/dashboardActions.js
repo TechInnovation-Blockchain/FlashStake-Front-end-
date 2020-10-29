@@ -272,3 +272,9 @@ export const selectStake = (id) => {
     payload: id,
   };
 };
+
+export const clearSelection = () => {
+  return {
+    type: "CLEAR_SELECTION",
+  };
+};

@@ -354,6 +354,57 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   }
 };
 
+export const unstakeEarly = (unstakeAll = true) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    const {
+      user: { stakes, expiredTimestamps, dappBalance },
+      dashboard: { selectedStakes },
+    } = await getState();
+    console.log(dappBalance, stakes?.length);
+    if (dappBalance <= 0 || !stakes?.length) {
+      throw new _error("No stakes to withdraw!");
+    }
+
+    let _balanceUnstake = 0;
+    let _unstakeTimestamps = [];
+
+    if (unstakeAll) {
+      _balanceUnstake = dappBalance;
+      _unstakeTimestamps = stakes.map((_stake) => _stake.id);
+    } else {
+      _unstakeTimestamps = stakes.filter((_stake) => {
+        if (selectedStakes[_stake.id]) {
+          _balanceUnstake += parseFloat(_stake.stakeAmount);
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+
+    dispatch({
+      type: "UNSTAKE_REQUEST",
+      payload: {
+        timestamps: _unstakeTimestamps,
+        quantity: _balanceUnstake,
+      },
+    });
+    initializeFlashstakeProtocolContract();
+    console.log(_unstakeTimestamps);
+    _log(
+      "unstake params -> ",
+      _unstakeTimestamps,
+      Web3.utils.toWei(_balanceUnstake)
+    );
+    await unstake(expiredTimestamps, Web3.utils.toWei(_balanceUnstake));
+  } catch (e) {
+    _error("ERROR unstakeEarly -> ", e);
+  }
+};
+
 export const unstakeXIO = () => async (dispatch, getState) => {
   try {
     const {
@@ -374,7 +425,7 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    // console.log(expiredTimestamps);
+    console.log(expiredTimestamps);
     _log(
       "unstake params -> ",
       expiredTimestamps,

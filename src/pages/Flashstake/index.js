@@ -46,6 +46,8 @@ import {
   setDialogStep,
   // setReset,
   setInitialValues,
+  unstakeXIO,
+  unstakeEarly,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
@@ -324,12 +326,16 @@ function Flashstake({
   getBalanceXIO,
   balanceXIO,
   stakeXIO,
+  unstakeXIO,
+  unstakeEarly,
   setLoading,
   dialogStep,
   setDialogStep,
   stakeRequest,
   unstakeRequest,
   reset,
+  dappBalance,
+  expiredDappBalance,
   // setReset,
   chainId,
   stakeTxnHash,
@@ -383,7 +389,6 @@ function Flashstake({
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
-  const [height2, setHeight2] = useState(0);
 
   useEffect(() => {
     document
@@ -470,7 +475,8 @@ function Flashstake({
   };
 
   const onClickUnstake = () => {
-    setDialogStep("pendingUnstake");
+    setDialogStep("unstakeOptions");
+    // setDialogStep("pendingUnstake");
     setShowStakeDialog(true);
   };
 
@@ -1064,6 +1070,49 @@ function Flashstake({
                   </Button>
                 </Fragment>
               ),
+              unstakeOptions: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    WHICH STAKES WOULD YOU LIKE TO UNSTAKE?
+                  </Typography>
+                  {parseFloat(expiredDappBalance) < parseFloat(dappBalance) ? (
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <Button variant="red" fullWidth onClick={unstakeXIO}>
+                          <Tooltip title={`${expiredDappBalance} XIO`}>
+                            <span>
+                              COMPLETED
+                              <br />({trunc(expiredDappBalance)} XIO)
+                            </span>
+                          </Tooltip>
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Button variant="red" fullWidth onClick={unstakeEarly}>
+                          <Tooltip title={`${dappBalance} XIO`}>
+                            <span>
+                              ALL
+                              <br />({trunc(dappBalance)} XIO)
+                            </span>
+                          </Tooltip>
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <Button variant="red" fullWidth onClick={unstakeXIO}>
+                      COMPLETED
+                      <br />({dappBalance} XIO)
+                    </Button>
+                  )}
+                </Fragment>
+              ),
               pendingUnstake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
@@ -1152,7 +1201,13 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
-  user: { currentStaked, pools, walletBalance },
+  user: {
+    currentStaked,
+    pools,
+    walletBalance,
+    dappBalance,
+    expiredDappBalance,
+  },
   contract,
 }) => ({
   ...flashstake,
@@ -1165,6 +1220,8 @@ const mapStateToProps = ({
   currentStaked,
   walletBalance,
   animation,
+  dappBalance,
+  expiredDappBalance,
   heightVal,
   ...contract,
 });
@@ -1186,4 +1243,6 @@ export default connect(mapStateToProps, {
   setExpandAccodion,
   updateAllBalances,
   setHeightValue,
+  unstakeEarly,
+  unstakeXIO,
 })(Flashstake);
