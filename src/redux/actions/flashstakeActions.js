@@ -11,6 +11,8 @@ import {
   initializeFlashstakeProtocolContract,
   stake,
   unstake,
+  addLiquidityInPool,
+  removeLiquidityInPool,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeFlashstakePoolContract,
@@ -573,6 +575,11 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }
 };
+
+export const addTokenLiquidityInPool = () => async () => {};
+
+export const removeTokenLiquidityInPool = () => async () => {};
+
 export const setInitialValues = (quantity, days) => {
   return {
     type: "INITIAL_VALUES",

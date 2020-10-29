@@ -475,3 +475,13 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
     _error("ERROR unstakeALT -> ", e);
   }
 };
+
+export const addLiquidityInPool = (
+  _amountFLASH,
+  _amountALT,
+  _amountFLASHMin,
+  _amountALTMin,
+  _token
+) => {};
+
+export const removeLiquidityInPool = (_liquidity, _token) => {};
