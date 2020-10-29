@@ -375,7 +375,7 @@ export const calculateXPY = async (xioQuantity, days) => {
     checkContractInitialized();
 
     const xpy = await infuraContract.methods
-      .calculateXPY(xioQuantity, days)
+      .getMintAmountFromProtocol(xioQuantity, days)
       .call();
     return xpy;
   } catch (e) {
@@ -389,7 +389,7 @@ export const getXPY = async () => {
     checkContractInitialized();
 
     const xpy = await infuraContract.methods
-      .getXPY(Web3.utils.toWei("1"))
+      .getFPYFromProtocol(Web3.utils.toWei("1"))
       .call();
     return xpy;
   } catch (e) {
