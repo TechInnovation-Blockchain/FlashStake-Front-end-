@@ -328,7 +328,7 @@ function Pool({
   balanceXIO,
   stakeXIO,
   setLoading,
-  dialogStep,
+  dialogStep3,
   setDialogStep,
   stakeRequest,
   unstakeRequest,
@@ -477,9 +477,9 @@ function Pool({
     console.log(allowanceXIOPool);
     console.log(allowanceALTPool);
     if (!allowanceXIOPool) {
-      await getApprovalXIOPool("stake");
+      await getApprovalXIOPool("pool");
     } else if (!allowanceALTPool) {
-      await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "stake");
+      await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
     }
   };
 
@@ -807,17 +807,17 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE XIO", "STAKE"]}
-          title="FLASHSTAKE"
+          steps={["APPROVE XIO", "POOL"]}
+          title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
-            dialogStep.includes(item)
+            dialogStep3.includes(item)
           )}
-          step={dialogStep}
+          step={dialogStep3}
           stepperShown={
             quantity > 0 && days > 0
-              ? dialogStep === "pendingApproval" ||
-                dialogStep === "flashstakeProposal"
+              ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "poolProposal"
               : null
           }
           // stepperShown={true}
@@ -847,10 +847,10 @@ function Pool({
                   </Typography>
                 </Fragment>
               ),
-              flashstakeProposal: (
+              poolProposal: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    POOOL
                     <br />
                   </Typography>
                   <Typography
@@ -1102,7 +1102,7 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-            }[dialogStep]
+            }[dialogStep3]
           }
         </Dialog>
       </Fragment>

@@ -11,6 +11,7 @@ import {
 import {
   setDialogStepIndep,
   setSwapDialogStepIndep,
+  setPoolDialogStepIndep,
   checkAllowance,
 } from "../../redux/actions/flashstakeActions";
 import { store } from "../../config/reduxStore";
@@ -53,9 +54,15 @@ export const decimals = async () => {
 
 export const approve = async (address, tab, amount) => {
   try {
-    tab === "stake"
-      ? setDialogStepIndep("pendingApproval")
-      : setSwapDialogStepIndep("pendingApproval");
+    if (tab === "stake") {
+      setDialogStepIndep("pendingApproval");
+    }
+    if (tab === "swap") {
+      setSwapDialogStepIndep("pendingApproval");
+    }
+    if (tab === "pool") {
+      setPoolDialogStepIndep("pendingApproval");
+    }
     setLoadingIndep({ approval: true });
     showSnackbarIndep("Awaiting Approval.", "info");
     checkContractInitialized();
@@ -82,22 +89,53 @@ export const approve = async (address, tab, amount) => {
       .then(function (receipt) {
         store.dispatch(checkAllowance());
         showSnackbarIndep("Approval Successful.", "success");
-        tab === "stake"
-          ? setDialogStepIndep("flashstakeProposal")
-          : setSwapDialogStepIndep("swapProposal");
+        if (tab === "stake") {
+          setDialogStepIndep("flashstakeProposal");
+        }
+        if (tab === "swap") {
+          setSwapDialogStepIndep("swapProposal");
+        }
+        if (tab === "pool") {
+          setPoolDialogStepIndep("poolProposal");
+        }
+        // tab === "stake"
+        //   ? setDialogStepIndep("flashstakeProposal")
+        //   : setSwapDialogStepIndep("swapProposal");
         // setDialogStepIndep("successApproval");
       })
       .catch((e) => {
         if (e.code === 4001) {
           showSnackbarIndep("Approval Rejected.", "error");
-          tab === "stake"
-            ? setDialogStepIndep("rejectedApproval")
-            : setSwapDialogStepIndep("rejectedApproval");
+
+          if (tab === "stake") {
+            setDialogStepIndep("rejectedApproval");
+          }
+          if (tab === "swap") {
+            setSwapDialogStepIndep("rejectedApproval");
+          }
+          if (tab === "pool") {
+            setPoolDialogStepIndep("rejectedApproval");
+          }
+
+          // tab === "stake"
+          //   ? setDialogStepIndep("rejectedApproval")
+          //   : setSwapDialogStepIndep("rejectedApproval");
         } else {
           showSnackbarIndep("Approval Failed.", "error");
-          tab === "stake"
-            ? setDialogStepIndep("failedApproval")
-            : setSwapDialogStepIndep("failedApproval");
+
+          if (tab === "stake") {
+            setDialogStepIndep("failedApproval");
+          }
+          if (tab === "swap") {
+            setSwapDialogStepIndep("failedApproval");
+          }
+          if (tab === "pool") {
+            setPoolDialogStepIndep("failedApproval");
+          }
+
+          // tab === "stake"
+          //   ? setDialogStepIndep("failedApproval")
+          //   : setSwapDialogStepIndep("failedApproval");
         }
         setLoadingIndep({ approval: false });
         _error("ERROR approve -> ", e);
@@ -109,14 +147,36 @@ export const approve = async (address, tab, amount) => {
   } catch (e) {
     if (e.code === 4001) {
       showSnackbarIndep("Approval Rejected.", "error");
-      tab === "stake"
-        ? setDialogStepIndep("rejectedApproval")
-        : setSwapDialogStepIndep("rejectedApproval");
+
+      if (tab === "stake") {
+        setDialogStepIndep("rejectedApproval");
+      }
+      if (tab === "swap") {
+        setSwapDialogStepIndep("rejectedApproval");
+      }
+      if (tab === "pool") {
+        setPoolDialogStepIndep("rejectedApproval");
+      }
+
+      // tab === "stake"
+      //   ? setDialogStepIndep("rejectedApproval")
+      //   : setSwapDialogStepIndep("rejectedApproval");
     } else {
       showSnackbarIndep("Approval Failed.", "error");
-      tab === "stake"
-        ? setDialogStepIndep("failedApproval")
-        : setSwapDialogStepIndep("failedApproval");
+
+      if (tab === "stake") {
+        setDialogStepIndep("failedApproval");
+      }
+      if (tab === "swap") {
+        setSwapDialogStepIndep("failedApproval");
+      }
+      if (tab === "pool") {
+        setPoolDialogStepIndep("failedApproval");
+      }
+
+      // tab === "stake"
+      //   ? setDialogStepIndep("failedApproval")
+      //   : setSwapDialogStepIndep("failedApproval");
     }
     setLoadingIndep({ approval: false });
     _error("ERROR approve -> ", e);
