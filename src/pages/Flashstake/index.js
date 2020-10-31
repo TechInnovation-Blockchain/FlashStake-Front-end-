@@ -59,7 +59,7 @@ import {
 } from "../../redux/actions/uiActions";
 import { Link } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
-import { setRefetch } from "../../redux/actions/dashboardActions";
+import { setRefetch, selectStake } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 
@@ -355,6 +355,10 @@ function Flashstake({
   setHeightValue,
   totalBurnAmount,
   totalBalanceWithBurn,
+  selectedStakes,
+  selectStake,
+  stakes,
+  totalBurn,
   ...props
 }) {
   const classes = useStyles();
@@ -476,9 +480,26 @@ function Flashstake({
     getApprovalXIO("stake");
   };
 
+  // useEffect(() => {
+  //   unStakeCompleted();
+  // }, []);
+
+  console.log(selectedStakes);
+  // console.log(selectStake);
   const onClickUnstake = () => {
     setDialogStep("unstakeOptions");
     // setDialogStep("pendingUnstake");
+    setShowStakeDialog(true);
+  };
+
+  const onClickUnstake2 = () => {
+    if (totalBurn.totalBurn > 0) {
+      setDialogStep("partialCompleted");
+      // setDialogStep("pendingUnstake");
+    } else {
+      setDialogStep("completedStakes");
+      // setDialogStep("pendingUnstake");
+    }
     setShowStakeDialog(true);
   };
 
@@ -505,6 +526,17 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
+  // const unStakeCompleted = (
+  //   id = "0xd6d994e37e69bef5c43fb28d20930eb12baaa6ce4ce23a1a50917bf00f80bca9"
+  // ) => {
+  //   if (selectedStakes[id]) {
+  //     console.log("Exists....");
+  //     if (id in stakes) {
+  //       console.log("Stake Exists");
+  //     }
+  //   }
+  // };
+
   // props.history.location.pathname === "/swap" ? true :
 
   return (
@@ -512,7 +544,7 @@ function Flashstake({
       <Fragment>
         <AnimateHeight
           id="example-panel"
-          duration={700}
+          duration={400}
           height={heightVal} // see props documentation below
         >
           <Box
@@ -831,7 +863,10 @@ function Flashstake({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <Table onClickUnstake={onClickUnstake} />
+                <Table
+                  onClickUnstake={onClickUnstake}
+                  onClickUnstake2={onClickUnstake2}
+                />
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1095,6 +1130,88 @@ function Flashstake({
                   </Button>
                 </Fragment>
               ),
+              completedStakes: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    YOU ARE ABOUT TO UNSTAKE{" "}
+                    <Tooltip title={`${totalBurn.totalXIO} XIO`}>
+                      <span className={classes.redText}>
+                        {totalBurn.totalXIO} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    {/* NOW, YOU WILL RECIEVE{" "}
+                    <Tooltip title={`${totalBalanceWithBurn} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(totalBalanceWithBurn)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    AND BURN{" "}
+                    <Tooltip title={`${totalBurnAmount} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(totalBurnAmount)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    IN THE PROCESS*/}
+                  </Typography>
+                  <Button
+                    variant="red"
+                    fullWidth
+                    onClick={() => unstakeEarly(false)}
+                  >
+                    UNSTAKE
+                  </Button>
+                </Fragment>
+              ),
+
+              partialCompleted: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    UNSTAKE
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    YOU ARE ABOUT TO UNSTAKE{" "}
+                    <Tooltip title={`${totalBurn.totalXIO} XIO`}>
+                      <span className={classes.redText}>
+                        {totalBurn.totalXIO} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    NOW, YOU WILL RECIEVE{" "}
+                    <Tooltip
+                      title={`${totalBurn.totalXIO - totalBurn.totalBurn} XIO`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    AND BURN{" "}
+                    <Tooltip title={`${totalBurn.totalBurn} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(totalBurn.totalBurn)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    IN THE PROCESS
+                  </Typography>
+                  <Button
+                    variant="red"
+                    fullWidth
+                    onClick={() => unstakeEarly(false)}
+                  >
+                    UNSTAKE
+                  </Button>
+                </Fragment>
+              ),
+
               unstakeOptions:
                 parseFloat(dappBalance) > parseFloat(expiredDappBalance) ? (
                   parseFloat(expiredDappBalance) === 0 ? (
@@ -1108,7 +1225,7 @@ function Flashstake({
                         variant="body2"
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
-                        IF YOU UNSTAKE{" "}
+                        YOU ARE ABOUT TO UNSTAKE{" "}
                         <Tooltip title={`${dappBalance} XIO`}>
                           <span className={classes.redText}>
                             {trunc(dappBalance)} XIO
@@ -1230,7 +1347,11 @@ function Flashstake({
                         </Tooltip>{" "}
                         IN THE PROCESS
                       </Typography>
-                      <Button variant="red" fullWidth onClick={unstakeEarly}>
+                      <Button
+                        variant="red"
+                        fullWidth
+                        onClick={() => unstakeEarly(false)}
+                      >
                         UNSTAKE
                       </Button>
                     </Fragment>
@@ -1316,6 +1437,7 @@ function Flashstake({
                   </Typography>
                 </Fragment>
               ),
+
               failedUnstake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
@@ -1387,14 +1509,17 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
+  dashboard: { selectedStakes, isStakesSelected, totalBurn },
   user: {
     currentStaked,
+    stakes,
     pools,
     walletBalance,
     dappBalance,
     expiredDappBalance,
     totalBurnAmount,
     totalBalanceWithBurn,
+    expired,
   },
   contract,
 }) => ({
@@ -1413,6 +1538,9 @@ const mapStateToProps = ({
   heightVal,
   totalBurnAmount,
   totalBalanceWithBurn,
+  selectedStakes,
+  stakes,
+  totalBurn,
   ...contract,
 });
 
@@ -1435,4 +1563,5 @@ export default connect(mapStateToProps, {
   setHeightValue,
   unstakeEarly,
   unstakeXIO,
+  selectStake,
 })(Flashstake);

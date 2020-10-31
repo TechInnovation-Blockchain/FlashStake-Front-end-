@@ -144,6 +144,7 @@ function TableComponent({
   unstakeXIO,
   expiredDappBalance,
   onClickUnstake,
+  onClickUnstake2,
   selectStake,
 }) {
   const classes = useStyles();
@@ -154,6 +155,9 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
   const [earlyWith, setEarlyWith] = useState(false);
+  const [expiredStakes, setExpiredStakes] = useState({});
+
+  // useEffect(() => {}, []);
 
   useEffect(() => {
     setPage(0);
@@ -270,6 +274,8 @@ function TableComponent({
   //   // setShowWithdrawDialog(true);
   // }, [stakes, selectedStakes]);
 
+  // console.log(selectedStakes);
+
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
@@ -340,6 +346,9 @@ function TableComponent({
                       const _daysRem = Math.ceil(
                         (_stake.expiryTime - Date.now() / 1000) / 60
                       );
+                      {
+                        /* console.log(selectStake(_stake?.expired)); */
+                      }
                       return (
                         // <a
                         //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
@@ -444,7 +453,9 @@ function TableComponent({
                     <Button
                       variant="red"
                       fullWidth
-                      onClick={onClickUnstake}
+                      onClick={
+                        isStakesSelected ? onClickUnstake2 : onClickUnstake
+                      }
                       disabled={
                         // !isStakesSelected
                         //   ? loadingRedux.unstake || !(expiredDappBalance > 0)

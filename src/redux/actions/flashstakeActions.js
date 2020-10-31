@@ -471,6 +471,8 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
+      user: { stakes },
+      dashboard: { selectedStakes },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
@@ -526,16 +528,18 @@ export const unstakeEarly = (unstakeAll = true) => async (
       _balanceUnstake = dappBalance;
       _unstakeTimestamps = stakes.map((_stake) => _stake.id);
     } else {
-      _unstakeTimestamps = stakes.filter((_stake) => {
-        if (selectedStakes[_stake.id]) {
-          _balanceUnstake += parseFloat(_stake.stakeAmount);
-          return true;
-        } else {
-          return false;
-        }
-      });
+      _unstakeTimestamps = stakes
+        .filter((_stake) => {
+          if (selectedStakes[_stake.id]) {
+            _balanceUnstake += parseFloat(_stake.stakeAmount);
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .map((_stake) => _stake.id);
     }
-
+    console.log(_balanceUnstake);
     dispatch({
       type: "UNSTAKE_REQUEST",
       payload: {
@@ -547,8 +551,8 @@ export const unstakeEarly = (unstakeAll = true) => async (
     console.log(_unstakeTimestamps);
     _log(
       "unstake params -> ",
-      _unstakeTimestamps,
-      Web3.utils.toWei(_balanceUnstake)
+      _unstakeTimestamps
+      // Web3.utils.toWei(_balanceUnstake)
     );
     await unstake(_unstakeTimestamps);
   } catch (e) {

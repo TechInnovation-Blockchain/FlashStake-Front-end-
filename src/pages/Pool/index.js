@@ -549,7 +549,7 @@ function Pool({
       <Fragment>
         <AnimateHeight
           id="example-panel"
-          duration={700}
+          duration={400}
           height={heightVal} // see props documentation below
         >
           <Box
