@@ -157,7 +157,7 @@ export const stake = async (_token, xioQuantity, days, reward) => {
   }
 };
 
-export const unstake = async (_expiredIds, _xioQuantity) => {
+export const unstake = async (_expiredIds) => {
   setLoadingIndep({ unstake: true });
   const walletAddress = getWalletAddressReduxState();
   try {
@@ -169,13 +169,13 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
       throw new _error("Wallet not activated.");
     }
     contract.methods
-      .unstake(_expiredIds, _xioQuantity)
+      .unstake(_expiredIds)
       .estimateGas({ gas: 10000000, from: walletAddress }, function (
         error,
         gasAmount
       ) {
         contract.methods
-          .unstake(_expiredIds, _xioQuantity)
+          .unstake(_expiredIds)
           .send({
             from: walletAddress,
             gasLimit: gasAmount || 400000,
@@ -186,7 +186,6 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
               address: `Address -> ${walletAddress}`,
               txnHash,
               _expiredIds,
-              _xioQuantity,
             });
             addToTxnQueueIndep(txnHash);
             setStakeTxnHashIndep(txnHash);
@@ -202,7 +201,6 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
               _id: txnHash,
               txn: {
                 _expiredIds,
-                _xioQuantity,
               },
               type: "unstake",
             };
@@ -247,7 +245,7 @@ export const unstake = async (_expiredIds, _xioQuantity) => {
       analytics.logEvent("USER_UNSTAKE_FAILED", {
         address: `Address -> ${walletAddress}`,
         _expiredIds,
-        _xioQuantity,
+        // _xioQuantity,
       });
       setStakeDialogStepIndep("failedUnstake");
       showSnackbarIndep("Unstake Transaction Failed.", "error");

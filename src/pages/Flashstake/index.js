@@ -353,6 +353,8 @@ function Flashstake({
   updateAllBalances,
   heightVal,
   setHeightValue,
+  totalBurnAmount,
+  totalBalanceWithBurn,
   ...props
 }) {
   const classes = useStyles();
@@ -477,15 +479,6 @@ function Flashstake({
   const onClickUnstake = () => {
     setDialogStep("unstakeOptions");
     // setDialogStep("pendingUnstake");
-    setShowStakeDialog(true);
-  };
-
-  const onClickUnstake2 = () => {
-    setDialogStep("confirmSelectedWithdrawBurn");
-    setShowStakeDialog(true);
-  };
-  const onClickUnstake3 = () => {
-    setDialogStep("confirmSelectedWithdraw");
     setShowStakeDialog(true);
   };
 
@@ -838,11 +831,7 @@ function Flashstake({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <Table
-                  onClickUnstake={onClickUnstake}
-                  onClickUnstake2={onClickUnstake2}
-                  onClickUnstake3={onClickUnstake3}
-                />
+                <Table onClickUnstake={onClickUnstake} />
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1071,7 +1060,7 @@ function Flashstake({
                   </Button>
                 </Fragment>
               ),
-              unstakeOptions: (
+              earlyUnstakeFull: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
                     UNSTAKE
@@ -1081,39 +1070,235 @@ function Flashstake({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    WHICH STAKES WOULD YOU LIKE TO UNSTAKE?
+                    IF YOU UNSTAKE{" "}
+                    <Tooltip title={`${dappBalance} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(dappBalance)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    NOW, YOU WILL RECIEVE{" "}
+                    <Tooltip title={`${totalBalanceWithBurn} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(totalBalanceWithBurn)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    AND BURN{" "}
+                    <Tooltip title={`${totalBurnAmount} XIO`}>
+                      <span className={classes.redText}>
+                        {trunc(totalBurnAmount)} XIO
+                      </span>
+                    </Tooltip>{" "}
+                    IN THE PROCESS
                   </Typography>
-                  {parseFloat(expiredDappBalance) < parseFloat(dappBalance) ? (
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Button variant="red" fullWidth onClick={unstakeXIO}>
-                          <Tooltip title={`${expiredDappBalance} XIO`}>
-                            <span>
-                              COMPLETED
-                              <br />({trunc(expiredDappBalance)} XIO)
-                            </span>
-                          </Tooltip>
-                        </Button>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Button variant="red" fullWidth onClick={unstakeEarly}>
-                          <Tooltip title={`${dappBalance} XIO`}>
-                            <span>
-                              ALL
-                              <br />({trunc(dappBalance)} XIO)
-                            </span>
-                          </Tooltip>
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <Button variant="red" fullWidth onClick={unstakeXIO}>
-                      COMPLETED
-                      <br />({dappBalance} XIO)
-                    </Button>
-                  )}
+                  <Button variant="red" fullWidth onClick={unstakeEarly}>
+                    UNSTAKE
+                  </Button>
                 </Fragment>
               ),
+              unstakeOptions:
+                parseFloat(dappBalance) > parseFloat(expiredDappBalance) ? (
+                  parseFloat(expiredDappBalance) === 0 ? (
+                    //If no stakes have completed yet
+                    <Fragment>
+                      <Typography variant="body1" className={classes.textBold}>
+                        UNSTAKE
+                        <br />
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                      >
+                        IF YOU UNSTAKE{" "}
+                        <Tooltip title={`${dappBalance} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(dappBalance)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        NOW, YOU WILL RECIEVE{" "}
+                        <Tooltip title={`${totalBalanceWithBurn} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(totalBalanceWithBurn)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        AND BURN{" "}
+                        <Tooltip title={`${totalBurnAmount} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(totalBurnAmount)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        IN THE PROCESS
+                      </Typography>
+                      <Button variant="red" fullWidth onClick={unstakeEarly}>
+                        UNSTAKE
+                      </Button>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <Typography variant="body1" className={classes.textBold}>
+                        UNSTAKE
+                        <br />
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                      >
+                        WHICH STAKES WOULD YOU LIKE TO UNSTAKE?
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Button variant="red" fullWidth onClick={unstakeXIO}>
+                            <Tooltip title={`${expiredDappBalance} XIO`}>
+                              <span>
+                                COMPLETED
+                                <br />({trunc(expiredDappBalance)} XIO)
+                              </span>
+                            </Tooltip>
+                          </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={() => setDialogStep("earlyUnstakeFull")}
+                          >
+                            <Tooltip title={`${dappBalance} XIO`}>
+                              <span>
+                                ALL
+                                <br />({trunc(dappBalance)} XIO)
+                              </span>
+                            </Tooltip>
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Fragment>
+                  )
+                ) : (
+                  <Fragment>
+                    <Typography variant="body1" className={classes.textBold}>
+                      UNSTAKE
+                      <br />
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                    >
+                      YOU ARE ABOUT TO UNSTAKE{" "}
+                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                        <span>{trunc(expiredDappBalance)} XIO</span>
+                      </Tooltip>
+                    </Typography>
+                    <Button variant="red" fullWidth onClick={unstakeXIO}>
+                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                        <span>
+                          COMPLETED
+                          <br />({trunc(expiredDappBalance)} XIO)
+                        </span>
+                      </Tooltip>
+                    </Button>
+                  </Fragment>
+                ),
+              unstakeSelectedOptions:
+                parseFloat(dappBalance) > parseFloat(expiredDappBalance) ? (
+                  parseFloat(expiredDappBalance) === 0 ? (
+                    //If no stakes have completed yet
+                    <Fragment>
+                      <Typography variant="body1" className={classes.textBold}>
+                        UNSTAKE
+                        <br />
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                      >
+                        IF YOU UNSTAKE{" "}
+                        <Tooltip title={`${dappBalance} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(dappBalance)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        NOW, YOU WILL RECIEVE{" "}
+                        <Tooltip title={`${totalBalanceWithBurn} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(totalBalanceWithBurn)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        AND BURN{" "}
+                        <Tooltip title={`${totalBurnAmount} XIO`}>
+                          <span className={classes.redText}>
+                            {trunc(totalBurnAmount)} XIO
+                          </span>
+                        </Tooltip>{" "}
+                        IN THE PROCESS
+                      </Typography>
+                      <Button variant="red" fullWidth onClick={unstakeEarly}>
+                        UNSTAKE
+                      </Button>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <Typography variant="body1" className={classes.textBold}>
+                        UNSTAKE
+                        <br />
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                      >
+                        WHICH STAKES WOULD YOU LIKE TO UNSTAKE?
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Button variant="red" fullWidth onClick={unstakeXIO}>
+                            <Tooltip title={`${expiredDappBalance} XIO`}>
+                              <span>
+                                COMPLETED
+                                <br />({trunc(expiredDappBalance)} XIO)
+                              </span>
+                            </Tooltip>
+                          </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Button
+                            variant="red"
+                            fullWidth
+                            onClick={() => setDialogStep("earlyUnstakeFull")}
+                          >
+                            <Tooltip title={`${dappBalance} XIO`}>
+                              <span>
+                                ALL
+                                <br />({trunc(dappBalance)} XIO)
+                              </span>
+                            </Tooltip>
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Fragment>
+                  )
+                ) : (
+                  <Fragment>
+                    <Typography variant="body1" className={classes.textBold}>
+                      UNSTAKE
+                      <br />
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                    >
+                      YOU ARE ABOUT TO UNSTAKE{" "}
+                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                        <span>{trunc(expiredDappBalance)} XIO</span>
+                      </Tooltip>
+                    </Typography>
+                    <Button variant="red" fullWidth onClick={unstakeXIO}>
+                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                        <span>
+                          COMPLETED
+                          <br />({trunc(expiredDappBalance)} XIO)
+                        </span>
+                      </Tooltip>
+                    </Button>
+                  </Fragment>
+                ),
               pendingUnstake: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
@@ -1208,6 +1393,8 @@ const mapStateToProps = ({
     walletBalance,
     dappBalance,
     expiredDappBalance,
+    totalBurnAmount,
+    totalBalanceWithBurn,
   },
   contract,
 }) => ({
@@ -1224,6 +1411,8 @@ const mapStateToProps = ({
   dappBalance,
   expiredDappBalance,
   heightVal,
+  totalBurnAmount,
+  totalBalanceWithBurn,
   ...contract,
 });
 

@@ -444,10 +444,7 @@ function TableComponent({
                     <Button
                       variant="red"
                       fullWidth
-                      onClick={() => {
-                        onClickUnstake();
-                        // earlyWith && withdrawSelected() : unstakeXIO();
-                      }}
+                      onClick={onClickUnstake}
                       disabled={
                         // !isStakesSelected
                         //   ? loadingRedux.unstake || !(expiredDappBalance > 0)

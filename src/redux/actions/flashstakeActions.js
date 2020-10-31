@@ -41,28 +41,23 @@ export const calculateReward = (xioQuantity, days) => async (
       const data = await getQueryData(id);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
-      const _annualRate = JSBI.divide(
+      const _days = JSBI.BigInt(Web3.utils.toWei(days));
+      const _rate = JSBI.divide(
         JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
         JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
       );
-      const _xpy = JSBI.greaterThan(
-        _annualRate,
-        JSBI.BigInt(Web3.utils.toWei("50"))
-      )
+      const _fpy = JSBI.greaterThan(_rate, JSBI.BigInt(Web3.utils.toWei("50")))
         ? JSBI.BigInt(Web3.utils.toWei("50"))
-        : _annualRate;
-      const _calculateXpyTemp = JSBI.divide(
-        JSBI.multiply(JSBI.multiply(_quantity, JSBI.BigInt(days)), _xpy),
-        JSBI.multiply(_precision, JSBI.BigInt("36500"))
+        : _rate;
+      const _output = JSBI.divide(
+        JSBI.multiply(JSBI.multiply(_quantity, _days), _fpy),
+        JSBI.multiply(_precision, JSBI.BigInt(Web3.utils.toWei("36500")))
       );
       const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
-      const _calculateXpy = JSBI.greaterThan(_calculateXpyTemp, _limit)
-        ? _limit
-        : _calculateXpyTemp;
-
+      const _mintAmount = JSBI.greaterThan(_output, _limit) ? _limit : _output;
       const _reward = JSBI.divide(
         JSBI.multiply(
-          JSBI.multiply(_calculateXpy, JSBI.BigInt("900")),
+          JSBI.multiply(_mintAmount, JSBI.BigInt("900")),
           JSBI.BigInt(data.reserveAltAmount)
         ),
         JSBI.add(
@@ -70,15 +65,67 @@ export const calculateReward = (xioQuantity, days) => async (
             JSBI.BigInt(data.reserveXioAmount),
             JSBI.BigInt("1000")
           ),
-          JSBI.multiply(_calculateXpy, JSBI.BigInt("900"))
+          JSBI.multiply(_mintAmount, JSBI.BigInt("900"))
         )
       );
+      console.log(
+        _mintAmount.toString(),
+        _reward.toString(),
+        xioQuantity,
+        days
+      );
+      //     uint256 limit = _amountIn.div(2);
+      //   return output > limit ? limit : output;
+
+      //   uint256 locked = IERC20Custom(FLASH_TOKEN).balanceOf(address(this)).add(
+      //     _amountIn
+      // );
+      // uint256 rate = IERC20Custom(FLASH_TOKEN).totalSupply().mul(PRECISION).div(
+      //     locked
+      // );
+      // return rate > 50e18 ? 50e18 : rate;
+      // const output =
+      //------------------------------------------
+      // const _annualRate = JSBI.divide(
+      //   JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
+      //   JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
+      // );
+      // const _xpy = JSBI.greaterThan(
+      //   _annualRate,
+      //   JSBI.BigInt(Web3.utils.toWei("50"))
+      // )
+      //   ? JSBI.BigInt(Web3.utils.toWei("50"))
+      //   : _annualRate;
+      // const _calculateXpyTemp = JSBI.divide(
+      //   JSBI.multiply(JSBI.multiply(_quantity, JSBI.BigInt(days)), _xpy),
+      //   JSBI.multiply(_precision, JSBI.BigInt("36500"))
+      // );
+      // const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
+      // const _calculateXpy = JSBI.greaterThan(_calculateXpyTemp, _limit)
+      //   ? _limit
+      //   : _calculateXpyTemp;
+
+      // const _reward = JSBI.divide(
+      //   JSBI.multiply(
+      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900")),
+      //     JSBI.BigInt(data.reserveAltAmount)
+      //   ),
+      //   JSBI.add(
+      //     JSBI.multiply(
+      //       JSBI.BigInt(data.reserveXioAmount),
+      //       JSBI.BigInt("1000")
+      //     ),
+      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900"))
+      //   )
+      // );
+      //----------------------------------------------------------
       // reward = String(_reward);
       // initializeFlashstakeProtocolContract();
       // initializeFlashstakePoolContract(id);
       // let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
       // reward = await getAPYStake(_amountIn);
       // console.log({ _reward: String(_reward), reward });
+
       reward = JSBI.subtract(
         JSBI.BigInt(_reward),
         JSBI.multiply(
@@ -503,7 +550,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
       _unstakeTimestamps,
       Web3.utils.toWei(_balanceUnstake)
     );
-    await unstake(expiredTimestamps, Web3.utils.toWei(_balanceUnstake));
+    await unstake(_unstakeTimestamps);
   } catch (e) {
     _error("ERROR unstakeEarly -> ", e);
   }
