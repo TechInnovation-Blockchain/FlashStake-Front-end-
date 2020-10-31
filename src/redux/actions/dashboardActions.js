@@ -7,6 +7,7 @@ import {
   initializeFlashstakeProtocolContract,
   unstakeALT,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import { _error } from "../../utils/log";
 // import { store } from "../../config/reduxStore";
 
 export const getDashboardProps = (data) => async (dispatch) => {
@@ -149,16 +150,14 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
       amount = JSBI.add(amount, JSBI.BigInt(_stake.stakeAmount));
       return _stake.id;
     });
-    console.log("withdrawSpecificStakes", { amount: amount.toString() });
     dispatch({
       type: "WITHDRAW_REQUEST",
       payload: {
         quantity: _amount ? _amount : Web3.utils.fromWei(amount.toString()),
-        symbol: "XIO",
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
-    console.log("unstakeALT params -> ", timestamps, amount.toString());
     await unstakeALT(timestamps, amount.toString());
   } catch (e) {
     console.error("ERROR withdrawSpecificStakes -> ", e);
@@ -176,27 +175,11 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
             : type === "max"
             ? portal.totalStakeAmount - calculateBurn(portal)
             : amount - calculateBurn(portal, false, amount),
-        symbol: "XIO",
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
-    console.log(
-      "unstakeALT params -> ",
-      ...(type === "available"
-        ? [
-            portal.expiredTimestamps,
-            Web3.utils.toWei(portal.availableStakeAmount),
-          ]
-        : type === "max"
-        ? [portal.timestamps, Web3.utils.toWei(portal.totalStakeAmount)]
-        : [
-            [
-              ...portal.expiredTimestamps,
-              ...calculateBurn(portal, true, amount),
-            ],
-            Web3.utils.toWei(amount),
-          ])
-    );
+
     await unstakeALT(
       ...(type === "available"
         ? [
@@ -286,7 +269,6 @@ export const selectStake = (id) => async (dispatch, getState) => {
       totalBurn += parseFloat(_stake.burnAmount) || 0;
       totalXIO += parseFloat(_stake.stakeAmount) || 0;
     });
-    console.log(totalBurn);
 
     dispatch({
       type: "SUM_OF_BURN",
@@ -296,7 +278,7 @@ export const selectStake = (id) => async (dispatch, getState) => {
       },
     });
   } catch (e) {
-    console.log("ERROR  -> ", e);
+    _error("ERROR  -> ", e);
     // setDialogStepIndep("failedStake");
     // showSnackbarIndep("Stake Transaction Failed.", "error");
   }

@@ -225,9 +225,9 @@ function PoolTable({
             POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} XIO`}>
+            <Tooltip title={`${walletBalance} FLASH`}>
               <span> {poolDashboard.length} </span>
-              {/* <span>{trunc(walletBalance)} XIO</span> */}
+              {/* <span>{trunc(walletBalance)} FLASH</span> */}
             </Tooltip>
           </Typography>
         </Grid>
@@ -237,9 +237,9 @@ function PoolTable({
             COMPLETED POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} XIO`}>
+            <Tooltip title={`${dappBalance} FLASH`}>
               <span> {poolDashboard.length} </span>
-              {/* <span>{trunc(dappBalance)} XIO</span>  
+              {/* <span>{trunc(dappBalance)} FLASH</span>  
             </Tooltip>
           </Typography>
         </Grid> */}
@@ -325,7 +325,7 @@ function PoolTable({
                             <Tooltip title={`${_pool.balance} xFlash`}>
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("XIO")}
+                                  src={tryRequire("FLASH")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
@@ -368,7 +368,7 @@ function PoolTable({
                     fontSizeLocal="body2"
                     loading={loadingRedux.unstake}
                   >
-                    <Tooltip title={`${expiredDappBalance} XIO`}>
+                    <Tooltip title={`${expiredDappBalance} FLASH`}>
                       <span>WITHDRAW</span>
                     </Tooltip>
                   </Button>

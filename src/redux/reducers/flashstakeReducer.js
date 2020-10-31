@@ -5,7 +5,7 @@ export const flashstakeReducer = (
     portals: [],
     stakeTokens: [],
     rewardTokens: [],
-    selectedStakeToken: "XIO",
+    selectedStakeToken: "FLASH",
     selectedRewardToken: {},
     selectedPortal: "",
     allowanceXIO: true,

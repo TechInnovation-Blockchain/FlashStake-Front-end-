@@ -284,8 +284,8 @@ function TableComponent({
             WALLET BALANCE
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} XIO`}>
-              <span>{trunc(walletBalance)} XIO</span>
+            <Tooltip title={`${walletBalance} FLASH`}>
+              <span>{trunc(walletBalance)} FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -295,8 +295,8 @@ function TableComponent({
             DAPP BALANCE
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} XIO`}>
-              <span>{trunc(dappBalance)} XIO</span>
+            <Tooltip title={`${dappBalance} FLASH`}>
+              <span>{trunc(dappBalance)} FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -346,9 +346,6 @@ function TableComponent({
                       const _daysRem = Math.ceil(
                         (_stake.expiryTime - Date.now() / 1000) / 60
                       );
-                      {
-                        /* console.log(selectStake(_stake?.expired)); */
-                      }
                       return (
                         // <a
                         //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
@@ -384,18 +381,18 @@ function TableComponent({
                           </Grid>
                           <Grid item xs={4} className={classes.gridItem}>
                             <Tooltip
-                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
+                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} FLASH`}
                             >
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("XIO")}
+                                  src={tryRequire("FLASH")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
                                 {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)} XIO
+                                {trunc(_stake.stakeAmount)} FLASH
                               </span>
                             </Tooltip>
                           </Grid>
@@ -465,7 +462,7 @@ function TableComponent({
                       fontSizeLocal="body2"
                       loading={loadingRedux.unstake}
                     >
-                      <Tooltip title={`${expiredDappBalance} XIO`}>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
                         </span>

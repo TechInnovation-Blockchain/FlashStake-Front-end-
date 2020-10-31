@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Stepper({ step, steps = ["APPROVE XIO", "STAKE"] }) {
+export default function Stepper({ step, steps = ["APPROVE FLASH", "STAKE"] }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 

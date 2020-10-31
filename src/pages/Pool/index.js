@@ -496,8 +496,6 @@ function Pool({
   const onClickApprove = async () => {
     setPoolDialogStep("pendingApproval");
     setShowStakeDialog(true);
-    console.log(allowanceXIOPool);
-    console.log(allowanceALTPool);
     if (!allowanceXIOPool) {
       await getApprovalXIOPool("pool");
     } else if (!allowanceALTPool) {
@@ -642,7 +640,7 @@ function Pool({
                         variant="overline"
                         className={classes.secondaryText}
                       >
-                        AMOUNT OF XIO REQUIRED TO POOL
+                        AMOUNT OF FLASH REQUIRED TO POOL
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -687,7 +685,7 @@ function Pool({
                         variant="overline"
                         className={classes.infoText}
                       >
-                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} XIO */}
+                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} FLASH */}
                       </Typography>
                     ) : (
                       <Typography
@@ -792,7 +790,8 @@ function Pool({
                         variant="overline"
                         className={classes.redText}
                       >
-                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST <b>APPROVE XIO</b>
+                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
+                        <b>APPROVE FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -853,7 +852,7 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE XIO", "POOL"]}
+          steps={["APPROVE FLASH", "POOL"]}
           title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -906,7 +905,7 @@ function Pool({
                   >
                     IF YOU STAKE{" "}
                     <span className={classes.infoTextSpan}>
-                      {/* {quantity || 0} XIO{" "} */}
+                      {/* {quantity || 0} FLASH{" "} */}
                     </span>{" "}
                     FOR{" "}
                     <span className={classes.infoTextSpan}>
@@ -1103,8 +1102,8 @@ function Pool({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
-                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                 </Fragment>
@@ -1145,8 +1144,8 @@ function Pool({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     YOU HAVE SUCCESSFULLY UNSTAKED{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} XIO`}>
-                      <span>{trunc(unstakeRequest.quantity)} XIO</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                   <Typography

@@ -498,7 +498,7 @@ function Swap({
                       variant="overline"
                       className={classes.secondaryText}
                     >
-                      WHAT DO YOU WANT TO SWAP FOR XIO
+                      WHAT DO YOU WANT TO SWAP FOR FLASH
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -578,10 +578,10 @@ function Swap({
                             className={classes.loaderStyle}
                           />
                         ) : (
-                          <Tooltip title={`${swapOutput} XIO`}>
+                          <Tooltip title={`${swapOutput} FLASH`}>
                             <span className={classes.infoTextSpan}>
                               {" "}
-                              {trunc(swapOutput)} XIO
+                              {trunc(swapOutput)} FLASH
                             </span>
                           </Tooltip>
                         )}
@@ -704,7 +704,7 @@ function Swap({
                   <Dialog
                     open={showStakeDialog}
                     // open={true}
-                    steps={["APPROVE XIO", "SWAP"]}
+                    steps={["APPROVE FLASH", "SWAP"]}
                     title="SWAP"
                     onClose={() => setShowStakeDialog(false)}
                     status={[
@@ -795,10 +795,10 @@ function Swap({
                                   className={classes.loaderStyle}
                                 />
                               ) : (
-                                <Tooltip title={`${swapOutput} XIO`}>
+                                <Tooltip title={`${swapOutput} FLASH`}>
                                   <span className={classes.infoTextSpan}>
                                     {" "}
-                                    {trunc(swapOutput)} XIO
+                                    {trunc(swapOutput)} FLASH
                                   </span>
                                 </Tooltip>
                               )}
@@ -879,7 +879,7 @@ function Swap({
                             >
                               SWAPPING {trunc(swapHist?.amount)}{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""} FOR{" "}
-                              {trunc(swapOutput)} XIO{" "}
+                              {trunc(swapOutput)} FLASH{" "}
                               {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
@@ -948,7 +948,7 @@ function Swap({
                             >
                               YOU HAVE SUCCESSFULLY SWAPPED {swapHist?.amount}{" "}
                               {swapHist?.token || ""} FOR {trunc(swapOutput)}{" "}
-                              XIO
+                              FLASH
                             </Typography>
                             <Typography
                               variant="body2"

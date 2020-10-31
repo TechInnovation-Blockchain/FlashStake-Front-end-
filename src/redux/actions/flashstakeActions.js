@@ -68,12 +68,6 @@ export const calculateReward = (xioQuantity, days) => async (
           JSBI.multiply(_mintAmount, JSBI.BigInt("900"))
         )
       );
-      console.log(
-        _mintAmount.toString(),
-        _reward.toString(),
-        xioQuantity,
-        days
-      );
       //     uint256 limit = _amountIn.div(2);
       //   return output > limit ? limit : output;
 
@@ -246,7 +240,6 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
     );
     _log(_allowance);
 
-    console.log(_allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
@@ -516,7 +509,6 @@ export const unstakeEarly = (unstakeAll = true) => async (
       user: { stakes, expiredTimestamps, dappBalance },
       dashboard: { selectedStakes },
     } = await getState();
-    console.log(dappBalance, stakes?.length);
     if (dappBalance <= 0 || !stakes?.length) {
       throw new _error("No stakes to withdraw!");
     }
@@ -539,7 +531,6 @@ export const unstakeEarly = (unstakeAll = true) => async (
         })
         .map((_stake) => _stake.id);
     }
-    console.log(_balanceUnstake);
     dispatch({
       type: "UNSTAKE_REQUEST",
       payload: {
@@ -548,7 +539,6 @@ export const unstakeEarly = (unstakeAll = true) => async (
       },
     });
     initializeFlashstakeProtocolContract();
-    console.log(_unstakeTimestamps);
     _log(
       "unstake params -> ",
       _unstakeTimestamps
@@ -580,7 +570,6 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    console.log(expiredTimestamps);
     _log(
       "unstake params -> ",
       expiredTimestamps,

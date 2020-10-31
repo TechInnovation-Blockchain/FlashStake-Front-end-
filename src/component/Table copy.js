@@ -49,10 +49,10 @@ export default function TableComponent() {
   const classes = useStyles();
 
   // const headItems = [];
-  const headItems = ["Token", "AVAILABLE", "Withdraw"];
+  const headItems = ["TOKEN", "AVAILABLE", "WITHDRAW"];
   const bodyData = [
     {
-      token: "XIO",
+      token: "FLASH",
       available: 144,
       total: 444,
     },
