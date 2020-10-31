@@ -38,6 +38,7 @@ function Updater({
   updateAllBalances,
   checkAllowance,
   clearUserData,
+  selectedPortal,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -57,13 +58,19 @@ function Updater({
         updateAllBalances();
       }, 60000);
       updateAllBalances();
-      getBalanceALT();
+      // getBalanceALT();
       checkAllowance();
       return () => window.clearInterval(_interval);
     } else {
       clearUserData();
     }
   }, [active, account]);
+
+  useEffect(() => {
+    if (selectedPortal) {
+      updateAllBalances();
+    }
+  }, [selectedPortal]);
 
   useEffect(() => {
     const earliestRemaining = currentStaked.earliest - Date.now() / 1000;
@@ -117,6 +124,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   dashboard: { refetch, reCalculateExpired },
   user: { currentStaked },
+  flashstake: { selectedPortal },
 }) => ({
   active,
   account,
@@ -124,6 +132,7 @@ const mapStateToProps = ({
   refetchData: refetch,
   currentStaked,
   reCalculateExpired,
+  selectedPortal,
 });
 
 export default connect(mapStateToProps, {

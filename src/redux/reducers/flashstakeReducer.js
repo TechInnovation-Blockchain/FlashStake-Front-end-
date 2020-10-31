@@ -20,7 +20,7 @@ export const flashstakeReducer = (
     dialogStep: "",
     dialogStep2: "",
     dialogStep3: "",
-
+    poolDashboard: [],
     stakeRequest: {
       quantity: 0,
       days: 0,
@@ -30,7 +30,10 @@ export const flashstakeReducer = (
       timestamps: [],
       quantity: "0",
     },
+    liquidityRequest: {},
+    withdrawLiquidityRequest: {},
     stakeTxnHash: "",
+    liquidityTxnHash: "",
     reset: false,
     initialValues: {
       days: "",
@@ -163,11 +166,30 @@ export const flashstakeReducer = (
         ...state,
         unstakeRequest: payload,
       };
-
+    case "LIQUIDITY_REQUEST":
+      return {
+        ...state,
+        liquidityRequest: payload,
+      };
+    case "WITHDRAW_LIQUIDITY_REQUEST":
+      return {
+        ...state,
+        withdrawLiquidityRequest: payload,
+      };
     case "STAKE_TXN_HASH":
       return {
         ...state,
         stakeTxnHash: payload,
+      };
+    case "LIQDUIDITY_TXN_HASH":
+      return {
+        ...state,
+        liquidityTxnHash: payload,
+      };
+    case "POOL_DASHBOARD_DATA":
+      return {
+        ...state,
+        poolDashboard: payload,
       };
     // case "RESET":
     //   return {

@@ -19,6 +19,8 @@ import {
   setSwapDialogStepIndep,
   setStakeTxnHashIndep,
   setResetIndep,
+  setPoolDialogStepIndep,
+  setLiquidityTxnHashIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
@@ -480,6 +482,98 @@ export const addLiquidityInPool = (
   _amountFLASHMin,
   _amountALTMin,
   _token
-) => {};
+) => {
+  setLoadingIndep({ pool: true });
+
+  try {
+    showSnackbarIndep("Transaction Pending.", "info");
+    setPoolDialogStepIndep("pendingLiquidity");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new _error("Wallet not activated.");
+    }
+
+    contract.methods
+      .addLiquidityInPool(
+        _amountFLASH,
+        _amountALT,
+        _amountFLASHMin,
+        _amountALTMin,
+        _token
+      )
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        (error, gasAmount) => {
+          contract.methods
+            .addLiquidityInPool(
+              // _amountFLASH,
+              "0",
+              _amountALT,
+              _amountFLASHMin,
+              _amountALTMin,
+              _token
+            )
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", (txnHash) => {
+              setLiquidityTxnHashIndep(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
+            })
+            .then(function (receipt) {
+              setPoolDialogStepIndep("successLiquidity");
+              showSnackbarTxnIndep(
+                "Liquidity Deposit Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+              setRefetchIndep(true);
+              setLoadingIndep({ pool: false });
+
+              return receipt;
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setPoolDialogStepIndep("rejectedLiquidity");
+                showSnackbarIndep(
+                  "Liquidity Deposit Transaction Rejected.",
+                  "error"
+                );
+              } else {
+                setPoolDialogStepIndep("failedLiquidity");
+                showSnackbarIndep(
+                  "Liquidity Deposit Transaction Failed.",
+                  "error"
+                );
+              }
+              setLoadingIndep({ pool: false });
+
+              _error("ERROR addLiquidityInPool -> ", e);
+            });
+        }
+      );
+  } catch (e) {
+    if (e.code === 4001) {
+      setDialogStepIndep("rejectedLiquidity");
+      showSnackbarIndep("Liquidity Deposit Transaction Rejected.", "error");
+    } else {
+      setDialogStepIndep("failedLiquidity");
+      showSnackbarIndep("Liquidity Deposits Transaction Failed.", "error");
+    }
+    _error("ERROR addLiquidityInPool -> ", e);
+  }
+};
 
 export const removeLiquidityInPool = (_liquidity, _token) => {};

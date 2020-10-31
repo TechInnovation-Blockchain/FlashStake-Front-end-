@@ -216,8 +216,13 @@ const getBalancesIntervaled = (function () {
   let _lastCalledTimestamp = 0;
   let _lastOutput;
   let _account = "";
-  return async (account) => {
-    if (Date.now() - _lastCalledTimestamp >= 15000 || _account !== account) {
+  let _poolsLenght = 0;
+  return async (account, poolsLenght) => {
+    if (
+      Date.now() - _lastCalledTimestamp >= 15000 ||
+      _account !== account ||
+      _poolsLenght !== poolsLenght
+    ) {
       try {
         await initializeBalanceInfuraContract();
         _lastOutput = await getBalances();
@@ -238,8 +243,13 @@ export const updateAllBalances = () => async (dispatch, getState) => {
   try {
     const {
       web3: { account },
+      user: { pools },
     } = await getState();
-    const [_balances, walletBalanceUSD] = await getBalancesIntervaled(account);
+    const [
+      _balances,
+      walletBalanceUSD,
+      _poolBalances,
+    ] = await getBalancesIntervaled(account, pools.length);
     dispatch({
       type: "WALLET_BALANCE",
       payload: _balances[CONSTANTS.ADDRESS_XIO_RINKEBY] || "0",
@@ -251,6 +261,19 @@ export const updateAllBalances = () => async (dispatch, getState) => {
     dispatch({
       type: "WALLET_BALANCE_USD",
       payload: walletBalanceUSD,
+    });
+    dispatch({
+      type: "WALLET_BALANCES_POOL",
+      payload: _poolBalances,
+    });
+    dispatch({
+      type: "POOL_DASHBOARD_DATA",
+      payload: Object.keys(_poolBalances)
+        .filter((_poolKey) => _poolBalances[_poolKey] > 0)
+        .map((_poolKey) => ({
+          pool: pools.find((_pool) => _pool.id === _poolKey),
+          balance: _poolBalances[_poolKey],
+        })),
     });
     dispatch(getBalanceXIO());
     dispatch(getBalanceALT());

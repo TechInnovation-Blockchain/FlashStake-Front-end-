@@ -29,7 +29,7 @@ export const getBalances = async () => {
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
       // throw new _error("Wallet not activated.");
-      return [{}, 0];
+      return [{}, 0, {}];
     }
     const _tokenList = getTokenList();
     const _pools = getPools();
@@ -46,10 +46,21 @@ export const getBalances = async () => {
       walletBalanceUSD += _pool.tokenPrice * _balancesObj[_pool.tokenB.id] || 0;
       return null;
     });
-    return [_balancesObj, walletBalanceUSD];
+    let _poolBalanceObj = {};
+    const _poolBalances = await contract.methods
+      .getBalances(
+        walletAddress,
+        _pools.map((_pool) => _pool.id)
+      )
+      .call();
+    _pools.map((_pool, index) => {
+      _poolBalanceObj[_pool.id] = Web3.utils.fromWei(_poolBalances[index]);
+      return null;
+    });
+    return [_balancesObj, walletBalanceUSD, _poolBalanceObj];
   } catch (e) {
     _error("ERROR getBalances -> ", e);
-    return [{}, 0];
+    return [{}, 0, {}];
   }
 };
 

@@ -623,7 +623,43 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
   }
 };
 
-export const addTokenLiquidityInPool = () => async () => {};
+export const addTokenLiquidityInPool = (
+  quantityAlt,
+  quantityXIO,
+  selectedPortal
+) => async (dispatch, getState) => {
+  try {
+    const {
+      flashstake: { selectedRewardToken },
+    } = await getState();
+    dispatch({
+      type: "LIQUIDITY_REQUEST",
+      payload: {
+        altSymbol: selectedRewardToken?.tokenB?.symbol,
+        quantityXIO,
+        quantityAlt,
+      },
+    });
+    _log(
+      "addTokenLiquidityInPool -> ",
+      Web3.utils.toWei(String(quantityXIO)),
+      Web3.utils.toWei(String(quantityAlt)),
+      Web3.utils.toWei(String(quantityXIO * 0.95)),
+      Web3.utils.toWei(String(quantityAlt * 0.95)),
+      selectedRewardToken.tokenB.id
+    );
+    initializeFlashstakeProtocolContract();
+    await addLiquidityInPool(
+      Web3.utils.toWei(String(quantityXIO)),
+      Web3.utils.toWei(String(quantityAlt)),
+      Web3.utils.toWei(String(quantityXIO * 0.95)),
+      Web3.utils.toWei(String(quantityAlt * 0.95)),
+      selectedRewardToken.tokenB.id
+    );
+  } catch (e) {
+    _error("ERROR addTokenLiquidityInPool -> ", e);
+  }
+};
 
 export const removeTokenLiquidityInPool = () => async () => {};
 
@@ -689,4 +725,14 @@ export const setStakeTxnHash = (val) => {
 
 export const setStakeTxnHashIndep = (val) => {
   store.dispatch(setStakeTxnHash(val));
+};
+export const setLiquidityTxnHash = (val) => {
+  return {
+    type: "LIQDUIDITY_TXN_HASH",
+    payload: val,
+  };
+};
+
+export const setLiquidityTxnHashIndep = (val) => {
+  store.dispatch(setLiquidityTxnHash(val));
 };

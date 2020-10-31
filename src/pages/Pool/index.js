@@ -41,7 +41,7 @@ import {
   checkAllowance,
   getBalanceXIO,
   stakeXIO,
-  setDialogStep,
+  setPoolDialogStep,
   checkAllowancePool,
   getApprovalXIOPool,
   getApprovalALTPool,
@@ -329,18 +329,19 @@ function Pool({
   checkAllowancePool,
   getBalanceXIO,
   balanceXIO,
+  balanceALT,
   stakeXIO,
   addTokenLiquidityInPool,
   removeTokenLiquidityInPool,
   setLoading,
   dialogStep3,
-  setDialogStep,
+  setPoolDialogStep,
   stakeRequest,
   unstakeRequest,
   reset,
   // setReset,
   chainId,
-  stakeTxnHash,
+  liquidityTxnHash,
   setInitialValues,
   initialValues,
   showWalletBackdrop,
@@ -358,18 +359,18 @@ function Pool({
   getApprovalALTPool,
   reserveXioAmount,
   reserveAltAmount,
+  walletBalancesPool,
+  liquidityRequest,
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
-  const [height2, setHeight2] = useState(0);
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
   const [days, setDays] = useState(initialValues.days);
-  const [quantity, setQuantity] = useState(initialValues.quantity);
-  const [quantity2, setQuantity2] = useState(initialValues.quantity);
-  const [eth, setEth] = useState(0);
-  const [xio, setXIO] = useState(0);
+  // const [quantityAlt, setQuantityAlt] = useState("");
+  const [quantityAlt, setQuantityAlt] = useState("20");
+  const [quantityXIO, setQuantityXIO] = useState("");
   const ref = useRef(null);
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
@@ -394,7 +395,7 @@ function Pool({
     document.title = "Pool - XIO | The Future is at Stake";
   }, []);
 
-  const debouncedCalculateReward = useCallback(debounce(getQueryData, 500), []);
+  // const debouncedUpdateQueryData = useCallback(debounce(getQueryData, 500), []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
   // const [height2, setHeight2] = useState(0);
@@ -415,23 +416,33 @@ function Pool({
       });
   }, []);
 
-  const onChangeDays = ({ target: { value } }) => {
-    if (/^[0-9]*$/.test(value)) {
-      setDays(value);
-    }
-  };
-  const onChangeQuantity = ({ target: { value } }) => {
+  const quote = useCallback(
+    async (_amountA, _amountType = "alt") => {
+      const { reserveXioAmount, reserveAltAmount } = await getQueryData(
+        selectedPortal
+      );
+      const [_reserveA, _reserveB] =
+        _amountType === "alt"
+          ? [reserveAltAmount, reserveXioAmount]
+          : [reserveXioAmount, reserveAltAmount];
+      return (_amountA * _reserveB) / _reserveA;
+    },
+    [selectedPortal]
+  );
+
+  const onChangeQuantityAlt = async ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantity(value);
-      setQuantity2((quantity * reserveXioAmount) / reserveAltAmount);
-      console.log(eth);
+      setQuantityAlt(value);
+      const _val = await quote(value, "alt");
+      setQuantityXIO(_val);
     }
   };
 
-  const onChangeQuantity2 = ({ target: { value } }) => {
+  const onChangeQuantityXIO = async ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantity2(value);
-      setQuantity((quantity2 * reserveAltAmount) / reserveXioAmount);
+      setQuantityXIO(value);
+      const _val = await quote(value, "xio");
+      setQuantityAlt(_val);
     }
   };
 
@@ -447,29 +458,25 @@ function Pool({
     setRefetch(true);
   }, [setRefetch]);
 
-  useEffect(() => {
-    setInitialValues(quantity, days);
-  }, [days, quantity, setInitialValues]);
+  // useEffect(() => {
+  //   setInitialValues(quantity, days);
+  // }, [days, quantity, setInitialValues]);
 
   useEffect(() => {
     if (reset) {
-      // getBalanceXIO();
       updateAllBalances();
-      // setReset(false);
     }
-  }, [reset, getBalanceXIO]);
+  }, [reset]);
 
   useEffect(() => {
     if (selectedPortal) {
-      debouncedCalculateReward(selectedRewardToken.id);
-      const _rewardRefreshInterval = setInterval(() => {
-        debouncedCalculateReward(selectedRewardToken.id);
-      }, 60000);
-      return () => {
-        clearInterval(_rewardRefreshInterval);
-      };
+      if (quantityAlt > 0) {
+        onChangeQuantityAlt({ target: { value: quantityAlt } });
+      } else if (quantityXIO > 0) {
+        onChangeQuantityXIO({ target: { value: quantityXIO } });
+      }
     }
-  }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
+  }, [selectedPortal]);
 
   useEffect(() => {
     if (active && account) {
@@ -480,14 +487,14 @@ function Pool({
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
-  const onClickPool = (quantity, days) => {
-    setDialogStep("pendingStake");
+  const onClickPool = useCallback(() => {
+    setPoolDialogStep("pendingLiquidity");
     setShowStakeDialog(true);
-    addTokenLiquidityInPool(quantity, days);
-  };
+    addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
+  }, [quantityAlt, quantityXIO, selectedPortal]);
 
   const onClickApprove = async () => {
-    setDialogStep("pendingApproval");
+    setPoolDialogStep("pendingApproval");
     setShowStakeDialog(true);
     console.log(allowanceXIOPool);
     console.log(allowanceALTPool);
@@ -499,7 +506,7 @@ function Pool({
   };
 
   const onClickUnstake = () => {
-    setDialogStep("pendingUnstake");
+    setPoolDialogStep("pendingUnstake");
     setShowStakeDialog(true);
   };
 
@@ -590,31 +597,37 @@ function Pool({
                         {/* <Tooltip title="Hello world" open={true}> */}
                         <TextField
                           className={classes.textField}
-                          error={
-                            active &&
-                            account &&
-                            parseFloat(quantity) > parseFloat(walletBalance)
-                          }
                           fullWidth
                           placeholder="0.0"
-                          value={quantity}
-                          onChange={onChangeQuantity}
                           type="number"
                           inputMode="numeric"
                           pattern={regex}
                           onKeyDown={handleKeyDown}
                           onFocus={(e) => (e.target.placeholder = "")}
                           onBlur={(e) => (e.target.placeholder = "0.0")}
+                          value={quantityAlt}
+                          onChange={onChangeQuantityAlt}
+                          error={
+                            active &&
+                            account &&
+                            selectedPortal &&
+                            parseFloat(quantityAlt) > parseFloat(balanceALT)
+                          }
                         />
                         {/* </Tooltip> */}
                         <IconButton
                           className={classes.maxIconButton}
                           disabled={
-                            !(active || account) || walletBalance == quantity
+                            !(active || account) ||
+                            !selectedPortal ||
+                            // !walletBalancesPool[selectedPortal] ||
+                            balanceALT == quantityAlt
                           }
                           onClick={() =>
-                            onChangeQuantity({
-                              target: { value: walletBalance },
+                            onChangeQuantityAlt({
+                              target: {
+                                value: balanceALT,
+                              },
                             })
                           }
                         >
@@ -635,19 +648,36 @@ function Pool({
                         {/* <Tooltip title="Hello world" open={true}> */}
                         <TextField
                           className={classes.textField}
-                          // disabled={true}
                           fullWidth
                           placeholder="0.0"
-                          value={quantity2}
-                          onChange={onChangeQuantity2}
                           type="number"
                           inputMode="numeric"
                           pattern={regex}
                           onKeyDown={handleKeyDown}
                           onFocus={(e) => (e.target.placeholder = "")}
                           onBlur={(e) => (e.target.placeholder = "0.0")}
+                          value={quantityXIO}
+                          onChange={onChangeQuantityXIO}
+                          error={
+                            active &&
+                            account &&
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
+                          }
                         />
                         {/* </Tooltip> */}
+                        <IconButton
+                          className={classes.maxIconButton}
+                          disabled={
+                            !(active || account) || walletBalance == quantityXIO
+                          }
+                          onClick={() =>
+                            onChangeQuantityXIO({
+                              target: { value: walletBalance },
+                            })
+                          }
+                        >
+                          <MaxBtn width={10} />
+                        </IconButton>
                       </Box>
                     </Box>
                   </Grid>
@@ -657,14 +687,14 @@ function Pool({
                         variant="overline"
                         className={classes.infoText}
                       >
-                        YOU ARE ABOUT TO POOL {quantity} ETH + {eth} XIO
+                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} XIO */}
                       </Typography>
                     ) : (
                       <Typography
                         variant="overline"
                         className={classes.redText}
                       >
-                        SELECT A TOKEN TO VIEW REWARDS
+                        SELECT A POOL TO ADD LIQUIDITY
                       </Typography>
                     )}
                   </Grid>
@@ -682,10 +712,9 @@ function Pool({
                           }
                           disabled={
                             !selectedPortal ||
-                            // allowanceXIOPool ||
                             !active ||
                             !account ||
-                            loadingRedux.reward ||
+                            loadingRedux.pool ||
                             loadingRedux.approval ||
                             chainId !== 4
                           }
@@ -706,26 +735,21 @@ function Pool({
                         <Button
                           fullWidth
                           variant="red"
-                          onClick={
-                            !allowanceXIOPool && !allowanceALTPool
-                              ? () => {}
-                              : () => onClickPool(quantity, days)
-                          }
+                          onClick={onClickPool}
                           disabled={
-                            !allowanceXIOPool ||
-                            !allowanceALTPool ||
                             !active ||
                             !account ||
                             !selectedPortal ||
-                            quantity <= 0 ||
-                            loadingRedux.reward ||
-                            loadingRedux.stake ||
+                            !allowanceXIOPool ||
+                            !allowanceALTPool ||
+                            quantityXIO <= 0 ||
+                            quantityAlt <= 0 ||
+                            loadingRedux.pool ||
                             chainId !== 4 ||
-                            (active &&
-                              account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
+                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
-                          loading={loadingRedux.stake}
+                          loading={loadingRedux.pool}
                         >
                           POOL
                         </Button>
@@ -737,28 +761,21 @@ function Pool({
                         <Button
                           fullWidth
                           variant="red"
-                          // onClick={
-                          //   !allowanceXIO
-                          //     ? () => {}
-                          //     : () => onClickPool(quantity, days)
-                          // }
+                          onClick={onClickPool}
                           disabled={
                             !active ||
                             !account ||
                             !selectedPortal ||
-                            quantity <= 0 ||
-                            // days <= 0 ||
-                            loadingRedux.reward ||
-                            loadingRedux.stake ||
-                            chainId !== 4
-                            // ||
-                            // reward <= 0
-                            //  ||
-                            // (active &&
-                            //   account &&
-                            //   parseFloat(quantity) > parseFloat(walletBalance))
+                            !allowanceXIOPool ||
+                            !allowanceALTPool ||
+                            quantityXIO <= 0 ||
+                            quantityAlt <= 0 ||
+                            loadingRedux.pool ||
+                            chainId !== 4 ||
+                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
-                          loading={loadingRedux.stake}
+                          loading={loadingRedux.pool}
                         >
                           POOL
                         </Button>
@@ -844,10 +861,11 @@ function Pool({
           )}
           step={dialogStep3}
           stepperShown={
-            quantity > 0 && days > 0
-              ? dialogStep3 === "pendingApproval" ||
-                dialogStep3 === "poolProposal"
-              : null
+            // quantity > 0 && days > 0
+            //   ? dialogStep3 === "pendingApproval" ||
+            //     dialogStep3 === "poolProposal"
+            //   : null
+            false
           }
           // stepperShown={true}
 
@@ -888,7 +906,7 @@ function Pool({
                   >
                     IF YOU STAKE{" "}
                     <span className={classes.infoTextSpan}>
-                      {quantity || 0} XIO{" "}
+                      {/* {quantity || 0} XIO{" "} */}
                     </span>{" "}
                     FOR{" "}
                     <span className={classes.infoTextSpan}>
@@ -918,24 +936,25 @@ function Pool({
                   <Button
                     variant="red"
                     fullWidth
-                    onClick={
-                      !allowanceXIO
-                        ? () => {}
-                        : () => onClickPool(quantity, days)
-                    }
+                    // onClick={
+                    //   !allowanceXIO
+                    //     ? () => {}
+                    //     : () => onClickPool(quantity, days)
+                    // }
                     disabled={
                       !active ||
                       !account ||
                       !selectedPortal ||
-                      quantity <= 0 ||
+                      // quantity <= 0 ||
                       days <= 0 ||
                       loadingRedux.reward ||
                       loadingRedux.stake ||
                       chainId !== 4 ||
-                      reward <= 0 ||
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > parseFloat(walletBalance))
+                      reward <= 0
+                      // ||
+                      // (active &&
+                      //   account &&
+                      //   parseFloat(quantity) > parseFloat(walletBalance))
                     }
                     loading={loadingRedux.approval}
                   >
@@ -967,33 +986,42 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              pendingStake: (
+              pendingLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE PENDING
+                    LIQUIDITY DEPOSIT PENDING
                     <br />
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {stakeRequest.quantity} XIO FOR {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "MINS" : "MIN"} TO EARN{" "}
+                    ADDING{" "}
                     <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                      title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                      <span className={classes.redText}>
+                        {trunc(liquidityRequest.quantityAlt)}{" "}
+                        {liquidityRequest.altSymbol}
                       </span>
                     </Tooltip>{" "}
-                    INSTANTLY
+                    AND{" "}
+                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                      <span className={classes.redText}>
+                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                      </span>
+                    </Tooltip>{" "}
+                    TO{" "}
+                    <span className={classes.redText}>
+                      {liquidityRequest.altSymbol} POOL
+                    </span>
                   </Typography>
                 </Fragment>
               ),
-              failedStake: (
+              failedLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    LIQUIDITY DEPOSIT
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
@@ -1002,10 +1030,10 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              rejectedStake: (
+              rejectedLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    LIQUIDITY DEPOSIT
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
@@ -1014,10 +1042,10 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              successStake: (
+              successLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    LIQUIDITY DEPOSIT
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -1025,23 +1053,32 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY STAKED {stakeRequest.quantity} XIO FOR{" "}
-                    {stakeRequest.days} {stakeRequest.days > 1 ? "MINS" : "MIN"}{" "}
-                    AND YOU WERE SENT{" "}
+                    YOU HAVE SUCCESSFULLY ADDED{" "}
                     <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                      title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                      <span className={classes.redText}>
+                        {trunc(liquidityRequest.quantityAlt)}{" "}
+                        {liquidityRequest.altSymbol}
                       </span>
-                    </Tooltip>
+                    </Tooltip>{" "}
+                    AND{" "}
+                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                      <span className={classes.redText}>
+                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                      </span>
+                    </Tooltip>{" "}
+                    TO{" "}
+                    <span className={classes.redText}>
+                      {liquidityRequest.altSymbol} POOL
+                    </span>
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://rinkeby.etherscan.io/tx/${liquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1117,7 +1154,7 @@ function Pool({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://rinkeby.etherscan.io/tx/${liquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1149,7 +1186,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
-  user: { currentStaked, pools, walletBalance },
+  user: { currentStaked, pools, walletBalance, walletBalancesPool },
   query: { reserveXioAmount, reserveAltAmount },
   contract,
 }) => ({
@@ -1166,6 +1203,7 @@ const mapStateToProps = ({
   heightVal,
   reserveXioAmount,
   reserveAltAmount,
+  walletBalancesPool,
   ...contract,
 });
 
@@ -1181,7 +1219,7 @@ export default connect(mapStateToProps, {
   addTokenLiquidityInPool,
   removeTokenLiquidityInPool,
   setLoading,
-  setDialogStep,
+  setPoolDialogStep,
   // setReset,
   setInitialValues,
   setRefetch,

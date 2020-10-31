@@ -128,9 +128,10 @@ function PoolTable({
   expiredDappBalance,
   onClickUnstake,
   selectStake,
+  poolDashboard,
 }) {
   const classes = useStyles();
-  const headItems = ["POOL", "BALANCE", "REMAINING"];
+  const headItems = ["POOL", "BALANCE"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState();
@@ -140,7 +141,7 @@ function PoolTable({
 
   useEffect(() => {
     setPage(0);
-  }, [stakes]);
+  }, [poolDashboard]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -162,8 +163,8 @@ function PoolTable({
   const sortedData = useCallback(() => {
     let data = [];
     switch (sortBy) {
-      case "OUTPUT":
-        data = stakes?.sort(
+      case "POOL":
+        data = poolDashboard?.sort(
           (
             {
               pool: {
@@ -187,28 +188,18 @@ function PoolTable({
         );
 
         break;
-      case "UNLOCKED":
-        data = stakes?.sort(
-          ({ amountAvailable: a }, { amountAvailable: b }) =>
-            parseFloat(a) - parseFloat(b)
-        );
-        break;
-      case "REMAINING":
-        data = stakes?.sort(
-          (a, b) => parseFloat(a.expiryTime) - parseFloat(b.expiryTime)
+      case "BALANCE":
+        data = poolDashboard?.sort(
+          ({ balance: a }, { balance: b }) => parseFloat(a) - parseFloat(b)
         );
         break;
       default:
-        data = stakes.sort(
-          (a, b) =>
-            parseFloat(b.initiationTimestamp) -
-            parseFloat(a.initiationTimestamp)
-        );
+        data = poolDashboard;
         // data = stakes.reverse();
         break;
     }
     return sortDirection ? data.reverse() : data;
-  }, [stakes, sortBy, sortDirection]);
+  }, [poolDashboard, sortBy, sortDirection]);
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -229,35 +220,35 @@ function PoolTable({
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
-        <Grid item xs={6} className={classes.grid}>
+        <Grid item xs={12} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
-            LOCKED POOLS
+            POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${walletBalance} XIO`}>
-              <span> 2 </span>
+              <span> {poolDashboard.length} </span>
               {/* <span>{trunc(walletBalance)} XIO</span> */}
             </Tooltip>
           </Typography>
         </Grid>
 
-        <Grid item xs={6} className={classes.grid}>
+        {/* <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
             COMPLETED POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${dappBalance} XIO`}>
-              <span> 2 </span>
-              {/* <span>{trunc(dappBalance)} XIO</span> */}
+              <span> {poolDashboard.length} </span>
+              {/* <span>{trunc(dappBalance)} XIO</span>  
             </Tooltip>
           </Typography>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Grid container item xs={12}>
         <Grid container item xs={12} className={classes.gridHead}>
           {headItems.map((headItem) => (
-            <Grid item xs={4} className={classes.gridItem} key={headItem}>
+            <Grid item xs={6} className={classes.gridItem} key={headItem}>
               <MuiButton
                 className={classes.tableHeadItemBtn}
                 onClick={() => onClickSortBtn(headItem)}
@@ -295,83 +286,57 @@ function PoolTable({
                 <Grid container>
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
-                    .map((_stake) => {
-                      const _daysRem = Math.ceil(
-                        (_stake.expiryTime - Date.now() / 1000) / 60
-                      );
+                    .map((_pool) => {
                       return (
-                        <a
-                          href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
-                          className={classes.link}
-                          target="_blank"
+                        // <a
+                        //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
+                        //   className={classes.link}
+                        //   target="_blank"
+                        // >
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          key={_pool.pool.id}
+                          className={classes.cursorPointer}
+                          // onClick={() => selectStake(_stake.id)}
+                          // className={`${classes.cursorPointer} ${
+                          //   selectedStakes[_stake.id] ? classes.selected : null
+                          // }`}
                         >
-                          <Grid
-                            container
-                            item
-                            xs={12}
-                            key={_stake.id}
-                            className={classes.cursorPointer}
-                            // onClick={() => selectStake(_stake.id)}
-                            // className={`${classes.cursorPointer} ${
-                            //   selectedStakes[_stake.id] ? classes.selected : null
-                            // }`}
-                          >
-                            {/* {console.log("Stake -- > ", _stake)} */}
-                            <Grid item xs={4} className={classes.gridItem}>
-                              {/* <Tooltip
+                          {/* {console.log("Stake -- > ", _stake)} */}
+                          <Grid item xs={6} className={classes.gridItem}>
+                            {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
+                            <span className={classes.flexCenter}>
+                              <img
+                                src={tryRequire(_pool.pool.tokenB.symbol)}
+                                alt="Logo"
+                                srcSet=""
+                                width={15}
+                                style={{ marginRight: 5 }}
+                              />
+                              {_pool.pool.tokenB.symbol}
+                            </span>
+                            {/* </Tooltip> */}
+                          </Grid>
+                          <Grid item xs={6} className={classes.gridItem}>
+                            <Tooltip title={`${_pool.balance} xFlash`}>
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire(_stake.pool.tokenB.symbol)}
+                                  src={tryRequire("XIO")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
-                                {_stake.pool.tokenB.symbol}
+                                {trunc(_pool.balance)} xFlash
                               </span>
-                              {/* </Tooltip> */}
-                            </Grid>
-                            <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip
-                                title={`${_stake.amountAvailable}/${_stake.stakeAmount} XIO`}
-                              >
-                                <span className={classes.flexCenter}>
-                                  <img
-                                    src={tryRequire("XIO")}
-                                    alt="Logo"
-                                    srcSet=""
-                                    width={15}
-                                    style={{ marginRight: 5 }}
-                                  />
-                                  {trunc(_stake.amountAvailable)}/
-                                  {trunc(_stake.stakeAmount)} XIO
-                                </span>
-                              </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={4} className={classes.gridItem}>
-                              {!_stake.expired &&
-                              _stake.expiryTime > Date.now() / 1000 ? (
-                                <Fragment>
-                                  {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
-                                </Fragment>
-                              ) : (
-                                "COMPLETED"
-                              )}
-                              {isStakesSelected ? (
-                                <Checkbox
-                                  size="small"
-                                  checked={
-                                    selectedStakes[_stake.id] ? true : false
-                                  }
-                                  className={classes.checkbox}
-                                />
-                              ) : null}
-                            </Grid>
+                            </Tooltip>
                           </Grid>
-                        </a>
+                        </Grid>
+                        // </a>
                       );
                     })}
                 </Grid>
@@ -434,6 +399,7 @@ const mapStateToProps = ({
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
   ui: { loading },
+  flashstake: { poolDashboard },
 }) => ({
   stakes,
   active,
@@ -446,6 +412,7 @@ const mapStateToProps = ({
   loading: loading.data,
   loadingRedux: loading,
   expiredDappBalance,
+  poolDashboard,
 });
 
 export default connect(mapStateToProps, {
