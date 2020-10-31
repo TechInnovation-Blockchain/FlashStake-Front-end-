@@ -266,11 +266,40 @@ export const toggleAccordianExpanded = (val) => {
     type: "TOGGLE_ACCORDIAN_EXPANDED",
   };
 };
-export const selectStake = (id) => {
-  return {
-    type: "SELECT_STAKE",
-    payload: id,
-  };
+
+export const selectStake = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: "SELECT_STAKE",
+      payload: id,
+    });
+
+    const {
+      user: { stakes },
+      dashboard: { selectedStakes },
+    } = await getState();
+
+    let totalBurn = 0;
+    let totalXIO = 0;
+    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
+    _selectedStakes.map((_stake) => {
+      totalBurn += parseFloat(_stake.burnAmount) || 0;
+      totalXIO += parseFloat(_stake.stakeAmount) || 0;
+    });
+    console.log(totalBurn);
+
+    dispatch({
+      type: "SUM_OF_BURN",
+      payload: {
+        totalBurn,
+        totalXIO,
+      },
+    });
+  } catch (e) {
+    console.log("ERROR  -> ", e);
+    // setDialogStepIndep("failedStake");
+    // showSnackbarIndep("Stake Transaction Failed.", "error");
+  }
 };
 
 export const clearSelection = () => {
