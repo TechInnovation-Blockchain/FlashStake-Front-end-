@@ -46,6 +46,8 @@ import {
   getApprovalXIOPool,
   getApprovalALTPool,
   setInitialValues,
+  addTokenLiquidityInPool,
+  removeTokenLiquidityInPool,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
@@ -60,6 +62,7 @@ import { Link } from "@material-ui/icons";
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
+import { getQueryData } from "../../redux/actions/queryActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -327,6 +330,8 @@ function Pool({
   getBalanceXIO,
   balanceXIO,
   stakeXIO,
+  addTokenLiquidityInPool,
+  removeTokenLiquidityInPool,
   setLoading,
   dialogStep3,
   setDialogStep,
@@ -351,11 +356,20 @@ function Pool({
   allowanceALTPool,
   getApprovalXIOPool,
   getApprovalALTPool,
+  reserveXioAmount,
+  reserveAltAmount,
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
   const [height2, setHeight2] = useState(0);
+  const [showStakeDialog, setShowStakeDialog] = useState(false);
+  const [expanded2, setExpanded2] = useState(true);
+  const [days, setDays] = useState(initialValues.days);
+  const [quantity, setQuantity] = useState(initialValues.quantity);
+  const [quantity2, setQuantity2] = useState(initialValues.quantity);
+  const [eth, setEth] = useState(0);
+  const [xio, setXIO] = useState(0);
   const ref = useRef(null);
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
@@ -380,16 +394,8 @@ function Pool({
     document.title = "Pool - XIO | The Future is at Stake";
   }, []);
 
-  const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [expanded2, setExpanded2] = useState(true);
+  const debouncedCalculateReward = useCallback(debounce(getQueryData, 500), []);
 
-  const debouncedCalculateReward = useCallback(
-    debounce(calculateReward, 500),
-    []
-  );
-
-  const [days, setDays] = useState(initialValues.days);
-  const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
   // const [height2, setHeight2] = useState(0);
 
@@ -417,6 +423,15 @@ function Pool({
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
+      setQuantity2((quantity * reserveXioAmount) / reserveAltAmount);
+      console.log(eth);
+    }
+  };
+
+  const onChangeQuantity2 = ({ target: { value } }) => {
+    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+      setQuantity2(value);
+      setQuantity((quantity2 * reserveAltAmount) / reserveXioAmount);
     }
   };
 
@@ -446,9 +461,9 @@ function Pool({
 
   useEffect(() => {
     if (selectedPortal) {
-      debouncedCalculateReward(quantity, days);
+      debouncedCalculateReward(selectedRewardToken.id);
       const _rewardRefreshInterval = setInterval(() => {
-        debouncedCalculateReward(quantity, days);
+        debouncedCalculateReward(selectedRewardToken.id);
       }, 60000);
       return () => {
         clearInterval(_rewardRefreshInterval);
@@ -465,10 +480,10 @@ function Pool({
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
-  const onClickStake = (quantity, days) => {
+  const onClickPool = (quantity, days) => {
     setDialogStep("pendingStake");
     setShowStakeDialog(true);
-    stakeXIO(quantity, days);
+    addTokenLiquidityInPool(quantity, days);
   };
 
   const onClickApprove = async () => {
@@ -501,6 +516,17 @@ function Pool({
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
     // console.log(evt.which);
   };
+
+  // useEffect(() => {
+  //   if (quantity !== 0) {
+  //     setEth((eth * reserveAltAmount) / reserveXioAmount);
+  //     console.log(eth);
+  //   }
+  //   if (quantity2 !== 0) {
+  //     setXIO((quantity * reserveXioAmount) / reserveAltAmount);
+  //     console.log(xio);
+  //   }
+  // }, [quantity, reserveXioAmount, reserveAltAmount]);
 
   useEffect(() => {
     if (!expanding) {
@@ -609,17 +635,17 @@ function Pool({
                         {/* <Tooltip title="Hello world" open={true}> */}
                         <TextField
                           className={classes.textField}
-                          disabled={true}
+                          // disabled={true}
                           fullWidth
                           placeholder="0.0"
-                          value="5000 XIO"
-                          // onChange={onChangeQuantity}
-                          // type="number"
-                          // inputMode="numeric"
-                          // pattern={regex}
-                          // onKeyDown={handleKeyDown}
-                          // onFocus={(e) => (e.target.placeholder = "")}
-                          // onBlur={(e) => (e.target.placeholder = "0.0")}
+                          value={quantity2}
+                          onChange={onChangeQuantity2}
+                          type="number"
+                          inputMode="numeric"
+                          pattern={regex}
+                          onKeyDown={handleKeyDown}
+                          onFocus={(e) => (e.target.placeholder = "")}
+                          onBlur={(e) => (e.target.placeholder = "0.0")}
                         />
                         {/* </Tooltip> */}
                       </Box>
@@ -631,7 +657,7 @@ function Pool({
                         variant="overline"
                         className={classes.infoText}
                       >
-                        YOU ARE ABOUT TO POOL 0 ETH + 5,000 XIO FOR 75 DAYS
+                        YOU ARE ABOUT TO POOL {quantity} ETH + {eth} XIO
                       </Typography>
                     ) : (
                       <Typography
@@ -680,13 +706,14 @@ function Pool({
                         <Button
                           fullWidth
                           variant="red"
-                          // onClick={
-                          //   !allowanceXIO
-                          //     ? () => {}
-                          //     : () => onClickStake(quantity, days)
-                          // }
+                          onClick={
+                            !allowanceXIOPool && !allowanceALTPool
+                              ? () => {}
+                              : () => onClickPool(quantity, days)
+                          }
                           disabled={
                             !allowanceXIOPool ||
+                            !allowanceALTPool ||
                             !active ||
                             !account ||
                             !selectedPortal ||
@@ -713,22 +740,24 @@ function Pool({
                           // onClick={
                           //   !allowanceXIO
                           //     ? () => {}
-                          //     : () => onClickStake(quantity, days)
+                          //     : () => onClickPool(quantity, days)
                           // }
-                          // disabled={
-                          //   !active ||
-                          //   !account ||
-                          //   !selectedPortal ||
-                          //   quantity <= 0 ||
-                          //   days <= 0 ||
-                          //   loadingRedux.reward ||
-                          //   loadingRedux.stake ||
-                          //   chainId !== 4 ||
-                          //   reward <= 0 ||
-                          //   (active &&
-                          //     account &&
-                          //     parseFloat(quantity) > parseFloat(walletBalance))
-                          // }
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            // days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4
+                            // ||
+                            // reward <= 0
+                            //  ||
+                            // (active &&
+                            //   account &&
+                            //   parseFloat(quantity) > parseFloat(walletBalance))
+                          }
                           loading={loadingRedux.stake}
                         >
                           POOL
@@ -892,7 +921,7 @@ function Pool({
                     onClick={
                       !allowanceXIO
                         ? () => {}
-                        : () => onClickStake(quantity, days)
+                        : () => onClickPool(quantity, days)
                     }
                     disabled={
                       !active ||
@@ -1121,6 +1150,7 @@ const mapStateToProps = ({
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance },
+  query: { reserveXioAmount, reserveAltAmount },
   contract,
 }) => ({
   ...flashstake,
@@ -1134,6 +1164,8 @@ const mapStateToProps = ({
   walletBalance,
   animation,
   heightVal,
+  reserveXioAmount,
+  reserveAltAmount,
   ...contract,
 });
 
@@ -1146,6 +1178,8 @@ export default connect(mapStateToProps, {
   checkAllowancePool,
   getBalanceXIO,
   stakeXIO,
+  addTokenLiquidityInPool,
+  removeTokenLiquidityInPool,
   setLoading,
   setDialogStep,
   // setReset,

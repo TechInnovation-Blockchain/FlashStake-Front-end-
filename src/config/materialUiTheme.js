@@ -52,7 +52,7 @@ export const darkTheme = createMuiTheme({
     },
 
     navLink: {
-      active: "#ffffff",
+      active: "#D89C74",
     },
   },
   typography: {
