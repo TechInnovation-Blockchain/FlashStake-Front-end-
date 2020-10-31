@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/styles";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import logoLight from "../assets/xio-logo-light.svg";
+import flashDark from "../assets/flash-dark.svg";
+import flash from "../assets/FLASH2.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,
@@ -141,7 +143,8 @@ function Navbar({
       {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
-          src={themeMode === "dark" ? logo : logoLight}
+          // src={themeMode === "dark" ? flash : logoLight}
+          src={flash}
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}
