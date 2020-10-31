@@ -7,6 +7,7 @@ export const dashboardReducer = (
       quantity: 0,
       symbol: "",
     },
+    totalBurn: {},
     withdrawTxnHash: "",
     reCalculateExpired: false,
     expanded: false,
@@ -68,6 +69,12 @@ export const dashboardReducer = (
         ...state,
         selectedStakes: {},
         isStakesSelected: false,
+      };
+
+    case "SUM_OF_BURN":
+      return {
+        ...state,
+        totalBurn: payload,
       };
     default:
       return state;
