@@ -740,27 +740,27 @@ function Swap({
                             </Typography>
                           </Fragment>
                         ),
-                        //successApproval: (
-                        //  <Fragment>
-                        //    <Typography
-                        //      variant="body1"
-                        //      className={classes.textBold}
-                        //    >
-                        //      APPROVAL
-                        //      <br />
-                        //      <span className={classes.greenText}>
-                        //        SUCCESSFUL
-                        //      </span>
-                        //    </Typography>
-                        //    <Button
-                        //      variant="red"
-                        //      fullWidth
-                        //      onClick={onClickClose}
-                        //    >
-                        //      CLOSE
-                        //    </Button>
-                        //  </Fragment>
-                        //),
+                        successApproval: (
+                          <Fragment>
+                            <Typography
+                              variant="body1"
+                              className={classes.textBold}
+                            >
+                              APPROVAL
+                              <br />
+                              <span className={classes.greenText}>
+                                SUCCESSFUL
+                              </span>
+                            </Typography>
+                            <Button
+                              variant="red"
+                              fullWidth
+                              onClick={onClickClose}
+                            >
+                              CLOSE
+                            </Button>
+                          </Fragment>
+                        ),
                         swapProposal: (
                           <Fragment>
                             <Typography
