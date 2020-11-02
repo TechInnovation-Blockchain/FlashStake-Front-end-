@@ -57,7 +57,7 @@ import {
   showWalletBackdrop,
   setHeightValue,
 } from "../../redux/actions/uiActions";
-import { Link } from "@material-ui/icons";
+import { Link, CheckCircleOutline } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
 import { setRefetch, selectStake } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
@@ -255,6 +255,13 @@ const useStyles = makeStyles((theme) => ({
     // position: "absolute",
     // left: 2,
     // top: "10%",
+  },
+  dialogIcon: {
+    fontSize: 80,
+  },
+  greenText: {
+    color: theme.palette.text.green,
+    fontWeight: 700,
   },
 }));
 
@@ -915,74 +922,91 @@ function Flashstake({
                   </Typography>
                 </Fragment>
               ),
-
-              flashstakeProposal: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    STAKE
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}>
-                      {quantity || 0} FLASH{" "}
-                    </span>{" "}
-                    FOR{" "}
-                    <span className={classes.infoTextSpan}>
-                      {days || 0} MINS
-                    </span>{" "}
-                    YOU WILL{" "}
-                    <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
-                    GET{" "}
-                    {loadingRedux.reward ? (
-                      <CircularProgress
-                        size={12}
-                        className={classes.loaderStyle}
+              flashstakeProposal:
+                quantity > 0 && days > 0 ? (
+                  <Fragment>
+                    <Typography variant="body1" className={classes.textBold}>
+                      STAKE
+                      <br />
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                    >
+                      IF YOU STAKE{" "}
+                      <span className={classes.infoTextSpan}>
+                        {quantity || 0} FLASH{" "}
+                      </span>{" "}
+                      FOR{" "}
+                      <span className={classes.infoTextSpan}>
+                        {days || 0} MINS
+                      </span>{" "}
+                      YOU WILL{" "}
+                      <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
+                      GET{" "}
+                      {loadingRedux.reward ? (
+                        <CircularProgress
+                          size={12}
+                          className={classes.loaderStyle}
+                        />
+                      ) : (
+                        <Tooltip
+                          title={`${Web3.utils.fromWei(reward)} ${
+                            selectedRewardToken?.tokenB?.symbol || ""
+                          }`}
+                        >
+                          <span className={classes.infoTextSpan}>
+                            {trunc(Web3.utils.fromWei(reward))}{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""}
+                          </span>
+                        </Tooltip>
+                      )}
+                    </Typography>
+                    <Button
+                      variant="red"
+                      fullWidth
+                      onClick={
+                        !allowanceXIO
+                          ? () => {}
+                          : () => onClickStake(quantity, days)
+                      }
+                      disabled={
+                        !active ||
+                        !account ||
+                        !selectedPortal ||
+                        quantity <= 0 ||
+                        days <= 0 ||
+                        loadingRedux.reward ||
+                        loadingRedux.stake ||
+                        chainId !== 4 ||
+                        reward <= 0 ||
+                        (active &&
+                          account &&
+                          parseFloat(quantity) > parseFloat(walletBalance))
+                      }
+                      loading={loadingRedux.approval}
+                    >
+                      STAKE
+                    </Button>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <Typography variant="body1" className={classes.textBold}>
+                      APPROVAL
+                      <br />
+                      <CheckCircleOutline
+                        className={`${classes.dialogIcon} ${classes.greenText}`}
                       />
-                    ) : (
-                      <Tooltip
-                        title={`${Web3.utils.fromWei(reward)} ${
-                          selectedRewardToken?.tokenB?.symbol || ""
-                        }`}
-                      >
-                        <span className={classes.infoTextSpan}>
-                          {trunc(Web3.utils.fromWei(reward))}{" "}
-                          {selectedRewardToken?.tokenB?.symbol || ""}
-                        </span>
-                      </Tooltip>
-                    )}
-                  </Typography>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    onClick={
-                      !allowanceXIO
-                        ? () => {}
-                        : () => onClickStake(quantity, days)
-                    }
-                    disabled={
-                      !active ||
-                      !account ||
-                      !selectedPortal ||
-                      quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      loadingRedux.stake ||
-                      chainId !== 4 ||
-                      reward <= 0 ||
-                      (active &&
-                        account &&
-                        parseFloat(quantity) > parseFloat(walletBalance))
-                    }
-                    loading={loadingRedux.approval}
-                  >
-                    STAKE
-                  </Button>
-                </Fragment>
-              ),
+                      <span className={classes.redText}>
+                        YOU HAVE SUCCESSFUL APPROVED
+                      </span>
+                    </Typography>
+                    <Button variant="red" fullWidth onClick={closeDialog}>
+                      DISMISS
+                    </Button>
+                  </Fragment>
+                ),
+
               failedApproval: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
