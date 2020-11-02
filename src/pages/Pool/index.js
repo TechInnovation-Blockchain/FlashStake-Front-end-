@@ -362,6 +362,8 @@ function Pool({
   reserveAltAmount,
   walletBalancesPool,
   liquidityRequest,
+  withdrawLiquidityTxnHash,
+  withdrawLiquidityRequest,
   ...props
 }) {
   const classes = useStyles();
@@ -504,8 +506,13 @@ function Pool({
     }
   };
 
+  const onClickApprovePool = async () => {
+    setPoolDialogStep("pendingApproval");
+    setShowStakeDialog(true);
+  };
+
   const onClickUnstake = () => {
-    setPoolDialogStep("pendingUnstake");
+    setPoolDialogStep("pendingWithdrawLiquidity");
     setShowStakeDialog(true);
   };
 
@@ -575,7 +582,7 @@ function Pool({
                         variant="overline"
                         className={classes.secondaryText}
                       >
-                        POOL QUANTITY
+                        QUANTITY
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -846,7 +853,10 @@ function Pool({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <PoolTable onClickUnstake={onClickUnstake} />
+                <PoolTable
+                  onClickUnstake={onClickUnstake}
+                  onClickApprovePool={onClickApprovePool}
+                />
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1094,27 +1104,35 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              pendingUnstake: (
+              pendingWithdrawLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE PENDING
+                    WITHDRAW LIQUIDITY PENDING
                     <br />
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
-                    </Tooltip>
+                    WITHDRAWING{" "}
+                    <Tooltip
+                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                      </span>
+                    </Tooltip>{" "}
+                    FROM{" "}
+                    <span className={classes.redText}>
+                      {withdrawLiquidityRequest._token} POOL
+                    </span>
                   </Typography>
                 </Fragment>
               ),
-              failedUnstake: (
+              failedWithdrawLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
+                    WITHDRAW LIQUIDITY
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
@@ -1123,10 +1141,10 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              rejectedUnstake: (
+              rejectedWithdrawLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
+                    WITHDRAW LIQUIDITY
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
@@ -1135,10 +1153,10 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
-              successUnstake: (
+              successWithdrawLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
+                    WITHDRAW LIQUIDITY
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -1146,17 +1164,25 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY UNSTAKED{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
-                    </Tooltip>
+                    YOU HAVE SUCCESSFULLY WITHDRAWN{" "}
+                    <Tooltip
+                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                      </span>
+                    </Tooltip>{" "}
+                    FROM{" "}
+                    <span className={classes.redText}>
+                      {withdrawLiquidityRequest._token} POOL
+                    </span>
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${liquidityTxnHash}`}
+                      href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}

@@ -21,6 +21,7 @@ import {
   setResetIndep,
   setPoolDialogStepIndep,
   setLiquidityTxnHashIndep,
+  setWithdrawLiquidityTxnHash,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import axios from "axios";
@@ -575,4 +576,83 @@ export const addLiquidityInPool = (
   }
 };
 
-export const removeLiquidityInPool = (_liquidity, _token) => {};
+export const removeLiquidityInPool = (_liquidity, _token) => {
+  setLoadingIndep({ withdrawPool: true });
+
+  try {
+    showSnackbarIndep("Transaction Pending.", "info");
+    setPoolDialogStepIndep("pendingWithdrawLiquidity");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new _error("Wallet not activated.");
+    }
+
+    contract.methods
+      .removeLiquidityInPool(_liquidity, _token)
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        (error, gasAmount) => {
+          contract.methods
+            .removeLiquidityInPool(_liquidity, _token)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", (txnHash) => {
+              setWithdrawLiquidityTxnHash(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
+            })
+            .then(function (receipt) {
+              setPoolDialogStepIndep("successWithdrawLiquidity");
+              showSnackbarTxnIndep(
+                "Withdraw Liquidity Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+              setRefetchIndep(true);
+              setLoadingIndep({ withdrawPool: false });
+
+              return receipt;
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setPoolDialogStepIndep("rejectedWithdrawLiquidity");
+                showSnackbarIndep(
+                  "Withdraw Liquidity Transaction Rejected.",
+                  "error"
+                );
+              } else {
+                setPoolDialogStepIndep("failedWithdrawLiquidity");
+                showSnackbarIndep(
+                  "Withdraw Liquidity Transaction Failed.",
+                  "error"
+                );
+              }
+              setLoadingIndep({ withdrawPool: false });
+
+              _error("ERROR removeLiquidityInPool -> ", e);
+            });
+        }
+      );
+  } catch (e) {
+    if (e.code === 4001) {
+      setDialogStepIndep("rejectedWithdrawLiquidity");
+      showSnackbarIndep("Withdraw Liquidity Transaction Rejected.", "error");
+    } else {
+      setDialogStepIndep("failedWithdrawLiquidity");
+      showSnackbarIndep("Withdraw Liquidity Transaction Failed.", "error");
+    }
+    _error("ERROR removeLiquidityInPool -> ", e);
+  }
+};

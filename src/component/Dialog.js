@@ -73,7 +73,10 @@ export default function Dialog({
   title = "",
   stepperShown,
   step,
+  step2,
   steps,
+  steps2,
+  stepperSecondary,
 }) {
   const classes = useStyles();
 
@@ -104,6 +107,7 @@ export default function Dialog({
           </IconButton>
         </Box>
         {stepperShown ? <Stepper step={step} steps={steps} /> : null}
+        {stepperSecondary ? <Stepper step={step2} steps={steps2} /> : null}
         {status
           ? {
               pending: (

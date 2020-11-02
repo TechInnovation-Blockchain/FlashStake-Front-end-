@@ -7,7 +7,6 @@ import {
   CircularProgress,
   TablePagination,
   Box,
-  Checkbox,
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
@@ -17,8 +16,13 @@ import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
-import { unstakeXIO } from "../redux/actions/flashstakeActions";
-import { Link } from "react-router-dom";
+import {
+  unstakeXIO,
+  onSelectWithdrawPool,
+  removeTokenLiquidityInPool,
+  checkAllowancePoolWithdraw,
+  getApprovalPoolLiquidity,
+} from "../redux/actions/flashstakeActions";
 import { selectStake } from "../redux/actions/dashboardActions";
 import Radio from "@material-ui/core/Radio";
 
@@ -123,22 +127,24 @@ const useStyles = makeStyles((theme) => ({
 
 function PoolTable({
   stakes,
-  openWithdrawDialog,
   loading,
   loadingRedux,
   active,
   account,
   chainId,
   showWalletBackdrop,
-  selectedStakes,
-  isStakesSelected,
   walletBalance,
   dappBalance,
-  unstakeXIO,
   expiredDappBalance,
-  onClickUnstake,
-  selectStake,
   poolDashboard,
+  selectedWithdrawPool,
+  onSelectWithdrawPool,
+  removeTokenLiquidityInPool,
+  allowancePoolWithdraw,
+  onClickUnstake,
+  checkAllowancePoolWithdraw,
+  onClickApprovePool,
+  getApprovalPoolLiquidity,
 }) {
   const classes = useStyles();
   const headItems = ["POOL", "BALANCE"];
@@ -152,6 +158,12 @@ function PoolTable({
   useEffect(() => {
     setPage(0);
   }, [poolDashboard]);
+
+  useEffect(() => {
+    if (!selectedWithdrawPool) {
+      setVisibleRadioButtons(false);
+    }
+  }, [selectedWithdrawPool]);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -227,6 +239,10 @@ function PoolTable({
     }
   };
 
+  useEffect(() => {
+    checkAllowancePoolWithdraw();
+  }, [active, account, selectedWithdrawPool]);
+
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
@@ -295,7 +311,7 @@ function PoolTable({
             </Typography>
           </Grid>
         ) : !loading ? (
-          stakes?.length ? (
+          poolDashboard?.length ? (
             <Fragment>
               <PageAnimation in={true} key={page} reverse={reverse}>
                 <Grid container>
@@ -314,6 +330,10 @@ function PoolTable({
                           xs={12}
                           key={_pool.pool.id}
                           className={classes.cursorPointer}
+                          onClick={() =>
+                            visibleRadioButtons &&
+                            onSelectWithdrawPool(_pool.pool.id)
+                          }
                           // onClick={() => selectStake(_stake.id)}
                           // className={`${classes.cursorPointer} ${
                           //   selectedStakes[_stake.id] ? classes.selected : null
@@ -366,9 +386,14 @@ function PoolTable({
                                   root: classes.radio,
                                   checked: classes.checked,
                                 }}
+                                checked={_pool.pool.id === selectedWithdrawPool}
+                                // onChange={onSelectWithdrawPool}
+                                // onChange={({ target: { value } }) =>
+                                //   onSelectWithdrawPool(value)
+                                // }
                                 // checked={selectedValue === "a"}
                                 // onChange={handleChange}
-                                value="a"
+                                value={_pool.pool.id}
                                 name="radio-button-demo"
                                 inputProps={{ "aria-label": "A" }}
                               />
@@ -394,31 +419,69 @@ function PoolTable({
                   />
                 </Grid>
               ) : null}
-              {sortedData().length && dappBalance > 0 ? (
-                <Grid item xs={12} className={classes.gridItem}>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    // onClick={() => {
-                    //   onClickUnstake();
-                    //   unstakeXIO();
-                    // }}
-                    onClick={() => setVisibleRadioButtons((val) => !val)}
-                    disabled={loadingRedux.unstake || !(expiredDappBalance > 0)}
-                    fontSizeLocal="body2"
-                    loading={loadingRedux.unstake}
-                  >
-                    <Tooltip title={`${expiredDappBalance} FLASH`}>
-                      <span>WITHDRAW</span>
-                    </Tooltip>
-                  </Button>
-                </Grid>
+              {sortedData().length ? (
+                allowancePoolWithdraw ? (
+                  <Grid item xs={12} className={classes.gridItem}>
+                    <Button
+                      variant="red"
+                      fullWidth
+                      // onClick={() => {
+                      //   onClickUnstake();
+                      //   unstakeXIO();
+                      // }}
+                      onClick={
+                        visibleRadioButtons
+                          ? () => {
+                              onClickUnstake();
+                              removeTokenLiquidityInPool();
+                            }
+                          : () => setVisibleRadioButtons(true)
+                      }
+                      disabled={
+                        loadingRedux.withdrawPool ||
+                        (visibleRadioButtons && !selectedWithdrawPool)
+                      }
+                      fontSizeLocal="body2"
+                      loading={loadingRedux.withdrawPool}
+                    >
+                      {visibleRadioButtons && selectedWithdrawPool
+                        ? "WITHDRAW LIQUIDITY FROM SELECTED POOL"
+                        : "WITHDRAW"}
+                    </Button>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} className={classes.gridItem}>
+                    <Button
+                      variant="red"
+                      fullWidth
+                      onClick={
+                        visibleRadioButtons
+                          ? () => {
+                              onClickApprovePool();
+                              getApprovalPoolLiquidity();
+                            }
+                          : () => setVisibleRadioButtons(true)
+                      }
+                      disabled={
+                        loadingRedux.withdrawPool ||
+                        (visibleRadioButtons && !selectedWithdrawPool)
+                      }
+                      fontSizeLocal="body2"
+                      loading={
+                        loadingRedux.approval ||
+                        loadingRedux.approvalWithdrawPool
+                      }
+                    >
+                      APPROVE xFLASH
+                    </Button>
+                  </Grid>
+                )
               ) : null}
             </Fragment>
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
               <Typography variant="overline" className={classes.msg}>
-                NO AVAILABLE STAKES
+                NO AVAILABLE POOLS
               </Typography>
             </Grid>
           )
@@ -439,7 +502,7 @@ const mapStateToProps = ({
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
   ui: { loading },
-  flashstake: { poolDashboard },
+  flashstake: { poolDashboard, selectedWithdrawPool, allowancePoolWithdraw },
 }) => ({
   stakes,
   active,
@@ -453,10 +516,16 @@ const mapStateToProps = ({
   loadingRedux: loading,
   expiredDappBalance,
   poolDashboard,
+  selectedWithdrawPool,
+  allowancePoolWithdraw,
 });
 
 export default connect(mapStateToProps, {
   showWalletBackdrop,
   unstakeXIO,
+  onSelectWithdrawPool,
   selectStake,
+  removeTokenLiquidityInPool,
+  getApprovalPoolLiquidity,
+  checkAllowancePoolWithdraw,
 })(PoolTable);

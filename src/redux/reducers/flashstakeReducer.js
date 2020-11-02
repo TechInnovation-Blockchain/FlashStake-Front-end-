@@ -12,6 +12,8 @@ export const flashstakeReducer = (
     allowanceALT: true,
     allowanceXIOPool: true,
     allowanceALTPool: true,
+    allowancePoolWithdraw: true,
+    selectedWithdrawPool: "",
     reward: "0",
     swapOutput: "0",
     balanceXIO: 0,
@@ -34,6 +36,7 @@ export const flashstakeReducer = (
     withdrawLiquidityRequest: {},
     stakeTxnHash: "",
     liquidityTxnHash: "",
+    withdrawLiquidityTxnHash: "",
     reset: false,
     initialValues: {
       days: "",
@@ -108,7 +111,11 @@ export const flashstakeReducer = (
         ...state,
         allowanceALTPool: payload,
       };
-
+    case "ALLOWANCE_POOL_WITHDRAW":
+      return {
+        ...state,
+        allowancePoolWithdraw: payload,
+      };
     case "STAKE_REWARD":
       return {
         ...state,
@@ -186,10 +193,20 @@ export const flashstakeReducer = (
         ...state,
         liquidityTxnHash: payload,
       };
+    case "WITHDRAW_LIQDUIDITY_TXN_HASH":
+      return {
+        ...state,
+        withdrawLiquidityTxnHash: payload,
+      };
     case "POOL_DASHBOARD_DATA":
       return {
         ...state,
         poolDashboard: payload,
+      };
+    case "SELECT_WITHDRAW_POOL":
+      return {
+        ...state,
+        selectedWithdrawPool: payload,
       };
     // case "RESET":
     //   return {

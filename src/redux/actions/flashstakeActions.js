@@ -262,6 +262,42 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
   }
 };
 
+export const checkAllowancePoolWithdraw = () => async (dispatch, getState) => {
+  dispatch(setLoading({ allowance: true }));
+  try {
+    const {
+      flashstake: { selectedWithdrawPool, poolDashboard },
+      web3: { account },
+    } = await getState();
+    if (!selectedWithdrawPool || !account) {
+      return null;
+    }
+    const _pool = poolDashboard.find(
+      (_pool) => _pool.pool.id === selectedWithdrawPool
+    );
+
+    const _allowance = await checkAllowanceMemo(
+      _pool.pool.id,
+      _pool.pool.id,
+      account
+    );
+    _log("checkAllowancePoolWithdraw -> ", _allowance);
+
+    dispatch({
+      type: "ALLOWANCE_POOL_WITHDRAW",
+      payload: _allowance > 0,
+    });
+  } catch (e) {
+    _error("ERROR checkAllowancePoolWithdraw -> ", e);
+    dispatch({
+      type: "ALLOWANCE_POOL_WITHDRAW",
+      payload: false,
+    });
+  } finally {
+    dispatch(setLoading({ allowance: false }));
+  }
+};
+
 // export const checkAllowanceXIO = () => async (dispatch, getState) => {
 //   dispatch(setLoading({ allowance: true }));
 //   try {
@@ -654,7 +690,67 @@ export const addTokenLiquidityInPool = (
   }
 };
 
-export const removeTokenLiquidityInPool = () => async () => {};
+export const onSelectWithdrawPool = (_poolId) => {
+  return {
+    type: "SELECT_WITHDRAW_POOL",
+    payload: _poolId,
+  };
+};
+
+export const getApprovalPoolLiquidity = () => async (dispatch, getState) => {
+  try {
+    const {
+      flashstake: { selectedWithdrawPool, poolDashboard },
+    } = await getState();
+    const _pool = poolDashboard.find(
+      (_pool) => _pool.pool.id === selectedWithdrawPool
+    );
+    if (!_pool?.balance) {
+      return;
+    }
+    setLoadingIndep({ approvalWithdrawPool: true });
+    await initializeErc20TokenContract(_pool.pool.id);
+    await approve(_pool.pool.id, "pool");
+    dispatch(checkAllowancePoolWithdraw());
+  } catch (e) {
+    _error("ERROR getApprovalPoolLiquidity -> ", e);
+  } finally {
+    setLoadingIndep({ approvalWithdrawPool: false });
+  }
+};
+
+export const removeTokenLiquidityInPool = () => async (dispatch, getState) => {
+  try {
+    const {
+      flashstake: { selectedWithdrawPool, poolDashboard },
+    } = await getState();
+    const _pool = poolDashboard.find(
+      (_pool) => _pool.pool.id === selectedWithdrawPool
+    );
+    if (!_pool?.balance) {
+      return;
+    }
+    dispatch({
+      type: "WITHDRAW_LIQUIDITY_REQUEST",
+      payload: {
+        _liquidity: _pool.balance,
+        _token: _pool.pool.tokenB.symbol,
+      },
+    });
+    _log(
+      "removeLiquidityInPool -> ",
+      Web3.utils.toWei(String(_pool.balance)),
+      _pool.pool.tokenB.id
+    );
+    initializeFlashstakeProtocolContract();
+    await removeLiquidityInPool(
+      Web3.utils.toWei(String(_pool.balance)),
+      _pool.pool.tokenB.id
+    );
+  } catch (e) {
+    _error("ERROR removeTokenLiquidityInPool -> ", e);
+  }
+};
 
 export const setInitialValues = (quantity, days) => {
   return {
@@ -728,4 +824,14 @@ export const setLiquidityTxnHash = (val) => {
 
 export const setLiquidityTxnHashIndep = (val) => {
   store.dispatch(setLiquidityTxnHash(val));
+};
+export const setWithdrawLiquidityTxnHash = (val) => {
+  return {
+    type: "WITHDRAW_LIQDUIDITY_TXN_HASH",
+    payload: val,
+  };
+};
+
+export const setWithdrawLiquidityTxnHashIndep = (val) => {
+  store.dispatch(setWithdrawLiquidityTxnHash(val));
 };
