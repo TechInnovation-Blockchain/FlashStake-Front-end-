@@ -50,7 +50,7 @@ import {
 import { setRefetch } from "../../redux/actions/dashboardActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
-import { Link } from "@material-ui/icons";
+import { Link, CheckCircleOutline } from "@material-ui/icons";
 import MaxBtn from "../../component/MaxBtn";
 import AnimateHeight from "react-animate-height";
 
@@ -240,6 +240,13 @@ const useStyles = makeStyles((theme) => ({
     // borderBottomColor: theme.palette.text.gray,
     borderBottomLeftRadius: "10px",
     borderBottomRightRadius: "10px",
+  },
+  dialogIcon: {
+    fontSize: 80,
+  },
+  greenText: {
+    color: theme.palette.text.green,
+    fontWeight: 700,
   },
 }));
 
@@ -761,71 +768,96 @@ function Swap({
                             </Button>
                           </Fragment>
                         ),
-                        swapProposal: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              SWAP
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                            >
-                              IF YOU SWAP{" "}
-                              <Tooltip
-                                title={`${quantity} ${
-                                  selectedRewardToken?.tokenB?.symbol || ""
-                                }`}
+                        swapProposal:
+                          quantity > 0 ? (
+                            <Fragment>
+                              <Typography
+                                variant="body1"
+                                className={classes.textBold}
                               >
-                                <span className={classes.infoTextSpan}>
-                                  {trunc(quantity)}{" "}
-                                  {selectedRewardToken?.tokenB?.symbol || ""}
-                                </span>
-                              </Tooltip>{" "}
-                              YOU WILL{" "}
-                              <span className={classes.infoTextSpan}>
-                                IMMEDIATELY
-                              </span>{" "}
-                              EARN{" "}
-                              {loadingRedux.reward ? (
-                                <CircularProgress
-                                  size={12}
-                                  className={classes.loaderStyle}
-                                />
-                              ) : (
-                                <Tooltip title={`${swapOutput} FLASH`}>
+                                SWAP
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                              >
+                                IF YOU SWAP{" "}
+                                <Tooltip
+                                  title={`${quantity} ${
+                                    selectedRewardToken?.tokenB?.symbol || ""
+                                  }`}
+                                >
                                   <span className={classes.infoTextSpan}>
-                                    {" "}
-                                    {trunc(swapOutput)} FLASH
+                                    {trunc(quantity)}{" "}
+                                    {selectedRewardToken?.tokenB?.symbol || ""}
                                   </span>
-                                </Tooltip>
-                              )}
-                            </Typography>
+                                </Tooltip>{" "}
+                                YOU WILL{" "}
+                                <span className={classes.infoTextSpan}>
+                                  IMMEDIATELY
+                                </span>{" "}
+                                EARN{" "}
+                                {loadingRedux.reward ? (
+                                  <CircularProgress
+                                    size={12}
+                                    className={classes.loaderStyle}
+                                  />
+                                ) : (
+                                  <Tooltip title={`${swapOutput} FLASH`}>
+                                    <span className={classes.infoTextSpan}>
+                                      {" "}
+                                      {trunc(swapOutput)} FLASH
+                                    </span>
+                                  </Tooltip>
+                                )}
+                              </Typography>
 
-                            <Button
-                              variant="red"
-                              fullWidth
-                              onClick={
-                                !allowanceALT
-                                  ? () => {}
-                                  : () => onClickSwap(quantity)
-                              }
-                              disabled={
-                                !selectedPortal ||
-                                !(quantity > 0) ||
-                                parseFloat(balanceALT) < parseFloat(quantity) ||
-                                !allowanceALT ||
-                                chainId !== 4 ||
-                                loadingRedux.swap
-                              }
-                              loading={loadingRedux.swap}
-                            >
-                              SWAP
-                            </Button>
-                          </Fragment>
-                        ),
+                              <Button
+                                variant="red"
+                                fullWidth
+                                onClick={
+                                  !allowanceALT
+                                    ? () => {}
+                                    : () => onClickSwap(quantity)
+                                }
+                                disabled={
+                                  !selectedPortal ||
+                                  !(quantity > 0) ||
+                                  parseFloat(balanceALT) <
+                                    parseFloat(quantity) ||
+                                  !allowanceALT ||
+                                  chainId !== 4 ||
+                                  loadingRedux.swap
+                                }
+                                loading={loadingRedux.swap}
+                              >
+                                SWAP
+                              </Button>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <Typography
+                                variant="body1"
+                                className={classes.textBold}
+                              >
+                                APPROVAL
+                                <br />
+                                <CheckCircleOutline
+                                  className={`${classes.dialogIcon} ${classes.greenText}`}
+                                />
+                                <div className={classes.redText}>
+                                  YOU HAVE SUCCESSFUL APPROVED
+                                </div>
+                              </Typography>
+                              <Button
+                                variant="red"
+                                fullWidth
+                                onClick={closeDialog}
+                              >
+                                DISMISS
+                              </Button>
+                            </Fragment>
+                          ),
                         failedApproval: (
                           <Fragment>
                             <Typography

@@ -997,9 +997,9 @@ function Flashstake({
                       <CheckCircleOutline
                         className={`${classes.dialogIcon} ${classes.greenText}`}
                       />
-                      <span className={classes.redText}>
+                      <div className={classes.redText}>
                         YOU HAVE SUCCESSFUL APPROVED
-                      </span>
+                      </div>
                     </Typography>
                     <Button variant="red" fullWidth onClick={closeDialog}>
                       DISMISS
