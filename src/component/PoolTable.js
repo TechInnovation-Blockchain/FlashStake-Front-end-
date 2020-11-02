@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   radio: {
+    padding: "0 !important",
     "&$checked": {
       color: theme.palette.xioRed.main,
     },
