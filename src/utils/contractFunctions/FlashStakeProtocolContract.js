@@ -508,8 +508,7 @@ export const addLiquidityInPool = (
         (error, gasAmount) => {
           contract.methods
             .addLiquidityInPool(
-              // _amountFLASH,
-              "0",
+              _amountFLASH,
               _amountALT,
               _amountFLASHMin,
               _amountALTMin,

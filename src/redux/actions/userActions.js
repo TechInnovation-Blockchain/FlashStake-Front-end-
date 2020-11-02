@@ -153,7 +153,7 @@ export const updateUserData = (data) => async (dispatch) => {
     swapHistory = data.swapHistory.map((_swapHis) => ({
       ..._swapHis,
       swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
-      xioReceived: Web3.utils.fromWei(_swapHis.xioReceived),
+      flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
     }));
     dispatch({
       type: "USER_DATA",

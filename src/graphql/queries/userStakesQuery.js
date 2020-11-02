@@ -23,7 +23,7 @@ export const userStakesQuery = gql`
         }
         transactionHash
         swapAmount
-        xioReceived
+        flashReceived
         initiationTimestamp
       }
       stakes {

@@ -369,7 +369,7 @@ function Pool({
   const [expanded2, setExpanded2] = useState(true);
   const [days, setDays] = useState(initialValues.days);
   // const [quantityAlt, setQuantityAlt] = useState("");
-  const [quantityAlt, setQuantityAlt] = useState("20");
+  const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
   const ref = useRef(null);
   const web3context = useWeb3React();

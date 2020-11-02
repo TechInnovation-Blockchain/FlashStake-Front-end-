@@ -137,7 +137,7 @@ function PoolTable({
   const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-  const [earlyWith, setEarlyWith] = useState(false);
+  const [visibleRadioButtons, setVisibleRadioButtons] = useState(false);
 
   useEffect(() => {
     setPage(0);
@@ -248,7 +248,12 @@ function PoolTable({
       <Grid container item xs={12}>
         <Grid container item xs={12} className={classes.gridHead}>
           {headItems.map((headItem) => (
-            <Grid item xs={6} className={classes.gridItem} key={headItem}>
+            <Grid
+              item
+              xs={6 - visibleRadioButtons}
+              className={classes.gridItem}
+              key={headItem}
+            >
               <MuiButton
                 className={classes.tableHeadItemBtn}
                 onClick={() => onClickSortBtn(headItem)}
@@ -305,7 +310,11 @@ function PoolTable({
                           // }`}
                         >
                           {/* {console.log("Stake -- > ", _stake)} */}
-                          <Grid item xs={6} className={classes.gridItem}>
+                          <Grid
+                            item
+                            xs={6 - visibleRadioButtons}
+                            className={classes.gridItem}
+                          >
                             {/* <Tooltip
                             title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                           > */}
@@ -321,7 +330,11 @@ function PoolTable({
                             </span>
                             {/* </Tooltip> */}
                           </Grid>
-                          <Grid item xs={6} className={classes.gridItem}>
+                          <Grid
+                            item
+                            xs={6 - visibleRadioButtons}
+                            className={classes.gridItem}
+                          >
                             <Tooltip title={`${_pool.balance} xFlash`}>
                               <span className={classes.flexCenter}>
                                 <img
@@ -360,10 +373,11 @@ function PoolTable({
                   <Button
                     variant="red"
                     fullWidth
-                    onClick={() => {
-                      onClickUnstake();
-                      unstakeXIO();
-                    }}
+                    // onClick={() => {
+                    //   onClickUnstake();
+                    //   unstakeXIO();
+                    // }}
+                    onClick={() => setVisibleRadioButtons((val) => !val)}
                     disabled={loadingRedux.unstake || !(expiredDappBalance > 0)}
                     fontSizeLocal="body2"
                     loading={loadingRedux.unstake}

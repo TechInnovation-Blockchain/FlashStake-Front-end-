@@ -154,7 +154,7 @@ function SwapTable({
         break;
       case "OUTPUT FLASH":
         data = swapHistory?.sort(
-          ({ xioReceived: a }, { xioReceived: b }) =>
+          ({ flashReceived: a }, { flashReceived: b }) =>
             parseFloat(a) - parseFloat(b)
         );
         break;
@@ -284,7 +284,7 @@ function SwapTable({
                               </Tooltip>
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.xioReceived} FLASH`}>
+                              <Tooltip title={`${_swap.flashReceived} FLASH`}>
                                 <span className={classes.flexCenter}>
                                   <img
                                     src={tryRequire("FLASH")}
@@ -293,7 +293,7 @@ function SwapTable({
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.xioReceived)} FLASH
+                                  {trunc(_swap.flashReceived)} FLASH
                                 </span>
                               </Tooltip>
                             </Grid>
