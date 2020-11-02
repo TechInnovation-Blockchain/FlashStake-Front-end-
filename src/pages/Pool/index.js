@@ -63,6 +63,7 @@ import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { getQueryData } from "../../redux/actions/queryActions";
+import Radio from "@material-ui/core/Radio";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -568,22 +569,7 @@ function Pool({
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="overline"
-                      className={classes.secondaryText}
-                    >
-                      WHAT TOKEN DO YOU WANT TO POOL
-                    </Typography>
-                    <DropdownDialog
-                      className={classes.dropDown}
-                      items={pools}
-                      selectedValue={selectedRewardToken}
-                      onSelect={setSelectedRewardToken}
-                      heading="SELECT TOKEN"
-                    />
-                  </Grid>
-                  <Grid container item xs={12}>
+                  <Grid container item xs={6}>
                     <Box flex={1}>
                       <Typography
                         variant="overline"
@@ -634,6 +620,23 @@ function Pool({
                       </Box>
                     </Box>
                   </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography
+                      variant="overline"
+                      className={classes.secondaryText}
+                    >
+                      POOL
+                    </Typography>
+                    <DropdownDialog
+                      className={classes.dropDown}
+                      items={pools}
+                      selectedValue={selectedRewardToken}
+                      onSelect={setSelectedRewardToken}
+                      heading="SELECT TOKEN"
+                    />
+                  </Grid>
+
                   <Grid container item xs={12}>
                     <Box flex={1}>
                       <Typography

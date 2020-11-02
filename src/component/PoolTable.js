@@ -20,6 +20,7 @@ import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
 import { Link } from "react-router-dom";
 import { selectStake } from "../redux/actions/dashboardActions";
+import Radio from "@material-ui/core/Radio";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -108,6 +109,15 @@ const useStyles = makeStyles((theme) => ({
     "&link": {
       textDecoration: "none",
     },
+  },
+
+  radio: {
+    "&$checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  checked: {
+    color: theme.palette.xioRed.main,
   },
 }));
 
@@ -348,6 +358,22 @@ function PoolTable({
                               </span>
                             </Tooltip>
                           </Grid>
+
+                          {visibleRadioButtons ? (
+                            <Grid item xs={2} className={classes.gridItem}>
+                              <Radio
+                                classes={{
+                                  root: classes.radio,
+                                  checked: classes.checked,
+                                }}
+                                // checked={selectedValue === "a"}
+                                // onChange={handleChange}
+                                value="a"
+                                name="radio-button-demo"
+                                inputProps={{ "aria-label": "A" }}
+                              />
+                            </Grid>
+                          ) : null}
                         </Grid>
                         // </a>
                       );
