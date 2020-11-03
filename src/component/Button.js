@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme) => ({
     height: 35,
     letterSpacing: 2,
     lineHeight: 1.2,
-    borderRadius: 0,
+    borderRadius: 10,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.main}`,
     transition: "none !important",
     "&.MuiButton-label": {
       ...theme.typography.body1,
@@ -56,6 +58,17 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.border.main,
     },
   },
+  retroButton: {
+    background: theme.palette.button.retro,
+    color: "#fff",
+    "&:hover": {
+      // background: theme.palette.xioRed.main,
+      background: "#c562d6",
+    },
+    "&.Mui-disabled": {
+      background: theme.palette.border.main,
+    },
+  },
 }));
 
 export default function Button({ fontSizeLocal, loading, ...props }) {
@@ -65,7 +78,11 @@ export default function Button({ fontSizeLocal, loading, ...props }) {
       {...props}
       variant="outlined"
       className={`${props.className} ${classes.commonStyles} ${
-        { dark: classes.darkButton, red: classes.redButton }[props.variant]
+        {
+          dark: classes.darkButton,
+          retro: classes.retroButton,
+          red: classes.redButton,
+        }[props.variant]
       } ${fontSizeLocal ? classes[fontSizeLocal] : ""}`}
     >
       {loading ? (

@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     // minHeight: 420,
     minHeight: "100%",
+    boxShadow: ` 0px 0px 16px 8px ${theme.palette.shadowColor.main} `,
   },
   backdrop: {
     zIndex: 1,

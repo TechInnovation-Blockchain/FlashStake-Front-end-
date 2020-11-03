@@ -448,7 +448,7 @@ function TableComponent({
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem2}>
                     <Button
-                      variant="red"
+                      variant="retro"
                       fullWidth
                       onClick={
                         isStakesSelected ? onClickUnstake2 : onClickUnstake

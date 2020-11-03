@@ -128,6 +128,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     background: theme.palette.background.secondary2,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -232,7 +235,7 @@ const useStyles = makeStyles((theme) => ({
   dashboardAccordian: {
     color: theme.palette.text.grey,
     "&:hover": {
-      color: "#D89C74",
+      color: "#c983d4",
     },
   },
   accordion: {
@@ -257,6 +260,12 @@ const useStyles = makeStyles((theme) => ({
     // position: "absolute",
     // left: 2,
     // top: "10%",
+  },
+  gridSpace: {
+    margin: theme.spacing(1),
+  },
+  gridSpace2: {
+    margin: theme.spacing(1, 0),
   },
 }));
 
@@ -576,10 +585,10 @@ function Pool({
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
-                  <Grid container item xs={6}>
+                  <Grid container className={classes.gridSpace2} item xs={6}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body2"
                         className={classes.secondaryText}
                       >
                         QUANTITY
@@ -628,9 +637,9 @@ function Pool({
                     </Box>
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item className={classes.gridSpace2} xs={6}>
                     <Typography
-                      variant="overline"
+                      variant="body2"
                       className={classes.secondaryText}
                     >
                       POOL
@@ -647,7 +656,7 @@ function Pool({
                   <Grid container item xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body2"
                         className={classes.secondaryText}
                       >
                         AMOUNT OF FLASH REQUIRED TO POOL
@@ -689,29 +698,29 @@ function Pool({
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography
-                        variant="overline"
-                        className={classes.infoText}
-                      >
+                      <Typography variant="body2" className={classes.infoText}>
                         {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} FLASH */}
                       </Typography>
                     ) : (
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         SELECT A POOL TO ADD LIQUIDITY
                       </Typography>
                     )}
                   </Grid>
                   {!allowanceXIOPool || !allowanceALTPool ? (
-                    <Grid container item xs={12} onClick={showWalletHint}>
+                    <Grid
+                      container
+                      item
+                      className={classes.gridSpace}
+                      xs={12}
+                      onClick={showWalletHint}
+                    >
                       <Grid item xs={6} className={classes.btnPaddingRight}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={
                             (!allowanceXIOPool || !allowanceALTPool) &&
                             !loadingRedux.approval
@@ -742,7 +751,7 @@ function Pool({
                       <Grid item xs={6} className={classes.btnPaddingLeft}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={onClickPool}
                           disabled={
                             !active ||
@@ -765,10 +774,16 @@ function Pool({
                     </Grid>
                   ) : (
                     <Fragment>
-                      <Grid container item xs={12} onClick={showWalletHint}>
+                      <Grid
+                        container
+                        item
+                        className={classes.gridSpace}
+                        xs={12}
+                        onClick={showWalletHint}
+                      >
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={onClickPool}
                           disabled={
                             !active ||
@@ -796,10 +811,7 @@ function Pool({
                   selectedRewardToken &&
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
                         <b>APPROVE FLASH</b>
                       </Typography>
@@ -812,20 +824,14 @@ function Pool({
                       onClick={showWalletHint}
                       className={classes.cursorPointer}
                     >
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         CONNECT YOUR WALLET TO STAKE
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item xs={12}>
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
                       </Typography>
                     </Grid>
@@ -890,7 +896,7 @@ function Pool({
           //      <br />
           //      <span className={classes.greenText}>SUCCESSFUL</span>
           //    </Typography>
-          //    <Button variant="red" fullWidth onClick={onClickClose}>
+          //    <Button variant="retro" fullWidth onClick={onClickClose}>
           //      CLOSE
           //    </Button>
           //  </Fragment>
@@ -946,7 +952,7 @@ function Pool({
                     )}
                   </Typography>
                   <Button
-                    variant="red"
+                    variant="retro"
                     fullWidth
                     // onClick={
                     //   !allowanceXIO
@@ -981,7 +987,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -993,7 +999,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1037,7 +1043,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1049,7 +1055,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1099,7 +1105,7 @@ function Pool({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>
@@ -1136,7 +1142,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1148,7 +1154,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1191,7 +1197,7 @@ function Pool({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>

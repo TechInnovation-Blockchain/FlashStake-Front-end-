@@ -126,6 +126,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     background: theme.palette.background.secondary2,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -198,7 +201,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   dropDown: {
-    "& .makeStyles-dropdown": {
+    "&.makeStyles-dropdown": {
       backgroundColor: "#000",
     },
   },
@@ -230,7 +233,7 @@ const useStyles = makeStyles((theme) => ({
   dashboardAccordian: {
     color: theme.palette.text.grey,
     "&:hover": {
-      color: "#D89C74",
+      color: "#c983d4",
     },
   },
   accordion: {
@@ -262,6 +265,12 @@ const useStyles = makeStyles((theme) => ({
   greenText: {
     color: theme.palette.text.green,
     fontWeight: 700,
+  },
+  gridSpace: {
+    margin: theme.spacing(1),
+  },
+  gridSpace2: {
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -573,7 +582,7 @@ function Flashstake({
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Typography
-                      variant="overline"
+                      variant="body2"
                       className={classes.secondaryText}
                     >
                       WHAT TOKEN DO YOU WANT TO EARN
@@ -586,13 +595,13 @@ function Flashstake({
                       heading="SELECT TOKEN"
                     />
                   </Grid>
-                  <Grid container item xs={12}>
+                  <Grid container className={classes.gridSpace} item xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body2"
                         className={classes.secondaryText}
                       >
-                        QUANTITY (FLASH)
+                        FUEL
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -636,10 +645,10 @@ function Flashstake({
                     </Typography>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body2"
                         className={classes.secondaryText}
                       >
-                        DURATION (MINS)
+                        TIME
                       </Typography>
 
                       <Box className={classes.textFieldContainer}>
@@ -707,21 +716,24 @@ function Flashstake({
                         )}
                       </Typography>
                     ) : (
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         SELECT A TOKEN TO VIEW REWARDS
                       </Typography>
                     )}
                   </Grid>
 
                   {!allowanceXIO ? (
-                    <Grid container item xs={12} onClick={showWalletHint}>
+                    <Grid
+                      container
+                      className={classes.gridSpace}
+                      item
+                      xs={12}
+                      onClick={showWalletHint}
+                    >
                       <Grid item xs={6} className={classes.btnPaddingRight}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={
                             !allowanceXIO && !loadingRedux.approval
                               ? onClickApprove
@@ -744,10 +756,15 @@ function Flashstake({
                             : `APPROVE ${selectedStakeToken}`}
                         </Button>
                       </Grid>
-                      <Grid item xs={6} className={classes.btnPaddingLeft}>
+                      <Grid
+                        item
+                        xs={6}
+                        style={{ marginBottom: 10 }}
+                        className={classes.btnPaddingLeft}
+                      >
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={
                             !allowanceXIO
                               ? () => {}
@@ -779,7 +796,7 @@ function Flashstake({
                       <Grid container item xs={12} onClick={showWalletHint}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={
                             !allowanceXIO
                               ? () => {}
@@ -906,7 +923,7 @@ function Flashstake({
           //      <br />
           //      <span className={classes.greenText}>SUCCESSFUL</span>
           //    </Typography>
-          //    <Button variant="red" fullWidth onClick={onClickClose}>
+          //    <Button variant="retro" fullWidth onClick={onClickClose}>
           //      CLOSE
           //    </Button>
           //  </Fragment>
@@ -963,7 +980,7 @@ function Flashstake({
                       )}
                     </Typography>
                     <Button
-                      variant="red"
+                      variant="retro"
                       fullWidth
                       onClick={
                         !allowanceXIO
@@ -1001,7 +1018,7 @@ function Flashstake({
                         YOU HAVE SUCCESSFUL APPROVED
                       </div>
                     </Typography>
-                    <Button variant="red" fullWidth onClick={closeDialog}>
+                    <Button variant="retro" fullWidth onClick={closeDialog}>
                       DISMISS
                     </Button>
                   </Fragment>
@@ -1014,7 +1031,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1026,7 +1043,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1061,7 +1078,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1073,7 +1090,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1114,7 +1131,7 @@ function Flashstake({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>
@@ -1149,7 +1166,7 @@ function Flashstake({
                     </Tooltip>{" "}
                     IN THE PROCESS
                   </Typography>
-                  <Button variant="red" fullWidth onClick={unstakeEarly}>
+                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
                     UNSTAKE
                   </Button>
                 </Fragment>
@@ -1185,7 +1202,7 @@ function Flashstake({
                     IN THE PROCESS*/}
                   </Typography>
                   <Button
-                    variant="red"
+                    variant="retro"
                     fullWidth
                     onClick={() => unstakeEarly(false)}
                   >
@@ -1229,7 +1246,7 @@ function Flashstake({
                     IN THE PROCESS
                   </Typography>
                   <Button
-                    variant="red"
+                    variant="retro"
                     fullWidth
                     onClick={() => unstakeEarly(false)}
                   >
@@ -1271,7 +1288,7 @@ function Flashstake({
                         </Tooltip>{" "}
                         IN THE PROCESS
                       </Typography>
-                      <Button variant="red" fullWidth onClick={unstakeEarly}>
+                      <Button variant="retro" fullWidth onClick={unstakeEarly}>
                         UNSTAKE
                       </Button>
                     </Fragment>
@@ -1289,7 +1306,11 @@ function Flashstake({
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
-                          <Button variant="red" fullWidth onClick={unstakeXIO}>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={unstakeXIO}
+                          >
                             <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
                                 COMPLETED
@@ -1300,7 +1321,7 @@ function Flashstake({
                         </Grid>
                         <Grid item xs={6}>
                           <Button
-                            variant="red"
+                            variant="retro"
                             fullWidth
                             onClick={() => setDialogStep("earlyUnstakeFull")}
                           >
@@ -1330,7 +1351,7 @@ function Flashstake({
                         <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
-                    <Button variant="red" fullWidth onClick={unstakeXIO}>
+                    <Button variant="retro" fullWidth onClick={unstakeXIO}>
                       <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           COMPLETED
@@ -1374,7 +1395,7 @@ function Flashstake({
                         IN THE PROCESS
                       </Typography>
                       <Button
-                        variant="red"
+                        variant="retro"
                         fullWidth
                         onClick={() => unstakeEarly(false)}
                       >
@@ -1395,7 +1416,11 @@ function Flashstake({
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
-                          <Button variant="red" fullWidth onClick={unstakeXIO}>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={unstakeXIO}
+                          >
                             <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
                                 COMPLETED
@@ -1406,7 +1431,7 @@ function Flashstake({
                         </Grid>
                         <Grid item xs={6}>
                           <Button
-                            variant="red"
+                            variant="retro"
                             fullWidth
                             onClick={() => setDialogStep("earlyUnstakeFull")}
                           >
@@ -1436,7 +1461,7 @@ function Flashstake({
                         <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
-                    <Button variant="red" fullWidth onClick={unstakeXIO}>
+                    <Button variant="retro" fullWidth onClick={unstakeXIO}>
                       <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           COMPLETED
@@ -1471,7 +1496,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1483,7 +1508,7 @@ function Flashstake({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1518,7 +1543,7 @@ function Flashstake({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>

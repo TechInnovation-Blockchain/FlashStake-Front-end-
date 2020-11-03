@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     padding: theme.spacing(1),
     position: "relative",
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
   dropdownIcon: {
     color: theme.palette.xioRed.main,
@@ -65,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(2),
     paddingBottom: 0,
+
     "&>*": {
       marginBottom: theme.spacing(2),
     },

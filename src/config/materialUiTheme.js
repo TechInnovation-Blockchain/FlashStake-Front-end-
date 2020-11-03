@@ -1,10 +1,11 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+// import "../assets/fonts/fonts.css";
 
 export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: "#D89C74",
+      main: "rgba(201,131,212,1)",
     },
     secondary: {
       main: "#171717",
@@ -33,11 +34,13 @@ export const darkTheme = createMuiTheme({
     },
     button: {
       dark: "#555555",
-      red: "#D89C74",
+      red: "#c983d4",
+      retro: "rgba(201,131,212,1)",
     },
     buttonText: {
       dark: "#ffffff",
       red: "#ffffff",
+      retro: "#646464",
     },
     background: {
       primary: "#121212",
@@ -48,16 +51,21 @@ export const darkTheme = createMuiTheme({
       selected: "#171717",
     },
     xioRed: {
-      main: "#D89C74",
+      main: "rgba(201,131,212,1)",
     },
 
     navLink: {
-      active: "#D89C74",
+      active: "rgba(201,131,212,1)",
+    },
+    shadowColor: {
+      main: "rgba(101,177,193,1)",
+      secondary: "rgba(201,131,212,1)",
     },
   },
   typography: {
-    fontFamily: "Montserrat",
-    fontSize: 12,
+    fontFamily: "ZCOOL QingKe HuangYou",
+    fontSize: 13,
+    fontWeight: "900",
   },
 });
 
@@ -143,7 +151,7 @@ export const lightTheme = createMuiTheme({
 //       primary2: "#000000",
 //     },
 //     xioRed: {
-//       main: "#D89C74",
+//       main: "#c983d4",
 //     },
 //     background: {
 //       primary: "#000000",
@@ -152,7 +160,7 @@ export const lightTheme = createMuiTheme({
 //     },
 //     button: {
 //       dark: "#555555",
-//       red: "#D89C74",
+//       red: "#c983d4",
 //     },
 //     buttonText: {
 //       dark: "#ffffff",

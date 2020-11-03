@@ -6,7 +6,7 @@ import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import logoLight from "../assets/xio-logo-light.svg";
 import flashDark from "../assets/flash-dark.svg";
-import flash from "../assets/FLASH2.svg";
+import flash from "../assets/FLASH.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,
@@ -40,11 +40,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   navLinkText: {
+    // fontFamily: "Quota Bold",
     fontWeight: 900,
   },
   activeNavlink: {
     color: theme.palette.navLink.active,
     fontWeight: 900,
+    // borderBottom: `1px solid ${theme.palette.shadowColor.main}`,
   },
   navlinkFlash: {
     textDecoration: "none",
@@ -116,7 +118,9 @@ function Navbar({
           }}
           exact
         >
-          <Typography className={classes.navLinkText}>STAKE</Typography>
+          <Typography variant="body1" className={classes.navLinkText}>
+            STAKE
+          </Typography>
         </NavLink>
       </Box>
       {/* <Divider orientation="vertical" flexItem /> */}

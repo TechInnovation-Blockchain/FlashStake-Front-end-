@@ -119,6 +119,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     background: theme.palette.background.secondary2,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -189,6 +192,9 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   dropDown: {
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .makeStyles-dropdown": {
       backgroundColor: "#000",
     },
@@ -221,7 +227,7 @@ const useStyles = makeStyles((theme) => ({
   dashboardAccordian: {
     color: theme.palette.text.grey,
     "&:hover": {
-      color: "#D89C74",
+      color: "#c983d4",
     },
   },
   accordion: {
@@ -247,6 +253,9 @@ const useStyles = makeStyles((theme) => ({
   greenText: {
     color: theme.palette.text.green,
     fontWeight: 700,
+  },
+  gridSpace: {
+    margin: theme.spacing(1),
   },
 }));
 
@@ -500,9 +509,9 @@ function Swap({
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     <Typography
-                      variant="overline"
+                      variant="body2"
                       className={classes.secondaryText}
                     >
                       WHAT DO YOU WANT TO SWAP FOR FLASH
@@ -516,10 +525,10 @@ function Swap({
                       type="swap"
                     />
                   </Grid>
-                  <Grid container item xs={12}>
+                  <Grid container item className={classes.gridSpace} xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body2"
                         className={classes.secondaryText}
                       >
                         SWAP QUANTITY
@@ -559,12 +568,9 @@ function Swap({
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography
-                        variant="overline"
-                        className={classes.infoText}
-                      >
+                      <Typography variant="body2" className={classes.infoText}>
                         IF YOU SWAP{" "}
                         <Tooltip
                           title={`${quantity} ${
@@ -594,10 +600,7 @@ function Swap({
                         )}
                       </Typography>
                     ) : (
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
+                      <Typography variant="body2" className={classes.redText}>
                         SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
                       </Typography>
                     )}
@@ -612,7 +615,7 @@ function Swap({
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickApprove}
                               disabled={
@@ -632,7 +635,7 @@ function Swap({
                           </Grid>
                           <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={() => onClickSwap(quantity)}
                               disabled={
@@ -652,7 +655,7 @@ function Swap({
                       ) : (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Button
-                            variant="red"
+                            variant="retro"
                             fullWidth
                             onClick={() => onClickSwap(quantity)}
                             disabled={
@@ -679,7 +682,7 @@ function Swap({
                           onClick={showWalletHint}
                         >
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.redText}
                           >
                             CONNECT YOUR WALLET SWAP TOKENS
@@ -688,7 +691,7 @@ function Swap({
                       ) : chainId !== 4 ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.redText}
                           >
                             CHANGE NETWORK TO RINKEBY TO SWAP TOKENS
@@ -697,7 +700,7 @@ function Swap({
                       ) : !allowanceALT ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.redText}
                           >
                             BEFORE YOU CAN SWAP, YOU MUST APPROVE{" "}
@@ -760,7 +763,7 @@ function Swap({
                               </span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickClose}
                             >
@@ -813,7 +816,7 @@ function Swap({
                               </Typography>
 
                               <Button
-                                variant="red"
+                                variant="retro"
                                 fullWidth
                                 onClick={
                                   !allowanceALT
@@ -850,7 +853,7 @@ function Swap({
                                 </div>
                               </Typography>
                               <Button
-                                variant="red"
+                                variant="retro"
                                 fullWidth
                                 onClick={closeDialog}
                               >
@@ -869,7 +872,7 @@ function Swap({
                               <span className={classes.redText}>FAILED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -888,7 +891,7 @@ function Swap({
                               <span className={classes.redText}>REJECTED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -935,7 +938,7 @@ function Swap({
                               <span className={classes.redText}>FAILED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -954,7 +957,7 @@ function Swap({
                               <span className={classes.redText}>REJECTED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -1000,7 +1003,7 @@ function Swap({
                               </a>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickClose}
                             >

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap');
 
 html,
 body,
@@ -15,11 +15,10 @@ body,
 
 body {
   font-family: "Montserrat", sans-serif;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
 
   /* background-color: #000 !important; */
 }
-
 
 .small-input {
   -moz-appearance: textfield;
@@ -35,7 +34,6 @@ body {
   margin: 0;
 }
 
-
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -46,11 +44,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D89C74;
+  background: #c983d4;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D89C74;
+  background: #c983d4;
 }
 
 input[type="number"] {
@@ -67,7 +65,6 @@ input::-webkit-inner-spin-button {
 .MuiInput-underline:after {
   border-bottom: none !important;
 }
-
 
 a {
   color: inherit;

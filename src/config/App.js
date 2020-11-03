@@ -37,7 +37,7 @@ export default function App() {
   const [themeMode, setThemeMode] = useState(theme);
 
   const toggleThemeMode = () => {
-    setThemeMode(themeMode === "dark" ? "light" : "dark");
+    setThemeMode(themeMode === "dark" ? "dark" : "dark");
 
     store.dispatch(toggleThemeModeAction());
   };

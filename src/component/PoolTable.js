@@ -424,7 +424,7 @@ function PoolTable({
                 allowancePoolWithdraw ? (
                   <Grid item xs={12} className={classes.gridItem}>
                     <Button
-                      variant="red"
+                      variant="retro"
                       fullWidth
                       // onClick={() => {
                       //   onClickUnstake();
@@ -453,7 +453,7 @@ function PoolTable({
                 ) : (
                   <Grid item xs={12} className={classes.gridItem}>
                     <Button
-                      variant="red"
+                      variant="retro"
                       fullWidth
                       onClick={
                         visibleRadioButtons

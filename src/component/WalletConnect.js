@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
   connectWalletButton: {
     width: 250,
     borderRadius: 0,
-    marginTop: theme.spacing(2),
-    backgroundColor: theme.palette.background.secondary4,
+    marginTop: theme.spacing(4),
+    // backgroundColor: theme.palette.background.secondary4,
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
@@ -166,7 +166,7 @@ function WalletConnect({
         />
 
         <Button
-          variant="dark"
+          variant="retro"
           className={classes.connectWalletButton}
           onClick={() => {
             !(active || account) ? setOpen(true) : setOpen2(true);
