@@ -116,7 +116,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 30,
     // fontSize: 15,
     alignSelf: "center",
-    margin: theme.spacing(2),
+    margin: theme.spacing(0, 2),
+    marginLeft: 22,
+    // marginLeft: 2,
   },
   checkbox: {
     padding: 0,
@@ -267,10 +269,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   gridSpace: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1, 0),
   },
   gridSpace2: {
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1, 0),
   },
 }));
 
