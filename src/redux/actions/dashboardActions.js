@@ -154,7 +154,7 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
       type: "WITHDRAW_REQUEST",
       payload: {
         quantity: _amount ? _amount : Web3.utils.fromWei(amount.toString()),
-        symbol: "FLASH",
+        symbol: "$FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
@@ -175,7 +175,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
             : type === "max"
             ? portal.totalStakeAmount - calculateBurn(portal)
             : amount - calculateBurn(portal, false, amount),
-        symbol: "FLASH",
+        symbol: "$FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
