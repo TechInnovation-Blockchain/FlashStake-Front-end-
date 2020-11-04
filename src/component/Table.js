@@ -146,6 +146,7 @@ function TableComponent({
   onClickUnstake,
   onClickUnstake2,
   selectStake,
+  changeApp,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -452,7 +453,7 @@ function TableComponent({
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem2}>
                     <Button
-                      variant="retro"
+                      variant={!changeApp ? "retro" : "red"}
                       fullWidth
                       onClick={
                         isStakesSelected ? onClickUnstake2 : onClickUnstake
@@ -499,7 +500,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
-  ui: { loading },
+  ui: { loading, changeApp },
 }) => ({
   stakes,
   active,
@@ -512,6 +513,7 @@ const mapStateToProps = ({
   loading: loading.data,
   loadingRedux: loading,
   expiredDappBalance,
+  changeApp,
 });
 
 export default connect(mapStateToProps, {
