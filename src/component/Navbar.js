@@ -152,10 +152,10 @@ function Navbar({
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}
-          onClick={() => {
-            handleClick3();
-            handleClick();
-          }}
+          // onClick={() => {
+          //   handleClick3();
+          //   handleClick();
+          // }}
         />
       </Box>
       {/* <Box className={classes.navOuterBox}> */}

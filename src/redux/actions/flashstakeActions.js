@@ -42,16 +42,24 @@ export const calculateReward = (xioQuantity, days) => async (
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
       const _days = JSBI.BigInt(Web3.utils.toWei(days));
-      const _rate = JSBI.divide(
-        JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
-        JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
+      const _percent = JSBI.divide(
+        JSBI.multiply(
+          JSBI.add(JSBI.BigInt(data.xioBalance), _quantity),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
       );
-      const _fpy = JSBI.greaterThan(_rate, JSBI.BigInt(Web3.utils.toWei("50")))
-        ? JSBI.BigInt(Web3.utils.toWei("50"))
-        : _rate;
+      const _getPercentStaked = JSBI.greaterThan(_percent, _precision)
+        ? _precision
+        : _percent;
+      const _fpy = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked),
+        JSBI.BigInt("2")
+      );
+      //getMintAmount
       const _output = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _days), _fpy),
-        JSBI.multiply(_precision, JSBI.BigInt(Web3.utils.toWei("36500")))
+        JSBI.multiply(_precision, JSBI.BigInt("365"))
       );
       const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
       const _mintAmount = JSBI.greaterThan(_output, _limit) ? _limit : _output;
@@ -68,57 +76,6 @@ export const calculateReward = (xioQuantity, days) => async (
           JSBI.multiply(_mintAmount, JSBI.BigInt("900"))
         )
       );
-      //     uint256 limit = _amountIn.div(2);
-      //   return output > limit ? limit : output;
-
-      //   uint256 locked = IERC20Custom(FLASH_TOKEN).balanceOf(address(this)).add(
-      //     _amountIn
-      // );
-      // uint256 rate = IERC20Custom(FLASH_TOKEN).totalSupply().mul(PRECISION).div(
-      //     locked
-      // );
-      // return rate > 50e18 ? 50e18 : rate;
-      // const output =
-      //------------------------------------------
-      // const _annualRate = JSBI.divide(
-      //   JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
-      //   JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
-      // );
-      // const _xpy = JSBI.greaterThan(
-      //   _annualRate,
-      //   JSBI.BigInt(Web3.utils.toWei("50"))
-      // )
-      //   ? JSBI.BigInt(Web3.utils.toWei("50"))
-      //   : _annualRate;
-      // const _calculateXpyTemp = JSBI.divide(
-      //   JSBI.multiply(JSBI.multiply(_quantity, JSBI.BigInt(days)), _xpy),
-      //   JSBI.multiply(_precision, JSBI.BigInt("36500"))
-      // );
-      // const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
-      // const _calculateXpy = JSBI.greaterThan(_calculateXpyTemp, _limit)
-      //   ? _limit
-      //   : _calculateXpyTemp;
-
-      // const _reward = JSBI.divide(
-      //   JSBI.multiply(
-      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900")),
-      //     JSBI.BigInt(data.reserveAltAmount)
-      //   ),
-      //   JSBI.add(
-      //     JSBI.multiply(
-      //       JSBI.BigInt(data.reserveXioAmount),
-      //       JSBI.BigInt("1000")
-      //     ),
-      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900"))
-      //   )
-      // );
-      //----------------------------------------------------------
-      // reward = String(_reward);
-      // initializeFlashstakeProtocolContract();
-      // initializeFlashstakePoolContract(id);
-      // let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
-      // reward = await getAPYStake(_amountIn);
-      // console.log({ _reward: String(_reward), reward });
 
       reward = JSBI.subtract(
         JSBI.BigInt(_reward),
@@ -148,12 +105,32 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
       },
     } = getState();
     if (id && altQuantity > 0) {
-      initializeFlashstakePoolContract(id);
-      swapAmount = await getAPYSwap(Web3.utils.toWei(altQuantity));
+      const data = await getQueryData(id);
+
+      // initializeFlashstakePoolContract(id);
+      // swapAmount = await getAPYSwap(Web3.utils.toWei(altQuantity));
+      // uint256 amountInWithFee = _amountIn.mul(900);
+      //   uint256 num = amountInWithFee.mul(reserveFlashAmount);
+      //   uint256 den = (reserveAltAmount.mul(1000)).add(amountInWithFee);
+      //   result = num.div(den);
+
+      const _amountInWithFee = JSBI.multiply(
+        JSBI.BigInt(Web3.utils.toWei(altQuantity)),
+        JSBI.BigInt("900")
+      );
+
+      const _swapAmount = JSBI.divide(
+        JSBI.multiply(_amountInWithFee, JSBI.BigInt(data.reserveXioAmount)),
+        JSBI.add(
+          JSBI.multiply(data.reserveAltAmount, JSBI.BigInt("1000")),
+          _amountInWithFee
+        )
+      );
+
       swapAmount = JSBI.subtract(
-        JSBI.BigInt(swapAmount),
+        _swapAmount,
         JSBI.multiply(
-          JSBI.divide(JSBI.BigInt(swapAmount), JSBI.BigInt(100)),
+          JSBI.divide(_swapAmount, JSBI.BigInt(100)),
           JSBI.BigInt(5)
         )
       ).toString();
