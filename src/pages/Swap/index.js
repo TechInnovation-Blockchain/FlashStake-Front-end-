@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -195,7 +195,7 @@ const useStyles = makeStyles((theme) => ({
   dropDown: {
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .makeStyles-dropdown": {
       backgroundColor: "#000",
     },

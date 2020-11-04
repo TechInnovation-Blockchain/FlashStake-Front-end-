@@ -391,8 +391,12 @@ function TableComponent({
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
-                                {trunc(_stake.amountAvailable)}/
-                                {trunc(_stake.stakeAmount)} $FLASH
+                                {trunc(
+                                  _stake.amountAvailable > 0
+                                    ? _stake.amountAvailable
+                                    : _stake.stakeAmount - _stake.burnAmount
+                                )}
+                                /{trunc(_stake.stakeAmount)} $FLASH
                               </span>
                             </Tooltip>
                           </Grid>

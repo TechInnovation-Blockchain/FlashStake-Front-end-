@@ -58,7 +58,7 @@ export const darkTheme = createMuiTheme({
       active: "rgba(201,131,212,1)",
     },
     shadowColor: {
-      main: "rgba(101,177,193,1)",
+      main: "rgba(101,177,193,0.7)",
       secondary: "rgba(201,131,212,1)",
     },
   },

@@ -41,7 +41,7 @@ export const calculateReward = (xioQuantity, days) => async (
       const data = await getQueryData(id);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
-      const _days = JSBI.BigInt(Web3.utils.toWei(days));
+      const _days = JSBI.BigInt(days);
       const _percent = JSBI.divide(
         JSBI.multiply(
           JSBI.add(JSBI.BigInt(data.xioBalance), _quantity),
@@ -52,6 +52,7 @@ export const calculateReward = (xioQuantity, days) => async (
       const _getPercentStaked = JSBI.greaterThan(_percent, _precision)
         ? _precision
         : _percent;
+
       const _fpy = JSBI.divide(
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")

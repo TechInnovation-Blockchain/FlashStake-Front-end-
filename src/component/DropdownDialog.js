@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
   dropdownIcon: {
     color: theme.palette.xioRed.main,
@@ -353,13 +353,15 @@ export default function DropdownDialog({
                     {_pool.tokenB.symbol}{" "}
                     {history.location.pathname === "/swap"
                       ? `($${_pool.tokenPrice})`
-                      : `(${
+                      : history.location.pathname === "/stake"
+                      ? `(${
                           parseFloat(_pool.apy).toFixed(2) -
                             parseInt(_pool.apy) >
                           0
                             ? parseFloat(_pool.apy).toFixed(2)
                             : parseInt(_pool.apy)
-                        }%)`}
+                        }%)`
+                      : null}
                   </Typography>
                 </ListItem>
               ))}
