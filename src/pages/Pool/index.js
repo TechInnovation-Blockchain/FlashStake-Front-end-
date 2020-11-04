@@ -156,6 +156,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 0,
     top: "50%",
+    height: 35,
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
 

@@ -158,7 +158,7 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
-
+    height: 35,
     "&.Mui-disabled": {
       display: "none",
     },
