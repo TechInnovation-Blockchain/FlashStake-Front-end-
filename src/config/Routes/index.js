@@ -3,12 +3,24 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { store } from "../reduxStore";
 
-import { Flashstake, Swap, Pool, Vote } from "../../pages";
+import {
+  Flashstake,
+  Flashstake2,
+  Swap,
+  Swap2,
+  Pool,
+  Vote,
+  Pool2,
+} from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
 
 const getRoutes = (paused) => {
   const {
     web3: { active, account },
+  } = store.getState();
+
+  const {
+    ui: { changeApp },
   } = store.getState();
 
   const allowed = [
@@ -20,15 +32,27 @@ const getRoutes = (paused) => {
   return [
     {
       path: "/stake",
-      component: paused ? FlashstakePausedMessage : Flashstake,
+      component: paused
+        ? FlashstakePausedMessage
+        : changeApp === false
+        ? Flashstake
+        : Flashstake2,
     },
     {
       path: "/swap",
-      component: paused ? FlashstakePausedMessage : Swap,
+      component: paused
+        ? FlashstakePausedMessage
+        : changeApp === false
+        ? Swap
+        : Swap2,
     },
     {
       path: "/pool",
-      component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
+      component: allowed.includes(account?.toLowerCase())
+        ? changeApp === false
+          ? Pool
+          : Pool2
+        : Vote,
     },
     {
       path: "/vote",
@@ -37,13 +61,19 @@ const getRoutes = (paused) => {
   ];
 };
 
-function Routes({ contractState, themeMode, toggleThemeMode, account }) {
+function Routes({
+  contractState,
+  themeMode,
+  toggleThemeMode,
+  account,
+  changeApp,
+}) {
   const [routes, setRoutes] = useState(getRoutes());
   const redirectRoute = "/stake";
 
   useEffect(() => {
     setRoutes(getRoutes(contractState));
-  }, [contractState, account]);
+  }, [contractState, account, changeApp]);
 
   // useEffect(() => {
   //   getRoutes();
@@ -70,10 +100,12 @@ function Routes({ contractState, themeMode, toggleThemeMode, account }) {
 const mapStateToProps = ({
   contract: { contractState },
   web3: { account, active },
+  ui: { changeApp },
 }) => ({
   contractState,
   account,
   active,
+  changeApp,
 });
 
 export default connect(mapStateToProps)(Routes);

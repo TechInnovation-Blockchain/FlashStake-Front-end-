@@ -57,6 +57,7 @@ function WalletConnect({
   balance,
   loading,
   setLoading,
+  changeApp,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -166,7 +167,7 @@ function WalletConnect({
         />
 
         <Button
-          variant="retro"
+          variant={!changeApp ? "retro" : "red"}
           className={classes.connectWalletButton}
           onClick={() => {
             !(active || account) ? setOpen(true) : setOpen2(true);
@@ -182,9 +183,9 @@ function WalletConnect({
 }
 
 const mapStateToProps = ({
-  ui: { walletBackdrop },
+  ui: { walletBackdrop, changeApp },
   web3: { active, account },
-}) => ({ walletBackdrop, active, account });
+}) => ({ walletBackdrop, active, account, changeApp });
 
 export default connect(mapStateToProps, { storeWeb3Context, setLoading })(
   WalletConnect

@@ -1,7 +1,12 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 // import "../assets/fonts/fonts.css";
+import { store } from "./reduxStore";
 
-export const darkTheme = createMuiTheme({
+let {
+  ui: { changeApp },
+} = store.getState();
+
+export const retroTheme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
@@ -62,6 +67,7 @@ export const darkTheme = createMuiTheme({
       secondary: "#ed3293",
     },
   },
+
   typography: {
     fontFamily: "ZCOOL QingKe HuangYou",
     fontSize: 13,
@@ -69,11 +75,11 @@ export const darkTheme = createMuiTheme({
   },
 });
 
-export const lightTheme = createMuiTheme({
+export const darkTheme = createMuiTheme({
   palette: {
-    type: "light",
+    type: "dark",
     primary: {
-      main: "#000000",
+      main: "#D89C74",
     },
     secondary: {
       main: "#171717",
@@ -81,44 +87,51 @@ export const lightTheme = createMuiTheme({
     secondary2: {
       main: "#6cc79b",
     },
+    text: {
+      primary: "#ffffff",
+      primary2: "#000000",
+      // secondary: "#d1d1d1",
+      // primary: "#000000",
+      green: "#6cc79b",
+      secondary: "#cccccc",
+      secondary2: "#cccccc",
+      secondary4: "#696969",
+      grey: "#696969",
+    },
     action: {
       hover: "#f0f0f0",
     },
-    //----------------------------------------------//
-    text: {
-      primary: "#000000",
-      // secondary: "#cccccc",
-      secondary: "#000",
-      secondary2: "#1a1a1a",
-      secondary4: "#1a1a1a",
-      green: "#6cc79b",
-      primary2: "#000000",
-    },
-    xioRed: {
-      main: "#e2874a",
-    },
-    background: {
-      primary: "#ffffff",
-      secondary: "#f5f5f5",
-      secondary3: "#e5e5e5",
-      secondary4: "#eeeee",
-      secondary2: "#f5f5f5",
-      selected: "#e5e5e5",
+    border: {
+      main: "#000",
+      secondary: "#ffffff1f",
+      gray: "#121212",
     },
     button: {
       dark: "#555555",
-      red: "#e2874a",
+      red: "#D89C74",
     },
     buttonText: {
       dark: "#ffffff",
       red: "#ffffff",
     },
-    border: {
-      main: "#e2e2e2",
-      secondary: "#0000001f",
+    background: {
+      primary: "#121212",
+      secondary: "#1A1A1A",
+      secondary2: "#000000",
+      secondary4: "#1a1a1a",
+      secondary3: "#000000",
+      selected: "#171717",
     },
+    xioRed: {
+      main: "#D89C74",
+    },
+
     navLink: {
-      active: "#e2874a",
+      active: "#D89C74",
+    },
+    shadowColor: {
+      main: "transparent",
+      secondary: "transparent",
     },
   },
   typography: {
@@ -126,6 +139,64 @@ export const lightTheme = createMuiTheme({
     fontSize: 12,
   },
 });
+
+// export const lightTheme = createMuiTheme({
+//   palette: {
+//     type: "light",
+//     primary: {
+//       main: "#000000",
+//     },
+//     secondary: {
+//       main: "#171717",
+//     },
+//     secondary2: {
+//       main: "#6cc79b",
+//     },
+//     action: {
+//       hover: "#f0f0f0",
+//     },
+//     //----------------------------------------------//
+//     text: {
+//       primary: "#000000",
+//       // secondary: "#cccccc",
+//       secondary: "#000",
+//       secondary2: "#1a1a1a",
+//       secondary4: "#1a1a1a",
+//       green: "#6cc79b",
+//       primary2: "#000000",
+//     },
+//     xioRed: {
+//       main: "#e2874a",
+//     },
+//     background: {
+//       primary: "#ffffff",
+//       secondary: "#f5f5f5",
+//       secondary3: "#e5e5e5",
+//       secondary4: "#eeeee",
+//       secondary2: "#f5f5f5",
+//       selected: "#e5e5e5",
+//     },
+//     button: {
+//       dark: "#555555",
+//       red: "#e2874a",
+//     },
+//     buttonText: {
+//       dark: "#ffffff",
+//       red: "#ffffff",
+//     },
+//     border: {
+//       main: "#e2e2e2",
+//       secondary: "#0000001f",
+//     },
+//     navLink: {
+//       active: "#e2874a",
+//     },
+//   },
+//   typography: {
+//     fontFamily: "Montserrat",
+//     fontSize: 12,
+//   },
+// });
 
 // export const theme = createMuiTheme({
 //   palette: {

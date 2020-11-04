@@ -14,7 +14,7 @@ import { client } from "./apolloGraphQl";
 import Layout from "./Layout";
 import Updater from "./Updater";
 import { toggleThemeModeAction } from "../redux/actions/uiActions";
-import { darkTheme, lightTheme } from "./materialUiTheme";
+import { retroTheme, darkTheme } from "./materialUiTheme";
 
 firebase.initializeApp({
   apiKey: "AIzaSyAsJ2mENCiitB5twBkiKE0iNKSoR8lcsAs",
@@ -33,14 +33,14 @@ export const analytics = firebase.analytics();
 export const perf = firebase.performance();
 
 export default function App() {
-  const theme = localStorage.getItem("themeMode") || "dark";
+  const theme = localStorage.getItem("themeMode") || "retro";
   if (!theme) {
-    localStorage.setItem("themeMode", "dark");
+    localStorage.setItem("themeMode", "retro");
   }
   const [themeMode, setThemeMode] = useState(theme);
 
   const toggleThemeMode = () => {
-    setThemeMode(themeMode === "dark" ? "dark" : "dark");
+    setThemeMode(themeMode === "dark" ? "retro" : "dark");
 
     store.dispatch(toggleThemeModeAction());
   };
@@ -49,8 +49,8 @@ export default function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <ThemeProvider theme={darkTheme}>
-            {/* <ThemeProvider theme={themeMode === "dark" ? darkTheme : lightTheme}> */}
+          {/* <ThemeProvider theme={retroTheme}> */}
+          <ThemeProvider theme={themeMode === "dark" ? darkTheme : retroTheme}>
             <Updater />
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
           </ThemeProvider>

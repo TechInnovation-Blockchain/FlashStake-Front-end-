@@ -17,11 +17,15 @@ import xordLogo from "../../assets/xord-logo.png";
 import "../../assets/css/main.css";
 import AnimateHeight from "react-animate-height";
 import Image from "../../assets/retroBackground.jpg";
+import { store } from "../reduxStore";
 
 import {
   showWalletBackdrop,
   themeSwitchAction,
 } from "../../redux/actions/uiActions";
+const {
+  ui: { changeApp },
+} = store.getState();
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -52,9 +56,8 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100%",
     // boxShadow: ` 0px 0px 8px 16px ${theme.palette.shadowColor.main} `,
     // boxShadow: `0px 0px 26px 12px rgba(97,212,235,1)`,
-    boxShadow: `0px 0px 50px 10px rgba(97,212,235,0.7)`,
+    boxShadow: `0px 0px 50px 10px ${theme.palette.shadowColor.main}`,
   },
-
   backdrop: {
     zIndex: 1,
     backgroundColor: theme.palette.background.primary,
@@ -148,7 +151,7 @@ function Layout({
 
     themeMode === "dark"
       ? (body.style.backgroundColor = "#000000")
-      : (body.style.backgroundColor = "#f5f5f5");
+      : (body.style.backgroundImage = Image);
   }, [themeMode]);
 
   return (

@@ -76,12 +76,12 @@ function Navbar({
   const history = useHistory();
 
   const [animate, setAnimate] = useState(false);
-  const handleClick3 = () => {
-    setAnimate(true);
-    setTimeout(() => {
-      setAnimate(false);
-    }, 3500);
-  };
+  // const handleClick3 = () => {
+  //   setAnimate(true);
+  //   setTimeout(() => {
+  //     setAnimate(false);
+  //   }, 3500);
+  // };
 
   const handleClick2 = () => {
     setExpandAccodion(false);
@@ -89,17 +89,17 @@ function Navbar({
 
   const [theme, setTheme] = useState(true);
 
-  // const handleClick = () => {
-  //   // themeSwitchAction();
-  //   setTheme((val) => !val);
-  //   if (theme === true) {
-  //     themeMode = "dark";
-  //     toggleThemeMode();
-  //   } else {
-  //     themeMode = "light";
-  //     toggleThemeMode();
-  //   }
-  // };
+  const handleClick3 = () => {
+    // themeSwitchAction();
+    setTheme((val) => !val);
+    if (theme === true) {
+      themeMode = "dark";
+      toggleThemeMode();
+    } else {
+      themeMode = "retro";
+      toggleThemeMode();
+    }
+  };
 
   const handleClick = (changeApp) => {
     setRetroTheme(!changeApp);
@@ -156,13 +156,13 @@ function Navbar({
       <Box className={classes.navlinkBox}>
         <img
           // src={themeMode === "dark" ? flash : logoLight}
-          src={flash}
+          src={!changeApp ? flash : logo}
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}
           onClick={() => {
-            // handleClick3();
             handleClick(changeApp);
+            handleClick3();
           }}
         />
       </Box>
