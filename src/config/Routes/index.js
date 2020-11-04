@@ -6,11 +6,11 @@ import { store } from "../reduxStore";
 import { Flashstake, Swap, Pool, Vote } from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
 
-const {
-  web3: { active, account },
-} = store.getState();
-
 const getRoutes = (paused) => {
+  const {
+    web3: { active, account },
+  } = store.getState();
+
   const allowed = [
     "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F",
     "0x425b9dBa4b4a355cc063C5105501797C5F50266B",
@@ -37,13 +37,13 @@ const getRoutes = (paused) => {
   ];
 };
 
-function Routes({ contractState, themeMode, toggleThemeMode }) {
+function Routes({ contractState, themeMode, toggleThemeMode, account }) {
   const [routes, setRoutes] = useState(getRoutes());
   const redirectRoute = "/stake";
 
   useEffect(() => {
     setRoutes(getRoutes(contractState));
-  }, [contractState]);
+  }, [contractState, account]);
 
   // useEffect(() => {
   //   getRoutes();

@@ -106,7 +106,7 @@ export default function Dialog({
             <ClearOutlined />
           </IconButton>
         </Box>
-        {stepperShown ? <Stepper step={step} steps={steps} /> : null}
+        {stepperShown ? <Stepper tab="pool" step={step} steps={steps} /> : null}
         {stepperSecondary ? <Stepper step={step2} steps={steps2} /> : null}
         {status
           ? {

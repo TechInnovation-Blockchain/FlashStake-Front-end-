@@ -5,7 +5,7 @@ export const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: "rgba(201,131,212,1)",
+      main: "#ed3293",
     },
     secondary: {
       main: "#171717",
@@ -34,8 +34,8 @@ export const darkTheme = createMuiTheme({
     },
     button: {
       dark: "#555555",
-      red: "#c983d4",
-      retro: "rgba(201,131,212,1)",
+      red: "#ed3293",
+      retro: "#ed3293",
     },
     buttonText: {
       dark: "#ffffff",
@@ -51,15 +51,15 @@ export const darkTheme = createMuiTheme({
       selected: "#171717",
     },
     xioRed: {
-      main: "rgba(201,131,212,1)",
+      main: "#ed3293",
     },
 
     navLink: {
-      active: "rgba(201,131,212,1)",
+      active: "#ed3293",
     },
     shadowColor: {
-      main: "rgba(101,177,193,0.7)",
-      secondary: "rgba(201,131,212,1)",
+      main: "#59e7d5",
+      secondary: "#ed3293",
     },
   },
   typography: {
