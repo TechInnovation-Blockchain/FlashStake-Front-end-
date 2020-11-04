@@ -6,7 +6,7 @@ import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import logoLight from "../assets/xio-logo-light.svg";
 import flashDark from "../assets/flash-dark.svg";
-import flash from "../assets/FLASH.svg";
+import flash from "../assets/$FLASH.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,

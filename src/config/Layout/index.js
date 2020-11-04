@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100%",
     // boxShadow: ` 0px 0px 8px 16px ${theme.palette.shadowColor.main} `,
     // boxShadow: `0px 0px 26px 12px rgba(97,212,235,1)`,
-    boxShadow: ` 0px 0px 50px 10px rgba(97,212,235,1)`,
+    boxShadow: `0px 0px 50px 10px rgba(97,212,235,0.7)`,
   },
 
   backdrop: {

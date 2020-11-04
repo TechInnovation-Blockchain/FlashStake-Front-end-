@@ -43,7 +43,7 @@ function Vote({ animation, heightVal, setHeightValue }) {
   }, [history.location.pathname]);
 
   useEffect(() => {
-    document.title = "Vote - XIO | The Future is at Stake";
+    document.title = "Vote - $FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
 
   return (

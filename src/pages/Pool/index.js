@@ -142,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -419,7 +419,7 @@ function Pool({
   }, [history.location.pathname]);
   // console.log(history.location.pathname);
   useEffect(() => {
-    document.title = "Pool - XIO | The Future is at Stake";
+    document.title = "Pool - $FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
 
   // const debouncedUpdateQueryData = useCallback(debounce(getQueryData, 500), []);
@@ -461,7 +461,8 @@ function Pool({
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantityAlt(value);
       const _val = await quote(value, "alt");
-
+      // if(_val)
+      console.log({ _val });
       setQuantityXIO(_val);
     }
   };
@@ -481,7 +482,6 @@ function Pool({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Stake - XIO | The Future is at Stake";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -678,7 +678,7 @@ function Pool({
                         variant="body2"
                         className={classes.secondaryText}
                       >
-                        AMOUNT OF FLASH REQUIRED TO POOL
+                        AMOUNT OF $FLASH REQUIRED TO POOL
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -720,7 +720,7 @@ function Pool({
                   <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       <Typography variant="body2" className={classes.infoText}>
-                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} FLASH */}
+                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} $FLASH */}
                       </Typography>
                     ) : (
                       <Typography variant="body2" className={classes.redText}>
@@ -827,7 +827,7 @@ function Pool({
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
                         BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE FLASH</b>
+                        <b>APPROVE $FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -885,7 +885,7 @@ function Pool({
           open={showStakeDialog}
           // open={true}
           steps={[
-            "APPROVE FLASH",
+            "APPROVE $FLASH",
             `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
             "POOL",
           ]}
@@ -960,7 +960,7 @@ function Pool({
                   >
                     IF YOU STAKE{" "}
                     <span className={classes.infoTextSpan}>
-                      {/* {quantity || 0} FLASH{" "} */}
+                      {/* {quantity || 0} $FLASH{" "} */}
                     </span>{" "}
                     FOR{" "}
                     <span className={classes.infoTextSpan}>
@@ -1060,9 +1060,9 @@ function Pool({
                       </span>
                     </Tooltip>{" "}
                     AND{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                        {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
                     TO{" "}
@@ -1117,9 +1117,9 @@ function Pool({
                       </span>
                     </Tooltip>{" "}
                     AND{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                        {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
                     TO{" "}

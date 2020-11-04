@@ -70,6 +70,19 @@
     },
     {
       "inputs": [],
+      "name": "FLASH_PROTOCOL",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "MINIMUM_LIQUIDITY",
       "outputs": [
         {
@@ -319,6 +332,39 @@
         }
       ],
       "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_expireAfter",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_mintedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_staker",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_receiver",
+          "type": "address"
+        }
+      ],
+      "name": "receiveFlash",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

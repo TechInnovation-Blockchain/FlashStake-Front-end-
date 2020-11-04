@@ -114,7 +114,7 @@ function SwapTable({
   balanceUSD,
 }) {
   const classes = useStyles();
-  const headItems = ["INPUT", "OUTPUT FLASH", "DATE"];
+  const headItems = ["INPUT", "OUTPUT $FLASH", "DATE"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState("DATE");
@@ -152,7 +152,7 @@ function SwapTable({
             parseFloat(a) - parseFloat(b)
         );
         break;
-      case "OUTPUT FLASH":
+      case "OUTPUT $FLASH":
         data = swapHistory?.sort(
           ({ flashReceived: a }, { flashReceived: b }) =>
             parseFloat(a) - parseFloat(b)
@@ -203,11 +203,11 @@ function SwapTable({
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="overline">
-            FLASH BALANCE
+            $FLASH BALANCE
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} FLASH`}>
-              <span>{trunc(walletBalance)} FLASH</span>
+            <Tooltip title={`${walletBalance} $FLASH`}>
+              <span>{trunc(walletBalance)} $FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -284,16 +284,16 @@ function SwapTable({
                               </Tooltip>
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.flashReceived} FLASH`}>
+                              <Tooltip title={`${_swap.flashReceived} $FLASH`}>
                                 <span className={classes.flexCenter}>
                                   <img
-                                    src={tryRequire("FLASH")}
+                                    src={tryRequire("$FLASH")}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.flashReceived)} FLASH
+                                  {trunc(_swap.flashReceived)} $FLASH
                                 </span>
                               </Tooltip>
                             </Grid>

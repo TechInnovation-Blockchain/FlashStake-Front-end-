@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -195,7 +195,7 @@ const useStyles = makeStyles((theme) => ({
   dropDown: {
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: 10,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .makeStyles-dropdown": {
       backgroundColor: "#000",
     },
@@ -399,7 +399,7 @@ function Swap({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Swap - XIO | The Future is at Stake";
+    document.title = "Swap - $FLASH | THE TIME TRAVEL OF MONEY";
     setRefetch();
     // setLoading({ dapp: true });
   }, [setRefetch]);
@@ -515,7 +515,7 @@ function Swap({
                       variant="body2"
                       className={classes.secondaryText}
                     >
-                      WHAT DO YOU WANT TO SWAP FOR FLASH
+                      WHAT DO YOU WANT TO SWAP FOR $FLASH
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -592,10 +592,10 @@ function Swap({
                             className={classes.loaderStyle}
                           />
                         ) : (
-                          <Tooltip title={`${swapOutput} FLASH`}>
+                          <Tooltip title={`${swapOutput} $FLASH`}>
                             <span className={classes.infoTextSpan}>
                               {" "}
-                              {trunc(swapOutput)} FLASH
+                              {trunc(swapOutput)} $FLASH
                             </span>
                           </Tooltip>
                         )}
@@ -719,7 +719,7 @@ function Swap({
                   <Dialog
                     open={showStakeDialog}
                     // open={true}
-                    steps={["APPROVE FLASH", "SWAP"]}
+                    steps={["APPROVE", "SWAP"]}
                     title="SWAP"
                     onClose={() => setShowStakeDialog(false)}
                     status={[
@@ -811,10 +811,10 @@ function Swap({
                                     className={classes.loaderStyle}
                                   />
                                 ) : (
-                                  <Tooltip title={`${swapOutput} FLASH`}>
+                                  <Tooltip title={`${swapOutput} $FLASH`}>
                                     <span className={classes.infoTextSpan}>
                                       {" "}
-                                      {trunc(swapOutput)} FLASH
+                                      {trunc(swapOutput)} $FLASH
                                     </span>
                                   </Tooltip>
                                 )}
@@ -919,7 +919,7 @@ function Swap({
                             >
                               SWAPPING {trunc(swapHist?.amount)}{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""} FOR{" "}
-                              {trunc(swapOutput)} FLASH{" "}
+                              {trunc(swapOutput)} $FLASH{" "}
                               {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
@@ -988,7 +988,7 @@ function Swap({
                             >
                               YOU HAVE SUCCESSFULLY SWAPPED {swapHist?.amount}{" "}
                               {swapHist?.token || ""} FOR {trunc(swapOutput)}{" "}
-                              FLASH
+                              $FLASH
                             </Typography>
                             <Typography
                               variant="body2"

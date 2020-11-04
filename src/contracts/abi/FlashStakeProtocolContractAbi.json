@@ -5,6 +5,12 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "bytes32",
+          "name": "_id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
           "internalType": "address",
           "name": "_pool",
           "type": "address"
@@ -32,6 +38,18 @@
           "internalType": "uint256",
           "name": "_liquidity",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_initiationTimestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_sender",
+          "type": "address"
         }
       ],
       "name": "LiquidityAdded",
@@ -42,6 +60,12 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "bytes32",
+          "name": "_id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
           "internalType": "address",
           "name": "_pool",
           "type": "address"
@@ -69,6 +93,18 @@
           "internalType": "uint256",
           "name": "_liquidity",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_initiationTimestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_sender",
+          "type": "address"
         }
       ],
       "name": "LiquidityRemoved",
@@ -202,18 +238,6 @@
         },
         {
           "indexed": false,
-          "internalType": "address",
-          "name": "_pair",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "_flashAmount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
           "internalType": "bytes32",
           "name": "_id",
           "type": "bytes32"
@@ -303,6 +327,19 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "disablePool",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_amountIn",
           "type": "uint256"
@@ -360,39 +397,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_amountIn",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_expireAfter",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_mintedAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_staker",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_receiver",
-          "type": "address"
-        }
-      ],
-      "name": "receiveFlash",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
