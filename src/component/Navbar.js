@@ -120,6 +120,7 @@ function Navbar({
           // onClick={handleClick2}
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 0;
+            setAnimationDirection(index);
             history.push("/stake");
             handleClick2();
           }}
