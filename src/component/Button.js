@@ -9,8 +9,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 2,
     lineHeight: 1.2,
     borderRadius: 10,
-    border: `2px solid ${theme.palette.shadowColor.main}`,
-    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.main}`,
+
     transition: "none !important",
     "&.MuiButton-label": {
       ...theme.typography.body1,
@@ -58,7 +57,20 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.border.main,
     },
   },
+  disable: {
+    background: theme.palette.border.main,
+    color: theme.palette.buttonText.red,
+    "&:hover": {
+      // background: theme.palette.xioRed.main,
+      background: theme.palette.border.main,
+    },
+    "&.Mui-disabled": {
+      background: theme.palette.border.main,
+    },
+  },
   retroButton: {
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.main}`,
     background: theme.palette.button.retro,
     color: "#fff",
     "&:hover": {
@@ -71,7 +83,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Button({ fontSizeLocal, loading, ...props }) {
+export default function Button({
+  fontSizeLocal,
+  loading,
+  isDisabled,
+  ...props
+}) {
   const classes = useStyles();
   return (
     <MuiButton
@@ -82,6 +99,7 @@ export default function Button({ fontSizeLocal, loading, ...props }) {
           dark: classes.darkButton,
           retro: classes.retroButton,
           red: classes.redButton,
+          disable: classes.disable,
         }[props.variant]
       } ${fontSizeLocal ? classes[fontSizeLocal] : ""}`}
     >

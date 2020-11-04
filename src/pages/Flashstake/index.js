@@ -769,6 +769,35 @@ function Flashstake({
   // };
 
   // props.history.location.pathname === "/swap" ? true :
+  const [isDisabled, setIsDisabled] = useState(false);
+  const setDisable = () => {
+    if (
+      !allowanceXIO ||
+      !active ||
+      !account ||
+      !selectedPortal ||
+      quantity <= 0 ||
+      days <= 0 ||
+      loadingRedux.reward ||
+      loadingRedux.stake ||
+      chainId !== 4 ||
+      reward <= 0 ||
+      (active && account && parseFloat(quantity) > parseFloat(walletBalance))
+    ) {
+      setIsDisabled(true);
+    }
+  };
+
+  // allowanceXIO
+  // active
+  // account
+  // selectedPortal
+  // quantity
+  // days
+  // loadingRedux.reward
+  // loadingRedux.stake
+  // chainId
+  // reward
 
   return (
     <PageAnimation in={true} reverse={animation > 0}>
@@ -983,7 +1012,23 @@ function Flashstake({
                       >
                         <Button
                           fullWidth
-                          variant="retro"
+                          variant={
+                            !allowanceXIO ||
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4 ||
+                            reward <= 0 ||
+                            (active &&
+                              account &&
+                              parseFloat(quantity) > parseFloat(walletBalance))
+                              ? "red"
+                              : "retro"
+                          }
                           onClick={
                             !allowanceXIO
                               ? () => {}
@@ -1016,6 +1061,22 @@ function Flashstake({
                         <Button
                           fullWidth
                           variant="retro"
+                          // variant={
+                          //   !active ||
+                          //   !account ||
+                          //   !selectedPortal ||
+                          //   quantity <= 0 ||
+                          //   days <= 0 ||
+                          //   loadingRedux.reward ||
+                          //   loadingRedux.stake ||
+                          //   chainId !== 4 ||
+                          //   reward <= 0 ||
+                          //   (active &&
+                          //     account &&
+                          //     parseFloat(quantity) > parseFloat(walletBalance))
+                          //     ? "disable"
+                          //     : "retro"
+                          // }
                           onClick={
                             !allowanceXIO
                               ? () => {}

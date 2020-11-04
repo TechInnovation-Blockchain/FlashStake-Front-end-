@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { store } from "../reduxStore";
 
 import { Flashstake, Swap, Pool, Vote } from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
 
+const {
+  web3: { active, account },
+} = store.getState();
+
 const getRoutes = (paused) => {
+  const allowed = [
+    "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F",
+    "0x425b9dBa4b4a355cc063C5105501797C5F50266B",
+    "0x88c81290327316D89983EeB9fc9aF63219474a3D",
+  ].map((_add) => _add.toLowerCase());
+
   return [
     {
       path: "/stake",
@@ -17,7 +28,7 @@ const getRoutes = (paused) => {
     },
     {
       path: "/pool",
-      component: Pool,
+      component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
     },
     {
       path: "/vote",
@@ -34,6 +45,10 @@ function Routes({ contractState, themeMode, toggleThemeMode }) {
     setRoutes(getRoutes(contractState));
   }, [contractState]);
 
+  // useEffect(() => {
+  //   getRoutes();
+  // }, [account]);
+
   return (
     <BrowserRouter>
       <Navbar themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
@@ -41,14 +56,24 @@ function Routes({ contractState, themeMode, toggleThemeMode }) {
         {routes.map((_route) => (
           <Route {..._route} key={_route.path} />
         ))}
+        {/* <Route
+          path="/pool"
+          component={allowed.includes(account?.toLowerCase()) ? Pool : Vote}
+        /> */}
+
         <Route exact component={() => <Redirect to={redirectRoute} />} />
       </Switch>
     </BrowserRouter>
   );
 }
 
-const mapStateToProps = ({ contract: { contractState } }) => ({
+const mapStateToProps = ({
+  contract: { contractState },
+  web3: { account, active },
+}) => ({
   contractState,
+  account,
+  active,
 });
 
 export default connect(mapStateToProps)(Routes);

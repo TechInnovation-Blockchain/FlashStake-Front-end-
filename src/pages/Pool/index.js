@@ -72,6 +72,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     // justifyContent: "space-evenly",
   },
+  contentContainer2: {
+    padding: theme.spacing(4),
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    // height: "200px",
+  },
+  comingSoon: {
+    color: theme.palette.xioRed.main,
+    fontWeight: 700,
+  },
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
@@ -388,6 +400,8 @@ function Pool({
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
 
+  // {account === "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? ():()}
+
   useEffect(() => {
     setTimeout(() => {
       setHeightValue(ref?.current?.clientHeight);
@@ -447,6 +461,7 @@ function Pool({
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantityAlt(value);
       const _val = await quote(value, "alt");
+
       setQuantityXIO(_val);
     }
   };
@@ -563,6 +578,7 @@ function Pool({
   }, [expanding, setExpandAccodion]);
 
   return (
+    // account !== "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <AnimateHeight
@@ -788,9 +804,16 @@ function Pool({
                             chainId !== 4 ||
                             parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
+                            //  &&
+                            // account !==
+                            //   "0x425b9dBa4b4a355cc063C5105501797C5F50266B")
                           }
                           loading={loadingRedux.pool}
                         >
+                          {/* {account !==
+                          "0x425b9dBa4b4a355cc063C5105501797C5F50266B"
+                            ? "COMING SOON"
+                            : "POOL"} */}
                           POOL
                         </Button>
                       </Grid>
@@ -830,7 +853,6 @@ function Pool({
                 </Grid>
               </AccordionDetails>
             </Accordion>
-
             <Accordion square expanded={!expanded2}>
               <AccordionSummary
                 aria-controls="panel2d-content"
