@@ -87,6 +87,14 @@ export const setHeightValue = (data) => {
   };
 };
 
+export const setRetroTheme = (data) => {
+  return {
+    type: "RETRO_THEME",
+    payload: data,
+  };
+};
+//
+
 export const themeSwitchAction = () => async (dispatch) => {
   dispatch(setLoading({ themeSwitch: true }));
   setTimeout(() => dispatch(setLoading({ themeSwitch: false })), 2000);
