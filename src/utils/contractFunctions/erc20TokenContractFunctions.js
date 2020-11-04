@@ -16,6 +16,7 @@ import {
 } from "../../redux/actions/flashstakeActions";
 import { store } from "../../config/reduxStore";
 import { _error } from "../log";
+import { connect } from "react-redux";
 
 let contract;
 let isContractInitialized = false;
@@ -52,7 +53,7 @@ export const decimals = async () => {
   }
 };
 
-export const approve = async (address, tab, amount) => {
+export const approve = async (address, tab, step, amount) => {
   try {
     if (tab === "stake") {
       setDialogStepIndep("pendingApproval");
@@ -96,7 +97,13 @@ export const approve = async (address, tab, amount) => {
           setSwapDialogStepIndep("swapProposal");
         }
         if (tab === "pool") {
-          setPoolDialogStepIndep("poolProposal");
+          if (step === 1) {
+            console.log("inside first step");
+            setPoolDialogStepIndep("pendingApprovalToken");
+          } else {
+            console.log("inside second step");
+            setPoolDialogStepIndep("poolProposal");
+          }
         }
         // tab === "stake"
         //   ? setDialogStepIndep("flashstakeProposal")

@@ -16,6 +16,7 @@ import Routes from "../Routes";
 import xordLogo from "../../assets/xord-logo.png";
 import "../../assets/css/main.css";
 import AnimateHeight from "react-animate-height";
+import Image from "../../assets/retroBackground.jpg";
 
 import {
   showWalletBackdrop,
@@ -25,6 +26,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     // padding: theme.spacing(4, 0),
+
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
@@ -48,8 +50,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     // minHeight: 420,
     minHeight: "100%",
-    boxShadow: ` 0px 0px 16px 8px ${theme.palette.shadowColor.main} `,
+    // boxShadow: ` 0px 0px 8px 16px ${theme.palette.shadowColor.main} `,
+    // boxShadow: `0px 0px 26px 12px rgba(97,212,235,1)`,
+    boxShadow: ` 0px 0px 50px 10px rgba(97,212,235,1)`,
   },
+
   backdrop: {
     zIndex: 1,
     backgroundColor: theme.palette.background.primary,
@@ -148,6 +153,7 @@ function Layout({
 
   return (
     <Fragment>
+      {/* <Box> */}
       <Container maxWidth="sm" className={classes.mainContainer}>
         <Box
           // ref={ref}
@@ -188,6 +194,7 @@ function Layout({
         </a>
       </Backdrop>
       <div ref={walletBtnRef}></div>
+      {/* </Box> */}
     </Fragment>
   );
 }

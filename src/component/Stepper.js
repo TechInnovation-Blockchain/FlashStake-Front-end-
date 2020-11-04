@@ -109,7 +109,16 @@ export default function Stepper({ step, steps = ["APPROVE FLASH", "STAKE"] }) {
   useEffect(() => {
     if (step === "pendingApproval") {
       setActiveStep(0);
-    } else if (step === "flashstakeProposal" || "swapProposal") {
+    } else if (step === "pendingApprovalToken") {
+      setActiveStep(1);
+    } else if (
+      step === "flashstakeProposal" ||
+      "swapProposal" ||
+      "poolProposal"
+    ) {
+      if (step === "poolProposal") {
+        setActiveStep(2);
+      }
       setActiveStep(1);
     }
   }, [step]);

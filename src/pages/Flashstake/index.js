@@ -603,7 +603,7 @@ function Flashstake({
                         variant="body2"
                         className={classes.secondaryText}
                       >
-                        FUEL
+                        FUEL (FLASH)
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -650,7 +650,7 @@ function Flashstake({
                         variant="body2"
                         className={classes.secondaryText}
                       >
-                        TIME
+                        TIME (DAYS)
                       </Typography>
 
                       <Box className={classes.textFieldContainer}>
@@ -718,7 +718,10 @@ function Flashstake({
                         )}
                       </Typography>
                     ) : (
-                      <Typography variant="body2" className={classes.redText}>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.redText} ${classes.gridSpace} `}
+                      >
                         SELECT A TOKEN TO VIEW REWARDS
                       </Typography>
                     )}
@@ -761,7 +764,7 @@ function Flashstake({
                       <Grid
                         item
                         xs={6}
-                        style={{ marginBottom: 10 }}
+                        // style={{ marginBottom: 10 }}
                         className={classes.btnPaddingLeft}
                       >
                         <Button

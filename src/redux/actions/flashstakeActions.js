@@ -376,14 +376,17 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
   }
 };
 
-export const getApprovalXIOPool = (tab) => async (dispatch, getState) => {
+export const getApprovalXIOPool = (step = null) => async (
+  dispatch,
+  getState
+) => {
   setLoadingIndep({ approvalXIO: true });
   try {
     const {
       flashstake: { selectedRewardToken },
     } = getState();
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(selectedRewardToken?.id, "pool");
+    await approve(selectedRewardToken?.id, "pool", step);
     dispatch(checkAllowancePool());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
@@ -393,7 +396,7 @@ export const getApprovalXIOPool = (tab) => async (dispatch, getState) => {
   }
 };
 
-export const getApprovalALTPool = (_selectedPortal, tab) => async (
+export const getApprovalALTPool = (_selectedPortal) => async (
   dispatch,
   getState
 ) => {

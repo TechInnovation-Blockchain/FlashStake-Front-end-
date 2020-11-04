@@ -568,7 +568,7 @@ function Swap({
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item className={classes.gridSpace} xs={12}>
+                  <Grid item xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       <Typography variant="body2" className={classes.infoText}>
                         IF YOU SWAP{" "}
@@ -600,7 +600,10 @@ function Swap({
                         )}
                       </Typography>
                     ) : (
-                      <Typography variant="body2" className={classes.redText}>
+                      <Typography
+                        variant="body2"
+                        className={`${classes.redText} ${classes.gridSpace} `}
+                      >
                         SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
                       </Typography>
                     )}
@@ -611,6 +614,7 @@ function Swap({
                           container
                           item
                           xs={12}
+                          // className={classes.gridSpace}
                           className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
@@ -653,7 +657,7 @@ function Swap({
                           </Grid>
                         </Grid>
                       ) : (
-                        <Grid item xs={12} className={classes.msgContainer}>
+                        <Grid item xs={12}>
                           <Button
                             variant="retro"
                             fullWidth

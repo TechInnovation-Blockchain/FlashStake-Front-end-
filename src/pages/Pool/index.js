@@ -509,8 +509,10 @@ function Pool({
     setPoolDialogStep("pendingApproval");
     setShowStakeDialog(true);
     if (!allowanceXIOPool) {
-      await getApprovalXIOPool("pool");
+      setPoolDialogStep("pendingApproval");
+      await getApprovalXIOPool(1);
     } else if (!allowanceALTPool) {
+      setPoolDialogStep("pendingApproval");
       await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
     }
   };
@@ -710,13 +712,7 @@ function Pool({
                     )}
                   </Grid>
                   {!allowanceXIOPool || !allowanceALTPool ? (
-                    <Grid
-                      container
-                      item
-                      className={classes.gridSpace}
-                      xs={12}
-                      onClick={showWalletHint}
-                    >
+                    <Grid container item xs={12} onClick={showWalletHint}>
                       <Grid item xs={6} className={classes.btnPaddingRight}>
                         <Button
                           fullWidth
@@ -774,13 +770,7 @@ function Pool({
                     </Grid>
                   ) : (
                     <Fragment>
-                      <Grid
-                        container
-                        item
-                        className={classes.gridSpace}
-                        xs={12}
-                        onClick={showWalletHint}
-                      >
+                      <Grid container item xs={12} onClick={showWalletHint}>
                         <Button
                           fullWidth
                           variant="retro"
@@ -871,7 +861,11 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE FLASH", "POOL"]}
+          steps={[
+            "APPROVE FLASH",
+            `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+            "POOL",
+          ]}
           title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -879,11 +873,11 @@ function Pool({
           )}
           step={dialogStep3}
           stepperShown={
-            // quantity > 0 && days > 0
-            //   ? dialogStep3 === "pendingApproval" ||
-            //     dialogStep3 === "poolProposal"
-            //   : null
-            false
+            quantityXIO > 0 && quantityAlt > 0
+              ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "pendingApprovalToken" ||
+                dialogStep3 === "poolProposal"
+              : null
           }
           // stepperShown={true}
 
@@ -910,6 +904,25 @@ function Pool({
                     APPROVAL PENDING
                     <br />
                   </Typography>
+                </Fragment>
+              ),
+              pendingApprovalToken: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVAL PENDING
+                    <br />
+                  </Typography>
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    onClick={
+                      // ?
+                      onClickApprove
+                      // : () => {}
+                    }
+                  >
+                    APPROVE
+                  </Button>
                 </Fragment>
               ),
               poolProposal: (

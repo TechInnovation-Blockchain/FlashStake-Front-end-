@@ -6,6 +6,7 @@ import { ApolloProvider } from "@apollo/client";
 import firebase from "firebase/app";
 import "firebase/performance";
 import "firebase/analytics";
+// import { JSBI } from "@uniswap/sdk";
 
 import { store } from "./reduxStore";
 import { getLibrary } from "./web3-react";
@@ -25,6 +26,8 @@ firebase.initializeApp({
   appId: "1:498680612321:web:7121def3cdfdb372f67ea0",
   measurementId: "G-5JCYFQSWJ7",
 });
+
+// console.log(JSBI.BigInt("1"));
 
 export const analytics = firebase.analytics();
 export const perf = firebase.performance();
