@@ -401,7 +401,7 @@ function TableComponent({
                             {!_stake.expired &&
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "MIN" : "MINS"}
+                                {_daysRem} {_daysRem === 1 ? "HOUR" : "HOURS"}
                               </Fragment>
                             ) : (
                               "COMPLETED"

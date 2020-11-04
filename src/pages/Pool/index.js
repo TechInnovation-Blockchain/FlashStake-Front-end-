@@ -942,7 +942,7 @@ function Pool({
                     </span>{" "}
                     FOR{" "}
                     <span className={classes.infoTextSpan}>
-                      {days || 0} MINS
+                      {days || 0} HOURS
                     </span>{" "}
                     YOU WILL{" "}
                     <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}

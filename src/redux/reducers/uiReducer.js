@@ -10,6 +10,7 @@ export const uiReducer = (
     walletBackdrop: false,
     expanding: true,
     animation: 0,
+    changeApp: false,
     heightVal: "",
   },
   { type, payload }
@@ -65,6 +66,12 @@ export const uiReducer = (
       return {
         ...state,
         heightVal: payload,
+      };
+
+    case "RETRO_THEME":
+      return {
+        ...state,
+        changeApp: payload,
       };
 
     default:

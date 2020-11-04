@@ -10,6 +10,7 @@ import flash from "../assets/FLASH.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,
+  setRetroTheme,
 } from "../redux/actions/uiActions";
 import { useHistory } from "react-router";
 
@@ -67,6 +68,8 @@ function Navbar({
   setExpandAccodion,
   themeMode,
   toggleThemeMode,
+  changeApp,
+  setRetroTheme,
   ...props
 }) {
   const classes = useStyles();
@@ -86,16 +89,20 @@ function Navbar({
 
   const [theme, setTheme] = useState(true);
 
-  const handleClick = () => {
-    // themeSwitchAction();
-    setTheme((val) => !val);
-    if (theme === true) {
-      themeMode = "dark";
-      toggleThemeMode();
-    } else {
-      themeMode = "light";
-      toggleThemeMode();
-    }
+  // const handleClick = () => {
+  //   // themeSwitchAction();
+  //   setTheme((val) => !val);
+  //   if (theme === true) {
+  //     themeMode = "dark";
+  //     toggleThemeMode();
+  //   } else {
+  //     themeMode = "light";
+  //     toggleThemeMode();
+  //   }
+  // };
+
+  const handleClick = (changeApp) => {
+    setRetroTheme(!changeApp);
   };
 
   let index;
@@ -152,10 +159,10 @@ function Navbar({
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}
-          // onClick={() => {
-          //   handleClick3();
-          //   handleClick();
-          // }}
+          onClick={() => {
+            // handleClick3();
+            handleClick(changeApp);
+          }}
         />
       </Box>
       {/* <Box className={classes.navOuterBox}> */}
@@ -201,12 +208,14 @@ function Navbar({
   );
 }
 
-const mapStateToProps = ({ ui: { expanding, animation } }) => ({
+const mapStateToProps = ({ ui: { expanding, animation, changeApp } }) => ({
   expanding,
   animation,
+  changeApp,
 });
 
 export default connect(mapStateToProps, {
   setExpandAccodion,
   setAnimationDirection,
+  setRetroTheme,
 })(Navbar);
