@@ -904,7 +904,7 @@ function Flashstake({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE $FLASH", "STAKE"]}
+          steps={["APPROVE", "STAKE"]}
           title="FLASHSTAKE"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>

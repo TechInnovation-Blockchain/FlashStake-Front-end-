@@ -719,7 +719,7 @@ function Swap({
                   <Dialog
                     open={showStakeDialog}
                     // open={true}
-                    steps={["APPROVE $FLASH", "SWAP"]}
+                    steps={["APPROVE", "SWAP"]}
                     title="SWAP"
                     onClose={() => setShowStakeDialog(false)}
                     status={[
