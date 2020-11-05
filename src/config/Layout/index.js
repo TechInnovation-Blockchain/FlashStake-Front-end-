@@ -156,8 +156,8 @@ function Layout({
     // body.style.backgroundColor = "#171717";
 
     themeMode === "dark"
-      ? (body.style.backgroundColor = "#000000")
-      : (body.style.backgroundImage = `require(url(${"../../assets/retroBackground.jpg"}))`);
+      ? (body.style.background = "#000000")
+      : (body.style.background = `url(${Image})`);
   }, [themeMode]);
 
   return (

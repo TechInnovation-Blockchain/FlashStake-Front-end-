@@ -127,7 +127,8 @@ const useStyles = makeStyles((theme) =>
         textField: {
           background: theme.palette.background.secondary2,
           border: `2px solid ${theme.palette.shadowColor.main}`,
-          borderRadius: 10,
+          borderRadius: theme.palette.ButtonRadius.small,
+          // borderRadius: 10,
           // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
           "& .MuiInputBase-input": {
             height: 36,
@@ -235,7 +236,7 @@ const useStyles = makeStyles((theme) =>
         dashboardAccordian: {
           color: theme.palette.text.grey,
           "&:hover": {
-            color: "#ed3293",
+            color: theme.palette.xioRed.main,
           },
         },
         accordion: {
@@ -430,7 +431,7 @@ const useStyles = makeStyles((theme) =>
         dashboardAccordian: {
           color: theme.palette.text.grey,
           "&:hover": {
-            color: "#D89C74",
+            color: theme.palette.xioRed.main,
           },
         },
         accordion: {

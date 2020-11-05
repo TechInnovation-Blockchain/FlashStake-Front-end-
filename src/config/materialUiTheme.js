@@ -41,6 +41,8 @@ export const retroTheme = createMuiTheme({
       dark: "#555555",
       red: "#ed3293",
       retro: "#ed3293",
+
+      hover: "#cc1675",
     },
     buttonText: {
       dark: "#ffffff",
@@ -65,6 +67,9 @@ export const retroTheme = createMuiTheme({
     shadowColor: {
       main: "#59e7d5",
       secondary: "#ed3293",
+    },
+    ButtonRadius: {
+      small: 10,
     },
   },
 
@@ -109,6 +114,7 @@ export const darkTheme = createMuiTheme({
     button: {
       dark: "#555555",
       red: "#D89C74",
+      hover: "#d98955",
     },
     buttonText: {
       dark: "#ffffff",
@@ -132,6 +138,9 @@ export const darkTheme = createMuiTheme({
     shadowColor: {
       main: "transparent",
       secondary: "transparent",
+    },
+    ButtonRadius: {
+      small: 0,
     },
   },
   typography: {

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     position: "relative",
     border: `2px solid ${theme.palette.shadowColor.main}`,
-    borderRadius: 10,
+    borderRadius: theme.palette.ButtonRadius.small,
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
   dropdownIcon: {

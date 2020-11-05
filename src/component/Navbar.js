@@ -156,7 +156,7 @@ function Navbar({
       <Box className={classes.navlinkBox}>
         <img
           // src={themeMode === "dark" ? flash : logoLight}
-          src={!changeApp ? flash : logo}
+          src={flash}
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}

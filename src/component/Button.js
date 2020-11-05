@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     height: 35,
     letterSpacing: 2,
     lineHeight: 1.2,
-    borderRadius: 10,
+    borderRadius: theme.palette.ButtonRadius.small,
 
     transition: "none !important",
     "&.MuiButton-label": {
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.buttonText.red,
     "&:hover": {
       // background: theme.palette.xioRed.main,
-      background: "#e2874a",
+      background: theme.palette.button.hover,
     },
     "&.Mui-disabled": {
       background: theme.palette.border.main,
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     "&:hover": {
       // background: theme.palette.xioRed.main,
-      background: "#c562d6",
+      background: theme.palette.button.hover,
     },
     "&.Mui-disabled": {
       background: theme.palette.border.main,
