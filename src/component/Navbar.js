@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
-import logoLight from "../assets/xio-logo-light.svg";
-import flashDark from "../assets/flash-dark.svg";
 import flash from "../assets/whitelogo.svg";
 import {
   setExpandAccodion,
@@ -75,14 +72,6 @@ function Navbar({
   const classes = useStyles();
   const history = useHistory();
 
-  const [animate, setAnimate] = useState(false);
-  // const handleClick3 = () => {
-  //   setAnimate(true);
-  //   setTimeout(() => {
-  //     setAnimate(false);
-  //   }, 3500);
-  // };
-
   const handleClick2 = () => {
     setExpandAccodion(false);
   };
@@ -90,7 +79,6 @@ function Navbar({
   const [theme, setTheme] = useState(true);
 
   const handleClick3 = () => {
-    // themeSwitchAction();
     setTheme((val) => !val);
     if (theme === true) {
       themeMode = "retro";
@@ -111,13 +99,11 @@ function Navbar({
 
   return (
     <Box className={classes.navContainer}>
-      {/* <Box className={classes.navOuterBox}> */}
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/stake"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
-          // onClick={handleClick2}
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 0;
             setAnimationDirection(index);
@@ -131,8 +117,6 @@ function Navbar({
           </Typography>
         </NavLink>
       </Box>
-      {/* <Divider orientation="vertical" flexItem /> */}
-      {/* <img src={logo} alt="logo" width={40} className={classes.logo} /> */}
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/swap"
@@ -141,7 +125,6 @@ function Navbar({
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 1;
             setAnimationDirection(index);
-
             history.push("/swap");
             handleClick2();
           }}
@@ -152,13 +135,12 @@ function Navbar({
           </Typography>
         </NavLink>
       </Box>
-      {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
           // src={themeMode === "dark" ? flash : logoLight}
           src={flash}
           alt="logo"
-          width={animate ? 30 : 30}
+          width={30}
           className={classes.logo}
           // onClick={() => {
           //   handleClick(changeApp);
@@ -166,7 +148,6 @@ function Navbar({
           // }}
         />
       </Box>
-      {/* <Box className={classes.navOuterBox}> */}
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/pool"
@@ -204,7 +185,6 @@ function Navbar({
           </Typography>
         </NavLink>
       </Box>
-      {/* </Box> */}
     </Box>
   );
 }

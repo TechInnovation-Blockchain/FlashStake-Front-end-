@@ -1,9 +1,7 @@
 import Web3 from "web3";
 import { store } from "../../config/reduxStore";
-import _ from "lodash";
 import {
   initializeErc20TokenContract,
-  initializeErc20TokenInfuraContract,
   allowance,
   approve,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
@@ -14,10 +12,6 @@ import {
   addLiquidityInPool,
   removeLiquidityInPool,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
-import {
-  initializeFlashstakePoolContract,
-  getAPYSwap,
-} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
@@ -108,13 +102,6 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
     if (id && altQuantity > 0) {
       const data = await getQueryData(id);
 
-      // initializeFlashstakePoolContract(id);
-      // swapAmount = await getAPYSwap(Web3.utils.toWei(altQuantity));
-      // uint256 amountInWithFee = _amountIn.mul(900);
-      //   uint256 num = amountInWithFee.mul(reserveFlashAmount);
-      //   uint256 den = (reserveAltAmount.mul(1000)).add(amountInWithFee);
-      //   result = num.div(den);
-
       const _amountInWithFee = JSBI.multiply(
         JSBI.BigInt(Web3.utils.toWei(altQuantity)),
         JSBI.BigInt("900")
@@ -153,7 +140,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
 // const checkAllowanceMemo = _.memoize(
 //   async (_address, _tokenAddress, _walletAddress, flag = false) => {
 //     _log("Account", { _address, _tokenAddress, _walletAddress });
-//     await initializeErc20TokenInfuraContract(_tokenAddress);
+//     await initializeErc20TokenContract(_tokenAddress);
 //     const _allowance = await allowance(_address);
 //     return _allowance;
 //   },
@@ -163,7 +150,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
 
 const checkAllowanceMemo = async (_address, _tokenAddress, _walletAddress) => {
   _log("Account", { _address, _tokenAddress, _walletAddress });
-  await initializeErc20TokenInfuraContract(_tokenAddress);
+  await initializeErc20TokenContract(_tokenAddress);
   const _allowance = await allowance(_address);
   return _allowance;
 };
@@ -278,48 +265,6 @@ export const checkAllowancePoolWithdraw = () => async (dispatch, getState) => {
     dispatch(setLoading({ allowance: false }));
   }
 };
-
-// export const checkAllowanceXIO = () => async (dispatch, getState) => {
-//   dispatch(setLoading({ allowance: true }));
-//   try {
-//     await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-//     const _allowance = await allowance(
-//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
-//     );
-//     dispatch({
-//       type: "ALLOWANCE_XIO",
-//       payload: _allowance > 0,
-//     });
-//   } catch (e) {
-//     _error("ERROR checkAllowance -> ", e);
-//   } finally {
-//     dispatch(setLoading({ allowance: false }));
-//   }
-// };
-
-// export const checkAllowanceALT = () => async (dispatch, getState) => {
-//   dispatch(setLoading({ allowance: true }));
-//   try {
-//     const {
-//       flashstake: { selectedRewardToken },
-//     } = getState();
-//     if (!selectedRewardToken?.tokenB?.id) {
-//       return null;
-//     }
-//     await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
-//     const _allowance = await allowance(
-//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
-//     );
-//     dispatch({
-//       type: "ALLOWANCE_ALT",
-//       payload: _allowance > 0,
-//     });
-//   } catch (e) {
-//     _error("ERROR checkAllowance -> ", e);
-//   } finally {
-//     dispatch(setLoading({ allowance: false }));
-//   }
-// };
 
 export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   setLoadingIndep({ approvalXIO: true });
@@ -484,8 +429,6 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
-      user: { stakes },
-      dashboard: { selectedStakes },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
@@ -527,7 +470,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
 ) => {
   try {
     const {
-      user: { stakes, expiredTimestamps, dappBalance },
+      user: { stakes, dappBalance },
       dashboard: { selectedStakes },
     } = await getState();
     if (dappBalance <= 0 || !stakes?.length) {

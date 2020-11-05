@@ -3,24 +3,12 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { store } from "../reduxStore";
 
-import {
-  Flashstake,
-  Flashstake2,
-  Swap,
-  Swap2,
-  Pool,
-  Vote,
-  Pool2,
-} from "../../pages";
+import { Flashstake, Swap, Pool, Vote } from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
 
 const getRoutes = (paused) => {
   const {
-    web3: { active, account },
-  } = store.getState();
-
-  const {
-    ui: { changeApp },
+    web3: { account },
   } = store.getState();
 
   const allowed = [
@@ -30,34 +18,6 @@ const getRoutes = (paused) => {
   ].map((_add) => _add.toLowerCase());
 
   return [
-    // {
-    //   path: "/stake",
-    //   component: paused
-    //     ? FlashstakePausedMessage
-    //     : changeApp === false
-    //     ? Flashstake
-    //     : Flashstake2,
-    // },
-    // {
-    //   path: "/swap",
-    //   component: paused
-    //     ? FlashstakePausedMessage
-    //     : changeApp === false
-    //     ? Swap
-    //     : Swap2,
-    // },
-    // {
-    //   path: "/pool",
-    //   component: allowed.includes(account?.toLowerCase())
-    //     ? changeApp === false
-    //       ? Pool
-    //       : Pool2
-    //     : Vote,
-    // },
-    // {
-    //   path: "/vote",
-    //   component: Vote,
-    // },
     {
       path: "/stake",
       component: paused ? FlashstakePausedMessage : Flashstake,
@@ -91,10 +51,6 @@ function Routes({
     setRoutes(getRoutes(contractState));
   }, [contractState, account, changeApp]);
 
-  // useEffect(() => {
-  //   getRoutes();
-  // }, [account]);
-
   return (
     <BrowserRouter>
       <Navbar themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
@@ -102,10 +58,6 @@ function Routes({
         {routes.map((_route) => (
           <Route {..._route} key={_route.path} />
         ))}
-        {/* <Route
-          path="/pool"
-          component={allowed.includes(account?.toLowerCase()) ? Pool : Vote}
-        /> */}
 
         <Route exact component={() => <Redirect to={redirectRoute} />} />
       </Switch>

@@ -1,13 +1,4 @@
-import {
-  queryContract,
-  queryInfuraContract,
-} from "../../contracts/getContract";
-import {
-  getWalletAddressReduxState,
-  getTokenList,
-  getPools,
-} from "../../redux/state";
-import Web3 from "web3";
+import { queryContract } from "../../contracts/getContract";
 import { _error } from "../log";
 
 let contract;
@@ -15,11 +6,9 @@ let isContractInitialized = false;
 
 export const initializeQueryContract = async () => {
   contract = queryContract();
-  isContractInitialized = true;
-};
-
-export const initializeQueryInfuraContract = async () => {
-  contract = queryInfuraContract();
+  if (!contract) {
+    contract = queryContract();
+  }
   isContractInitialized = true;
 };
 

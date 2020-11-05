@@ -36,9 +36,7 @@ import {
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApprovalXIO,
   calculateReward,
-  checkAllowance,
   getBalanceXIO,
   stakeXIO,
   setPoolDialogStep,
@@ -50,7 +48,6 @@ import {
   removeTokenLiquidityInPool,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
-import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import {
   setLoading,
@@ -63,7 +60,6 @@ import { setRefetch } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { getQueryData } from "../../redux/actions/queryActions";
-import Radio from "@material-ui/core/Radio";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -392,7 +388,6 @@ function Pool({
   const history = useHistory();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
-  const [days, setDays] = useState(initialValues.days);
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
@@ -950,7 +945,7 @@ function Pool({
               poolProposal: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    POOOL
+                    POOL
                     <br />
                   </Typography>
                   <Typography
@@ -961,10 +956,7 @@ function Pool({
                     <span className={classes.infoTextSpan}>
                       {/* {quantity || 0} $FLASH{" "} */}
                     </span>{" "}
-                    FOR{" "}
-                    <span className={classes.infoTextSpan}>
-                      {days || 0} HOURS
-                    </span>{" "}
+                    FOR <span className={classes.infoTextSpan}>{0} HOURS</span>{" "}
                     YOU WILL{" "}
                     <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
                     GET{" "}
@@ -999,7 +991,6 @@ function Pool({
                       !account ||
                       !selectedPortal ||
                       // quantity <= 0 ||
-                      days <= 0 ||
                       loadingRedux.reward ||
                       loadingRedux.stake ||
                       chainId !== 4 ||

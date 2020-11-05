@@ -5,7 +5,7 @@ import Web3 from "web3";
 import { CONSTANTS } from "../../utils/constants";
 import { setLoading } from "./uiActions";
 import {
-  initializeBalanceInfuraContract,
+  initializeBalanceContract,
   getBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
@@ -231,7 +231,7 @@ const getBalancesIntervaled = (function () {
       _poolsLenght !== poolsLenght
     ) {
       try {
-        await initializeBalanceInfuraContract();
+        await initializeBalanceContract();
         _lastOutput = await getBalances();
         _lastCalledTimestamp = Date.now();
         _account = account;
