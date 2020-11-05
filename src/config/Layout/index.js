@@ -155,9 +155,15 @@ function Layout({
     // };
     // body.style.backgroundColor = "#171717";
 
-    themeMode === "dark"
-      ? (body.style.background = "#000000")
-      : (body.style.background = `url(${Image})`);
+    if (themeMode === "dark") {
+      body.style.background = "#000000";
+    } else {
+      body.style.background = `url(${Image})`;
+      body.style.backgroundPosition = "center";
+      body.style.backgroundRepeat = "no-repeat";
+      body.style.backgroundAttachment = "fixed";
+      body.style.backgroundSize = "cover";
+    }
   }, [themeMode]);
 
   return (

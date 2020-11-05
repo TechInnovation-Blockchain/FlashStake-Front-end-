@@ -109,40 +109,33 @@ export default function Stepper({
 }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  // useEffect(() => {
+  //   if (tab === "pool") {
+  //     if (step === "pendingApproval") {
+  //       setActiveStep(0);
+  //     } else if (step === "pendingApprovalToken") {
+  //       setActiveStep(1);
+  //     } else if (step === "poolProposal") {
+  //       setActiveStep(2);
+  //     }
+  //   } else {
+  //     if (step === "pendingApproval") {
+  //       setActiveStep(0);
+  //     } else if (step === "pendingApprovalToken") {
+  //       setActiveStep(1);
+  //     } else if (step === "flashstakeProposal" || "swapProposal") {
+  //       setActiveStep(1);
+  //     }
+  //   }
+  // }, [step]);
+
   useEffect(() => {
-    if (tab === "pool") {
-      if (step === "pendingApproval") {
-        setActiveStep(0);
-      } else if (step === "pendingApprovalToken") {
-        setActiveStep(1);
-      } else if (step === "poolProposal") {
-        setActiveStep(2);
-      }
-    } else {
-      if (step === "pendingApproval") {
-        setActiveStep(0);
-      } else if (step === "pendingApprovalToken") {
-        setActiveStep(1);
-      } else if (step === "flashstakeProposal" || "swapProposal") {
-        setActiveStep(1);
-      }
+    if (step === "pendingApproval") {
+      setActiveStep(0);
+    } else if (step === "flashstakeProposal" || "swapProposal") {
+      setActiveStep(1);
     }
   }, [step]);
-
-  // if (step === "pendingApproval") {
-  //   setActiveStep(0);
-  // } else if (step === "pendingApprovalToken") {
-  //   setActiveStep(1);
-  // } else if (
-  //   step === "flashstakeProposal" ||
-  //   "swapProposal" ||
-  //   "poolProposal"
-  // ) {
-  //   if (step === "poolProposal") {
-  //     setActiveStep(2);
-  //   }
-  //   setActiveStep(1);
-  // }
 
   return (
     <MuiStepper
