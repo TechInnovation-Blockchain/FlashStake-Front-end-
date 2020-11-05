@@ -61,9 +61,10 @@ export const updatePools = (data) => async (dispatch) => {
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
           const _apyStake = await _getAPYStake(_pools[i].id, _xpy);
+
           _pools[i].apy =
-            (_apyStake * _pools[i].tokenPrice) /
-              response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0;
+            ((_apyStake * _pools[i].tokenPrice) /
+              response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0) * 100;
         }
       }
     }
@@ -82,7 +83,7 @@ export const updatePools = (data) => async (dispatch) => {
   }
 };
 
-export const calculateBurnSingleStake = (_stake) => {
+export const calculateBurnSingleStake = (_stake, oneDay) => {
   // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
   let _burnAmount = JSBI.BigInt(0);
   const _expiry =
@@ -90,8 +91,7 @@ export const calculateBurnSingleStake = (_stake) => {
     parseFloat(_stake.expiredTimestamp);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
-    const _totalDays = parseFloat(_stake.expiredTimestamp) / 60;
-    let _remainingDays = (_expiry - _currentTime) / 60;
+    let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
 
     _burnAmount = JSBI.divide(
@@ -99,91 +99,98 @@ export const calculateBurnSingleStake = (_stake) => {
         JSBI.BigInt(_stake.stakeAmount),
         JSBI.BigInt(String(Math.trunc(_remainingDays)))
       ),
-      JSBI.BigInt(String(Math.trunc(_totalDays)))
+      JSBI.BigInt(String(Math.trunc(_stake.expiredTimestamp)))
     );
   }
 
   return _burnAmount.toString();
 };
 
-export const updateUserData = (data) => async (dispatch) => {
-  let stakes;
-  let swapHistory;
-  let expiredTimestamps = [];
-  let dappBalance = JSBI.BigInt(0);
-  let expiredDappBalance = JSBI.BigInt(0);
-  let totalBurnAmount = JSBI.BigInt(0);
-  if (data) {
-    stakes = data.stakes.map((_tempData) => {
-      const {
-        id,
-        initiationTimestamp,
-        expiredTimestamp,
-        stakeAmount,
-        rewardAmount,
-      } = _tempData;
+export const updateUserData = (data) => async (dispatch, getState) => {
+  try {
+    let stakes;
+    let swapHistory;
+    let expiredTimestamps = [];
+    let dappBalance = JSBI.BigInt(0);
+    let expiredDappBalance = JSBI.BigInt(0);
+    let totalBurnAmount = JSBI.BigInt(0);
+    const {
+      contract: { oneDay },
+    } = await getState();
+    if (data) {
+      stakes = data.stakes.map((_tempData) => {
+        const {
+          id,
+          initiationTimestamp,
+          expiredTimestamp,
+          stakeAmount,
+          rewardAmount,
+        } = _tempData;
 
-      let expiryTime =
-        parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
-      let expired = expiryTime < Date.now() / 1000;
-      dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
-      let _burnAmount = "0";
-      if (expired) {
-        expiredDappBalance = JSBI.add(
-          expiredDappBalance,
-          JSBI.BigInt(stakeAmount)
-        );
-        expiredTimestamps.push(id);
-      } else {
-        _burnAmount = calculateBurnSingleStake(_tempData);
-        totalBurnAmount = JSBI.add(totalBurnAmount, JSBI.BigInt(_burnAmount));
-      }
-      return {
-        ..._tempData,
-        stakeAmount: Web3.utils.fromWei(stakeAmount),
-        rewardAmount: Web3.utils.fromWei(rewardAmount),
-        expiryTime,
-        expired,
-        amountAvailable: expired
-          ? Web3.utils.fromWei(_tempData.stakeAmount)
-          : "0",
-        burnAmount: Web3.utils.fromWei(_burnAmount),
-      };
-    });
-    swapHistory = data.swapHistory.map((_swapHis) => ({
-      ..._swapHis,
-      swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
-      flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
-    }));
-    dispatch({
-      type: "USER_DATA",
-      payload: {
-        ...data,
-        expiredTimestamps,
-        stakes,
-        dappBalance: Web3.utils.fromWei(dappBalance.toString()),
-        swapHistory,
-        expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
-        totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
-        totalBalanceWithBurn: Web3.utils.fromWei(
-          String(JSBI.subtract(dappBalance, totalBurnAmount))
-        ),
-      },
-    });
-    dispatch(updateAllBalances());
-  } else {
-    dispatch({
-      type: "USER_DATA",
-      payload: {
-        swapHistory: [],
-        stakes: [],
-        dappBalance: "0",
-        expiredDappBalance: "0",
-        expiredTimestamps: [],
-        totalBurnAmount: "0",
-        totalBalanceWithBurn: "0",
-      },
-    });
+        let expiryTime =
+          parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
+        let expired = expiryTime < Date.now() / 1000;
+        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
+        let _burnAmount = "0";
+        if (expired) {
+          expiredDappBalance = JSBI.add(
+            expiredDappBalance,
+            JSBI.BigInt(stakeAmount)
+          );
+          expiredTimestamps.push(id);
+        } else {
+          _burnAmount = calculateBurnSingleStake(_tempData, oneDay);
+          totalBurnAmount = JSBI.add(totalBurnAmount, JSBI.BigInt(_burnAmount));
+        }
+        return {
+          ..._tempData,
+          stakeAmount: Web3.utils.fromWei(stakeAmount),
+          rewardAmount: Web3.utils.fromWei(rewardAmount),
+          expiryTime,
+          expired,
+          amountAvailable: expired
+            ? Web3.utils.fromWei(_tempData.stakeAmount)
+            : "0",
+          burnAmount: Web3.utils.fromWei(_burnAmount),
+        };
+      });
+      swapHistory = data.swapHistory.map((_swapHis) => ({
+        ..._swapHis,
+        swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
+        flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
+      }));
+      dispatch({
+        type: "USER_DATA",
+        payload: {
+          ...data,
+          expiredTimestamps,
+          stakes,
+          dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+          swapHistory,
+          expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
+          totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
+          totalBalanceWithBurn: Web3.utils.fromWei(
+            String(JSBI.subtract(dappBalance, totalBurnAmount))
+          ),
+        },
+      });
+      dispatch(updateAllBalances());
+    } else {
+      dispatch({
+        type: "USER_DATA",
+        payload: {
+          swapHistory: [],
+          stakes: [],
+          dappBalance: "0",
+          expiredDappBalance: "0",
+          expiredTimestamps: [],
+          totalBurnAmount: "0",
+          totalBalanceWithBurn: "0",
+        },
+      });
+    }
+  } catch (e) {
+    _error("ERROR updateUserData -> ", e);
   }
 };
 

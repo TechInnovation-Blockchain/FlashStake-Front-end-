@@ -30,29 +30,45 @@ const getRoutes = (paused) => {
   ].map((_add) => _add.toLowerCase());
 
   return [
+    // {
+    //   path: "/stake",
+    //   component: paused
+    //     ? FlashstakePausedMessage
+    //     : changeApp === false
+    //     ? Flashstake
+    //     : Flashstake2,
+    // },
+    // {
+    //   path: "/swap",
+    //   component: paused
+    //     ? FlashstakePausedMessage
+    //     : changeApp === false
+    //     ? Swap
+    //     : Swap2,
+    // },
+    // {
+    //   path: "/pool",
+    //   component: allowed.includes(account?.toLowerCase())
+    //     ? changeApp === false
+    //       ? Pool
+    //       : Pool2
+    //     : Vote,
+    // },
+    // {
+    //   path: "/vote",
+    //   component: Vote,
+    // },
     {
       path: "/stake",
-      component: paused
-        ? FlashstakePausedMessage
-        : changeApp === false
-        ? Flashstake
-        : Flashstake2,
+      component: paused ? FlashstakePausedMessage : Flashstake,
     },
     {
       path: "/swap",
-      component: paused
-        ? FlashstakePausedMessage
-        : changeApp === false
-        ? Swap
-        : Swap2,
+      component: paused ? FlashstakePausedMessage : Swap,
     },
     {
       path: "/pool",
-      component: allowed.includes(account?.toLowerCase())
-        ? changeApp === false
-          ? Pool
-          : Pool2
-        : Vote,
+      component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
     },
     {
       path: "/vote",

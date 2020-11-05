@@ -98,13 +98,13 @@ export const approve = async (address, tab, step, amount) => {
         }
         if (tab === "pool") {
           if (step === 1) {
-            console.log("inside first step");
             setPoolDialogStepIndep("pendingApprovalToken");
           } else {
-            console.log("inside second step");
             setPoolDialogStepIndep("poolProposal");
           }
         }
+        setLoadingIndep({ approval: false });
+
         // tab === "stake"
         //   ? setDialogStepIndep("flashstakeProposal")
         //   : setSwapDialogStepIndep("swapProposal");

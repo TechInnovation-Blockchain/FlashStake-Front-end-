@@ -109,9 +109,9 @@ export const stake = async (_token, xioQuantity, days, reward) => {
               type: "stake",
             };
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
-            });
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -208,9 +208,9 @@ export const unstake = async (_expiredIds) => {
               type: "unstake",
             };
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
-            });
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
           })
           .then(function (receipt) {
             setTimeout(() => {
@@ -310,9 +310,9 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
               type: "swap",
             };
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
-            });
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
           })
           .then(function (receipt) {
             setTimeout(() => {

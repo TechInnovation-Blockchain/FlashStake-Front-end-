@@ -63,7 +63,7 @@ export const getDashboardProps = (data) => async (dispatch) => {
     }
   } catch (e) {
     stakedPortals = [];
-    console.error("ERROR getDashboardProps -> ", e);
+    _error("ERROR getDashboardProps -> ", e);
   }
   dispatch({
     type: "STAKED_PORTALS",
@@ -79,7 +79,7 @@ const burnSingleStake = (quantity, _baseInterestRate, remainingDuration) => {
 export const calculateBurnStakes = (stakes) => {
   let burn = 0;
   const {
-    contract: { baseInterestRate },
+    contract: { baseInterestRate, oneDay },
   } = store.getState();
   const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
 
@@ -90,7 +90,7 @@ export const calculateBurnStakes = (stakes) => {
     )
     .map((_stake) => {
       const remainingDuration =
-        (parseFloat(_stake.expiry) - Math.ceil(Date.now() / 1000)) / 60;
+        (parseFloat(_stake.expiry) - Math.ceil(Date.now() / 1000)) / oneDay;
       burn += burnSingleStake(
         Web3.utils.fromWei(_stake.stakeAmount),
         _baseInterestRate,
@@ -104,7 +104,7 @@ export const calculateBurnStakes = (stakes) => {
 export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
   let burn = 0;
   const {
-    contract: { baseInterestRate },
+    contract: { baseInterestRate, oneDay },
   } = store.getState();
   const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
 
@@ -122,7 +122,7 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
           (parseFloat(_stake.initialTimestamp) +
             parseFloat(_stake.endTimestamp) -
             Math.ceil(Date.now() / 1000)) /
-          60;
+          oneDay;
 
         if (remainingAmount > parseFloat(_stake.stakeAmountConverted)) {
           remainingAmount -= parseFloat(_stake.stakeAmountConverted);
@@ -160,7 +160,7 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
     await initializeFlashstakeProtocolContract();
     await unstakeALT(timestamps, amount.toString());
   } catch (e) {
-    console.error("ERROR withdrawSpecificStakes -> ", e);
+    _error("ERROR withdrawSpecificStakes -> ", e);
   }
 };
 
@@ -197,7 +197,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
           ])
     );
   } catch (e) {
-    console.error("ERROR withdraw -> ", e);
+    _error("ERROR withdraw -> ", e);
   }
 };
 

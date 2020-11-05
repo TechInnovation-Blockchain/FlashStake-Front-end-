@@ -4,6 +4,7 @@ export const contractReducer = (
   state = {
     contractState: false,
     tokenList: [CONSTANTS.ADDRESS_XIO_RINKEBY],
+    oneDay: 60,
   },
   { type, payload }
 ) => {
@@ -17,6 +18,11 @@ export const contractReducer = (
       return {
         ...state,
         contractState: payload,
+      };
+    case "ONE_DAY":
+      return {
+        ...state,
+        oneDay: payload,
       };
     default:
       return state;

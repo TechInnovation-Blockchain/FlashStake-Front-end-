@@ -846,7 +846,7 @@ function Swap2({
                                   className={`${classes.dialogIcon} ${classes.greenText}`}
                                 />
                                 <div className={classes.redText}>
-                                  YOU HAVE SUCCESSFUL APPROVED
+                                  YOU HAVE SUCCESSFULLY APPROVED
                                 </div>
                               </Typography>
                               <Button2
