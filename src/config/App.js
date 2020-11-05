@@ -50,7 +50,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <Provider store={store}>
           {/* <ThemeProvider theme={retroTheme}> */}
-          <ThemeProvider theme={themeMode === "dark" ? darkTheme : retroTheme}>
+          <ThemeProvider theme={themeMode === "retro" ? retroTheme : darkTheme}>
             <Updater />
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
           </ThemeProvider>

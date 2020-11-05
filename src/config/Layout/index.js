@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
     // minHeight: 420,
     minHeight: "100%",
     // boxShadow: ` 0px 0px 8px 16px ${theme.palette.shadowColor.main} `,
-    // boxShadow: `0px 0px 26px 12px rgba(97,212,235,1)`,
     boxShadow: `0px 0px 50px 10px ${theme.palette.shadowColor.main}`,
   },
   backdrop: {
@@ -147,11 +146,18 @@ function Layout({
 
   useEffect(() => {
     const body = document.querySelector("#body");
+    // css = {
+    //   backgroundImage: `require(url(${Image}))`,
+    //   backgroundRepeat: no-repeat,
+    //   backgroundAttachment: fixed,
+    //   backgroundPosition: center,
+    //   backgroundSize: cover,
+    // };
     // body.style.backgroundColor = "#171717";
 
     themeMode === "dark"
       ? (body.style.backgroundColor = "#000000")
-      : (body.style.backgroundImage = Image);
+      : (body.style.backgroundImage = `require(url(${"../../assets/retroBackground.jpg"}))`);
   }, [themeMode]);
 
   return (

@@ -93,10 +93,10 @@ function Navbar({
     // themeSwitchAction();
     setTheme((val) => !val);
     if (theme === true) {
-      themeMode = "dark";
+      themeMode = "retro";
       toggleThemeMode();
     } else {
-      themeMode = "retro";
+      themeMode = "dark";
       toggleThemeMode();
     }
   };
