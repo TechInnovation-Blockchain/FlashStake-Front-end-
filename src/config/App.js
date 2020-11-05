@@ -49,8 +49,8 @@ export default function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          {/* <ThemeProvider theme={retroTheme}> */}
-          <ThemeProvider theme={themeMode === "retro" ? retroTheme : darkTheme}>
+          <ThemeProvider theme={retroTheme}>
+            {/* <ThemeProvider theme={themeMode === "retro" ? retroTheme : darkTheme}> */}
             <Updater />
             <Layout themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
           </ThemeProvider>
