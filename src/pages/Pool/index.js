@@ -462,7 +462,6 @@ function Pool({
       setQuantityAlt(value);
       const _val = await quote(value, "alt");
       // if(_val)
-      console.log({ _val });
       setQuantityXIO(_val);
     }
   };

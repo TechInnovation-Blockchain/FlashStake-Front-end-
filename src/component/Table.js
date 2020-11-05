@@ -18,16 +18,7 @@ import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
-import { Link } from "react-router-dom";
-import {
-  selectStake,
-  calculateBurn,
-  calculateBurnStakes,
-  withdrawSpecificStakes,
-  clearSelection,
-} from "../redux/actions/dashboardActions";
-import { JSBI } from "@uniswap/sdk";
-import Web3 from "web3";
+import { selectStake, clearSelection } from "../redux/actions/dashboardActions";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -147,6 +138,7 @@ function TableComponent({
   onClickUnstake2,
   selectStake,
   changeApp,
+  oneDay,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -156,7 +148,6 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
   const [earlyWith, setEarlyWith] = useState(false);
-  const [expiredStakes, setExpiredStakes] = useState({});
 
   // useEffect(() => {}, []);
 
@@ -239,11 +230,6 @@ function TableComponent({
     },
     [page]
   );
-
-  const toggleTable = () => {
-    setEarlyWith(!earlyWith);
-    clearSelection();
-  };
 
   const tryRequire = (path) => {
     try {
@@ -344,9 +330,10 @@ function TableComponent({
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
                     .map((_stake) => {
-                      const _daysRem = Math.ceil(
-                        (_stake.expiryTime - Date.now() / 1000) / 60
-                      );
+                      const _remDur =
+                        (_stake.expiryTime - Date.now() / 1000) / oneDay;
+                      const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
+                      const _minRem = Math.ceil(_remDur * 60);
                       return (
                         // <a
                         //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
@@ -382,7 +369,11 @@ function TableComponent({
                           </Grid>
                           <Grid item xs={4} className={classes.gridItem}>
                             <Tooltip
-                              title={`${_stake.amountAvailable}/${_stake.stakeAmount} $FLASH`}
+                              title={`${
+                                _stake.amountAvailable > 0
+                                  ? _stake.amountAvailable
+                                  : _stake.stakeAmount - _stake.burnAmount
+                              }/${_stake.stakeAmount} $FLASH`}
                             >
                               <span className={classes.flexCenter}>
                                 <img
@@ -406,7 +397,14 @@ function TableComponent({
                             {!_stake.expired &&
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
-                                {_daysRem} {_daysRem === 1 ? "HOUR" : "HOURS"}
+                                {_daysRem || _minRem}{" "}
+                                {_daysRem
+                                  ? _daysRem === 1
+                                    ? "HOUR"
+                                    : "HOURS"
+                                  : _minRem === 1
+                                  ? "MIN"
+                                  : "MINS"}
                               </Fragment>
                             ) : (
                               "COMPLETED"
@@ -501,6 +499,7 @@ const mapStateToProps = ({
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
   ui: { loading, changeApp },
+  contract: { oneDay },
 }) => ({
   stakes,
   active,
@@ -514,6 +513,7 @@ const mapStateToProps = ({
   loadingRedux: loading,
   expiredDappBalance,
   changeApp,
+  oneDay,
 });
 
 export default connect(mapStateToProps, {

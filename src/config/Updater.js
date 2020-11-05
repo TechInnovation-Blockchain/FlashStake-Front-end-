@@ -20,6 +20,7 @@ import {
   checkAllowance,
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
+import { updateOneDay } from "../redux/actions/contractActions";
 
 function Updater({
   active,
@@ -39,6 +40,8 @@ function Updater({
   checkAllowance,
   clearUserData,
   selectedPortal,
+  updateOneDay,
+  oneDay,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -46,6 +49,10 @@ function Updater({
     },
     fetchPolicy: "network-only",
   });
+
+  useEffect(() => {
+    updateOneDay();
+  }, []);
 
   useEffect(() => {
     if (active && account) {
@@ -115,7 +122,7 @@ function Updater({
       updateUserData(data?.user);
     }, 60000);
     return () => clearInterval(reCalculateInterval);
-  }, [data, updatePools, updateUserData]);
+  }, [data, updatePools, updateUserData, oneDay]);
 
   return null;
 }
@@ -125,6 +132,7 @@ const mapStateToProps = ({
   dashboard: { refetch, reCalculateExpired },
   user: { currentStaked },
   flashstake: { selectedPortal },
+  contract: { oneDay },
 }) => ({
   active,
   account,
@@ -133,6 +141,7 @@ const mapStateToProps = ({
   currentStaked,
   reCalculateExpired,
   selectedPortal,
+  oneDay,
 });
 
 export default connect(mapStateToProps, {
@@ -146,4 +155,5 @@ export default connect(mapStateToProps, {
   updateAllBalances,
   checkAllowance,
   clearUserData,
+  updateOneDay,
 })(Updater);

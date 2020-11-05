@@ -123,7 +123,10 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
       const _swapAmount = JSBI.divide(
         JSBI.multiply(_amountInWithFee, JSBI.BigInt(data.reserveXioAmount)),
         JSBI.add(
-          JSBI.multiply(data.reserveAltAmount, JSBI.BigInt("1000")),
+          JSBI.multiply(
+            JSBI.BigInt(data.reserveAltAmount),
+            JSBI.BigInt("1000")
+          ),
           _amountInWithFee
         )
       );
@@ -504,6 +507,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       days,
       reward
     );
+
     await stake(
       selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
@@ -556,6 +560,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
       },
     });
     initializeFlashstakeProtocolContract();
+
     _log(
       "unstake params -> ",
       _unstakeTimestamps
