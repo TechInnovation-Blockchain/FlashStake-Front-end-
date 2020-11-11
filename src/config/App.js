@@ -33,9 +33,9 @@ export const analytics = firebase.analytics();
 export const perf = firebase.performance();
 
 export default function App() {
-  const theme = localStorage.getItem("themeMode") || "retro";
+  const theme = localStorage.getItem("themeMode") || "dark";
   if (!theme) {
-    localStorage.setItem("themeMode", "retro");
+    localStorage.setItem("themeMode", "dark");
   }
   const [themeMode, setThemeMode] = useState(theme);
 
