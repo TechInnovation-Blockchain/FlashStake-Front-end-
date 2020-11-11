@@ -8,7 +8,10 @@ import {
   getPools,
 } from "../../redux/state";
 import Web3 from "web3";
-import { _error } from "../log";
+import axios from "axios";
+import { _error, _log } from "../../utils/log";
+import { useState } from "react";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
@@ -24,9 +27,20 @@ export const initializeQueryInfuraContract = async () => {
 };
 
 export const getReserves = async (_pool) => {
+  const {
+    user: { poolData },
+  } = store.getState();
+
   try {
+    // getData();
     checkContractInitialized();
-    const _reserves = await contract.methods.getReserves(_pool).call();
+
+    // const _reserves = await contract.methods.getReserves(_pool).call();
+    const _reserves = await poolData?.data[_pool];
+    _log("Reserves -->", _reserves);
+
+    // console.log(poolData.filter(_pool));
+    // console.log(_reserves2.flashBalance);
     return { ..._reserves, id: _pool };
   } catch (e) {
     _error("ERROR getReserves -> ", e);

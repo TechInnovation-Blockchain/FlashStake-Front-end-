@@ -114,6 +114,7 @@ export const darkTheme = createMuiTheme({
     button: {
       dark: "#555555",
       red: "#D89C74",
+      retro: "#D89C74",
       hover: "#d98955",
     },
     buttonText: {

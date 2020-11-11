@@ -288,3 +288,10 @@ export const updateAllBalances = () => async (dispatch, getState) => {
     _error("ERROR updateAllBalances -> ", e);
   }
 };
+
+export const setPoolData = (data) => {
+  return {
+    type: "POOL_DATA",
+    payload: data,
+  };
+};

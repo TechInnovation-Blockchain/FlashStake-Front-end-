@@ -7,6 +7,7 @@ export const userReducer = (
     walletBalance: "0",
     walletBalances: {},
     walletBalancesPool: {},
+    pooData: {},
   },
   { type, payload }
 ) => {
@@ -51,6 +52,12 @@ export const userReducer = (
       return {
         ...state,
         walletBalancesPool: payload,
+      };
+
+    case "POOL_DATA":
+      return {
+        ...state,
+        poolData: payload,
       };
     default:
       return state;

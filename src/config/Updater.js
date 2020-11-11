@@ -12,6 +12,7 @@ import {
   updateUserData,
   clearUserData,
   updateAllBalances,
+  setPoolData,
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
@@ -21,6 +22,7 @@ import {
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
+import axios from "axios";
 
 function Updater({
   active,
@@ -42,6 +44,8 @@ function Updater({
   selectedPortal,
   updateOneDay,
   oneDay,
+  setPoolData,
+  poolData,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -130,7 +134,7 @@ function Updater({
 const mapStateToProps = ({
   web3: { active, account, chainId },
   dashboard: { refetch, reCalculateExpired },
-  user: { currentStaked },
+  user: { currentStaked, poolData },
   flashstake: { selectedPortal },
   contract: { oneDay },
 }) => ({
@@ -142,6 +146,7 @@ const mapStateToProps = ({
   reCalculateExpired,
   selectedPortal,
   oneDay,
+  poolData,
 });
 
 export default connect(mapStateToProps, {
@@ -156,4 +161,5 @@ export default connect(mapStateToProps, {
   checkAllowance,
   clearUserData,
   updateOneDay,
+  setPoolData,
 })(Updater);

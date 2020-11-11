@@ -64,6 +64,8 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { getQueryData } from "../../redux/actions/queryActions";
 import Radio from "@material-ui/core/Radio";
+import axios from "axios";
+import { setPoolData } from "../../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -380,12 +382,14 @@ function Pool({
   allowanceALTPool,
   getApprovalXIOPool,
   getApprovalALTPool,
-  reserveXioAmount,
+  reserveFlashAmount,
   reserveAltAmount,
   walletBalancesPool,
   liquidityRequest,
   withdrawLiquidityTxnHash,
   withdrawLiquidityRequest,
+  setPoolData,
+  poolData,
   ...props
 }) {
   const classes = useStyles();
@@ -401,6 +405,21 @@ function Pool({
   const [height, setHeight] = useState(heightVal);
 
   // {account === "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? ():()}
+
+  const getData = async () => {
+    const res = await axios
+      .get("https://leaderboard.xio.app:3010/getReserves")
+      .then((res) => {
+        setPoolData(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, [selectedPortal]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -443,15 +462,25 @@ function Pool({
       });
   }, []);
 
+  // useEffect(() => {
+  //   quote();
+  // }, [selectedPortal]);
+
   const quote = useCallback(
     async (_amountA, _amountType = "alt") => {
-      const { reserveXioAmount, reserveAltAmount } = await getQueryData(
+      const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
         selectedPortal
+      );
+
+      console.log(
+        "reserveFlashAmount , reserveAltAmount",
+        reserveFlashAmount,
+        reserveAltAmount
       );
       const [_reserveA, _reserveB] =
         _amountType === "alt"
-          ? [reserveAltAmount, reserveXioAmount]
-          : [reserveXioAmount, reserveAltAmount];
+          ? [reserveAltAmount, reserveFlashAmount]
+          : [reserveFlashAmount, reserveAltAmount];
       return (_amountA * _reserveB) / _reserveA;
     },
     [selectedPortal]
@@ -558,14 +587,14 @@ function Pool({
 
   // useEffect(() => {
   //   if (quantity !== 0) {
-  //     setEth((eth * reserveAltAmount) / reserveXioAmount);
+  //     setEth((eth * reserveAltAmount) / reserveFlashAmount);
   //     console.log(eth);
   //   }
   //   if (quantity2 !== 0) {
-  //     setXIO((quantity * reserveXioAmount) / reserveAltAmount);
+  //     setXIO((quantity * reserveFlashAmount) / reserveAltAmount);
   //     console.log(xio);
   //   }
-  // }, [quantity, reserveXioAmount, reserveAltAmount]);
+  // }, [quantity, reserveFlashAmount, reserveAltAmount]);
 
   useEffect(() => {
     if (!expanding) {
@@ -1255,8 +1284,8 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
-  user: { currentStaked, pools, walletBalance, walletBalancesPool },
-  query: { reserveXioAmount, reserveAltAmount },
+  user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
+  query: { reserveFlashAmount, reserveAltAmount },
   contract,
 }) => ({
   ...flashstake,
@@ -1270,9 +1299,10 @@ const mapStateToProps = ({
   walletBalance,
   animation,
   heightVal,
-  reserveXioAmount,
+  reserveFlashAmount,
   reserveAltAmount,
   walletBalancesPool,
+  poolData,
   ...contract,
 });
 
@@ -1296,4 +1326,5 @@ export default connect(mapStateToProps, {
   setExpandAccodion,
   updateAllBalances,
   setHeightValue,
+  setPoolData,
 })(Pool);

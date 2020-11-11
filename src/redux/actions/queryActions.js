@@ -1,4 +1,4 @@
-import { _error } from "../../utils/log";
+import { _error, _log } from "../../utils/log";
 import { store } from "../../config/reduxStore";
 import {
   initializeQueryInfuraContract,
@@ -7,7 +7,8 @@ import {
 
 export const getQueryData = async (_poolId) => {
   try {
-    const { query } = await store.getState();
+    const { query, poolData } = await store.getState();
+    _log("query Reducer -->", query);
     if (Date.now() - query.timestamp >= 15000 || query.id !== _poolId) {
       await initializeQueryInfuraContract();
       const payload = await getReserves(_poolId);
