@@ -1,7 +1,4 @@
-import {
-  erc20TokenContract,
-  erc20TokenInfuraContract,
-} from "../../contracts/getContract";
+import { erc20TokenContract } from "../../contracts/getContract";
 import { MaxUint256 } from "@ethersproject/constants";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
@@ -16,18 +13,15 @@ import {
 } from "../../redux/actions/flashstakeActions";
 import { store } from "../../config/reduxStore";
 import { _error } from "../log";
-import { connect } from "react-redux";
 
 let contract;
 let isContractInitialized = false;
 
 export const initializeErc20TokenContract = async (address) => {
   contract = erc20TokenContract(address);
-  isContractInitialized = true;
-};
-
-export const initializeErc20TokenInfuraContract = async (address) => {
-  contract = erc20TokenInfuraContract(address);
+  if (!contract) {
+    contract = erc20TokenContract(address);
+  }
   isContractInitialized = true;
 };
 

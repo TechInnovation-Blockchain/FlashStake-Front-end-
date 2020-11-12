@@ -4,7 +4,7 @@ import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
-import logoLight from "../assets/xio-logo-light.svg";
+import logoLight from "../assets/FlashPro5.svg";
 import flashDark from "../assets/flash-dark.svg";
 import flash from "../assets/whitelogo.svg";
 import {
@@ -155,8 +155,8 @@ function Navbar({
       {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
-          // src={themeMode === "dark" ? flash : logoLight}
-          src={flash}
+          src={themeMode === "dark" ? logoLight : flash}
+          // src={themeModeflash}
           alt="logo"
           width={animate ? 30 : 30}
           className={classes.logo}

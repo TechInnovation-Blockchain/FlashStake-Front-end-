@@ -147,7 +147,6 @@ function TableComponent({
   const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-  const [earlyWith, setEarlyWith] = useState(false);
 
   // useEffect(() => {}, []);
 

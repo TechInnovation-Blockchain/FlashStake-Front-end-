@@ -2,7 +2,6 @@ import {
   xioFlashstakeContract,
   xioFlashstakeInfuraContract,
 } from "../../contracts/getContract";
-// import { baseInterestRate } from "./xioPublicFactoryContractFunctions";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
   setLoadingIndep,
@@ -24,14 +23,11 @@ import {
   setWithdrawLiquidityTxnHash,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
-import axios from "axios";
-import { CONSTANTS } from "../constants";
 import { analytics } from "../../config/App";
 import Web3 from "web3";
-import { _log, _error } from "../log";
+import { _error } from "../log";
 
 let contract;
-let infuraContract;
 let isContractInitialized = false;
 
 export const initializeFlashstakeProtocolContract = () => {
@@ -39,7 +35,6 @@ export const initializeFlashstakeProtocolContract = () => {
   if (!contract) {
     contract = xioFlashstakeInfuraContract();
   }
-  infuraContract = xioFlashstakeInfuraContract();
   isContractInitialized = true;
 };
 
@@ -99,15 +94,15 @@ export const stake = async (_token, xioQuantity, days, reward) => {
               true
             );
 
-            const data = {
-              _id: txnHash,
-              txn: {
-                amount: xioQuantity,
-                days: days,
-                selctedToken: _token,
-              },
-              type: "stake",
-            };
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     amount: xioQuantity,
+            //     days: days,
+            //     selctedToken: _token,
+            //   },
+            //   type: "stake",
+            // };
 
             // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
             //   _log("Transaction Hash Added", res);
@@ -200,13 +195,13 @@ export const unstake = async (_expiredIds) => {
               true
             );
 
-            const data = {
-              _id: txnHash,
-              txn: {
-                _expiredIds,
-              },
-              type: "unstake",
-            };
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     _expiredIds,
+            //   },
+            //   type: "unstake",
+            // };
 
             // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
             //   _log("Transaction Hash Added", res);
@@ -300,15 +295,15 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
               true
             );
 
-            const data = {
-              _id: txnHash,
-              txn: {
-                _altQuantity,
-                _token,
-                _expectedOutput,
-              },
-              type: "swap",
-            };
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     _altQuantity,
+            //     _token,
+            //     _expectedOutput,
+            //   },
+            //   type: "swap",
+            // };
 
             // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
             //   _log("Transaction Hash Added", res);
@@ -363,7 +358,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
 
 export const paused = async () => {
   try {
-    const _paused = await infuraContract.methods.paused().call();
+    const _paused = await contract.methods.paused().call();
     return _paused;
   } catch (e) {
     _error("ERROR paused -> ", e);
@@ -375,7 +370,7 @@ export const calculateXPY = async (xioQuantity, days) => {
   try {
     checkContractInitialized();
 
-    const xpy = await infuraContract.methods
+    const xpy = await contract.methods
       .getMintAmountFromProtocol(xioQuantity, days)
       .call();
     return xpy;
@@ -389,7 +384,7 @@ export const getXPY = async () => {
   try {
     checkContractInitialized();
 
-    const xpy = await infuraContract.methods
+    const xpy = await contract.methods
       .getFPYFromProtocol(Web3.utils.toWei("1"))
       .call();
     return xpy;
