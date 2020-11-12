@@ -6,6 +6,7 @@ import { setLoading } from "../redux/actions/uiActions";
 import {
   setRefetch,
   setReCalculateExpired,
+  setStakeStatus,
 } from "../redux/actions/dashboardActions";
 import {
   updatePools,
@@ -48,6 +49,10 @@ function Updater({
   setPoolData,
   poolData,
   getQueryData,
+  stakeStatus,
+  setStakeStatus,
+  isStakesSelected,
+  totalBurn,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -108,6 +113,14 @@ function Updater({
   useEffect(() => {
     updateOneDay();
   }, []);
+
+  useEffect(() => {
+    if (totalBurn?.totalBurn > 0) {
+      setStakeStatus("Expired");
+    } else {
+      setStakeStatus("Remaining");
+    }
+  }, [isStakesSelected]);
 
   useEffect(() => {
     if (active && account) {
@@ -184,7 +197,13 @@ function Updater({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  dashboard: { refetch, reCalculateExpired },
+  dashboard: {
+    refetch,
+    reCalculateExpired,
+    stakeStatus,
+    totalBurn,
+    isStakesSelected,
+  },
   user: { currentStaked, poolData },
   flashstake: { selectedPortal },
   contract: { oneDay },
@@ -198,6 +217,8 @@ const mapStateToProps = ({
   selectedPortal,
   oneDay,
   poolData,
+  stakeStatus,
+  isStakesSelected,
 });
 
 export default connect(mapStateToProps, {
@@ -214,4 +235,5 @@ export default connect(mapStateToProps, {
   updateOneDay,
   setPoolData,
   getQueryData,
+  setStakeStatus,
 })(Updater);

@@ -802,7 +802,7 @@ function Flashstake({
   // loadingRedux.stake
   // chainId
   // reward
-  console.log(reward);
+  // console.log(reward);
 
   return (
     <PageAnimation in={true} reverse={animation > 0}>

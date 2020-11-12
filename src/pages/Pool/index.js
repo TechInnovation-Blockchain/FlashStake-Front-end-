@@ -908,11 +908,19 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={[
-            "APPROVE $FLASH",
-            `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
-            "POOL",
-          ]}
+          steps={
+            !allowanceXIOPool
+              ? [
+                  "APPROVE $FLASH",
+                  // `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+                  "POOL",
+                ]
+              : [
+                  // "APPROVE $FLASH",
+                  `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+                  "POOL",
+                ]
+          }
           title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -982,57 +990,44 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    IF YOU STAKE{" "}
+                    YOU ARE GOING TO ADD{" "}
                     <span className={classes.infoTextSpan}>
-                      {/* {quantity || 0} $FLASH{" "} */}
+                      {quantityXIO} $FLASH
                     </span>{" "}
-                    FOR <span className={classes.infoTextSpan}>{0} HOURS</span>{" "}
-                    YOU WILL{" "}
-                    <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
-                    GET{" "}
-                    {loadingRedux.reward ? (
-                      <CircularProgress
-                        size={12}
-                        className={classes.loaderStyle}
-                      />
-                    ) : (
-                      <Tooltip
-                        title={`${Web3.utils.fromWei(reward)} ${
-                          selectedRewardToken?.tokenB?.symbol || ""
-                        }`}
-                      >
-                        <span className={classes.infoTextSpan}>
-                          {trunc(Web3.utils.fromWei(reward))}{" "}
-                          {selectedRewardToken?.tokenB?.symbol || ""}
-                        </span>
-                      </Tooltip>
-                    )}
+                    FOR{" "}
+                    <span className={classes.infoTextSpan}>
+                      {`${quantityAlt} ${
+                        selectedRewardToken?.tokenB?.symbol || ""
+                      }`}
+                    </span>{" "}
                   </Typography>
                   <Button
-                    variant="retro"
                     fullWidth
-                    // onClick={
-                    //   !allowanceXIO
-                    //     ? () => {}
-                    //     : () => onClickPool(quantity, days)
-                    // }
+                    variant="retro"
+                    onClick={onClickPool}
                     disabled={
                       !active ||
                       !account ||
                       !selectedPortal ||
-                      // quantity <= 0 ||
-                      loadingRedux.reward ||
-                      loadingRedux.stake ||
+                      !allowanceXIOPool ||
+                      !allowanceALTPool ||
+                      quantityXIO <= 0 ||
+                      quantityAlt <= 0 ||
+                      loadingRedux.pool ||
                       chainId !== 4 ||
-                      reward <= 0
-                      // ||
-                      // (active &&
-                      //   account &&
-                      //   parseFloat(quantity) > parseFloat(walletBalance))
+                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
+                      //  &&
+                      // account !==
+                      //   "0x425b9dBa4b4a355cc063C5105501797C5F50266B")
                     }
-                    loading={loadingRedux.approval}
+                    loading={loadingRedux.pool}
                   >
-                    STAKE
+                    {/* {account !==
+                          "0x425b9dBa4b4a355cc063C5105501797C5F50266B"
+                            ? "COMING SOON"
+                            : "POOL"} */}
+                    POOL
                   </Button>
                 </Fragment>
               ),

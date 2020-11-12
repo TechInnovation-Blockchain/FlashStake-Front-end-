@@ -139,6 +139,7 @@ function TableComponent({
   selectStake,
   changeApp,
   oneDay,
+  totalBurn,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -147,7 +148,7 @@ function TableComponent({
   const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-
+  const [allowSelect, setAllowSelect] = useState(false);
   // useEffect(() => {}, []);
 
   useEffect(() => {
@@ -261,6 +262,21 @@ function TableComponent({
   // }, [stakes, selectedStakes]);
 
   // console.log(selectedStakes);
+
+  const unexpiredSelected = () => {
+    if (selectedStakes && totalBurn > 0) {
+      setAllowSelect(false);
+      console.log("selected");
+    }
+  };
+
+  useEffect(() => {
+    // if (selectedStakes && totalBurn > 0) {
+    //   setAllowSelect(false);
+    //   console.log("selected");
+    console.log(totalBurn.totalBurn);
+    // }
+  }, [selectedStakes]);
 
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
@@ -414,6 +430,11 @@ function TableComponent({
                                 checked={
                                   selectedStakes[_stake.id] ? true : false
                                 }
+                                // checked={false}
+                                // disabled
+                                // inputProps={{
+                                // //   "aria-label": "disabled checkbox",
+                                // }}
                                 className={classes.checkbox}
                               />
                             ) : null}
@@ -496,7 +517,7 @@ function TableComponent({
 const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
-  dashboard: { selectedStakes, isStakesSelected },
+  dashboard: { selectedStakes, isStakesSelected, totalBurn },
   ui: { loading, changeApp },
   contract: { oneDay },
 }) => ({
@@ -513,6 +534,7 @@ const mapStateToProps = ({
   expiredDappBalance,
   changeApp,
   oneDay,
+  totalBurn,
 });
 
 export default connect(mapStateToProps, {

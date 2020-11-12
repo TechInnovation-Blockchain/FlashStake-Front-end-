@@ -158,7 +158,8 @@ function Navbar({
           src={themeMode === "dark" ? logoLight : flash}
           // src={themeModeflash}
           alt="logo"
-          width={animate ? 30 : 30}
+          width={themeMode === "dark" ? 40 : 30}
+          // width={animate ? 30 : 30}
           className={classes.logo}
           onClick={() => {
             handleClick(changeApp);

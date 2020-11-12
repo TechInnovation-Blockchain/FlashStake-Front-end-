@@ -13,6 +13,7 @@ export const dashboardReducer = (
     expanded: false,
     selectedStakes: {},
     isStakesSelected: false,
+    stakeStatus: "",
   },
   { type, payload }
 ) => {
@@ -75,6 +76,11 @@ export const dashboardReducer = (
       return {
         ...state,
         totalBurn: payload,
+      };
+    case "STAKE_STATUS":
+      return {
+        ...state,
+        stakeStatus: payload,
       };
     default:
       return state;
