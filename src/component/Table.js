@@ -371,6 +371,7 @@ function TableComponent({
                           item
                           xs={12}
                           key={_stake.id}
+                          // ////////////////////////////// LOGIC ERROR HERE
                           onClick={() =>
                             isStakesSelected && totalBurn.totalBurn > 0
                               ? clearSelection()
