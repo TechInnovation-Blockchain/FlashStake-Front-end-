@@ -153,7 +153,7 @@ function TableComponent({
   const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-  const [allowSelect, setAllowSelect] = useState(true);
+  const [allowSelect, setAllowSelect] = useState();
   // useEffect(() => {}, []);
 
   useEffect(() => {
@@ -276,11 +276,12 @@ function TableComponent({
 
   useEffect(() => {
     // console.log(allowSelect);
-    if (totalBurn?.totalBurn) {
-      setAllowSelect(false);
-      console.log(totalBurn?.totalBurn);
-      console.log(allowSelect);
-    }
+    // if (totalBurn?.totalBurn) {
+    // setAllowSelect(false);
+    console.log(totalBurn?.totalBurn);
+    setAllowSelect(Object.keys(selectedStakes).length);
+    console.log(allowSelect);
+    // }
   }, [totalBurn.totalXIO]);
 
   return (
@@ -372,6 +373,10 @@ function TableComponent({
                           key={_stake.id}
                           onClick={() =>
                             isStakesSelected && totalBurn.totalBurn > 0
+                              ? clearSelection()
+                              : isStakesSelected &&
+                                totalBurn.totalBurn > 0 &&
+                                allowSelect > 0
                               ? clearSelection()
                               : selectStake(_stake.id)
                           }
