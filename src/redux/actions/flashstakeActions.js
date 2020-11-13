@@ -86,6 +86,7 @@ export const calculateReward = (xioQuantity, days) => async (
         JSBI.multiply(
           JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100)),
           JSBI.BigInt(5)
+          // //////////////////////////////////////////
         )
       ).toString();
     }

@@ -13,7 +13,7 @@ export const dashboardReducer = (
     expanded: false,
     selectedStakes: {},
     isStakesSelected: false,
-    stakeStatus: "",
+    stakeStatus: false,
   },
   { type, payload }
 ) => {

@@ -52,6 +52,7 @@ function Updater({
   stakeStatus,
   setStakeStatus,
   isStakesSelected,
+  selectedStakes,
   totalBurn,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
@@ -113,14 +114,6 @@ function Updater({
   useEffect(() => {
     updateOneDay();
   }, []);
-
-  useEffect(() => {
-    if (totalBurn?.totalBurn > 0) {
-      setStakeStatus("Expired");
-    } else {
-      setStakeStatus("Remaining");
-    }
-  }, [isStakesSelected]);
 
   useEffect(() => {
     if (active && account) {
@@ -203,6 +196,7 @@ const mapStateToProps = ({
     stakeStatus,
     totalBurn,
     isStakesSelected,
+    selectedStakes,
   },
   user: { currentStaked, poolData },
   flashstake: { selectedPortal },
@@ -219,6 +213,7 @@ const mapStateToProps = ({
   poolData,
   stakeStatus,
   isStakesSelected,
+  selectedStakes,
 });
 
 export default connect(mapStateToProps, {

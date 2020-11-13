@@ -292,7 +292,7 @@ export const clearSelection = () => {
 
 export const setStakeStatus = (data) => {
   return {
-    type: "STAKE_STAUS",
+    type: "STAKE_STATUS",
     payload: data,
   };
 };

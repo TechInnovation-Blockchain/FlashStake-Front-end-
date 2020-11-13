@@ -18,7 +18,11 @@ import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
-import { selectStake, clearSelection } from "../redux/actions/dashboardActions";
+import {
+  selectStake,
+  setStakeStatus,
+  clearSelection,
+} from "../redux/actions/dashboardActions";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -140,6 +144,7 @@ function TableComponent({
   changeApp,
   oneDay,
   totalBurn,
+  setStakeStatus,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -148,7 +153,7 @@ function TableComponent({
   const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
-  const [allowSelect, setAllowSelect] = useState(false);
+  const [allowSelect, setAllowSelect] = useState(true);
   // useEffect(() => {}, []);
 
   useEffect(() => {
@@ -263,20 +268,20 @@ function TableComponent({
 
   // console.log(selectedStakes);
 
-  const unexpiredSelected = () => {
-    if (selectedStakes && totalBurn > 0) {
-      setAllowSelect(false);
-      console.log("selected");
-    }
-  };
+  // const unexpiredSelected = (_stake) => {
+  //
+  //   console.log(totalBurn?.totalXIO);
+  //   console.log("selected");
+  // };
 
   useEffect(() => {
-    // if (selectedStakes && totalBurn > 0) {
-    //   setAllowSelect(false);
-    //   console.log("selected");
-    console.log(totalBurn.totalBurn);
-    // }
-  }, [selectedStakes]);
+    // console.log(allowSelect);
+    if (totalBurn?.totalBurn) {
+      setAllowSelect(false);
+      console.log(totalBurn?.totalBurn);
+      console.log(allowSelect);
+    }
+  }, [totalBurn.totalXIO]);
 
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
@@ -355,12 +360,21 @@ function TableComponent({
                         //   className={classes.link}
                         //   target="_blank"
                         // >
+
+                        //   isStakesSelected && totalBurn.totalBurn > 0
+                        //       ? clearSelection()
+                        //     : selectStake(_stake.id)
+
                         <Grid
                           container
                           item
                           xs={12}
                           key={_stake.id}
-                          onClick={() => selectStake(_stake.id)}
+                          onClick={() =>
+                            isStakesSelected && totalBurn.totalBurn > 0
+                              ? clearSelection()
+                              : selectStake(_stake.id)
+                          }
                           className={`${classes.cursorPointer} ${
                             selectedStakes[_stake.id] ? classes.selected : null
                           }`}
@@ -541,5 +555,7 @@ export default connect(mapStateToProps, {
   showWalletBackdrop,
   unstakeXIO,
   selectStake,
+  clearSelection,
+  setStakeStatus,
   clearSelection,
 })(TableComponent);
