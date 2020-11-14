@@ -851,6 +851,7 @@ function Flashstake({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
+                        style={{ color: "#fff" }}
                       >
                         FUEL ($FLASH)
                       </Typography>
@@ -898,6 +899,7 @@ function Flashstake({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
+                        style={{ color: "#fff" }}
                       >
                         TIME (HOURS)
                       </Typography>

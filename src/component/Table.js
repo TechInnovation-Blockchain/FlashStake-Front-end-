@@ -375,9 +375,7 @@ function TableComponent({
                           onClick={() =>
                             isStakesSelected && totalBurn.totalBurn > 0
                               ? clearSelection()
-                              : isStakesSelected &&
-                                totalBurn.totalBurn > 0 &&
-                                allowSelect > 0
+                              : isStakesSelected && totalBurn.totalBurn > 0
                               ? clearSelection()
                               : selectStake(_stake.id)
                           }
@@ -463,6 +461,30 @@ function TableComponent({
                       );
                     })}
                 </Grid>
+                {totalBurn.totalBurn > 0 && isStakesSelected && (
+                  <Grid item xs={12} className={classes.marginBottomMsg1}>
+                    <Typography
+                      variant="overline"
+                      className={classes.redText}
+                      // onClick={toggleTable}
+                    >
+                      ONLY 1 UNEXPIRED STAKE CAN BE UNSTAKE AT A TIME
+                    </Typography>
+                  </Grid>
+                )}
+                {/* {totalBurn.totalBurn > 0 &&
+                  isStakesSelected &&
+                  allowSelect > 0 && (
+                    <Grid item xs={12} className={classes.marginBottomMsg1}>
+                      <Typography
+                        variant="overline"
+                        className={classes.redText}
+                        // onClick={toggleTable}
+                      >
+                        EXPIRED AND UNEXPIRED CANNOT BE UNSTAKED AT ONCE
+                      </Typography>
+                    </Grid>
+                  )} */}
               </PageAnimation>
               {sortedData().length > 5 ? (
                 <Grid item xs={12} className={classes.gridItem}>

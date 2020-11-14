@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navLinkText: {
     // fontFamily: "Quota Bold",
-    fontWeight: 700,
+    fontWeight: 900,
   },
   activeNavlink: {
     color: theme.palette.navLink.active,

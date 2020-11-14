@@ -633,6 +633,7 @@ function Pool({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
+                        style={{ color: "#fff" }}
                       >
                         QUANTITY
                       </Typography>
@@ -684,6 +685,7 @@ function Pool({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
+                      style={{ color: "#fff" }}
                     >
                       POOL
                     </Typography>
@@ -701,6 +703,7 @@ function Pool({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
+                        style={{ color: "#fff" }}
                       >
                         AMOUNT OF $FLASH REQUIRED TO POOL
                       </Typography>

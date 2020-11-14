@@ -733,6 +733,7 @@ function Swap({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
+                        style={{ color: "#fff" }}
                       >
                         SWAP QUANTITY
                       </Typography>
