@@ -834,6 +834,7 @@ function Flashstake({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
+                      style={{ color: "#fff" }}
                     >
                       WHAT TOKEN DO YOU WANT TO EARN
                     </Typography>

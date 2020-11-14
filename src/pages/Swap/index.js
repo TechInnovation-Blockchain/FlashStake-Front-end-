@@ -715,6 +715,7 @@ function Swap({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
+                      style={{ color: "#fff " }}
                     >
                       WHAT DO YOU WANT TO SWAP FOR $FLASH
                     </Typography>
