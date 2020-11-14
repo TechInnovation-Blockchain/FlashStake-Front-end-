@@ -633,7 +633,6 @@ function Pool({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
-                        style={{ color: "#fff" }}
                       >
                         QUANTITY
                       </Typography>
@@ -685,7 +684,6 @@ function Pool({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
-                      style={{ color: "#fff" }}
                     >
                       POOL
                     </Typography>
@@ -703,7 +701,6 @@ function Pool({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
-                        style={{ color: "#fff" }}
                       >
                         AMOUNT OF $FLASH REQUIRED TO POOL
                       </Typography>
@@ -750,7 +747,10 @@ function Pool({
                         {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} $FLASH */}
                       </Typography>
                     ) : (
-                      <Typography variant="body2" className={classes.redText}>
+                      <Typography
+                        variant="body2"
+                        className={classes.secondaryText}
+                      >
                         SELECT A POOL TO ADD LIQUIDITY
                       </Typography>
                     )}

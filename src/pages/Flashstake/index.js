@@ -834,7 +834,6 @@ function Flashstake({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
-                      style={{ color: "#fff" }}
                     >
                       WHAT TOKEN DO YOU WANT TO EARN
                     </Typography>
@@ -851,7 +850,6 @@ function Flashstake({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
-                        style={{ color: "#fff" }}
                       >
                         FUEL ($FLASH)
                       </Typography>
@@ -899,7 +897,6 @@ function Flashstake({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
-                        style={{ color: "#fff" }}
                       >
                         TIME (HOURS)
                       </Typography>
@@ -971,7 +968,7 @@ function Flashstake({
                     ) : (
                       <Typography
                         variant="body2"
-                        className={`${classes.redText} ${classes.gridSpace} `}
+                        className={`${classes.secondaryText} ${classes.gridSpace} `}
                       >
                         SELECT A TOKEN TO VIEW REWARDS
                       </Typography>

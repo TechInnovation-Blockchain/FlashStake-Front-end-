@@ -715,7 +715,6 @@ function Swap({
                     <Typography
                       variant="body2"
                       className={classes.secondaryText}
-                      style={{ color: "#fff " }}
                     >
                       WHAT DO YOU WANT TO SWAP FOR $FLASH
                     </Typography>
@@ -733,7 +732,6 @@ function Swap({
                       <Typography
                         variant="body2"
                         className={classes.secondaryText}
-                        style={{ color: "#fff" }}
                       >
                         SWAP QUANTITY
                       </Typography>
@@ -806,7 +804,7 @@ function Swap({
                     ) : (
                       <Typography
                         variant="body2"
-                        className={`${classes.redText} ${classes.gridSpace} `}
+                        className={`${classes.secondaryText} ${classes.gridSpace} `}
                       >
                         SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
                       </Typography>
