@@ -154,7 +154,6 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
   const [allowSelect, setAllowSelect] = useState();
-  // useEffect(() => {}, []);
 
   useEffect(() => {
     setPage(0);
