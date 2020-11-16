@@ -67,6 +67,7 @@ function Updater({
       .get("https://leaderboard.xio.app:3010/getReserves")
       .then((res) => {
         setPoolData(res);
+        // getQueryData(selectedPortal);
       })
       .catch((err) => {
         console.log(err);
@@ -77,39 +78,39 @@ function Updater({
   // await;
   // };
 
-  const getQData = async () => {
-    if (selectedPortal?.tokenB) {
-      await getQueryData(selectedPortal);
-      await quote(0, "alt");
-    }
-  };
+  // const getQData = async () => {
+  //   if (selectedPortal?.tokenB) {
+  //     await getQueryData(selectedPortal);
+  //     // await quote(0, "alt");
+  //   }
+  // };
 
-  const quote = useCallback(
-    async (_amountA, _amountType = "alt") => {
-      const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
-        selectedPortal
-      );
+  // const quote = useCallback(
+  //   async (_amountA, _amountType = "alt") => {
+  //     const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
+  //       selectedPortal
+  //     );
 
-      console.log(
-        "reserveFlashAmount , reserveAltAmount",
-        reserveFlashAmount,
-        reserveAltAmount
-      );
-      const [_reserveA, _reserveB] =
-        _amountType === "alt"
-          ? [reserveAltAmount, reserveFlashAmount]
-          : [reserveFlashAmount, reserveAltAmount];
-      return (_amountA * _reserveB) / _reserveA;
-    },
-    [selectedPortal]
-  );
+  //     console.log(
+  //       "reserveFlashAmount , reserveAltAmount",
+  //       reserveFlashAmount,
+  //       reserveAltAmount
+  //     );
+  //     const [_reserveA, _reserveB] =
+  //       _amountType === "alt"
+  //         ? [reserveAltAmount, reserveFlashAmount]
+  //         : [reserveFlashAmount, reserveAltAmount];
+  //     return (_amountA * _reserveB) / _reserveA;
+  //   },
+  //   [selectedPortal]
+  // );
 
   // await getQueryData(selectedPortal);
 
   useEffect(() => {
     getData();
-    getQData();
-  }, [selectedPortal]);
+    // getQData();
+  }, []);
 
   useEffect(() => {
     updateOneDay();

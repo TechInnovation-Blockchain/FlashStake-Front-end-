@@ -49,24 +49,38 @@ export const calculateReward = (xioQuantity, days) => async (
         ),
         JSBI.BigInt(data.totalSupply)
       );
+
+      console.log({ _percent });
       console.log(data);
       console.log(xioQuantity);
       console.log(days);
       const _getPercentStaked = JSBI.greaterThan(_percent, _precision)
         ? _precision
         : _percent;
-
+      console.log({ _getPercentStaked: _getPercentStaked.toString() });
+      console.log({ _precision: _precision.toString() });
+      console.log({ _percent: _percent.toString() });
       const _fpy = JSBI.divide(
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
+      console.log(
+        // JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked).toString()
+        // JSBI.BigInt("2")
+      );
+      // );
+      // console.log({ _fpy });
       //getMintAmount
       const _output = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _days), _fpy),
         JSBI.multiply(_precision, JSBI.BigInt("365"))
       );
+      console.log({ _output });
       const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
+      console.log({ _limit });
       const _mintAmount = JSBI.greaterThan(_output, _limit) ? _limit : _output;
+      console.log({ _mintAmount });
       const _reward = JSBI.divide(
         JSBI.multiply(
           JSBI.multiply(_mintAmount, JSBI.BigInt("900")),
@@ -89,6 +103,9 @@ export const calculateReward = (xioQuantity, days) => async (
           // //////////////////////////////////////////
         )
       ).toString();
+
+      console.log(_reward);
+      console.log(reward);
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);

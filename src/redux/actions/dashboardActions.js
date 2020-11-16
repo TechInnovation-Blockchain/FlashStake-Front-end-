@@ -2,6 +2,7 @@ import { store } from "../../config/reduxStore";
 import { setLoading } from "./uiActions";
 import { JSBI } from "@uniswap/sdk";
 import Web3 from "web3";
+import React from "react";
 
 import {
   initializeFlashstakeProtocolContract,
@@ -252,19 +253,104 @@ export const toggleAccordianExpanded = (val) => {
 
 export const selectStake = (id) => async (dispatch, getState) => {
   try {
-    dispatch({
-      type: "SELECT_STAKE",
-      payload: id,
-    });
-
     const {
       user: { stakes },
       dashboard: { selectedStakes },
+      ui: { falseSelected },
     } = await getState();
 
+    if (Object.keys(selectedStakes).length === 0) {
+      return dispatch({
+        type: "SELECT_STAKE",
+        payload: id,
+      });
+    }
+    if (Object.keys(selectedStakes).length > 0) {
+      const exp = stakes.filter((stake) => id === stake.id);
+      if (!exp[0].expired) {
+        dispatch({
+          type: "CLEAR_SELECTION",
+          payload: {},
+        });
+        dispatch({
+          type: "SELECT_STAKE",
+          payload: id,
+        });
+        dispatch({
+          type: "FALSE_SELECTION",
+          payload: false,
+        });
+        // setFalseSelected(false);
+      }
+      if (exp[0].expired) {
+        const exp2 = stakes.filter((stake) => id === stake.id);
+        if (exp2[0].expired && !falseSelected) {
+          console.log("inside");
+          dispatch({
+            type: "CLEAR_SELECTION",
+            payload: {},
+          });
+          dispatch({
+            type: "FALSE_SELECTION",
+            payload: true,
+          });
+        }
+        dispatch({
+          type: "SELECT_STAKE",
+          payload: id,
+        });
+      }
+    }
+
+    // switch (selectedStakes) {
+    //   case Object.keys(selectedStakes).length:
+    //     console.log("First");
+    //     dispatch({
+    //       type: "SELECT_STAKE",
+    //       payload: id,
+    //     });
+    //     break;
+    //   case stakes.map((stake) => selectedStakes[stake.expired] === true):
+    //     console.log("Second");
+    //     if (stakes.filter((stake) => selectedStakes[stake.expired] === true)) {
+    //       dispatch({
+    //         type: "SELECT_STAKE",
+    //         payload: id,
+    //       });
+    //       break;
+    //     } else {
+    //       clearSelection();
+    //       dispatch({
+    //         type: "SELECT_STAKE",
+    //         payload: id,
+    //       });
+    //       break;
+    //     }
+
+    //   case stakes.map((stake) => selectedStakes[stake.expired] === false):
+    //     console.log("Thirdx");
+    //     clearSelection();
+    //     dispatch({
+    //       type: "SELECT_STAKE",
+    //       payload: id,
+    //     });
+    //     break;
+    // }
+
+    // dispatch({
+    //   type: "SELECT_STAKE",
+    //   payload: id,
+    // });
+
+    // const {
+    //   user: { stakes },
+    //   dashboard: { selectedStakes },
+    // } = await getState();
+
+    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
     let totalBurn = 0;
     let totalXIO = 0;
-    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
+
     _selectedStakes.map((_stake) => {
       totalBurn += parseFloat(_stake.burnAmount) || 0;
       totalXIO += parseFloat(_stake.stakeAmount) || 0;

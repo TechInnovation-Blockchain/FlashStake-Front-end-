@@ -23,6 +23,7 @@ import {
   setStakeStatus,
   clearSelection,
 } from "../redux/actions/dashboardActions";
+import { store } from "../config/reduxStore";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -283,6 +284,20 @@ function TableComponent({
     // }
   }, [totalBurn.totalXIO]);
 
+  const stakesSelection = (_stake) => {
+    const {
+      user: { stakes },
+    } = store.getState();
+
+    selectStake(_stake.id);
+
+    console.log(selectedStakes);
+
+    // console.log(STAKE);
+    // ? clearSelection()
+    //     : selectStake(_stake.id)
+  };
+
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
@@ -371,13 +386,7 @@ function TableComponent({
                           xs={12}
                           key={_stake.id}
                           // ////////////////////////////// LOGIC ERROR HERE
-                          onClick={() =>
-                            isStakesSelected && totalBurn.totalBurn > 0
-                              ? clearSelection()
-                              : isStakesSelected && totalBurn.totalBurn > 0
-                              ? clearSelection()
-                              : selectStake(_stake.id)
-                          }
+                          onClick={() => selectStake(_stake.id)}
                           className={`${classes.cursorPointer} ${
                             selectedStakes[_stake.id] ? classes.selected : null
                           }`}
@@ -460,17 +469,7 @@ function TableComponent({
                       );
                     })}
                 </Grid>
-                {totalBurn.totalBurn > 0 && isStakesSelected && (
-                  <Grid item xs={12} className={classes.marginBottomMsg1}>
-                    <Typography
-                      variant="overline"
-                      className={classes.redText}
-                      // onClick={toggleTable}
-                    >
-                      ONLY 1 UNEXPIRED STAKE CAN BE UNSTAKE AT A TIME
-                    </Typography>
-                  </Grid>
-                )}
+
                 {/* {totalBurn.totalBurn > 0 &&
                   isStakesSelected &&
                   allowSelect > 0 && (

@@ -12,6 +12,7 @@ export const uiReducer = (
     animation: 0,
     changeApp: false,
     heightVal: "",
+    falseSelected: true,
   },
   { type, payload }
 ) => {
@@ -72,6 +73,12 @@ export const uiReducer = (
       return {
         ...state,
         changeApp: payload,
+      };
+
+    case "FALSE_SELECTION":
+      return {
+        ...state,
+        falseSelected: payload,
       };
 
     default:

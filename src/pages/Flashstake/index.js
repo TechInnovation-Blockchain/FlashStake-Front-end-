@@ -832,10 +832,10 @@ function Flashstake({
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Typography
-                      variant="body2"
+                      variant="body1"
                       className={classes.secondaryText}
                     >
-                      WHAT TOKEN DO YOU WANT TO EARN
+                      What token do you want to earn
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -851,7 +851,7 @@ function Flashstake({
                         variant="body2"
                         className={classes.secondaryText}
                       >
-                        FUEL ($FLASH)
+                        Fuel ($Flash)
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -898,7 +898,7 @@ function Flashstake({
                         variant="body2"
                         className={classes.secondaryText}
                       >
-                        TIME (HOURS)
+                        Time (Mins)
                       </Typography>
 
                       <Box className={classes.textFieldContainer}>
@@ -967,10 +967,10 @@ function Flashstake({
                       </Typography>
                     ) : (
                       <Typography
-                        variant="body2"
+                        variant="body1"
                         className={`${classes.secondaryText} ${classes.gridSpace} `}
                       >
-                        SELECT A TOKEN TO VIEW REWARDS
+                        Select a token to view rewards
                       </Typography>
                     )}
                   </Grid>

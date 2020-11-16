@@ -93,6 +93,14 @@ export const setRetroTheme = (data) => {
     payload: data,
   };
 };
+
+export const setFalseSelected = (data) => {
+  return {
+    type: "FALSE_SELECTION",
+    payload: data,
+  };
+};
+
 //
 
 export const themeSwitchAction = () => async (dispatch) => {
