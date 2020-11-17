@@ -7,17 +7,21 @@ import {
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import {
   initializeFlashstakeProtocolContract,
-  stake,
   unstake,
   addLiquidityInPool,
   removeLiquidityInPool,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
+import {
+  initializeFlashProtocolContract,
+  stake,
+} from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
+import { utils } from "ethers";
 
 export const calculateReward = (xioQuantity, days) => async (
   dispatch,
@@ -456,33 +460,37 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
+      contract: { oneDay },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
     }
+    const _days = days * (oneDay || 1);
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
         token: selectedRewardToken.tokenB.symbol,
         quantity: xioQuantity,
-        days,
+        days: _days,
         reward: Web3.utils.fromWei(reward),
       },
     });
-    initializeFlashstakeProtocolContract();
+    initializeFlashProtocolContract();
     _log(
       "stake params -> ",
-      selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
-      days,
+      _days,
+      selectedRewardToken.tokenB.id,
       reward
     );
 
     await stake(
-      selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
-      days,
-      reward
+      _days,
+      utils.solidityKeccak256(
+        ["address", "uint256"],
+        [selectedRewardToken.tokenB.id, "1"]
+      )
     );
   } catch (e) {
     _error("ERROR stake -> ", e);

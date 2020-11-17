@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { isAddress } from "../../utils/UniswapSdkFunctions/index";
 
 export const userStakesQuery = gql`
   query UserStakes($account: String!) {
@@ -34,6 +35,13 @@ export const userStakesQuery = gql`
         receiver
         active
         transactionHash
+        pool {
+          id
+          tokenB {
+            id
+            symbol
+          }
+        }
       }
       stakeHistory {
         id
@@ -45,6 +53,13 @@ export const userStakesQuery = gql`
         staker
         receiver
         transactionHash
+        pool {
+          id
+          tokenB {
+            id
+            symbol
+          }
+        }
       }
       swapHistory {
         id
