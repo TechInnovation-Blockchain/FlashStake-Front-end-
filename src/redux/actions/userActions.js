@@ -86,8 +86,7 @@ export const updatePools = (data) => async (dispatch) => {
 export const calculateBurnSingleStake = (_stake, oneDay) => {
   // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
   let _burnAmount = JSBI.BigInt(0);
-  const _expiry =
-    parseFloat(_stake.expiry) + parseFloat(_stake.expiredTimestamp);
+  const _expiry = parseFloat(_stake.expiry);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
     let _remainingDays = _expiry - _currentTime;
@@ -95,7 +94,7 @@ export const calculateBurnSingleStake = (_stake, oneDay) => {
 
     _burnAmount = JSBI.divide(
       JSBI.multiply(
-        JSBI.BigInt(_stake.stakeAmount),
+        JSBI.BigInt(_stake.amountIn),
         JSBI.BigInt(String(Math.trunc(_remainingDays)))
       ),
       JSBI.BigInt(String(Math.trunc(_stake.expiredTimestamp)))
@@ -118,22 +117,15 @@ export const updateUserData = (data) => async (dispatch, getState) => {
     } = await getState();
     if (data) {
       stakes = data.stakes.map((_tempData) => {
-        const {
-          id,
-          expiry,
-          expiredTimestamp,
-          stakeAmount,
-          rewardAmount,
-        } = _tempData;
+        const { id, amountIn, expiry, rewardAmount } = _tempData;
 
-        let expiryTime = parseFloat(expiry) + parseFloat(expiredTimestamp);
-        let expired = expiryTime < Date.now() / 1000;
-        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
+        let expired = parseFloat(expiry) < Date.now() / 1000;
+        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
         let _burnAmount = "0";
         if (expired) {
           expiredDappBalance = JSBI.add(
             expiredDappBalance,
-            JSBI.BigInt(stakeAmount)
+            JSBI.BigInt(amountIn)
           );
           expiredTimestamps.push(id);
         } else {
@@ -142,13 +134,11 @@ export const updateUserData = (data) => async (dispatch, getState) => {
         }
         return {
           ..._tempData,
-          stakeAmount: Web3.utils.fromWei(stakeAmount),
+          stakeAmount: Web3.utils.fromWei(amountIn),
           rewardAmount: Web3.utils.fromWei(rewardAmount),
-          expiryTime,
+          expiryTime: parseFloat(expiry),
           expired,
-          amountAvailable: expired
-            ? Web3.utils.fromWei(_tempData.stakeAmount)
-            : "0",
+          amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
           burnAmount: Web3.utils.fromWei(_burnAmount),
         };
       });
