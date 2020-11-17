@@ -114,7 +114,7 @@ function SwapTable({
   balanceUSD,
 }) {
   const classes = useStyles();
-  const headItems = ["INPUT", "OUTPUT $FLASH", "DATE"];
+  const headItems = ["INPUT", "OUTPUT", "DATE"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState("DATE");
@@ -152,7 +152,7 @@ function SwapTable({
             parseFloat(a) - parseFloat(b)
         );
         break;
-      case "OUTPUT $FLASH":
+      case "OUTPUT $flash":
         data = swapHistory?.sort(
           ({ flashReceived: a }, { flashReceived: b }) =>
             parseFloat(a) - parseFloat(b)
@@ -191,8 +191,8 @@ function SwapTable({
     <Grid container spacing={3}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            WALLET BALANCE
+          <Typography className={classes.mainHead} variant="body2">
+            Wallet Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`$${balanceUSD}`}>
@@ -202,12 +202,12 @@ function SwapTable({
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            $FLASH BALANCE
+          <Typography className={classes.mainHead} variant="body2">
+            $Flash Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
-              <span>{trunc(walletBalance)} $FLASH</span>
+            <Tooltip title={`${walletBalance} $flash`}>
+              <span>{trunc(walletBalance)} $flash</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -235,14 +235,14 @@ function SwapTable({
             className={`${classes.msgContainer} ${classes.cursorPointer}`}
             onClick={showWalletHint}
           >
-            <Typography variant="overline" className={classes.redText}>
-              CONNECT YOUR WALLET TO VIEW YOUR SWAPS
+            <Typography variant="body2" className={classes.redText}>
+              Connect your wallet to view you stakes
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.redText}>
-              CHANGE NETWORK TO RINKEBY TO VIEW YOUR SWAPS
+            <Typography variant="body2" className={classes.redText}>
+              Change network to rinkeby to unstake tokens
             </Typography>
           </Grid>
         ) : !loading ? (
@@ -284,16 +284,16 @@ function SwapTable({
                               </Tooltip>
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.flashReceived} $FLASH`}>
+                              <Tooltip title={`${_swap.flashReceived} $flash`}>
                                 <span className={classes.flexCenter}>
                                   <img
-                                    src={tryRequire("$FLASH")}
+                                    src={tryRequire("$flash")}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.flashReceived)} $FLASH
+                                  {trunc(_swap.flashReceived)} $flash
                                 </span>
                               </Tooltip>
                             </Grid>
@@ -325,8 +325,8 @@ function SwapTable({
             </Fragment>
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
-              <Typography variant="overline" className={classes.msg}>
-                NO AVAILABLE SWAPS
+              <Typography variant="body2" className={classes.msg}>
+                No available swaps
               </Typography>
             </Grid>
           )
@@ -336,6 +336,7 @@ function SwapTable({
               <CircularProgress size={12} className={classes.loadingIcon} />{" "}
               LOADING
             </Typography>
+            ``
           </Grid>
         )}
       </Grid>

@@ -300,23 +300,23 @@ function TableComponent({
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            WALLET BALANCE
+          <Typography className={classes.mainHead} variant="body2">
+            Wallet Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
-              <span>{trunc(walletBalance)} $FLASH</span>
+            <Tooltip title={`${walletBalance} $flash`}>
+              <span>{trunc(walletBalance)} $flash</span>
             </Tooltip>
           </Typography>
         </Grid>
 
         <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            DAPP BALANCE
+          <Typography className={classes.mainHead} variant="body2">
+            Dapp Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} $FLASH`}>
-              <span>{trunc(dappBalance)} $FLASH</span>
+            <Tooltip title={`${dappBalance} $flash`}>
+              <span>{trunc(dappBalance)} $flash</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -345,14 +345,15 @@ function TableComponent({
             className={`${classes.msgContainer} ${classes.cursorPointer}`}
             onClick={showWalletHint}
           >
-            <Typography variant="overline" className={classes.redText}>
-              CONNECT YOUR WALLET TO VIEW YOUR STAKES
+            <Typography variant="body2" className={classes.redText}>
+              Connect your wallet to view you stakes
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.redText}>
-              CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
+            <Typography variant="body2" className={classes.redText}>
+              {/* CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS */}
+              Change network to rinkeby to unstake tokens
             </Typography>
           </Grid>
         ) : !loading ? (
@@ -402,7 +403,7 @@ function TableComponent({
                                 width={15}
                                 style={{ marginRight: 5 }}
                               />
-                              {_stake.pool.tokenB.symbol}
+                              {_stake.pool.tokenB.symbol.toLowerCase()}
                             </span>
                             {/* </Tooltip> */}
                           </Grid>
@@ -412,11 +413,11 @@ function TableComponent({
                                 _stake.amountAvailable > 0
                                   ? _stake.amountAvailable
                                   : _stake.stakeAmount - _stake.burnAmount
-                              }/${_stake.stakeAmount} $FLASH`}
+                              }/${_stake.stakeAmount} $flash`}
                             >
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("$FLASH")}
+                                  src={tryRequire("$flash")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
@@ -427,7 +428,7 @@ function TableComponent({
                                     ? _stake.amountAvailable
                                     : _stake.stakeAmount - _stake.burnAmount
                                 )}
-                                /{trunc(_stake.stakeAmount)} $FLASH
+                                /{trunc(_stake.stakeAmount)} $flash
                               </span>
                             </Tooltip>
                           </Grid>
@@ -439,14 +440,14 @@ function TableComponent({
                                 {_daysRem || _minRem}{" "}
                                 {_daysRem
                                   ? _daysRem === 1
-                                    ? "HOUR"
-                                    : "HOURS"
+                                    ? "hour"
+                                    : "hours"
                                   : _minRem === 1
-                                  ? "MIN"
-                                  : "MINS"}
+                                  ? "min"
+                                  : "mins"}
                               </Fragment>
                             ) : (
-                              "COMPLETED"
+                              "Completed"
                             )}
                             {isStakesSelected ? (
                               <Checkbox
@@ -500,11 +501,12 @@ function TableComponent({
                 <Fragment>
                   <Grid item xs={12} className={classes.marginBottomMsg}>
                     <Typography
-                      variant="overline"
+                      variant="body2"
                       className={classes.disabledText}
                       // onClick={toggleTable}
                     >
-                      SELECT STAKES TO WITHDRAW SPECIFIC ONES
+                      {/* SELECT STAKES TO WITHDRAW SPECIFIC ONES */}
+                      Select stakes to withdraw specific ones
                     </Typography>
                   </Grid>
                   <Grid item xs={12} className={classes.gridItem2}>
@@ -523,7 +525,7 @@ function TableComponent({
                       fontSizeLocal="body2"
                       loading={loadingRedux.unstake}
                     >
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                      <Tooltip title={`${expiredDappBalance} $flash`}>
                         <span>
                           {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
                         </span>
@@ -535,14 +537,14 @@ function TableComponent({
             </Fragment>
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
-              <Typography variant="overline" className={classes.msg}>
-                NO AVAILABLE STAKES
+              <Typography variant="body2" className={classes.msg}>
+                No available stake
               </Typography>
             </Grid>
           )
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline">
+            <Typography variant="body2">
               <CircularProgress size={12} /> LOADING
             </Typography>
           </Grid>
