@@ -43,24 +43,6 @@ export const userStakesQuery = gql`
           }
         }
       }
-      stakeHistory {
-        id
-        amountIn
-        expiry
-        expireAfter
-        mintedAmount
-        rewardAmount
-        staker
-        receiver
-        transactionHash
-        pool {
-          id
-          tokenB {
-            id
-            symbol
-          }
-        }
-      }
       swapHistory {
         id
         swapAmount

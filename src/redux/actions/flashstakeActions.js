@@ -21,7 +21,7 @@ import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
-import { utils } from "ethers";
+import { utils, BigNumber } from "ethers";
 
 export const calculateReward = (xioQuantity, days) => async (
   dispatch,
@@ -487,9 +487,13 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     await stake(
       Web3.utils.toWei(xioQuantity),
       _days,
-      utils.solidityKeccak256(
+      // utils.solidityKeccak256(
+      //   ["address", "uint256"],
+      //   [selectedRewardToken.tokenB.id, BigNumber.from("0")]
+      // )
+      utils.defaultAbiCoder.encode(
         ["address", "uint256"],
-        [selectedRewardToken.tokenB.id, "1"]
+        [selectedRewardToken.tokenB.id, "0"]
       )
     );
   } catch (e) {
@@ -570,12 +574,8 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    _log(
-      "unstake params -> ",
-      expiredTimestamps,
-      Web3.utils.toWei(expiredDappBalance)
-    );
-    await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
+    _log("unstake params -> ", expiredTimestamps);
+    await unstake(expiredTimestamps);
   } catch (e) {
     _error("ERROR unstake -> ", e);
   }

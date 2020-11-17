@@ -1093,20 +1093,20 @@ function Flashstake({
                               ? () => {}
                               : () => onClickStake(quantity, days)
                           }
-                          // disabled={
-                          //   !active ||
-                          //   !account ||
-                          //   !selectedPortal ||
-                          //   quantity <= 0 ||
-                          //   days <= 0 ||
-                          //   loadingRedux.reward ||
-                          //   loadingRedux.stake ||
-                          //   chainId !== 4 ||
-                          //   reward <= 0 ||
-                          //   (active &&
-                          //     account &&
-                          //     parseFloat(quantity) > parseFloat(walletBalance))
-                          // }
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            quantity <= 0 ||
+                            days <= 0 ||
+                            loadingRedux.reward ||
+                            loadingRedux.stake ||
+                            chainId !== 4 ||
+                            reward <= 0 ||
+                            (active &&
+                              account &&
+                              parseFloat(quantity) > parseFloat(walletBalance))
+                          }
                           loading={loadingRedux.stake}
                         >
                           STAKE
@@ -1853,9 +1853,6 @@ function Flashstake({
             }[dialogStep]
           }
         </Dialog>
-    
-    
-    
       </Fragment>
     </PageAnimation>
   );

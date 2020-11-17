@@ -86,7 +86,7 @@ export const updatePools = (data) => async (dispatch) => {
 export const calculateBurnSingleStake = (_stake, oneDay) => {
   // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
   let _burnAmount = JSBI.BigInt(0);
-  const _expiry = parseFloat(_stake.expiry);
+  const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
     let _remainingDays = _expiry - _currentTime;
@@ -97,7 +97,7 @@ export const calculateBurnSingleStake = (_stake, oneDay) => {
         JSBI.BigInt(_stake.amountIn),
         JSBI.BigInt(String(Math.trunc(_remainingDays)))
       ),
-      JSBI.BigInt(String(Math.trunc(_stake.expiredTimestamp)))
+      JSBI.BigInt(String(Math.trunc(_stake.expiry)))
     );
   }
 
@@ -117,9 +117,14 @@ export const updateUserData = (data) => async (dispatch, getState) => {
     } = await getState();
     if (data) {
       stakes = data.stakes.map((_tempData) => {
-        const { id, amountIn, expiry, rewardAmount } = _tempData;
+        const { id, amountIn, expiry, expireAfter, rewardAmount } = _tempData;
 
-        let expired = parseFloat(expiry) < Date.now() / 1000;
+        let expired = parseFloat(expireAfter) < Date.now() / 1000;
+        console.log(
+          "==============>",
+          parseFloat(expireAfter),
+          Date.now() / 1000
+        );
         dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
         let _burnAmount = "0";
         if (expired) {
@@ -136,7 +141,7 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           ..._tempData,
           stakeAmount: Web3.utils.fromWei(amountIn),
           rewardAmount: Web3.utils.fromWei(rewardAmount),
-          expiryTime: parseFloat(expiry),
+          expiryTime: parseFloat(expireAfter),
           expired,
           amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
           burnAmount: Web3.utils.fromWei(_burnAmount),
