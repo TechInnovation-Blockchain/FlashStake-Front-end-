@@ -713,10 +713,10 @@ function Swap({
                 <Grid container spacing={2}>
                   <Grid item className={classes.gridSpace} xs={12}>
                     <Typography
-                      variant="body2"
+                      variant="body1"
                       className={classes.secondaryText}
                     >
-                      WHAT DO YOU WANT TO SWAP FOR $FLASH
+                      What do you want to swap for $flash
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -730,10 +730,10 @@ function Swap({
                   <Grid container item className={classes.gridSpace} xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        SWAP QUANTITY
+                        Swap Quantity
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         <TextField
@@ -803,10 +803,10 @@ function Swap({
                       </Typography>
                     ) : (
                       <Typography
-                        variant="body2"
+                        variant="body1"
                         className={`${classes.secondaryText} ${classes.gridSpace} `}
                       >
-                        SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
+                        Select a token to view swap output amount
                       </Typography>
                     )}
 

@@ -631,10 +631,12 @@ function Pool({
                   <Grid container className={classes.gridSpace2} item xs={6}>
                     <Box flex={1}>
                       <Typography
-                        variant="body2"
+                        // variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        QUANTITY
+                        {/* QUANTITY */}
+                        Quantity
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -682,10 +684,11 @@ function Pool({
 
                   <Grid item className={classes.gridSpace2} xs={6}>
                     <Typography
-                      variant="body2"
+                      // variant="body2"
+                      variant="body1"
                       className={classes.secondaryText}
                     >
-                      POOL
+                      Pool
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -699,10 +702,12 @@ function Pool({
                   <Grid container item xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="body2"
+                        // variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        AMOUNT OF $FLASH REQUIRED TO POOL
+                        {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                        Amount of $flash required to pool
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -748,10 +753,12 @@ function Pool({
                       </Typography>
                     ) : (
                       <Typography
-                        variant="body2"
+                        variant="body1"
+                        // variant="body2"
                         className={classes.secondaryText}
                       >
-                        SELECT A POOL TO ADD LIQUIDITY
+                        {/* SELECT A POOL TO ADD LIQUIDITY */}
+                        Select a pool to add liquidity
                       </Typography>
                     )}
                   </Grid>
