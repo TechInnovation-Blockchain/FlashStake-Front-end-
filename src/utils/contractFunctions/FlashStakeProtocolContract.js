@@ -384,9 +384,7 @@ export const getXPY = async () => {
   try {
     checkContractInitialized();
 
-    const xpy = await contract.methods
-      .getFPYFromProtocol(Web3.utils.toWei("1"))
-      .call();
+    const xpy = await contract.methods.getFPY(Web3.utils.toWei("1")).call();
     return xpy;
   } catch (e) {
     _error("ERROR getXPY -> ", e);

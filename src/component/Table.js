@@ -218,7 +218,7 @@ function TableComponent({
         break;
       default:
         data = stakes.sort(
-          (a, b) => parseFloat(b.expiry) - parseFloat(a.expiry)
+          (a, b) => parseFloat(b.expireAfter) - parseFloat(a.expireAfter)
         );
         // data = stakes.reverse();
         break;

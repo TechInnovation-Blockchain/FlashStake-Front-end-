@@ -87,11 +87,12 @@ export const calculateBurnStakes = (stakes) => {
   stakes
     .filter(
       (_stake) =>
-        !_stake.expired && _stake.expiry > parseFloat(Date.now() / 1000)
+        !_stake.expired && _stake.expireAfter > parseFloat(Date.now() / 1000)
     )
     .map((_stake) => {
       const remainingDuration =
-        (parseFloat(_stake.expiry) - Math.ceil(Date.now() / 1000)) / oneDay;
+        (parseFloat(_stake.expireAfter) - Math.ceil(Date.now() / 1000)) /
+        oneDay;
       burn += burnSingleStake(
         Web3.utils.fromWei(_stake.stakeAmount),
         _baseInterestRate,

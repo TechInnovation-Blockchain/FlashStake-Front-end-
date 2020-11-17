@@ -86,8 +86,7 @@ export const updatePools = (data) => async (dispatch) => {
 export const calculateBurnSingleStake = (_stake, oneDay) => {
   // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
   let _burnAmount = JSBI.BigInt(0);
-  const _expiry =
-    parseFloat(_stake.expiry) + parseFloat(_stake.expiredTimestamp);
+  const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
     let _remainingDays = _expiry - _currentTime;
@@ -120,13 +119,13 @@ export const updateUserData = (data) => async (dispatch, getState) => {
       stakes = data.stakes.map((_tempData) => {
         const {
           id,
-          expiry,
+          expireAfter,
           expiredTimestamp,
           stakeAmount,
           rewardAmount,
         } = _tempData;
 
-        let expiryTime = parseFloat(expiry) + parseFloat(expiredTimestamp);
+        let expiryTime = parseFloat(expireAfter);
         let expired = expiryTime < Date.now() / 1000;
         dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
         let _burnAmount = "0";
