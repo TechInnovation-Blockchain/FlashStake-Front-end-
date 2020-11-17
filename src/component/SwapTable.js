@@ -114,10 +114,10 @@ function SwapTable({
   balanceUSD,
 }) {
   const classes = useStyles();
-  const headItems = ["INPUT", "OUTPUT", "DATE"];
+  const headItems = ["QUANTITY", "INPUT", "OUTPUT"];
 
   const [sortDirection, setSortDirection] = useState(false);
-  const [sortBy, setSortBy] = useState("DATE");
+  const [sortBy, setSortBy] = useState("QUANTITY");
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
 
@@ -152,15 +152,15 @@ function SwapTable({
             parseFloat(a) - parseFloat(b)
         );
         break;
-      case "OUTPUT $flash":
+      case "OUTPUT":
         data = swapHistory?.sort(
           ({ flashReceived: a }, { flashReceived: b }) =>
             parseFloat(a) - parseFloat(b)
         );
         break;
-      case "DATE":
+      case "QUANTITY":
         data = swapHistory?.sort(
-          ({ expireAfter: a }, { expireAfter: b }) =>
+          ({ swapAmount: a }, { swapAmount: b }) =>
             parseFloat(b) - parseFloat(a)
         );
         break;
@@ -267,9 +267,7 @@ function SwapTable({
                             className={`${classes.cursorPointer} ${_swap.id}`}
                           >
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip
-                                title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
-                              >
+                              <Tooltip title={`${_swap.swapAmount}`}>
                                 <span className={classes.flexCenter}>
                                   <img
                                     src={tryRequire(_swap.pool.tokenB.symbol)}
@@ -278,29 +276,42 @@ function SwapTable({
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.swapAmount)}{" "}
-                                  {_swap.pool.tokenB.symbol}
+                                  {trunc(_swap.swapAmount)}
                                 </span>
                               </Tooltip>
                             </Grid>
+
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.flashReceived} $flash`}>
+                              <Tooltip title={`${_swap.pool.tokenB.symbol}`}>
                                 <span className={classes.flexCenter}>
                                   <img
-                                    src={tryRequire("$flash")}
+                                    src={tryRequire(_swap.pool.tokenB.symbol)}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.flashReceived)} $flash
+                                  {_swap.pool.tokenB.symbol}
+                                </span>
+                              </Tooltip>
+                            </Grid>
+
+                            <Grid item xs={4} className={classes.gridItem}>
+                              <Tooltip title={`${_swap.flashReceived} $flash`}>
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    src={tryRequire("FLASH")}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />{" "}
+                                  {trunc(_swap.flashReceived)} $FLASH
                                 </span>
                               </Tooltip>
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
-                              {new Date(
-                                _swap.expireAfter * 1000
-                              ).toLocaleDateString()}
+                              {trunc(_swap.flashReceived)}
                             </Grid>
                           </Grid>
                         </a>
