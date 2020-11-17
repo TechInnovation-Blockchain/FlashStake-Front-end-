@@ -20,24 +20,54 @@ export const userStakesQuery = gql`
           tokenB {
             symbol
           }
+          transactionHash
         }
-        transactionHash
-        swapAmount
-        flashReceived
-        initiationTimestamp
       }
       stakes {
+        id
+        amountIn
+        expiry
+        expireAfter
+        mintedAmount
+        rewardAmount
+        staker
+        receiver
+        active
+        transactionHash
+      }
+      stakeHistory {
+        id
+        amountIn
+        expiry
+        expireAfter
+        mintedAmount
+        rewardAmount
+        staker
+        receiver
+        transactionHash
+      }
+      swapHistory {
+        id
+        swapAmount
+        flashReceived
         pool {
+          id
+          tokenA {
+            symbol
+          }
           tokenB {
             symbol
           }
+          transactionHash
         }
-        id
-        stakeAmount
-        rewardAmount
-        initiationTimestamp
-        expiredTimestamp
-        active
+        sender
+        transactionHash
+      }
+      liquidity {
+        amountFLASH
+        amountALT
+        liquidity
+        sender
         transactionHash
       }
     }

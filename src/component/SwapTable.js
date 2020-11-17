@@ -160,8 +160,7 @@ function SwapTable({
         break;
       case "DATE":
         data = swapHistory?.sort(
-          ({ initiationTimestamp: a }, { initiationTimestamp: b }) =>
-            parseFloat(b) - parseFloat(a)
+          ({ expiry: a }, { expiry: b }) => parseFloat(b) - parseFloat(a)
         );
         break;
       default:
@@ -299,7 +298,7 @@ function SwapTable({
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
                               {new Date(
-                                _swap.initiationTimestamp * 1000
+                                _swap.expiry * 1000
                               ).toLocaleDateString()}
                             </Grid>
                           </Grid>

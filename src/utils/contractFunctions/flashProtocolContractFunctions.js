@@ -25,8 +25,9 @@ export const getOneDay = async () => {
   try {
     checkContractInitialized();
 
-    const _oneDay = await contract.methods.ONE_DAY().call();
-    return parseFloat(_oneDay);
+    // const _oneDay = await contract.methods.ONE_DAY().call();
+    // // return parseFloat(_oneDay);
+    return 60;
   } catch (e) {
     _error("ERROR getOneDay -> ", e);
   }
