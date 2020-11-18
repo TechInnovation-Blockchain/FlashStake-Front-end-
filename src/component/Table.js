@@ -389,8 +389,8 @@ function TableComponent({
                                     ? "hour"
                                     : "hours"
                                   : _minRem === 1
-                                  ? "hour"
-                                  : "hours"}
+                                  ? "min"
+                                  : "mins"}
                               </Fragment>
                             ) : (
                               "Completed"
