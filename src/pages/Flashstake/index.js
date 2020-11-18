@@ -1596,8 +1596,7 @@ function Flashstake({
                           >
                             <Tooltip title={`${expiredDappBalance} $FLASH`}>
                               <span>
-                                COMPLETED
-                                <br />({trunc(expiredDappBalance)} $FLASH)
+                                COMPLETED({trunc(expiredDappBalance)} $FLASH)
                               </span>
                             </Tooltip>
                           </Button>
