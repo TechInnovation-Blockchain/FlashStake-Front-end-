@@ -1111,7 +1111,7 @@ function Flashstake({
                     <Grid item xs={12}>
                       <Typography
                         // variant="overline"
-                        variant="body2"
+                        variant="body1"
                         className={classes.redText}
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
