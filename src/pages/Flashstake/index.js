@@ -923,7 +923,7 @@ function Flashstake({
                     {selectedRewardToken?.tokenB?.symbol ? (
                       <Typography
                         // variant="overline"
-                        variant="body2"
+                        variant="body1"
                         className={classes.infoText}
                       >
                         If you stake{" "}
