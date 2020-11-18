@@ -1342,7 +1342,7 @@ function Flashstake({
                     <br />
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
@@ -1390,7 +1390,7 @@ function Flashstake({
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You have successfully staked{stakeRequest.quantity} $FLASH
@@ -1748,7 +1748,7 @@ function Flashstake({
                     <br />
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     UNSTAKING{" "}
@@ -1791,7 +1791,7 @@ function Flashstake({
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
                   <Typography
-                    variant="body2"
+                    variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You successfully unstaked{" "}

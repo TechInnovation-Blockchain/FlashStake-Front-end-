@@ -949,7 +949,7 @@ function Swap({
                         pendingApproval: (
                           <Fragment>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={classes.textBold}
                             >
                               APPROVAL PENDING
@@ -1116,7 +1116,7 @@ function Swap({
                               <br />
                             </Typography>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                             >
                               Swapping {trunc(swapHist?.amount)}{" "}
