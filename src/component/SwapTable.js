@@ -304,7 +304,7 @@ function SwapTable({
                               <Tooltip title={`${_swap.flashReceived} $FLASH`}>
                                 <span className={classes.flexCenter}>
                                   <img
-                                    src={tryRequire("FLASH")}
+                                    src={tryRequire("$FLASH")}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}
