@@ -463,8 +463,7 @@ function TableComponent({
                         isStakesSelected ? onClickUnstake2 : onClickUnstake
                       }
                       disabled={
-                        !isStakesSelected
-                        //   ? loadingRedux.unstake || !(expiredDappBalance > 0)
+                        !(expiredDappBalance > 0)
                         //   : !isStakesSelected
                         // loadingRedux.unstake || !(dappBalance > 0)
                       }

@@ -1585,7 +1585,8 @@ function Flashstake({
                         variant="body2"
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
-                        Which stake would you like to unstake?
+                        You are about to unstake {trunc(expiredDappBalance)}{" "}
+                        $FLASH
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -1611,7 +1612,7 @@ function Flashstake({
                       <br />
                     </Typography>
                     <Typography
-                      variant="body2"
+                      variant="body1"
                       className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                     >
                       You are about to unstake{" "}
