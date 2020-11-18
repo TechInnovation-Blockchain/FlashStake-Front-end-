@@ -13,7 +13,7 @@ import "./smooth.css";
 import { WalletConnect, Snackbar } from "../../component";
 import Routes from "../Routes";
 // import { setReset } from "../../redux/actions/flashstakeActions";
-import xordLogo from "../../assets/xord-logo.png";
+import xordLogo from "../../assets/xord-light.png";
 import "../../assets/css/main.css";
 import AnimateHeight from "react-animate-height";
 import Image from "../../assets/retroBackground.jpg";
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
   },
   poweredText: {
     marginBottom: theme.spacing(0.5),
-    color: theme.palette.text.disabled,
+    color: "#fff",
     fontWeight: 700,
   },
   logo: {

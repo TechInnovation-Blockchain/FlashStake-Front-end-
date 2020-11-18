@@ -563,7 +563,7 @@ function Flashstake({
   balanceXIO,
   stakeXIO,
   unstakeXIO,
-  unstakeEarlyFlash,
+  unstakeEarly,
   setLoading,
   dialogStep,
   setDialogStep,
@@ -763,14 +763,6 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
-  const unStakeEarly = () => {
-    Object.entries(selectedStakes).map(([key, value]) => {
-      if (value === true) {
-        unstakeEarlyFlash(key);
-      }
-    });
-  };
-
   // props.history.location.pathname === "/swap" ? true :
   const [isDisabled, setIsDisabled] = useState(false);
   const setDisable = () => {
@@ -847,7 +839,7 @@ function Flashstake({
                   <Grid container className={classes.gridSpace} item xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
                         Fuel ($Flash)
@@ -894,10 +886,10 @@ function Flashstake({
                     </Typography>
                     <Box flex={1}>
                       <Typography
-                        variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        Time (Mins)
+                        Time (Hours)
                       </Typography>
 
                       <Box className={classes.textFieldContainer}>
@@ -1460,7 +1452,7 @@ function Flashstake({
                     </Tooltip>{" "}
                     in the process
                   </Typography>
-                  <Button variant="retro" fullWidth onClick={unstakeEarlyFlash}>
+                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
                     UNSTAKE
                   </Button>
                 </Fragment>
@@ -1595,7 +1587,7 @@ function Flashstake({
                         Which stake would you like to unstake?
                       </Typography>
                       <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
                           <Button
                             variant="retro"
                             fullWidth
@@ -1605,20 +1597,6 @@ function Flashstake({
                               <span>
                                 COMPLETED
                                 <br />({trunc(expiredDappBalance)} $FLASH)
-                              </span>
-                            </Tooltip>
-                          </Button>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Button
-                            variant="retro"
-                            fullWidth
-                            onClick={() => setDialogStep("earlyUnstakeFull")}
-                          >
-                            <Tooltip title={`${dappBalance} $FLASH`}>
-                              <span>
-                                ALL
-                                <br />({trunc(dappBalance)} $FLASH)
                               </span>
                             </Tooltip>
                           </Button>
@@ -1904,7 +1882,7 @@ export default connect(mapStateToProps, {
   setExpandAccodion,
   updateAllBalances,
   setHeightValue,
-  unstakeEarlyFlash,
+  unstakeEarly,
   unstakeXIO,
   selectStake,
 })(Flashstake);

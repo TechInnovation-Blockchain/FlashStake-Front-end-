@@ -207,8 +207,8 @@ function SwapTable({
             $Flash Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $flash`}>
-              <span>{trunc(walletBalance)} $flash</span>
+            <Tooltip title={`${walletBalance} $FLASH`}>
+              <span>{trunc(walletBalance)} $FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -301,7 +301,7 @@ function SwapTable({
                             </Grid> */}
 
                             <Grid item xs={6} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.flashReceived} $flash`}>
+                              <Tooltip title={`${_swap.flashReceived} $FLASH`}>
                                 <span className={classes.flexCenter}>
                                   <img
                                     src={tryRequire("FLASH")}

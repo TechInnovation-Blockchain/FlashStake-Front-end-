@@ -443,8 +443,8 @@ function TableComponent({
                                     ? "hour"
                                     : "hours"
                                   : _minRem === 1
-                                  ? "min"
-                                  : "mins"}
+                                  ? "hour"
+                                  : "hours"}
                               </Fragment>
                             ) : (
                               "Completed"
@@ -538,7 +538,7 @@ function TableComponent({
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
               <Typography variant="body2" className={classes.msg}>
-                No available stake
+                No available stakes
               </Typography>
             </Grid>
           )
