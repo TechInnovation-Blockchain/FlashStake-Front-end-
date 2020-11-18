@@ -597,6 +597,7 @@ function Flashstake({
   stakes,
   totalBurn,
   changeApp,
+  maxDays,
   ...props
 }) {
   let classes = useStyles();
@@ -906,6 +907,7 @@ function Flashstake({
                           fullWidth
                           placeholder="0"
                           value={days}
+                          error={days > maxDays}
                           onChange={onChangeDays}
                           type="tel"
                           inputMode="numeric"

@@ -365,7 +365,7 @@ function TableComponent({
                     .slice(page * 5, page * 5 + 5)
                     .map((_stake) => {
                       const _remDur =
-                        (_stake.expiryTime - Date.now() / 1000) / oneDay;
+                        (_stake.expiryTime - Date.now() / 1000) / 3600;
                       const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
                       const _minRem = Math.ceil(_remDur * 60);
                       return (

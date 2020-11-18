@@ -15,6 +15,7 @@ export const flashstakeReducer = (
     allowancePoolWithdraw: true,
     selectedWithdrawPool: "",
     reward: "0",
+    maxDays: 99999999,
     swapOutput: "0",
     balanceXIO: 0,
     balanceALT: 0,
@@ -94,6 +95,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         allowanceXIO: payload,
+      };
+    case "MAX_DAYS":
+      return {
+        ...state,
+        maxDays: payload,
       };
     case "ALLOWANCE_ALT":
       return {

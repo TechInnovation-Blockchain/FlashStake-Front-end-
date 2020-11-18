@@ -30,6 +30,7 @@ export const calculateReward = (xioQuantity, days) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
+  let _maxDays = 5e17 * 365 * 86400;
   try {
     const {
       flashstake: {
@@ -57,6 +58,7 @@ export const calculateReward = (xioQuantity, days) => async (
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
+      _maxDays = _maxDays / String(_fpy);
       const _mintAmount = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
         JSBI.multiply(_precision, JSBI.BigInt("31536000"))
@@ -114,6 +116,10 @@ export const calculateReward = (xioQuantity, days) => async (
   dispatch({
     type: "STAKE_REWARD",
     payload: reward,
+  });
+  dispatch({
+    type: "MAX_DAYS",
+    payload: _maxDays,
   });
   dispatch(setLoading({ reward: false }));
 };
@@ -484,7 +490,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
       payload: {
         token: selectedRewardToken.tokenB.symbol,
         quantity: xioQuantity,
-        days: _days,
+        days,
         reward: Web3.utils.fromWei(reward),
       },
     });
