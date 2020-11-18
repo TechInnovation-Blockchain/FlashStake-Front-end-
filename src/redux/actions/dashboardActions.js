@@ -267,7 +267,6 @@ export const selectStake = (id) => async (dispatch, getState) => {
       });
     } else {
       const exp = stakes?.filter((stake) => stake.id === id);
-      console.log(exp);
       if (!exp[0].expired) {
         dispatch({
           type: "CLEAR_SELECTION",
@@ -286,7 +285,6 @@ export const selectStake = (id) => async (dispatch, getState) => {
       if (exp[0].expired) {
         const exp2 = stakes?.filter((stake) => id === stake.id);
         if (exp2[0].expired && !falseSelected) {
-          console.log("inside");
           dispatch({
             type: "CLEAR_SELECTION",
             payload: {},

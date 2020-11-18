@@ -340,7 +340,6 @@ function PoolTable({
                           //   selectedStakes[_stake.id] ? classes.selected : null
                           // }`}
                         >
-                          {/* {console.log("Stake -- > ", _stake)} */}
                           <Grid
                             item
                             xs={6 - visibleRadioButtons}

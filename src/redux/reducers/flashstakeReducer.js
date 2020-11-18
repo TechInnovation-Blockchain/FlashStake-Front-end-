@@ -12,6 +12,7 @@ export const flashstakeReducer = (
     allowanceALT: true,
     allowanceXIOPool: true,
     allowanceALTPool: true,
+    allowanceXIOProtocol: true,
     allowancePoolWithdraw: true,
     selectedWithdrawPool: "",
     reward: "0",
@@ -116,6 +117,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         allowanceALTPool: payload,
+      };
+    case "ALLOWANCE_XIO_PROTOCOL":
+      return {
+        ...state,
+        allowanceXIOProtocol: payload,
       };
     case "ALLOWANCE_POOL_WITHDRAW":
       return {

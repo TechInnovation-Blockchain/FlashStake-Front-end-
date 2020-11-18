@@ -213,6 +213,16 @@ export const checkAllowance = () => async (dispatch, getState) => {
       flashstake: { selectedRewardToken },
       web3: { account },
     } = getState();
+    const _allowance3 = await checkAllowanceMemo(
+      CONSTANTS.FLASH_PROTOCOL_CONTRACT,
+      CONSTANTS.ADDRESS_XIO_RINKEBY,
+      account
+    );
+    dispatch({
+      type: "ALLOWANCE_XIO_PROTOCOL",
+      payload: _allowance3 > 0,
+    });
+
     const _allowance = await checkAllowanceMemo(
       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       CONSTANTS.ADDRESS_XIO_RINKEBY,
@@ -321,7 +331,7 @@ export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   setLoadingIndep({ approvalXIO: true });
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "stake");
+    await approve(CONSTANTS.FLASH_PROTOCOL_CONTRACT, "stake");
     dispatch(checkAllowance());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
@@ -601,6 +611,7 @@ export const unstakeEarlyFlash = (id) => async (dispatch, getState) => {
       await initializeFlashProtocolContract();
       await unstakeEarlyFunc(_selectedIds[0]);
     } else {
+      console.log("hereeee", _selectedIds);
       await initializeFlashstakeProtocolContract();
       await unstake(_selectedIds);
     }
