@@ -763,12 +763,12 @@ function Flashstake({
   }, [expanding, setExpandAccodion]);
 
   const unStakeEarly = () => {
-    console.log(Object.keys(selectedStakes));
+    Object.entries(selectedStakes).map(([key, value]) => {
+      if (value === true) {
+        unstakeEarly(key);
+      }
+    });
   };
-
-  useEffect(() => {
-    unStakeEarly();
-  }, [selectedStakes]);
 
   // props.history.location.pathname === "/swap" ? true :
   const [isDisabled, setIsDisabled] = useState(false);
@@ -1503,7 +1503,7 @@ function Flashstake({
                   <Button
                     variant="retro"
                     fullWidth
-                    onClick={() => unstakeEarly(false)}
+                    onClick={() => unStakeEarly()}
                   >
                     UNSTAKE
                   </Button>
@@ -1547,7 +1547,7 @@ function Flashstake({
                   <Button
                     variant="retro"
                     fullWidth
-                    onClick={() => unstakeEarly(Object.keys(selectedStakes)[0])}
+                    onClick={() => unStakeEarly()}
                   >
                     UNSTAKE
                   </Button>
@@ -1590,9 +1590,7 @@ function Flashstake({
                       <Button
                         variant="retro"
                         fullWidth
-                        onClick={() =>
-                          unstakeEarly(Object.keys(selectedStakes)[0])
-                        }
+                        onClick={() => unStakeEarly()}
                       >
                         UNSTAKE
                       </Button>
@@ -1703,9 +1701,7 @@ function Flashstake({
                       <Button
                         variant="retro"
                         fullWidth
-                        onClick={() =>
-                          unstakeEarly(Object.keys(selectedStakes)[0])
-                        }
+                        onClick={() => unStakeEarly()}
                       >
                         UNSTAKE
                       </Button>

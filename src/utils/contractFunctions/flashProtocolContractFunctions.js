@@ -192,13 +192,13 @@ export const unstakeEarly = (_id) => async () => {
       throw new _error("Wallet not activated.");
     }
     contract.methods
-      .unstake(_id)
+      .unstakeEarly(_id)
       .estimateGas({ gas: 10000000, from: walletAddress }, function (
         error,
         gasAmount
       ) {
         contract.methods
-          .unstake(_id)
+          .unstakeEarly(_id)
           .send({
             from: walletAddress,
             gasLimit: gasAmount || 400000,
