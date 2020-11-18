@@ -14,6 +14,7 @@ import {
 import {
   initializeFlashProtocolContract,
   stake,
+  unstakeEarly,
 } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { getQueryData } from "./queryActions";
@@ -511,10 +512,58 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   }
 };
 
-export const unstakeEarly = (unstakeAll = true) => async (
-  dispatch,
-  getState
-) => {
+// export const unstakeEarly = (unstakeAll = true) => async (
+//   dispatch,
+//   getState
+// ) => {
+//   try {
+//     const {
+//       user: { stakes, dappBalance },
+//       dashboard: { selectedStakes },
+//     } = await getState();
+//     if (dappBalance <= 0 || !stakes?.length) {
+//       throw new _error("No stakes to withdraw!");
+//     }
+
+//     let _balanceUnstake = 0;
+//     let _unstakeTimestamps = [];
+
+//     if (unstakeAll) {
+//       _balanceUnstake = dappBalance;
+//       _unstakeTimestamps = stakes.map((_stake) => _stake.id);
+//     } else {
+//       _unstakeTimestamps = stakes
+//         .filter((_stake) => {
+//           if (selectedStakes[_stake.id]) {
+//             _balanceUnstake += parseFloat(_stake.stakeAmount);
+//             return true;
+//           } else {
+//             return false;
+//           }
+//         })
+//         .map((_stake) => _stake.id);
+//     }
+//     dispatch({
+//       type: "UNSTAKE_REQUEST",
+//       payload: {
+//         timestamps: _unstakeTimestamps,
+//         quantity: _balanceUnstake,
+//       },
+//     });
+//     initializeFlashstakeProtocolContract();
+
+//     _log(
+//       "unstake params -> ",
+//       _unstakeTimestamps
+//       // Web3.utils.toWei(_balanceUnstake)
+//     );
+//     await unstake(_unstakeTimestamps);
+//   } catch (e) {
+//     _error("ERROR unstakeEarly -> ", e);
+//   }
+// };
+
+export const unstakeEarlyFlash = (id) => async (dispatch, getState) => {
   try {
     const {
       user: { stakes, dappBalance },
@@ -527,7 +576,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
     let _balanceUnstake = 0;
     let _unstakeTimestamps = [];
 
-    if (unstakeAll) {
+    if (id) {
       _balanceUnstake = dappBalance;
       _unstakeTimestamps = stakes.map((_stake) => _stake.id);
     } else {
@@ -556,7 +605,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
       _unstakeTimestamps
       // Web3.utils.toWei(_balanceUnstake)
     );
-    await unstake(_unstakeTimestamps);
+    await unstakeEarly(_unstakeTimestamps);
   } catch (e) {
     _error("ERROR unstakeEarly -> ", e);
   }
