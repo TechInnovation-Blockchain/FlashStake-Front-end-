@@ -114,7 +114,8 @@ function SwapTable({
   balanceUSD,
 }) {
   const classes = useStyles();
-  const headItems = ["QUANTITY", "INPUT", "OUTPUT"];
+  const headItems = ["INPUT", "OUTPUT"];
+  // const headItems = ["QUANTITY", "INPUT", "OUTPUT"];
 
   const [sortDirection, setSortDirection] = useState(false);
   const [sortBy, setSortBy] = useState("QUANTITY");
@@ -215,7 +216,7 @@ function SwapTable({
       <Grid container item xs={12}>
         <Grid container item xs={12} className={classes.gridHead}>
           {headItems.map((headItem, index) => (
-            <Grid item xs={4} className={classes.gridItem} key={headItem}>
+            <Grid item xs={6} className={classes.gridItem} key={headItem}>
               <MuiButton
                 className={classes.tableHeadItemBtn}
                 onClick={() => onClickSortBtn(headItem)}
@@ -266,8 +267,10 @@ function SwapTable({
                             key={_swap.id}
                             className={`${classes.cursorPointer} ${_swap.id}`}
                           >
-                            <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.swapAmount}`}>
+                            <Grid item xs={6} className={classes.gridItem}>
+                              <Tooltip
+                                title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
+                              >
                                 <span className={classes.flexCenter}>
                                   <img
                                     src={tryRequire(_swap.pool.tokenB.symbol)}
@@ -276,12 +279,13 @@ function SwapTable({
                                     width={15}
                                     style={{ marginRight: 5 }}
                                   />{" "}
-                                  {trunc(_swap.swapAmount)}
+                                  {trunc(_swap.swapAmount)}{" "}
+                                  {_swap.pool.tokenB.symbol}
                                 </span>
                               </Tooltip>
                             </Grid>
-
-                            <Grid item xs={4} className={classes.gridItem}>
+                            {/* 
+                              <Grid item xs={4} className={classes.gridItem}>
                               <Tooltip title={`${_swap.pool.tokenB.symbol}`}>
                                 <span className={classes.flexCenter}>
                                   <img
@@ -294,9 +298,9 @@ function SwapTable({
                                   {_swap.pool.tokenB.symbol}
                                 </span>
                               </Tooltip>
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={4} className={classes.gridItem}>
+                            <Grid item xs={6} className={classes.gridItem}>
                               <Tooltip title={`${_swap.flashReceived} $flash`}>
                                 <span className={classes.flexCenter}>
                                   <img
@@ -309,9 +313,6 @@ function SwapTable({
                                   {trunc(_swap.flashReceived)} $FLASH
                                 </span>
                               </Tooltip>
-                            </Grid>
-                            <Grid item xs={4} className={classes.gridItem}>
-                              {trunc(_swap.flashReceived)}
                             </Grid>
                           </Grid>
                         </a>
