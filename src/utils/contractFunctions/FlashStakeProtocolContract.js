@@ -380,18 +380,6 @@ export const calculateXPY = async (xioQuantity, days) => {
   return 0;
 };
 
-export const getXPY = async () => {
-  try {
-    checkContractInitialized();
-
-    const xpy = await contract.methods.getFPY(Web3.utils.toWei("1")).call();
-    return xpy;
-  } catch (e) {
-    _error("ERROR getXPY -> ", e);
-  }
-  return 0;
-};
-
 export const unstakeALT = (expiredIds = [], xioQuantity) => {
   setLoadingIndep({ unstake: true });
 

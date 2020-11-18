@@ -28,17 +28,10 @@ export const getReserves = async (_pool) => {
   const {
     user: { poolData },
   } = store.getState();
-  console.log(_pool);
   try {
-    // getData();
     checkContractInitialized();
-
-    // const _reserves = await contract.methods.getReserves(_pool).call();
     const _reserves = poolData?.data[_pool];
     _log("Reserves -->", _reserves);
-
-    // console.log(poolData.filter(_pool));
-    // console.log(_reserves2.flashBalance);
     return { ..._reserves, id: _pool };
   } catch (e) {
     _error("ERROR getReserves -> ", e);
