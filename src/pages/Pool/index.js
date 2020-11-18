@@ -707,7 +707,7 @@ function Pool({
                         className={classes.secondaryText}
                       >
                         {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                        Amount of $flash required to pool
+                        Amount of $FLASH required to pool
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}

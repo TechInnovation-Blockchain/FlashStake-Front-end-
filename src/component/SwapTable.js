@@ -204,7 +204,7 @@ function SwapTable({
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="body2">
-            $Flash Balance
+            $FLASH Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${walletBalance} $FLASH`}>
@@ -338,7 +338,7 @@ function SwapTable({
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
               <Typography variant="body2" className={classes.msg}>
-                No available swaps
+                No swap history
               </Typography>
             </Grid>
           )

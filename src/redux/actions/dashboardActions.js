@@ -252,54 +252,113 @@ export const toggleAccordianExpanded = (val) => {
   };
 };
 
+// export const selectStake = (id) => async (dispatch, getState) => {
+//   try {
+//     const {
+//       user: { stakes },
+//       dashboard: { selectedStakes },
+//       ui: { falseSelected },
+//     } = await getState();
+
+//     if (Object.keys(selectedStakes).length === 0) {
+//       dispatch({
+//         type: "SELECT_STAKE",
+//         payload: id,
+//       });
+//     } else {
+//       const exp = stakes?.filter((stake) => stake.id === id);
+//       if (!exp[0].expired) {
+//         if (exp[0].id !== id) {
+//           dispatch({
+//             type: "CLEAR_SELECTION",
+//             payload: {},
+//           });
+//         }
+//         dispatch({
+//           type: "SELECT_STAKE",
+//           payload: id,
+//         });
+//         dispatch({
+//           type: "FALSE_SELECTION",
+//           payload: false,
+//         });
+//         // setFalseSelected(false);
+//       }
+//       if (exp[0].expired) {
+//         const exp2 = stakes?.filter((stake) => id === stake.id);
+//         if (exp2[0].expired && !falseSelected) {
+//           dispatch({
+//             type: "CLEAR_SELECTION",
+//             payload: {},
+//           });
+//         }
+//         dispatch({
+//           type: "FALSE_SELECTION",
+//           payload: true,
+//         });
+//         dispatch({
+//           type: "SELECT_STAKE",
+//           payload: id,
+//         });
+//       }
+//     }
+
+//     const {
+//       user: { stakes: Stakes },
+//       dashboard: { selectedStakes: SelectedStakes },
+//     } = await getState();
+
+//     const _SelectedStakes = Stakes.filter((stake) => SelectedStakes[stake.id]);
+//     let totalBurn = 0;
+//     let totalXIO = 0;
+
+//     _SelectedStakes.map((_stake) => {
+//       totalBurn += parseFloat(_stake.burnAmount) || 0;
+//       totalXIO += parseFloat(_stake.stakeAmount) || 0;
+//     });
+
+//     dispatch({
+//       type: "SUM_OF_BURN",
+//       payload: {
+//         totalBurn,
+//         totalXIO,
+//       },
+//     });
+//   } catch (e) {
+//     _error("ERROR  -> ", e);
+//     // setDialogStepIndep("failedStake");
+//     // showSnackbarIndep("Stake Transaction Failed.", "error");
+//   }
+// };
+
 export const selectStake = (id) => async (dispatch, getState) => {
   try {
     const {
       user: { stakes },
       dashboard: { selectedStakes },
-      ui: { falseSelected },
     } = await getState();
 
-    if (Object.keys(selectedStakes).length === 0) {
+    const _currentStake = stakes.find((stake) => stake.id === id);
+    const _ids = Object.keys(selectedStakes).filter(
+      (_key) => selectedStakes[_key]
+    );
+
+    const _firstStake = stakes.find((_stake) => _stake.id === _ids[0]);
+    if (
+      _firstStake &&
+      ((!_firstStake.expired && _firstStake.id !== id) ||
+        (!_firstStake.expired && _currentStake.expired) ||
+        (_firstStake.expired && !_currentStake.expired))
+    ) {
       dispatch({
-        type: "SELECT_STAKE",
-        payload: id,
+        type: "CLEAR_SELECTION",
       });
-    } else {
-      const exp = stakes?.filter((stake) => stake.id === id);
-      if (!exp[0].expired) {
-        dispatch({
-          type: "CLEAR_SELECTION",
-          payload: {},
-        });
-        dispatch({
-          type: "SELECT_STAKE",
-          payload: id,
-        });
-        dispatch({
-          type: "FALSE_SELECTION",
-          payload: false,
-        });
-        // setFalseSelected(false);
-      }
-      if (exp[0].expired) {
-        const exp2 = stakes?.filter((stake) => id === stake.id);
-        if (exp2[0].expired && !falseSelected) {
-          dispatch({
-            type: "CLEAR_SELECTION",
-            payload: {},
-          });
-          dispatch({
-            type: "FALSE_SELECTION",
-            payload: true,
-          });
-        }
-        dispatch({
-          type: "SELECT_STAKE",
-          payload: id,
-        });
-      }
     }
+
+    dispatch({
+      type: "SELECT_STAKE",
+      payload: id,
+    });
 
     const {
       user: { stakes: Stakes },
@@ -324,8 +383,6 @@ export const selectStake = (id) => async (dispatch, getState) => {
     });
   } catch (e) {
     _error("ERROR  -> ", e);
-    // setDialogStepIndep("failedStake");
-    // showSnackbarIndep("Stake Transaction Failed.", "error");
   }
 };
 

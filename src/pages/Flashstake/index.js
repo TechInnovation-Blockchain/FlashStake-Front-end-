@@ -843,7 +843,7 @@ function Flashstake({
                         variant="body1"
                         className={classes.secondaryText}
                       >
-                        Fuel ($Flash)
+                        Fuel ($FLASH)
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
