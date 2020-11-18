@@ -242,60 +242,6 @@ function TableComponent({
     }
   };
 
-  // const withdrawSelected = useCallback(() => {
-  //   const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
-  //   let amount = JSBI.BigInt(0);
-  //   _selectedStakes.map((_stake) => {
-  //     amount = JSBI.add(amount, JSBI.BigInt(_stake.stakeAmount));
-  //     return null;
-  //   });
-  //   amount = Web3.utils.fromWei(amount.toString());
-  //   if (
-  //     _selectedStakes.find(
-  //       (_stake) =>
-  //         !_stake.expired && _stake.expiry > parseFloat(Date.now() / 1000)
-  //     )
-  //   ) {
-  //     let burn = calculateBurnStakes(_selectedStakes);
-  //     onClickUnstake2();
-  //   } else {
-  //     // setDialogStep("confirmSelectedWithdraw");
-  //   }
-  //   // setShowWithdrawDialog(true);
-  // }, [stakes, selectedStakes]);
-
-  // console.log(selectedStakes);
-
-  // const unexpiredSelected = (_stake) => {
-  //
-  //   console.log(totalBurn?.totalXIO);
-  //   console.log("selected");
-  // };
-
-  useEffect(() => {
-    // console.log(allowSelect);
-    // if (totalBurn?.totalBurn) {
-    // setAllowSelect(false);
-    console.log(totalBurn?.totalBurn);
-    setAllowSelect(Object.keys(selectedStakes).length);
-    console.log(allowSelect);
-    // }
-  }, [totalBurn.totalXIO]);
-
-  const stakesSelection = (_stake) => {
-    const {
-      user: { stakes },
-    } = store.getState();
-
-    selectStake(_stake.id);
-
-    console.log(selectedStakes);
-
-    // console.log(STAKE);
-    // ? clearSelection()
-    //     : selectStake(_stake.id)
-  };
-
   return (
     <Grid container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>

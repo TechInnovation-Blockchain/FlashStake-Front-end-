@@ -559,6 +559,7 @@ function Flashstake({
   active,
   account,
   checkAllowance,
+  allowanceXIOProtocol,
   getBalanceXIO,
   balanceXIO,
   stakeXIO,
@@ -775,7 +776,7 @@ function Flashstake({
   const [isDisabled, setIsDisabled] = useState(false);
   const setDisable = () => {
     if (
-      !allowanceXIO ||
+      !allowanceXIOProtocol ||
       !active ||
       !account ||
       !selectedPortal ||
@@ -981,7 +982,7 @@ function Flashstake({
                     )}
                   </Grid>
 
-                  {!allowanceXIO ? (
+                  {!allowanceXIOProtocol ? (
                     <Grid
                       container
                       className={classes.gridSpace}
@@ -994,12 +995,12 @@ function Flashstake({
                           fullWidth
                           variant="retro"
                           onClick={
-                            !allowanceXIO && !loadingRedux.approval
+                            !allowanceXIOProtocol && !loadingRedux.approval
                               ? onClickApprove
                               : () => {}
                           }
                           disabled={
-                            allowanceXIO ||
+                            allowanceXIOProtocol ||
                             !active ||
                             !account ||
                             loadingRedux.reward ||
@@ -1024,7 +1025,7 @@ function Flashstake({
                         <Button
                           fullWidth
                           variant={
-                            !allowanceXIO ||
+                            !allowanceXIOProtocol ||
                             !active ||
                             !account ||
                             !selectedPortal ||
@@ -1041,12 +1042,12 @@ function Flashstake({
                               : "retro"
                           }
                           onClick={
-                            !allowanceXIO
+                            !allowanceXIOProtocol
                               ? () => {}
                               : () => onClickStake(quantity, days)
                           }
                           disabled={
-                            !allowanceXIO ||
+                            !allowanceXIOProtocol ||
                             !active ||
                             !account ||
                             !selectedPortal ||
@@ -1089,7 +1090,7 @@ function Flashstake({
                           //     : "retro"
                           // }
                           onClick={
-                            !allowanceXIO
+                            !allowanceXIOProtocol
                               ? () => {}
                               : () => onClickStake(quantity, days)
                           }
@@ -1115,7 +1116,7 @@ function Flashstake({
                     </Fragment>
                   )}
 
-                  {!allowanceXIO &&
+                  {!allowanceXIOProtocol &&
                   active &&
                   account &&
                   selectedRewardToken &&
@@ -1283,7 +1284,7 @@ function Flashstake({
                       variant="retro"
                       fullWidth
                       onClick={
-                        !allowanceXIO
+                        !allowanceXIOProtocol
                           ? () => {}
                           : () => onClickStake(quantity, days)
                       }
