@@ -237,13 +237,13 @@ function SwapTable({
             onClick={showWalletHint}
           >
             <Typography variant="body2" className={classes.redText}>
-              Connect your wallet to view you stakes
+              Connect your wallet to view your swap history
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to unstake tokens
+              Change network to rinkeby to swap tokens
             </Typography>
           </Grid>
         ) : !loading ? (
