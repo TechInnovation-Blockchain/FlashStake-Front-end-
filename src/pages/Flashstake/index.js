@@ -47,8 +47,9 @@ import {
   // setReset,
   setInitialValues,
   unstakeXIO,
-  unstakeEarly,
+  // unstakeEarly,
 } from "../../redux/actions/flashstakeActions";
+import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
@@ -761,16 +762,13 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
-  // const unStakeCompleted = (
-  //   id = "0xd6d994e37e69bef5c43fb28d20930eb12baaa6ce4ce23a1a50917bf00f80bca9"
-  // ) => {
-  //   if (selectedStakes[id]) {
-  //     console.log("Exists....");
-  //     if (id in stakes) {
-  //       console.log("Stake Exists");
-  //     }
-  //   }
-  // };
+  const unStakeEarly = () => {
+    console.log(Object.keys(selectedStakes));
+  };
+
+  useEffect(() => {
+    unStakeEarly();
+  }, [selectedStakes]);
 
   // props.history.location.pathname === "/swap" ? true :
   const [isDisabled, setIsDisabled] = useState(false);
@@ -1549,7 +1547,7 @@ function Flashstake({
                   <Button
                     variant="retro"
                     fullWidth
-                    onClick={() => unstakeEarly(false)}
+                    onClick={() => unstakeEarly(Object.keys(selectedStakes)[0])}
                   >
                     UNSTAKE
                   </Button>
@@ -1589,7 +1587,13 @@ function Flashstake({
                         </Tooltip>{" "}
                         in the process
                       </Typography>
-                      <Button variant="retro" fullWidth onClick={unstakeEarly}>
+                      <Button
+                        variant="retro"
+                        fullWidth
+                        onClick={() =>
+                          unstakeEarly(Object.keys(selectedStakes)[0])
+                        }
+                      >
                         UNSTAKE
                       </Button>
                     </Fragment>
@@ -1694,12 +1698,14 @@ function Flashstake({
                             {trunc(totalBurnAmount)} $flash
                           </span>
                         </Tooltip>{" "}
-                        n the process
+                        in the process
                       </Typography>
                       <Button
                         variant="retro"
                         fullWidth
-                        onClick={() => unstakeEarly(false)}
+                        onClick={() =>
+                          unstakeEarly(Object.keys(selectedStakes)[0])
+                        }
                       >
                         UNSTAKE
                       </Button>
