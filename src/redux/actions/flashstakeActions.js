@@ -528,7 +528,7 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   }
 };
 
-export const unstakeEarly = (unstakeAll = true) => async (
+export const unstakeEarlyFlash = (unstakeAll = true) => async (
   dispatch,
   getState
 ) => {
@@ -547,6 +547,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
     if (unstakeAll) {
       _balanceUnstake = dappBalance;
       _unstakeTimestamps = stakes.map((_stake) => _stake.id);
+      console.log("herreee");
     } else {
       _unstakeTimestamps = stakes
         .filter((_stake) => {
@@ -558,6 +559,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
           }
         })
         .map((_stake) => _stake.id);
+      console.log("herree222222e");
     }
     dispatch({
       type: "UNSTAKE_REQUEST",
@@ -579,7 +581,7 @@ export const unstakeEarly = (unstakeAll = true) => async (
   }
 };
 
-export const unstakeEarlyFlash = (id) => async (dispatch, getState) => {
+export const unstakeEarly = () => async (dispatch, getState) => {
   try {
     const {
       user: { stakes, dappBalance },
