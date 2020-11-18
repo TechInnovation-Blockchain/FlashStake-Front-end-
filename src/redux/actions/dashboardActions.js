@@ -261,13 +261,13 @@ export const selectStake = (id) => async (dispatch, getState) => {
     } = await getState();
 
     if (Object.keys(selectedStakes).length === 0) {
-      return dispatch({
+      dispatch({
         type: "SELECT_STAKE",
         payload: id,
       });
-    }
-    if (Object.keys(selectedStakes).length > 0) {
-      const exp = stakes.filter((stake) => id === stake.id);
+    } else {
+      const exp = stakes?.filter((stake) => stake.id === id);
+      console.log(exp);
       if (!exp[0].expired) {
         dispatch({
           type: "CLEAR_SELECTION",
@@ -284,7 +284,7 @@ export const selectStake = (id) => async (dispatch, getState) => {
         // setFalseSelected(false);
       }
       if (exp[0].expired) {
-        const exp2 = stakes.filter((stake) => id === stake.id);
+        const exp2 = stakes?.filter((stake) => id === stake.id);
         if (exp2[0].expired && !falseSelected) {
           console.log("inside");
           dispatch({
@@ -303,56 +303,16 @@ export const selectStake = (id) => async (dispatch, getState) => {
       }
     }
 
-    // switch (selectedStakes) {
-    //   case Object.keys(selectedStakes).length:
-    //     console.log("First");
-    //     dispatch({
-    //       type: "SELECT_STAKE",
-    //       payload: id,
-    //     });
-    //     break;
-    //   case stakes.map((stake) => selectedStakes[stake.expired] === true):
-    //     console.log("Second");
-    //     if (stakes.filter((stake) => selectedStakes[stake.expired] === true)) {
-    //       dispatch({
-    //         type: "SELECT_STAKE",
-    //         payload: id,
-    //       });
-    //       break;
-    //     } else {
-    //       clearSelection();
-    //       dispatch({
-    //         type: "SELECT_STAKE",
-    //         payload: id,
-    //       });
-    //       break;
-    //     }
+    const {
+      user: { stakes: Stakes },
+      dashboard: { selectedStakes: SelectedStakes },
+    } = await getState();
 
-    //   case stakes.map((stake) => selectedStakes[stake.expired] === false):
-    //     console.log("Thirdx");
-    //     clearSelection();
-    //     dispatch({
-    //       type: "SELECT_STAKE",
-    //       payload: id,
-    //     });
-    //     break;
-    // }
-
-    // dispatch({
-    //   type: "SELECT_STAKE",
-    //   payload: id,
-    // });
-
-    // const {
-    //   user: { stakes },
-    //   dashboard: { selectedStakes },
-    // } = await getState();
-
-    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
+    const _SelectedStakes = Stakes.filter((stake) => SelectedStakes[stake.id]);
     let totalBurn = 0;
     let totalXIO = 0;
 
-    _selectedStakes.map((_stake) => {
+    _SelectedStakes.map((_stake) => {
       totalBurn += parseFloat(_stake.burnAmount) || 0;
       totalXIO += parseFloat(_stake.stakeAmount) || 0;
     });
