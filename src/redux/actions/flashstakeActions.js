@@ -40,10 +40,10 @@ export const calculateReward = (xioQuantity, days) => async (
       const data = await getQueryData(id);
       console.log("////////////", data);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
       const _days = JSBI.BigInt(days);
       const _expiry = JSBI.multiply(_days, JSBI.BigInt("3600"));
-      const _zero = JSBI.BigInt("0");
 
       const _getPercentStaked = JSBI.divide(
         JSBI.multiply(
@@ -128,10 +128,27 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
     } = getState();
     if (id && altQuantity > 0) {
       const data = await getQueryData(id);
+      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
+      const _getPercentStaked0 = JSBI.divide(
+        JSBI.multiply(
+          JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
+      );
+      const _fpy0 = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked0),
+        JSBI.BigInt("2")
+      );
+      const _lpFee = JSBI.subtract(
+        JSBI.BigInt("1000"),
+        JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+      );
 
       const _amountInWithFee = JSBI.multiply(
         JSBI.BigInt(Web3.utils.toWei(altQuantity)),
-        JSBI.BigInt("900")
+        _lpFee
       );
 
       const _swapAmount = JSBI.divide(
