@@ -15,6 +15,10 @@ import {
   getXPY,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
+  initializeFlashProtocolContract,
+  getFPY,
+} from "../../utils/contractFunctions/flashProtocolContractFunctions";
+import {
   initializeFlashstakePoolContract,
   getAPYStake,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
@@ -28,10 +32,10 @@ export const _getTokenPrice = _.memoize(async () => {
   return response;
 });
 
-export const _getXPY = _.memoize(async () => {
-  await initializeFlashstakeProtocolContract();
-  const _xpy = await getXPY();
-  return _xpy;
+export const _getFPY = _.memoize(async () => {
+  await initializeFlashProtocolContract();
+  const _fpy = await getFPY();
+  return _fpy;
 });
 
 export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
@@ -55,12 +59,12 @@ export const updatePools = (data) => async (dispatch) => {
         _error("ERROR pricingAPI -> ", e);
       }
       if (response?.data) {
-        const _xpy = await _getXPY();
+        const _fpy = await _getFPY();
         for (let i = 0; i < _pools.length; i++) {
           _pools[i].tokenPrice =
             response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
               .usd || 0;
-          const _apyStake = await _getAPYStake(_pools[i].id, _xpy);
+          const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
 
           _pools[i].apy =
             ((_apyStake * _pools[i].tokenPrice) /
@@ -120,11 +124,6 @@ export const updateUserData = (data) => async (dispatch, getState) => {
         const { id, amountIn, expiry, expireAfter, rewardAmount } = _tempData;
 
         let expired = parseFloat(expireAfter) < Date.now() / 1000;
-        console.log(
-          "==============>",
-          parseFloat(expireAfter),
-          Date.now() / 1000
-        );
         dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
         let _burnAmount = "0";
         if (expired) {

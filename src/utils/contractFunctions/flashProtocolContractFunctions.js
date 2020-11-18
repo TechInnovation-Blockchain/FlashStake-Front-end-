@@ -58,6 +58,29 @@ export const getOneDay = async () => {
   return 60;
 };
 
+export const getFPY = async (amount = "1") => {
+  try {
+    checkContractInitialized();
+
+    const fpy = await contract.methods.getFPY(Web3.utils.toWei(amount)).call();
+    return fpy;
+  } catch (e) {
+    _error("ERROR getFPY -> ", e);
+  }
+  return 0;
+};
+export const getMintAmount = async (_amountIn, _expiry) => {
+  try {
+    checkContractInitialized();
+
+    const fpy = await contract.methods.getMintAmount(_amountIn, _expiry).call();
+    return fpy;
+  } catch (e) {
+    _error("ERROR getFPY -> ", e);
+  }
+  return 0;
+};
+
 export const stake = async (_amountIn, _expiry, _data) => {
   setLoadingIndep({ stake: true });
   const walletAddress = getWalletAddressReduxState();

@@ -21,7 +21,7 @@ import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
-import { utils, BigNumber } from "ethers";
+import { utils } from "ethers";
 
 export const calculateReward = (xioQuantity, days) => async (
   dispatch,
@@ -37,57 +37,49 @@ export const calculateReward = (xioQuantity, days) => async (
     } = getState();
 
     if (id && xioQuantity > 0 && days > 0) {
-      console.log(id);
-      console.log(xioQuantity);
-      console.log(days);
       const data = await getQueryData(id);
-      console.log(data);
+      console.log("////////////", data);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
       const _days = JSBI.BigInt(days);
+      const _expiry = JSBI.multiply(_days, JSBI.BigInt("3600"));
+      const _zero = JSBI.BigInt("0");
 
-      const _percent = JSBI.divide(
+      const _getPercentStaked = JSBI.divide(
         JSBI.multiply(
           JSBI.add(JSBI.BigInt(data.flashBalance), _quantity),
           _precision
         ),
         JSBI.BigInt(data.totalSupply)
       );
-
-      console.log({ _percent });
-      console.log(data);
-      console.log(xioQuantity);
-      console.log(days);
-      const _getPercentStaked = JSBI.greaterThan(_percent, _precision)
-        ? _precision
-        : _percent;
-      console.log({ _getPercentStaked: _getPercentStaked.toString() });
-      console.log({ _precision: _precision.toString() });
-      console.log({ _percent: _percent.toString() });
       const _fpy = JSBI.divide(
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
-      console.log(
-        // JSBI.divide(
-        JSBI.subtract(_precision, _getPercentStaked).toString()
-        // JSBI.BigInt("2")
+      const _mintAmount = JSBI.divide(
+        JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
+        JSBI.multiply(_precision, JSBI.BigInt("31536000"))
       );
-      // );
-      // console.log({ _fpy });
-      //getMintAmount
-      const _output = JSBI.divide(
-        JSBI.multiply(JSBI.multiply(_quantity, _days), _fpy),
-        JSBI.multiply(_precision, JSBI.BigInt("365"))
+      //fpy of 0
+      const _getPercentStaked0 = JSBI.divide(
+        JSBI.multiply(
+          JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
       );
-      console.log({ _output });
-      const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
-      console.log({ _limit });
-      const _mintAmount = JSBI.greaterThan(_output, _limit) ? _limit : _output;
-      console.log({ _mintAmount });
+      const _fpy0 = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked0),
+        JSBI.BigInt("2")
+      );
+      //-----------------
+      const _lpFee = JSBI.subtract(
+        JSBI.BigInt("1000"),
+        JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+      );
       const _reward = JSBI.divide(
         JSBI.multiply(
-          JSBI.multiply(_mintAmount, JSBI.BigInt("900")),
+          JSBI.multiply(_mintAmount, _lpFee),
           JSBI.BigInt(data.reserveAltAmount)
         ),
         JSBI.add(
@@ -95,21 +87,25 @@ export const calculateReward = (xioQuantity, days) => async (
             JSBI.BigInt(data.reserveFlashAmount),
             JSBI.BigInt("1000")
           ),
-          JSBI.multiply(_mintAmount, JSBI.BigInt("900"))
+          JSBI.multiply(_mintAmount, _lpFee)
         )
       );
+
+      // await initializeFlashstakePoolContract(id);
+      // const _apyStake = await getAPYStake(String(_mintAmount));
+      _log("reward ==>", {
+        xioQuantity,
+        days,
+        _reward: Web3.utils.fromWei(_reward.toString()),
+      });
 
       reward = JSBI.subtract(
         JSBI.BigInt(_reward),
         JSBI.multiply(
           JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100)),
           JSBI.BigInt(5)
-          // //////////////////////////////////////////
         )
       ).toString();
-
-      console.log(_reward);
-      console.log(reward);
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);
@@ -460,12 +456,11 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
-      contract: { oneDay },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
     }
-    const _days = days * (oneDay || 1);
+    const _days = days * 3600;
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
@@ -487,13 +482,9 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     await stake(
       Web3.utils.toWei(xioQuantity),
       _days,
-      // utils.solidityKeccak256(
-      //   ["address", "uint256"],
-      //   [selectedRewardToken.tokenB.id, BigNumber.from("0")]
-      // )
       utils.defaultAbiCoder.encode(
         ["address", "uint256"],
-        [selectedRewardToken.tokenB.id, "0"]
+        [selectedRewardToken.tokenB.id, reward]
       )
     );
   } catch (e) {
