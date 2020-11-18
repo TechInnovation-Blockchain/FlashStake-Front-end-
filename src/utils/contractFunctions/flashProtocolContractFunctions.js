@@ -180,7 +180,7 @@ export const stake = async (_amountIn, _expiry, _data) => {
   }
 };
 
-export const unstakeEarly = (_id) => async () => {
+export const unstakeEarly = (_id) => {
   setLoadingIndep({ unstake: true });
   const walletAddress = getWalletAddressReduxState();
   try {

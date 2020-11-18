@@ -14,6 +14,7 @@ import {
 import {
   initializeFlashProtocolContract,
   stake,
+  unstakeEarly as unstakeEarlyFunc,
 } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { getQueryData } from "./queryActions";
@@ -526,43 +527,63 @@ export const unstakeEarly = (unstakeAll = true) => async (
       user: { stakes, dappBalance },
       dashboard: { selectedStakes },
     } = await getState();
+
     if (dappBalance <= 0 || !stakes?.length) {
       throw new _error("No stakes to withdraw!");
     }
-
-    let _balanceUnstake = 0;
-    let _unstakeTimestamps = [];
-
-    if (unstakeAll) {
-      _balanceUnstake = dappBalance;
-      _unstakeTimestamps = stakes.map((_stake) => _stake.id);
-    } else {
-      _unstakeTimestamps = stakes
-        .filter((_stake) => {
-          if (selectedStakes[_stake.id]) {
-            _balanceUnstake += parseFloat(_stake.stakeAmount);
-            return true;
-          } else {
-            return false;
-          }
-        })
-        .map((_stake) => _stake.id);
-    }
+    const _selectedIds = Object.keys(selectedStakes).filter(
+      (_key) => selectedStakes[_key]
+    );
+    let _quantity = 0;
+    const _selectedStakes = stakes.filter((_stake) => {
+      if (_selectedIds.includes(_stake.id)) {
+        _quantity += parseFloat(_stake.stakeAmount);
+        return true;
+      }
+      return false;
+    });
     dispatch({
       type: "UNSTAKE_REQUEST",
       payload: {
-        timestamps: _unstakeTimestamps,
-        quantity: _balanceUnstake,
+        timestamps: _selectedIds,
+        quantity: _quantity,
       },
     });
-    initializeFlashstakeProtocolContract();
+    if (_selectedIds.length === 1 && _selectedStakes[0].burnAmount > 0) {
+      await initializeFlashProtocolContract();
+      await unstakeEarlyFunc(_selectedIds[0]);
+    } else {
+      await initializeFlashstakeProtocolContract();
+      await unstake(_selectedIds);
+    }
 
-    _log(
-      "unstake params -> ",
-      _unstakeTimestamps
-      // Web3.utils.toWei(_balanceUnstake)
-    );
-    await unstake(_unstakeTimestamps);
+    // let _balanceUnstake = 0;
+    // let _unstakeTimestamps = [];
+
+    // if (unstakeAll) {
+    //   _balanceUnstake = dappBalance;
+    //   _unstakeTimestamps = stakes.map((_stake) => _stake.id);
+    // } else {
+    //   _unstakeTimestamps = stakes
+    //     .filter((_stake) => {
+    //       if (selectedStakes[_stake.id]) {
+    //         _balanceUnstake += parseFloat(_stake.stakeAmount);
+    //         return true;
+    //       } else {
+    //         return false;
+    //       }
+    //     })
+    //     .map((_stake) => _stake.id);
+    // }
+
+    //
+
+    // _log(
+    //   "unstake params -> ",
+    //   _unstakeTimestamps
+    //   // Web3.utils.toWei(_balanceUnstake)
+    // );
+    //
   } catch (e) {
     _error("ERROR unstakeEarly -> ", e);
   }

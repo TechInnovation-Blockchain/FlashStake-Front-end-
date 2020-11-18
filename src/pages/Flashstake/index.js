@@ -47,9 +47,9 @@ import {
   // setReset,
   setInitialValues,
   unstakeXIO,
-  // unstakeEarly,
+  unstakeEarly,
 } from "../../redux/actions/flashstakeActions";
-import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
+// import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
@@ -1502,11 +1502,7 @@ function Flashstake({
                     </Tooltip>{" "}
                     IN THE PROCESS*/}
                   </Typography>
-                  <Button
-                    variant="retro"
-                    fullWidth
-                    onClick={() => unStakeEarly()}
-                  >
+                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
                     UNSTAKE
                   </Button>
                 </Fragment>
@@ -1546,11 +1542,7 @@ function Flashstake({
                     </Tooltip>{" "}
                     in the process
                   </Typography>
-                  <Button
-                    variant="retro"
-                    fullWidth
-                    onClick={() => unStakeEarly()}
-                  >
+                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
                     UNSTAKE
                   </Button>
                 </Fragment>
@@ -1592,7 +1584,7 @@ function Flashstake({
                       <Button
                         variant="retro"
                         fullWidth
-                        onClick={() => unStakeEarly()}
+                        onClick={() => unstakeEarly}
                       >
                         UNSTAKE
                       </Button>
@@ -1703,7 +1695,7 @@ function Flashstake({
                       <Button
                         variant="retro"
                         fullWidth
-                        onClick={() => unStakeEarly()}
+                        onClick={() => unstakeEarly}
                       >
                         UNSTAKE
                       </Button>
