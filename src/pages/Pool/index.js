@@ -400,23 +400,6 @@ function Pool({
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
 
-  // {account === "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? ():()}
-
-  const getData = async () => {
-    const res = await axios
-      .get("https://leaderboard.xio.app:3010/getReserves")
-      .then((res) => {
-        setPoolData(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  useEffect(() => {
-    getData();
-  }, [selectedPortal]);
-
   useEffect(() => {
     setTimeout(() => {
       setHeightValue(ref?.current?.clientHeight);
