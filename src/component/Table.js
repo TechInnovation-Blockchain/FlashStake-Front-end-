@@ -146,6 +146,7 @@ function TableComponent({
   oneDay,
   totalBurn,
   setStakeStatus,
+  theme,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -363,7 +364,9 @@ function TableComponent({
                             >
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("$FLASH")}
+                                  src={tryRequire(
+                                    theme === "dark" ? "FlashPro5" : "$FLASH"
+                                  )}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
@@ -503,7 +506,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected, totalBurn },
-  ui: { loading, changeApp },
+  ui: { loading, changeApp, theme },
   contract: { oneDay },
 }) => ({
   stakes,
@@ -520,6 +523,7 @@ const mapStateToProps = ({
   changeApp,
   oneDay,
   totalBurn,
+  theme,
 });
 
 export default connect(mapStateToProps, {
