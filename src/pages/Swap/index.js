@@ -554,12 +554,13 @@ function Swap({
   animation,
   setHeightValue,
   heightVal,
+  recalcSwap,
   ...props
 }) {
   const classes = useStyles();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const history = useHistory();
-  const [height, setHeight] = useState(heightVal);
+  const [recalc, setRecalc] = useState(false);
 
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
@@ -623,6 +624,15 @@ function Swap({
   useEffect(() => {
     getBalanceALT();
   }, [selectedPortal, getBalanceALT]);
+
+  useEffect(() => {
+    if (recalcSwap !== recalc) {
+      setRecalc(recalcSwap);
+      if (selectedPortal) {
+        debouncedCalculateSwap(quantity, true);
+      }
+    }
+  }, [recalcSwap, recalc, quantity, debouncedCalculateSwap, selectedPortal]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -1272,6 +1282,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { currentStaked, pools },
   flashstake: { swapHist },
+  query: { recalcSwap },
   contract,
 }) => ({
   ...flashstake,
@@ -1285,6 +1296,7 @@ const mapStateToProps = ({
   swapHist,
   pools,
   heightVal,
+  recalcSwap,
   ...contract,
 });
 

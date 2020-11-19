@@ -24,7 +24,7 @@ import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
 import { utils } from "ethers";
 
-export const calculateReward = (xioQuantity, days) => async (
+export const calculateReward = (xioQuantity, days, time) => async (
   dispatch,
   getState
 ) => {
@@ -40,12 +40,13 @@ export const calculateReward = (xioQuantity, days) => async (
 
     if (id && xioQuantity > 0 && days > 0) {
       const data = await getQueryData(id);
-      console.log("////////////", data);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _zero = JSBI.BigInt("0");
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
+      const _multiplier =
+        time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
       const _days = JSBI.BigInt(days);
-      const _expiry = JSBI.multiply(_days, JSBI.BigInt("3600"));
+      const _expiry = JSBI.multiply(_days, JSBI.BigInt(_multiplier));
 
       const _getPercentStaked = JSBI.divide(
         JSBI.multiply(
@@ -124,7 +125,10 @@ export const calculateReward = (xioQuantity, days) => async (
   dispatch(setLoading({ reward: false }));
 };
 
-export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
+export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
+  dispatch,
+  getState
+) => {
   dispatch(setLoading({ swapReward: true }));
   let swapAmount = "0";
   try {
@@ -134,7 +138,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
       },
     } = getState();
     if (id && altQuantity > 0) {
-      const data = await getQueryData(id);
+      const data = await getQueryData(id, forceRefetchQuery);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _zero = JSBI.BigInt("0");
       const _getPercentStaked0 = JSBI.divide(
@@ -486,7 +490,10 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
   }
 };
 
-export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
+export const stakeXIO = (xioQuantity, days, time) => async (
+  dispatch,
+  getState
+) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
@@ -494,7 +501,9 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
     }
-    const _days = days * 3600;
+    const _multiplier =
+      time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
+    const _days = days * _multiplier;
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
@@ -710,6 +719,9 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
     setSwapDialogStepIndep("failedSwap");
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }
+  dispatch({
+    type: "RECALC_SWAP",
+  });
 };
 
 export const addTokenLiquidityInPool = (

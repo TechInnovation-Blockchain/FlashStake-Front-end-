@@ -1,0 +1,24 @@
+
+{
+    users {
+              id
+              stakes {
+                pool {
+                  id,
+                  tokenB {
+                    symbol,
+                    decimal,
+                  }
+                }
+                amountIn
+                expiry
+                expireAfter
+                mintedAmount
+                rewardAmount
+                staker
+                receiver
+                active
+                transactionHash
+              }
+            }
+  }

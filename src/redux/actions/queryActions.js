@@ -1,4 +1,4 @@
-import { _error, _log } from "../../utils/log";
+import { _error } from "../../utils/log";
 import { store } from "../../config/reduxStore";
 import axios from "axios";
 import { CONSTANTS } from "../../utils/constants";
@@ -16,13 +16,17 @@ const getReservesData = async () => {
   }
 };
 
-export const getQueryData = async (_poolId) => {
+export const getQueryData = async (_poolId, forceRefetchQuery = false) => {
   try {
     const {
       query,
       // poolData
     } = await store.getState();
-    if (Date.now() - query.timestamp >= 15000 || query.id !== _poolId) {
+    if (
+      Date.now() - query.timestamp >= 15000 ||
+      query.id !== _poolId ||
+      forceRefetchQuery
+    ) {
       const data = await getReservesData();
       await store.dispatch({
         type: "QUERY_DATA",

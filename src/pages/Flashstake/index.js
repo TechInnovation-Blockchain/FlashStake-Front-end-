@@ -514,9 +514,9 @@ function Flashstake({
 
   useEffect(() => {
     if (selectedPortal) {
-      debouncedCalculateReward(quantity, days);
+      debouncedCalculateReward(quantity, days, time);
       const _rewardRefreshInterval = setInterval(() => {
-        debouncedCalculateReward(quantity, days);
+        debouncedCalculateReward(quantity, days, time);
       }, 60000);
       return () => {
         clearInterval(_rewardRefreshInterval);
@@ -536,7 +536,7 @@ function Flashstake({
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
     setShowStakeDialog(true);
-    stakeXIO(quantity, days);
+    stakeXIO(quantity, days, time);
   };
 
   const onClickApprove = () => {
@@ -763,14 +763,14 @@ function Flashstake({
                         {/* <MenuItem className={classes.item} value="">
                           <em>None</em>
                         </MenuItem> */}
-                        <MenuItem className={classes.item} value={"Sec"}>
-                          Seconds
-                        </MenuItem>
-                        <MenuItem className={classes.item} value={"Min"}>
-                          Minutes
+                        <MenuItem className={classes.item} value={"Mins"}>
+                          Mins
                         </MenuItem>
                         <MenuItem className={classes.item} value={"Hrs"}>
-                          Hours
+                          Hrs
+                        </MenuItem>
+                        <MenuItem className={classes.item} value={"Days"}>
+                          Days
                         </MenuItem>
                       </Select>
                     </Box>
