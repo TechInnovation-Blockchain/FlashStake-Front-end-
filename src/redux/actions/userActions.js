@@ -49,7 +49,6 @@ export const updatePools = (data) => async (dispatch) => {
   let _tokenList = [];
   try {
     if (data?.length) {
-      dispatch(setLoading({ dapp: false }));
       _pools = JSON.parse(JSON.stringify(data));
       _tokenList = _pools.map((_pool) => _pool.tokenB.id);
       let response;
@@ -75,6 +74,7 @@ export const updatePools = (data) => async (dispatch) => {
   } catch (e) {
     _error("ERROR updatePools -> ", e);
   } finally {
+    dispatch(setLoading({ dapp: false }));
     dispatch({
       type: "POOL",
       payload: _pools,
