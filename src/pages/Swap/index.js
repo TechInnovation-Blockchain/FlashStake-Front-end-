@@ -786,7 +786,7 @@ function Swap({
                         </Tooltip>{" "}
                         you will immediately{" "}
                         {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
-                        earn{" "}
+                        get{" "}
                         {loadingRedux.swapReward ? (
                           <CircularProgress
                             size={12}

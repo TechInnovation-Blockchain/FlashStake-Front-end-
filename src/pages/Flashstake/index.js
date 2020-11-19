@@ -921,44 +921,62 @@ function Flashstake({
 
                   <Grid item xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography
-                        // variant="overline"
-                        variant="body1"
-                        className={classes.infoText}
-                      >
-                        If you stake{" "}
-                        <span className={classes.infoTextSpan}>
-                          {trunc(quantity) || 0} $FLASH{" "}
-                        </span>{" "}
-                        for{" "}
-                        <span className={classes.infoTextSpan}>
-                          {trunc(days) || 0} {days > 1 ? "hours" : "hour"}
-                        </span>{" "}
-                        {/* YOU WILL IMMEDIATELY{" "} */}
-                        you will immediately {/* GET{" "} */}
-                        get{" "}
-                        {loadingRedux.reward ? (
-                          <CircularProgress
-                            size={12}
-                            className={classes.loaderStyle}
-                          />
-                        ) : quantity > 0 && days > 0 ? (
-                          <Tooltip
-                            title={`${Web3.utils.fromWei(reward)} ${
-                              selectedRewardToken?.tokenB?.symbol || ""
-                            }`}
-                          >
-                            <span className={classes.infoTextSpan}>
-                              {trunc(Web3.utils.fromWei(reward))}{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""}
-                            </span>
-                          </Tooltip>
-                        ) : (
+                      quantity && days > 0 ? (
+                        <Typography
+                          // variant="overline"
+                          variant="body1"
+                          className={classes.infoText}
+                        >
+                          If you stake{" "}
                           <span className={classes.infoTextSpan}>
-                            {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
-                          </span>
-                        )}
-                      </Typography>
+                            {trunc(quantity) || 0} $FLASH{" "}
+                          </span>{" "}
+                          for{" "}
+                          <span className={classes.infoTextSpan}>
+                            {trunc(days) || 0} {days > 1 ? "hours" : "hour"}
+                          </span>{" "}
+                          {/* YOU WILL IMMEDIATELY{" "} */}
+                          you will immediately {/* GET{" "} */}
+                          get{" "}
+                          {loadingRedux.reward ? (
+                            <CircularProgress
+                              size={12}
+                              className={classes.loaderStyle}
+                            />
+                          ) : quantity > 0 && days > 0 ? (
+                            <Tooltip
+                              title={`${Web3.utils.fromWei(reward)} ${
+                                selectedRewardToken?.tokenB?.symbol || ""
+                              }`}
+                            >
+                              <span className={classes.infoTextSpan}>
+                                {trunc(Web3.utils.fromWei(reward))}{" "}
+                                {selectedRewardToken?.tokenB?.symbol || ""}
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            <span className={classes.infoTextSpan}>
+                              {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
+                            </span>
+                          )}
+                        </Typography>
+                      ) : (
+                        <Typography
+                          // variant="overline"
+                          variant="body1"
+                          className={classes.infoText}
+                        >
+                          <span className={classes.infoTextSpan}>
+                            Fuel ($FLASH){" "}
+                          </span>{" "}
+                          and{" "}
+                          <span className={classes.infoTextSpan}>
+                            Time (Hours)
+                          </span>{" "}
+                          {/* YOU WILL IMMEDIATELY{" "} */}
+                          are needed for time travel
+                        </Typography>
+                      )
                     ) : (
                       <Typography
                         variant="body1"
@@ -1454,7 +1472,7 @@ function Flashstake({
                     in the process
                   </Typography>
                   <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    UNSTAKE
+                    CONFIRM UNSTAKE
                   </Button>
                 </Fragment>
               ),
@@ -1489,7 +1507,7 @@ function Flashstake({
                     IN THE PROCESS*/}
                   </Typography>
                   <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    UNSTAKE
+                    CONFIRM UNSTAKE
                   </Button>
                 </Fragment>
               ),
@@ -1529,7 +1547,7 @@ function Flashstake({
                     in the process
                   </Typography>
                   <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    UNSTAKE
+                    CONFIRM UNSTAKE
                   </Button>
                 </Fragment>
               ),
@@ -1572,7 +1590,7 @@ function Flashstake({
                         fullWidth
                         onClick={() => unstakeEarly}
                       >
-                        UNSTAKE
+                        CONFIRM UNSTAKE
                       </Button>
                     </Fragment>
                   ) : (
@@ -1597,7 +1615,8 @@ function Flashstake({
                           >
                             <Tooltip title={`${expiredDappBalance} $FLASH`}>
                               <span>
-                                COMPLETED({trunc(expiredDappBalance)} $FLASH)
+                                {/* COMPLETED({trunc(expiredDappBalance)} $FLASH) */}
+                                CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
                           </Button>
@@ -1625,7 +1644,7 @@ function Flashstake({
                         <span>
                           {/* COMPLETED
                           <br />({trunc(expiredDappBalance)} $FLASH) */}
-                          UNSTAKE
+                          CONFIRM UNSTAKE
                         </span>
                       </Tooltip>
                     </Button>
@@ -1669,7 +1688,7 @@ function Flashstake({
                         fullWidth
                         onClick={() => unstakeEarly}
                       >
-                        UNSTAKE
+                        CONFIRM UNSTAKE
                       </Button>
                     </Fragment>
                   ) : (
@@ -1693,13 +1712,14 @@ function Flashstake({
                           >
                             <Tooltip title={`${expiredDappBalance} $FLASH`}>
                               <span>
-                                COMPLETED
-                                <br />({trunc(expiredDappBalance)} $FLASH)
+                                {/* COMPLETED
+                                <br />({trunc(expiredDappBalance)} $FLASH) */}
+                                CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
                           </Button>
                         </Grid>
-                        <Grid item xs={6}>
+                        {/* <Grid item xs={6}>
                           <Button
                             variant="retro"
                             fullWidth
@@ -1712,7 +1732,7 @@ function Flashstake({
                               </span>
                             </Tooltip>
                           </Button>
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                     </Fragment>
                   )
@@ -1734,7 +1754,7 @@ function Flashstake({
                     <Button variant="retro" fullWidth onClick={unstakeXIO}>
                       <Tooltip title={`${expiredDappBalance} $FLASH`}>
                         <span>
-                          UNSTAKE
+                          CONFIRM UNSTAKE
                           {/* <br />({trunc(expiredDappBalance)} $FLASH) */}
                         </span>
                       </Tooltip>
