@@ -1152,7 +1152,7 @@ function Flashstake({
                         className={classes.redText}
                       >
                         {/* CONNECT YOUR WALLET TO STAKE */}
-                        Connect you wallet to stake
+                        Connect your wallet to stake $FLASH
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||

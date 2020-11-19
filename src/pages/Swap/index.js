@@ -772,35 +772,47 @@ function Swap({
                   </Grid>
                   <Grid item xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography variant="body1" className={classes.infoText}>
-                        If you swap{" "}
-                        <Tooltip
-                          title={`${quantity} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
+                      quantity > 0 ? (
+                        <Typography
+                          variant="body1"
+                          className={classes.infoText}
                         >
-                          <span className={classes.infoTextSpan}>
-                            {trunc(quantity)}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
-                          </span>
-                        </Tooltip>{" "}
-                        you will immediately{" "}
-                        {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
-                        get{" "}
-                        {loadingRedux.swapReward ? (
-                          <CircularProgress
-                            size={12}
-                            className={classes.loaderStyle}
-                          />
-                        ) : (
-                          <Tooltip title={`${swapOutput} $FLASH`}>
+                          If you swap{" "}
+                          <Tooltip
+                            title={`${quantity} ${
+                              selectedRewardToken?.tokenB?.symbol || ""
+                            }`}
+                          >
                             <span className={classes.infoTextSpan}>
-                              {" "}
-                              {trunc(swapOutput)} $FLASH
+                              {trunc(quantity)}{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""}
                             </span>
-                          </Tooltip>
-                        )}
-                      </Typography>
+                          </Tooltip>{" "}
+                          you will immediately{" "}
+                          {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
+                          get{" "}
+                          {loadingRedux.swapReward ? (
+                            <CircularProgress
+                              size={12}
+                              className={classes.loaderStyle}
+                            />
+                          ) : (
+                            <Tooltip title={`${swapOutput} $FLASH`}>
+                              <span className={classes.infoTextSpan}>
+                                {" "}
+                                {trunc(swapOutput)} $FLASH
+                              </span>
+                            </Tooltip>
+                          )}
+                        </Typography>
+                      ) : (
+                        <Typography
+                          variant="body1"
+                          className={classes.infoText}
+                        >
+                          Enter swap quantity above
+                        </Typography>
+                      )
                     ) : (
                       <Typography
                         variant="body1"
@@ -1240,7 +1252,7 @@ function Swap({
                   <ArrowDropDownIcon size="large" className={classes.icon} />
                 )}
                 <Typography variant="body2" className={classes.stakeDashBtn}>
-                  SWAP DASHBOARD
+                  SWAP HISTORY
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>

@@ -112,6 +112,7 @@ function SwapTable({
   walletBalance,
   swapHistory,
   balanceUSD,
+  theme,
 }) {
   const classes = useStyles();
   const headItems = ["INPUT", "OUTPUT"];
@@ -304,7 +305,10 @@ function SwapTable({
                               <Tooltip title={`${_swap.flashReceived} $FLASH`}>
                                 <span className={classes.flexCenter}>
                                   <img
-                                    src={tryRequire("$FLASH")}
+                                    // src={tryRequire("FlashPro5")}
+                                    src={tryRequire(
+                                      theme === "dark" ? "FlashPro5" : "$FLASH"
+                                    )}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}
@@ -348,7 +352,6 @@ function SwapTable({
               <CircularProgress size={12} className={classes.loadingIcon} />{" "}
               LOADING
             </Typography>
-            ``
           </Grid>
         )}
       </Grid>
@@ -363,6 +366,7 @@ const mapStateToProps = ({
   dashboard: { selectedStakes, isStakesSelected },
   ui: {
     loading: { data },
+    theme,
   },
 }) => ({
   balanceUSD,
@@ -376,6 +380,7 @@ const mapStateToProps = ({
   walletBalance,
   swapHistory,
   loading: data,
+  theme,
 });
 
 export default connect(mapStateToProps, { showWalletBackdrop })(SwapTable);
