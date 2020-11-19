@@ -1,4 +1,7 @@
-import { balanceContract } from "../../contracts/getContract";
+import {
+  balanceContract,
+  balanceInfuraContract,
+} from "../../contracts/getContract";
 import {
   getWalletAddressReduxState,
   getTokenList,
@@ -13,7 +16,7 @@ let isContractInitialized = false;
 export const initializeBalanceContract = async () => {
   contract = balanceContract();
   if (!contract) {
-    contract = balanceContract();
+    contract = balanceInfuraContract();
   }
   isContractInitialized = true;
 };

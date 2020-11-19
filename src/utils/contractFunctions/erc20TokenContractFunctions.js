@@ -1,4 +1,7 @@
-import { erc20TokenContract } from "../../contracts/getContract";
+import {
+  erc20TokenContract,
+  erc20TokenInfuraContract,
+} from "../../contracts/getContract";
 import { MaxUint256 } from "@ethersproject/constants";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
@@ -20,7 +23,7 @@ let isContractInitialized = false;
 export const initializeErc20TokenContract = async (address) => {
   contract = erc20TokenContract(address);
   if (!contract) {
-    contract = erc20TokenContract(address);
+    contract = erc20TokenInfuraContract(address);
   }
   isContractInitialized = true;
 };

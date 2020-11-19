@@ -1164,7 +1164,7 @@ function Flashstake({
                         className={classes.redText}
                       >
                         {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                        Change network to<b>rinkeby</b> to start <b>staking</b>
+                        Change network to <b>rinkeby</b> to start <b>staking</b>
                       </Typography>
                     </Grid>
                   ) : null}

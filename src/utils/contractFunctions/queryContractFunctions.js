@@ -19,7 +19,7 @@ let isContractInitialized = false;
 export const initializeQueryContract = async () => {
   contract = queryContract();
   if (!contract) {
-    contract = queryContract();
+    contract = queryInfuraContract();
   }
   isContractInitialized = true;
 };
