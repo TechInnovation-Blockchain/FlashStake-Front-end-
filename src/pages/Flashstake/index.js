@@ -20,7 +20,10 @@ import {
   Tooltip,
   CircularProgress,
   IconButton,
+  MenuItem,
+  Select,
 } from "@material-ui/core";
+// import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
@@ -890,7 +893,18 @@ function Flashstake({
                         variant="body1"
                         className={classes.secondaryText}
                       >
-                        Time (Hours)
+                        Time ({" "}
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          // value={age}
+                          // onChange={handleChange}
+                        >
+                          <MenuItem value={10}>Ten</MenuItem>
+                          <MenuItem value={20}>Twenty</MenuItem>
+                          <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                        )
                       </Typography>
 
                       <Box className={classes.textFieldContainer}>
