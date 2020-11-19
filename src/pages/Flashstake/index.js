@@ -743,11 +743,10 @@ function Flashstake({
                         >
                           {/* <MaxBtn width={10} /> */}
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.timeText}
                           >
-                            {" "}
-                            {time}{" "}
+                            {time}
                           </Typography>
                         </IconButton>
                       </Box>
@@ -791,7 +790,13 @@ function Flashstake({
                           </span>{" "}
                           for{" "}
                           <span className={classes.infoTextSpan}>
-                            {trunc(days) || 0} {days > 1 ? "hours" : "hour"}
+                            {trunc(days) || 0}{" "}
+                            {time === "Hrs"
+                              ? days > 1
+                                ? "hours"
+                                : "hour"
+                              : time}
+                            {/* {days > 1 ? "hours" : "hour"} */}
                           </span>{" "}
                           {/* YOU WILL IMMEDIATELY{" "} */}
                           you will immediately {/* GET{" "} */}
@@ -1222,7 +1227,9 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "hours" : "hour"} to earn{" "}
+                    {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
+                    {time === "Hrs" ? (days > 1 ? "hours" : "hour") : time} to
+                    earn{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
@@ -1271,7 +1278,9 @@ function Flashstake({
                   >
                     You have successfully staked {stakeRequest.quantity} $FLASH
                     for {stakeRequest.days}{" "}
-                    {stakeRequest.days > 1 ? "hours" : "hour"} and you were sent{" "}
+                    {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}
+                    {time === "Hrs" ? (days > 1 ? "hours" : "hour") : time} and
+                    you were sent{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
