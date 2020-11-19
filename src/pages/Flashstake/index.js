@@ -530,7 +530,14 @@ function Flashstake({
         clearInterval(_rewardRefreshInterval);
       };
     }
-  }, [setLoading, selectedPortal, days, quantity, debouncedCalculateReward]);
+  }, [
+    setLoading,
+    selectedPortal,
+    days,
+    quantity,
+    debouncedCalculateReward,
+    time,
+  ]);
 
   useEffect(() => {
     if (active && account) {
