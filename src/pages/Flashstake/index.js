@@ -302,7 +302,15 @@ let useStyles = makeStyles((theme) => ({
   },
   timeText: {
     fontWeight: 700,
-    color: theme.palette.text.secondary,
+    color: "#9191A7",
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      color: theme.palette.xioRed.main,
+
+      // "& svg": {
+      //   fill: theme.palette.xioRed.main,
+      // },
+    },
   },
 }));
 
