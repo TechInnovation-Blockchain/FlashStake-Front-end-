@@ -1237,7 +1237,7 @@ function Flashstake({
                     {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
                     {time === "Hrs" ? (days > 1 ? "hours" : "hour") : time} to
-                    earn{" "}
+                    get{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
