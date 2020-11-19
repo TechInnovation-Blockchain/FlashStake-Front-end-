@@ -62,17 +62,17 @@ function Updater({
     fetchPolicy: "network-only",
   });
 
-  const getData = async () => {
-    const res = await axios
-      .get("https://leaderboard.xio.app:3010/getReserves")
-      .then((res) => {
-        setPoolData(res);
-        // getQueryData(selectedPortal);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const getData = async () => {
+  //   const res = await axios
+  //     .get("https://leaderboard.xio.app:3010/getReserves")
+  //     .then((res) => {
+  //       setPoolData(res);
+  //       // getQueryData(selectedPortal);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   // const quote = async () => {
   // await;
@@ -107,10 +107,10 @@ function Updater({
 
   // await getQueryData(selectedPortal);
 
-  useEffect(() => {
-    getData();
-    // getQData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  //   // getQData();
+  // }, []);
 
   useEffect(() => {
     updateOneDay();
