@@ -27,8 +27,6 @@ firebase.initializeApp({
   measurementId: "G-5JCYFQSWJ7",
 });
 
-// console.log(JSBI.BigInt("1"));
-
 export const analytics = firebase.analytics();
 export const perf = firebase.performance();
 

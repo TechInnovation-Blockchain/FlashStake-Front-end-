@@ -315,11 +315,6 @@ function TableComponent({
                       //   (_stake.expiryTime - Date.now() / 1000) / 3600;
                       // const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
                       // const _minRem = Math.ceil(_remDur * 60);
-                      // console.log(
-                      //   "yada -> ",
-                      //   _stake.expiryTime,
-                      //   Date.now() / 1000
-                      // );
                       const _remDur = _stake.expiryTime - Date.now() / 1000;
                       const _daysRem = Math.trunc(_remDur / 86400);
                       const _hoursRem = Math.trunc(
@@ -350,7 +345,6 @@ function TableComponent({
                             selectedStakes[_stake.id] ? classes.selected : null
                           }`}
                         >
-                          {/* {console.log("Stake -- > ", _stake)} */}
                           <Grid item xs={4} className={classes.gridItem}>
                             {/* <Tooltip
                         title={`${_stake.rewardEarned} ${_stake.tokenB}`}
@@ -400,18 +394,18 @@ function TableComponent({
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
                                 {_daysRem > 0
-                                  ? `${_daysRem}${
+                                  ? `${_daysRem} ${
                                       _daysRem > 1 ? "days" : "day"
-                                    } ${_hoursRem}${
+                                    } ${_hoursRem} ${
                                       _hoursRem > 1 ? "hrs" : "hr"
                                     }`
                                   : _hoursRem > 0
-                                  ? `${_hoursRem}${
+                                  ? `${_hoursRem} ${
                                       _hoursRem > 1 ? "hrs" : "hr"
-                                    } ${_minsRem}${
+                                    } ${_minsRem} ${
                                       _minsRem > 1 ? "mins" : "min"
                                     }`
-                                  : `${_minsRem}${
+                                  : `${_minsRem} ${
                                       _minsRem > 1 ? "mins" : "min"
                                     }`}
                                 {/* // {_daysRem || _minRem}{" "}
