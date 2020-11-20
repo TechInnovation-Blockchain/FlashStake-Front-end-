@@ -450,12 +450,6 @@ function Pool({
       const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
         selectedPortal
       );
-
-      console.log(
-        "reserveFlashAmount , reserveAltAmount",
-        reserveFlashAmount,
-        reserveAltAmount
-      );
       const [_reserveA, _reserveB] =
         _amountType === "alt"
           ? [reserveAltAmount, reserveFlashAmount]

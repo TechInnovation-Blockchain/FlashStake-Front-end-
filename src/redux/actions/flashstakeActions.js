@@ -556,7 +556,6 @@ export const unstakeEarlyFlash = (unstakeAll = true) => async (
     if (unstakeAll) {
       _balanceUnstake = dappBalance;
       _unstakeTimestamps = stakes.map((_stake) => _stake.id);
-      console.log("herreee");
     } else {
       _unstakeTimestamps = stakes
         .filter((_stake) => {
@@ -568,7 +567,6 @@ export const unstakeEarlyFlash = (unstakeAll = true) => async (
           }
         })
         .map((_stake) => _stake.id);
-      console.log("herree222222e");
     }
     dispatch({
       type: "UNSTAKE_REQUEST",
@@ -622,7 +620,6 @@ export const unstakeEarly = () => async (dispatch, getState) => {
       await initializeFlashProtocolContract();
       await unstakeEarlyFunc(_selectedIds[0]);
     } else {
-      console.log("hereeee", _selectedIds);
       await initializeFlashstakeProtocolContract();
       await unstake(_selectedIds);
     }

@@ -347,10 +347,18 @@ function TableComponent({
                   {sortedData()
                     .slice(page * 5, page * 5 + 5)
                     .map((_stake) => {
-                      const _remDur =
-                        (_stake.expiryTime - Date.now() / 1000) / 3600;
-                      const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
-                      const _minRem = Math.ceil(_remDur * 60);
+                      // const _remDur =
+                      //   (_stake.expiryTime - Date.now() / 1000) / 3600;
+                      // const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
+                      // const _minRem = Math.ceil(_remDur * 60);
+                      const _remDur = _stake.expiryTime - Date.now() / 1000;
+                      const _daysRem = Math.trunc(_remDur / 86400);
+                      const _hoursRem = Math.trunc(
+                        (_remDur - _daysRem * 86400) / 3600
+                      );
+                      const _minsRem = Math.ceil(
+                        (_remDur - _daysRem * 86400 - _hoursRem * 3600) / 60
+                      );
                       return (
                         // <a
                         //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
@@ -373,7 +381,6 @@ function TableComponent({
                             selectedStakes[_stake.id] ? classes.selected : null
                           }`}
                         >
-                          {/* {console.log("Stake -- > ", _stake)} */}
                           <Grid item xs={4} className={classes.gridItem}>
                             {/* <Tooltip
                         title={`${_stake.rewardEarned} ${_stake.tokenB}`}
@@ -422,14 +429,29 @@ function TableComponent({
                             {!_stake.expired &&
                             _stake.expiryTime > Date.now() / 1000 ? (
                               <Fragment>
-                                {_daysRem || _minRem}{" "}
-                                {_daysRem
-                                  ? _daysRem === 1
-                                    ? "hour"
-                                    : "hours"
-                                  : _minRem === 1
-                                  ? "min"
-                                  : "mins"}
+                                {_daysRem > 0
+                                  ? `${_daysRem} ${
+                                      _daysRem > 1 ? "days" : "day"
+                                    } ${_hoursRem} ${
+                                      _hoursRem > 1 ? "hrs" : "hr"
+                                    }`
+                                  : _hoursRem > 0
+                                  ? `${_hoursRem} ${
+                                      _hoursRem > 1 ? "hrs" : "hr"
+                                    } ${_minsRem} ${
+                                      _minsRem > 1 ? "mins" : "min"
+                                    }`
+                                  : `${_minsRem} ${
+                                      _minsRem > 1 ? "mins" : "min"
+                                    }`}
+                                {/* // {_daysRem || _minRem}{" "}
+                                // {_daysRem
+                                //   ? _daysRem === 1
+                                //     ? "hour"
+                                //     : "hours"
+                                //   : _minRem === 1
+                                //   ? "min"
+                                //   : "mins"} */}
                               </Fragment>
                             ) : (
                               "Completed"
