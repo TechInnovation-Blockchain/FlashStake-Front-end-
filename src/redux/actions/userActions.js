@@ -11,10 +11,6 @@ import {
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 import { _error } from "../../utils/log";
 import {
-  initializeFlashstakeProtocolContract,
-  getXPY,
-} from "../../utils/contractFunctions/FlashStakeProtocolContract";
-import {
   initializeFlashProtocolContract,
   getFPY,
 } from "../../utils/contractFunctions/flashProtocolContractFunctions";
@@ -50,6 +46,10 @@ export const updatePools = (data) => async (dispatch) => {
   try {
     if (data?.length) {
       _pools = JSON.parse(JSON.stringify(data));
+      dispatch({
+        type: "POOL",
+        payload: _pools,
+      });
       _tokenList = _pools.map((_pool) => _pool.tokenB.id);
       let response;
       try {

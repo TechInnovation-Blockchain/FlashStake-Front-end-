@@ -80,6 +80,17 @@ export const getMintAmount = async (_amountIn, _expiry) => {
   }
   return 0;
 };
+export const getPercentageStaked = async (_amountIn) => {
+  try {
+    checkContractInitialized();
+
+    const fpy = await contract.methods.getPercentageStaked(_amountIn).call();
+    return fpy;
+  } catch (e) {
+    _error("ERROR getPercentageStaked -> ", e);
+  }
+  return 0;
+};
 
 export const stake = async (_amountIn, _expiry, _data) => {
   setLoadingIndep({ stake: true });

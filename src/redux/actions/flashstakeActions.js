@@ -37,7 +37,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
         selectedRewardToken: { id },
       },
     } = getState();
-
     if (id && xioQuantity > 0 && days > 0) {
       const data = await getQueryData(id);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
@@ -47,7 +46,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
         time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
       const _days = JSBI.BigInt(days);
       const _expiry = JSBI.multiply(_days, JSBI.BigInt(_multiplier));
-
       const _getPercentStaked = JSBI.divide(
         JSBI.multiply(
           JSBI.add(JSBI.BigInt(data.flashBalance), _quantity),
