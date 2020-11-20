@@ -58,7 +58,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deployproduction": "react-scripts build && firebase deploy --only hosting:xio-stakex",
-    "deployv2": "react-scripts build && firebase deploy --only hosting:xio-stakex-v2",
+    "deployinternaltest": "react-scripts build && firebase deploy --only hosting:xio-stakex-internal-test",
     "deployinternal": "react-scripts build && firebase deploy --only hosting:xio-stakex-internal"
   },
   "eslintConfig": {
