@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 
 import App from "./config/App";
 import "./assets/css/main.css";
+import xordLogo from "./assets/xord-light.png";
+import { Typography } from "@material-ui/core";
 
 // ReactDOM.render(() => {}, document.getElementById("root"));
 const AppProtected = () => {
@@ -32,6 +34,38 @@ const AppProtected = () => {
       }}
     >
       {tried ? "AUTHENTICATION FAILED" : "LOADING"}
+
+      <a
+        // className={classes.poweredContentContainer}
+        href="https://xord.one"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          position: "fixed",
+          left: "50%",
+          bottom: 15,
+          transform: "translateX(-50%)",
+          textDecoration: "none",
+        }}
+      >
+        <Typography
+          variant="body2"
+          //  className={classes.poweredText}
+          style={{
+            marginBottom: 4,
+            color: "#fff",
+            fontWeight: 700,
+          }}
+        >
+          POWERED BY
+        </Typography>
+        <img src={xordLogo} alt="xord.one" width={70} />
+      </a>
     </div>
   );
 };
