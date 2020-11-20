@@ -1340,7 +1340,7 @@ function Flashstake({
                         ? "Days"
                         : "Day"
                       : time}
-                    and you were sent{" "}
+                      {" "}and you were sent{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
