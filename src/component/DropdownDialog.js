@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
@@ -129,9 +130,15 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   link: {
     textDecoration: "none",
+  },
+  loadingIcon: {
+    marginRight: 5,
   },
   // tokensLogo: {
   //   filter: "grayscale(1)",
@@ -373,7 +380,12 @@ export default function DropdownDialog({
             </List>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
-              NOTHING TO SHOW
+              <CircularProgress
+                size={12}
+                color="inherit"
+                className={classes.loadingIcon}
+              />{" "}
+              GETTING TOKENS
             </Typography>
           )}
         </Container>

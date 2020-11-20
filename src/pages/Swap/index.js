@@ -581,7 +581,7 @@ function Swap({
 
   //#region
 
-  const [expanded2, setExpanded2] = useState(false);
+  const [expanded2, setExpanded2] = useState(true);
 
   const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 500), []);
 
