@@ -11,7 +11,7 @@ export const uiReducer = (
     expanding: true,
     animation: 0,
     changeApp: false,
-    heightVal: "",
+    heightVal: "auto",
     falseSelected: true,
   },
   { type, payload }

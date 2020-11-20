@@ -552,9 +552,8 @@ function TableComponent({
           )
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2">
-              <CircularProgress size={12} /> LOADING
-            </Typography>
+            <CircularProgress size={12} />
+            <Typography variant="body2">LOADING</Typography>
           </Grid>
         )}
       </Grid>

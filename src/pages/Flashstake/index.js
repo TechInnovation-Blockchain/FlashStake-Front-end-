@@ -468,8 +468,13 @@ function Flashstake({
   );
 
   const [days, setDays] = useState(initialValues.days);
+  const [multiplier, setMultiplier] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
+
+  useEffect(() => {
+    setMultiplier(time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400");
+  }, [time]);
 
   useEffect(() => {
     document
@@ -645,7 +650,7 @@ function Flashstake({
         <AnimateHeight
           id="example-panel"
           duration={400}
-          height={heightVal} // see props documentation below
+          height={heightVal || "auto"} // see props documentation below
         >
           <Box
             ref={ref}
@@ -742,7 +747,7 @@ function Flashstake({
                           fullWidth
                           placeholder="0"
                           value={days}
-                          error={days > maxDays}
+                          error={days * multiplier > maxDays}
                           onChange={onChangeDays}
                           type="tel"
                           inputMode="numeric"
@@ -952,7 +957,9 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
+                              parseFloat(quantity) >
+                                parseFloat(walletBalance)) ||
+                            days * multiplier > maxDays
                           }
                           loading={loadingRedux.stake}
                         >
@@ -999,7 +1006,9 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
+                              parseFloat(quantity) >
+                                parseFloat(walletBalance)) ||
+                            days * multiplier > maxDays
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1202,7 +1211,8 @@ function Flashstake({
                         reward <= 0 ||
                         (active &&
                           account &&
-                          parseFloat(quantity) > parseFloat(walletBalance))
+                          parseFloat(quantity) > parseFloat(walletBalance)) ||
+                        days * multiplier > maxDays
                       }
                       loading={loadingRedux.approval}
                     >
@@ -1339,8 +1349,8 @@ function Flashstake({
                       ? days > 1
                         ? "Days"
                         : "Day"
-                      : time}
-                      {" "}and you were sent{" "}
+                      : time}{" "}
+                    and you were sent{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
