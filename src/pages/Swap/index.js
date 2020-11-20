@@ -561,11 +561,12 @@ function Swap({
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const history = useHistory();
   const [recalc, setRecalc] = useState(false);
-
+  const [heightToggle, setHeightToggle] = useState(false);
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
   useEffect(() => {
     setTimeout(() => {
+      setHeightToggle(!heightToggle);
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
   });
@@ -1266,7 +1267,7 @@ function Swap({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <SwapTable />
+                {heightToggle ? <SwapTable /> : <SwapTable />}
               </AccordionDetails>
             </Accordion>
           </Box>

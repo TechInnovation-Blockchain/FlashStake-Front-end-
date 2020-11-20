@@ -1,4 +1,10 @@
-import React, { useState, useCallback, Fragment, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  Fragment,
+  useEffect,
+  useRef,
+} from "react";
 import {
   Button as MuiButton,
   Grid,
@@ -13,7 +19,7 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
 
-import { showWalletBackdrop } from "../redux/actions/uiActions";
+import { showWalletBackdrop, setHeightValue } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
@@ -24,6 +30,7 @@ import {
   clearSelection,
 } from "../redux/actions/dashboardActions";
 import { store } from "../config/reduxStore";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -147,6 +154,10 @@ function TableComponent({
   totalBurn,
   setStakeStatus,
   theme,
+  // toggle,
+  heightVal,
+  setHeightValue,
+  heightToggle,
 }) {
   const classes = useStyles();
   const headItems = ["OUTPUT", "UNLOCKED", "REMAINING"];
@@ -156,6 +167,26 @@ function TableComponent({
   const [page, setPage] = useState(0);
   const [reverse, setReverse] = useState(false);
   const [allowSelect, setAllowSelect] = useState();
+
+  const history = useHistory();
+  const [height, setHeight] = useState(heightVal);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    // setTimeout(() => {
+    //   setHeightValue(ref?.current?.clientHeight);
+    // }, 100);
+  });
+
+  const toggle = () => {
+    setHeight(height > 300 ? heightVal : "100%");
+  };
+
+  useEffect(() => {
+    // if (history.location.pathname === "/stake") {
+    toggle();
+    // }
+  }, []);
 
   useEffect(() => {
     setPage(0);
@@ -231,9 +262,14 @@ function TableComponent({
     (event, newPage) => {
       setReverse(newPage < page);
       setPage(newPage);
+      // toggle();
     },
     [page]
   );
+
+  // useEffect(() => {
+  //   toggle();
+  // }, []);
 
   const tryRequire = (path) => {
     try {
@@ -244,7 +280,7 @@ function TableComponent({
   };
 
   return (
-    <Grid container spacing={3} className={classes.walletInfo}>
+    <Grid ref={ref} container spacing={3} className={classes.walletInfo}>
       <Grid container item xs={12} className={classes.infoGrid}>
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="body2">
@@ -442,6 +478,7 @@ function TableComponent({
                     page={page}
                     onChangePage={handleChangePage}
                     labelRowsPerPage=""
+                    // onChangeRowsPerPage={toggle()}
                     nextIconButtonProps={{ color: "primary" }}
                   />
                 </Grid>
@@ -466,8 +503,9 @@ function TableComponent({
                         isStakesSelected ? onClickUnstake2 : onClickUnstake
                       }
                       disabled={
-                        !isStakesSelected && !(expiredDappBalance > 0)
+                        (!isStakesSelected && !(expiredDappBalance > 0)) ||
                         //   : !isStakesSelected
+                        loadingRedux.unstake
                         // loadingRedux.unstake || !(dappBalance > 0)
                       }
                       fontSizeLocal="body2"
@@ -506,7 +544,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected, totalBurn },
-  ui: { loading, changeApp, theme },
+  ui: { loading, changeApp, theme, heightVal },
   contract: { oneDay },
 }) => ({
   stakes,
@@ -524,6 +562,7 @@ const mapStateToProps = ({
   oneDay,
   totalBurn,
   theme,
+  heightVal,
 });
 
 export default connect(mapStateToProps, {
@@ -533,4 +572,5 @@ export default connect(mapStateToProps, {
   clearSelection,
   setStakeStatus,
   clearSelection,
+  setHeightValue,
 })(TableComponent);

@@ -146,7 +146,7 @@ export const darkTheme = createMuiTheme({
   },
   typography: {
     fontFamily: "Montserrat",
-    fontSize: 12,
+    fontSize: 11,
   },
 });
 

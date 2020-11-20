@@ -425,6 +425,7 @@ function Flashstake({
   // console.log(props);
   const history = useHistory();
   const [height, setHeight] = useState(heightVal);
+  const [heightToggle, setHeightToggle] = useState(false);
   const ref = useRef(null);
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
@@ -442,6 +443,7 @@ function Flashstake({
   };
   useEffect(() => {
     setTimeout(() => {
+      setHeightToggle(!heightToggle);
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
   });
@@ -803,6 +805,14 @@ function Flashstake({
                               ? days > 1
                                 ? "hours"
                                 : "hour"
+                              : time === "Mins"
+                              ? days > 1
+                                ? "Mins"
+                                : "Min"
+                              : time === "Days"
+                              ? days > 1
+                                ? "Days"
+                                : "Day"
                               : time}
                             {/* {days > 1 ? "hours" : "hour"} */}
                           </span>{" "}
@@ -1062,10 +1072,21 @@ function Flashstake({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <Table
-                  onClickUnstake={onClickUnstake}
-                  onClickUnstake2={onClickUnstake2}
-                />
+                {heightToggle ? (
+                  <Table
+                    onClickUnstake={onClickUnstake}
+                    onClickUnstake2={onClickUnstake2}
+                    // toggle={toggle}
+                    // heightToggle={heightToggle}
+                  />
+                ) : (
+                  <Table
+                    onClickUnstake={onClickUnstake}
+                    onClickUnstake2={onClickUnstake2}
+                    // toggle={toggle}
+                    // heightToggle={heightToggle}
+                  />
+                )}
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1236,8 +1257,20 @@ function Flashstake({
                   >
                     {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
-                    {time === "Hrs" ? (days > 1 ? "hours" : "hour") : time} to
-                    get{" "}
+                    {time === "Hrs"
+                      ? days > 1
+                        ? "hours"
+                        : "hour"
+                      : time === "Mins"
+                      ? days > 1
+                        ? "Mins"
+                        : "Min"
+                      : time === "Days"
+                      ? days > 1
+                        ? "Days"
+                        : "Day"
+                      : time}{" "}
+                    to get{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
@@ -1287,8 +1320,20 @@ function Flashstake({
                     You have successfully staked {stakeRequest.quantity} $FLASH
                     for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}
-                    {time === "Hrs" ? (days > 1 ? "hours" : "hour") : time} and
-                    you were sent{" "}
+                    {time === "Hrs"
+                      ? days > 1
+                        ? "hours"
+                        : "hour"
+                      : time === "Mins"
+                      ? days > 1
+                        ? "Mins"
+                        : "Min"
+                      : time === "Days"
+                      ? days > 1
+                        ? "Days"
+                        : "Day"
+                      : time}
+                    and you were sent{" "}
                     <Tooltip
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
