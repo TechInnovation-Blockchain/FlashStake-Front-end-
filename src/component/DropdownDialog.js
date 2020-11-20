@@ -356,9 +356,9 @@ export default function DropdownDialog({
                       style={{ marginRight: 5 }}
                     />
                     {_pool.tokenB.symbol}{" "}
-                    {history.location.pathname === "/swap"
+                    {history.location.pathname === "/swap" && _pool.tokenPrice
                       ? `($${_pool.tokenPrice})`
-                      : history.location.pathname === "/stake"
+                      : history.location.pathname === "/stake" && _pool.apy
                       ? `(${
                           parseFloat(_pool.apy).toFixed(2) -
                             parseInt(_pool.apy) >
