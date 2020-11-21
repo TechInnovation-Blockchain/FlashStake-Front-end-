@@ -69,4 +69,4 @@ const AppProtected = () => {
     </div>
   );
 };
-ReactDOM.render(<AppProtected />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
