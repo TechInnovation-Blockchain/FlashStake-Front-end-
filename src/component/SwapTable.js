@@ -260,6 +260,8 @@ function SwapTable({
                           href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}
                           className={classes.link}
                           target="_blank"
+                          rel="noopener noreferrer"
+                          key={_swap.id}
                         >
                           <Grid
                             container
