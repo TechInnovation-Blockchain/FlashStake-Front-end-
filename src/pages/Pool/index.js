@@ -279,6 +279,11 @@ const useStyles = makeStyles((theme) => ({
   gridSpace2: {
     margin: theme.spacing(1, 0),
   },
+  outerBox: {
+    backgroundColor: theme.palette.background.secondary,
+    borderRadius: 5,
+    padding: theme.spacing(1),
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -396,12 +401,14 @@ function Pool({
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
+  const [heightToggle, setHeightToggle] = useState(false);
   const ref = useRef(null);
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
 
   useEffect(() => {
     setTimeout(() => {
+      setHeightToggle(!heightToggle);
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
   });
@@ -723,6 +730,81 @@ function Pool({
                       </Box>
                     </Box>
                   </Grid>
+                  {/* {!selectedRewardToken?.tokenB?.symbol ? ( */}
+                  {/* <Grid container item style={{ display: "flex" }}> */}
+
+                  {selectedRewardToken?.tokenB?.symbol ? (
+                    <Fragment>
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                            {selectedStakeToken} per{" "}
+                            {selectedRewardToken?.tokenB?.symbol}
+                          </Typography>
+
+                          <Typography
+                            variant="body1"
+                            className={classes.secondaryText}
+                          >
+                            610.215
+                          </Typography>
+                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                            {selectedStakeToken} per{" "}
+                            {selectedRewardToken?.tokenB?.symbol}
+                          </Typography>
+
+                          <Typography
+                            variant="body1"
+                            className={classes.secondaryText}
+                          >
+                            610.215
+                          </Typography>
+                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                            {selectedStakeToken} per{" "}
+                            {selectedRewardToken?.tokenB?.symbol}
+                          </Typography>
+
+                          <Typography
+                            variant="body1"
+                            className={classes.secondaryText}
+                          >
+                            610.215
+                          </Typography>
+                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                        </Box>
+                      </Grid>
+                    </Fragment>
+                  ) : null}
+                  {/* </Grid> */}
+                  {/* ) : null} */}
+                  {/* </Box> */}
                   <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       <Typography variant="body2" className={classes.infoText}>
@@ -883,10 +965,17 @@ function Pool({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <PoolTable
-                  onClickUnstake={onClickUnstake}
-                  onClickApprovePool={onClickApprovePool}
-                />
+                {heightToggle ? (
+                  <PoolTable
+                    onClickUnstake={onClickUnstake}
+                    onClickApprovePool={onClickApprovePool}
+                  />
+                ) : (
+                  <PoolTable
+                    onClickUnstake={onClickUnstake}
+                    onClickApprovePool={onClickApprovePool}
+                  />
+                )}
               </AccordionDetails>
             </Accordion>
           </Box>

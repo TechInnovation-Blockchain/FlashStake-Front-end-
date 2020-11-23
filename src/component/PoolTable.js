@@ -25,6 +25,10 @@ import {
 } from "../redux/actions/flashstakeActions";
 import { selectStake } from "../redux/actions/dashboardActions";
 import Radio from "@material-ui/core/Radio";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -124,6 +128,44 @@ const useStyles = makeStyles((theme) => ({
   checked: {
     color: theme.palette.xioRed.main,
   },
+  gridSpacing: {
+    padding: theme.spacing(0, 1),
+    paddingBottom: theme.spacing(1),
+  },
+  expandBtn: {
+    color: theme.palette.button.retro,
+  },
+  accordion: {
+    marginBottom: theme.spacing(1),
+    width: "100%",
+  },
+
+  heading: {
+    fontWeight: 700,
+  },
+  accordionSummary: {
+    margin: 0,
+  },
+  accordionDetails: {
+    display: "block !important",
+    ".MuiAccordionDetails-root": {
+      display: "block !important",
+    },
+  },
+  border: {
+    borderBottom: `1px solid #000`,
+    width: "80%",
+  },
+  outerBox: {
+    display: "flex",
+    width: "100%",
+  },
+  innerBox: {
+    width: "100%",
+  },
+  innerText: {
+    textAlign: "left",
+  },
 }));
 
 function PoolTable({
@@ -146,6 +188,8 @@ function PoolTable({
   checkAllowancePoolWithdraw,
   onClickApprovePool,
   getApprovalPoolLiquidity,
+  selectedRewardToken,
+  selectedStakeToken,
 }) {
   const classes = useStyles();
   const headItems = ["POOL", "BALANCE"];
@@ -258,18 +302,6 @@ function PoolTable({
             </Tooltip>
           </Typography>
         </Grid>
-
-        {/* <Grid item xs={6} className={classes.grid}>
-          <Typography className={classes.mainHead} variant="overline">
-            COMPLETED POOLS
-          </Typography>
-          <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} $FLASH`}>
-              <span> {poolDashboard.length} </span>
-              {/* <span>{trunc(dappBalance)} $FLASH</span>  
-            </Tooltip>
-          </Typography>
-        </Grid> */}
       </Grid>
 
       <Grid container item xs={12}>
@@ -293,206 +325,212 @@ function PoolTable({
             </Grid>
           ))}
         </Grid>
-
-        {!(active && account) ? (
-          <Grid
-            item
-            xs={12}
-            className={`${classes.msgContainer} ${classes.cursorPointer}`}
-            onClick={showWalletHint}
-          >
-            <Typography variant="overline" className={classes.redText}>
-              CONNECT YOUR WALLET TO VIEW YOUR STAKES
-            </Typography>
-          </Grid>
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.redText}>
-              CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
-            </Typography>
-          </Grid>
-        ) : !loading ? (
-          poolDashboard?.length ? (
-            <Fragment>
-              <PageAnimation in={true} key={page} reverse={reverse}>
-                <Grid container>
-                  {sortedData()
-                    .slice(page * 5, page * 5 + 5)
-                    .map((_pool) => {
-                      return (
-                        // <a
-                        //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
-                        //   className={classes.link}
-                        //   target="_blank"
-                        // >
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_pool.pool.id}
-                          className={classes.cursorPointer}
-                          onClick={() =>
-                            visibleRadioButtons &&
-                            onSelectWithdrawPool(_pool.pool.id)
-                          }
-                          // onClick={() => selectStake(_stake.id)}
-                          // className={`${classes.cursorPointer} ${
-                          //   selectedStakes[_stake.id] ? classes.selected : null
-                          // }`}
-                        >
-                          <Grid
-                            item
-                            xs={6 - visibleRadioButtons}
-                            className={classes.gridItem}
-                          >
-                            {/* <Tooltip
-                            title={`${_stake.rewardEarned} ${_stake.tokenB}`}
-                          > */}
-                            <span className={classes.flexCenter}>
-                              <img
-                                src={tryRequire(_pool.pool.tokenB.symbol)}
-                                alt="Logo"
-                                srcSet=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              />
-                              {_pool.pool.tokenB.symbol}
-                            </span>
-                            {/* </Tooltip> */}
-                          </Grid>
-                          <Grid
-                            item
-                            xs={6 - visibleRadioButtons}
-                            className={classes.gridItem}
-                          >
-                            <Tooltip title={`${_pool.balance} xFlash`}>
-                              <span className={classes.flexCenter}>
-                                <img
-                                  src={tryRequire("$FLASH")}
-                                  alt="Logo"
-                                  srcSet=""
-                                  width={15}
-                                  style={{ marginRight: 5 }}
-                                />
-                                {trunc(_pool.balance)} xFlash
-                              </span>
-                            </Tooltip>
-                          </Grid>
-
-                          {visibleRadioButtons ? (
-                            <Grid item xs={2} className={classes.gridItem}>
-                              <Radio
-                                classes={{
-                                  root: classes.radio,
-                                  checked: classes.checked,
-                                }}
-                                checked={_pool.pool.id === selectedWithdrawPool}
-                                // onChange={onSelectWithdrawPool}
-                                // onChange={({ target: { value } }) =>
-                                //   onSelectWithdrawPool(value)
-                                // }
-                                // checked={selectedValue === "a"}
-                                // onChange={handleChange}
-                                value={_pool.pool.id}
-                                name="radio-button-demo"
-                                inputProps={{ "aria-label": "A" }}
-                              />
-                            </Grid>
-                          ) : null}
-                        </Grid>
-                        // </a>
-                      );
-                    })}
-                </Grid>
-              </PageAnimation>
-              {sortedData().length > 5 ? (
-                <Grid item xs={12} className={classes.gridItem}>
-                  <TablePagination
-                    rowsPerPageOptions={[]}
-                    component="div"
-                    count={sortedData().length}
-                    rowsPerPage={5}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    labelRowsPerPage=""
-                    nextIconButtonProps={{ color: "primary" }}
-                  />
-                </Grid>
-              ) : null}
-              {sortedData().length ? (
-                allowancePoolWithdraw ? (
-                  <Grid item xs={12} className={classes.gridItem}>
-                    <Button
-                      variant="retro"
-                      fullWidth
-                      // onClick={() => {
-                      //   onClickUnstake();
-                      //   unstakeXIO();
-                      // }}
-                      onClick={
-                        visibleRadioButtons
-                          ? () => {
-                              onClickUnstake();
-                              removeTokenLiquidityInPool();
-                            }
-                          : () => setVisibleRadioButtons(true)
-                      }
-                      disabled={
-                        loadingRedux.withdrawPool ||
-                        (visibleRadioButtons && !selectedWithdrawPool)
-                      }
-                      fontSizeLocal="body2"
-                      loading={loadingRedux.withdrawPool}
-                    >
-                      {visibleRadioButtons && selectedWithdrawPool
-                        ? "WITHDRAW LIQUIDITY FROM SELECTED POOL"
-                        : "WITHDRAW"}
-                    </Button>
-                  </Grid>
-                ) : (
-                  <Grid item xs={12} className={classes.gridItem}>
-                    <Button
-                      variant="retro"
-                      fullWidth
-                      onClick={
-                        visibleRadioButtons
-                          ? () => {
-                              onClickApprovePool();
-                              getApprovalPoolLiquidity();
-                            }
-                          : () => setVisibleRadioButtons(true)
-                      }
-                      disabled={
-                        loadingRedux.withdrawPool ||
-                        (visibleRadioButtons && !selectedWithdrawPool)
-                      }
-                      fontSizeLocal="body2"
-                      loading={
-                        loadingRedux.approval ||
-                        loadingRedux.approvalWithdrawPool
-                      }
-                    >
-                      APPROVE xFLASH
-                    </Button>
-                  </Grid>
-                )
-              ) : null}
-            </Fragment>
-          ) : (
-            <Grid item xs={12} className={classes.msgContainer}>
-              <Typography variant="overline" className={classes.msg}>
-                NO AVAILABLE POOLS
-              </Typography>
-            </Grid>
-          )
-        ) : (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline">
-              <CircularProgress size={12} /> LOADING
-            </Typography>
-          </Grid>
-        )}
       </Grid>
+
+      {!(active && account) ? (
+        <Grid
+          item
+          xs={12}
+          className={`${classes.msgContainer} ${classes.cursorPointer}`}
+          onClick={showWalletHint}
+        >
+          <Typography variant="overline" className={classes.redText}>
+            CONNECT YOUR WALLET TO VIEW YOUR STAKES
+          </Typography>
+        </Grid>
+      ) : chainId !== 4 ? (
+        <Grid item xs={12} className={classes.msgContainer}>
+          <Typography variant="overline" className={classes.redText}>
+            CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
+          </Typography>
+        </Grid>
+      ) : (
+        <Fragment>
+          <PageAnimation in={true} key={page} reverse={reverse}>
+            <Grid container className={classes.gridSpacing} item>
+              <Accordion className={classes.accordion}>
+                <AccordionSummary
+                  expandIcon={
+                    <ExpandMoreIcon
+                      size={"large"}
+                      className={classes.expandBtn}
+                    />
+                  }
+                  className={classes.accordionSummary}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className={classes.heading}>
+                    {selectedStakeToken} / AAVE
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">
+                        Your total pool tokens:
+                      </Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">0.04602</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">Pooled XIO:</Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">0.00180469</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">Pooled AAVE:</Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">1.2683</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">
+                        Your pool share:
+                      </Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} spacing={2}>
+                    <Grid item xs={12} className={classes.outerBox}>
+                      <Grid container xs={6} className={classes.innerBox}>
+                        <Button fullWidth variant="retro">
+                          REMOVE
+                        </Button>
+                      </Grid>
+                      <Grid container xs={6} className={classes.innerBox}>
+                        <Button fullWidth variant="retro">
+                          ADD
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion className={classes.accordion}>
+                <AccordionSummary
+                  expandIcon={
+                    <ExpandMoreIcon
+                      size={"large"}
+                      className={classes.expandBtn}
+                    />
+                  }
+                  className={classes.accordionSummary}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className={classes.heading}>
+                    {selectedStakeToken} / AAVE
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">
+                        Your total pool tokens:
+                      </Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">0.04602</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">Pooled XIO:</Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">0.00180469</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">Pooled AAVE:</Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline">1.2683</Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} className={classes.outerBox}>
+                    <Grid
+                      xs={6}
+                      style={{ textAlign: "left" }}
+                      className={classes.innerBox}
+                    >
+                      <Typography variant="caption">
+                        Your pool share:
+                      </Typography>
+                    </Grid>
+                    <Grid xs={6} style={{ textAlign: "right" }}>
+                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Grid xs={12} spacing={2}>
+                    <Grid item xs={12} className={classes.outerBox}>
+                      <Grid container xs={6} className={classes.innerBox}>
+                        <Button fullWidth variant="retro">
+                          REMOVE
+                        </Button>
+                      </Grid>
+                      <Grid container xs={6} className={classes.innerBox}>
+                        <Button fullWidth variant="retro">
+                          ADD
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+          </PageAnimation>
+        </Fragment>
+      )}
     </Grid>
   );
 }
@@ -502,7 +540,13 @@ const mapStateToProps = ({
   user: { stakes, walletBalance, dappBalance, expiredDappBalance },
   dashboard: { selectedStakes, isStakesSelected },
   ui: { loading },
-  flashstake: { poolDashboard, selectedWithdrawPool, allowancePoolWithdraw },
+  flashstake: {
+    poolDashboard,
+    selectedWithdrawPool,
+    allowancePoolWithdraw,
+    selectedRewardToken,
+    selectedStakeToken,
+  },
 }) => ({
   stakes,
   active,
@@ -518,6 +562,8 @@ const mapStateToProps = ({
   poolDashboard,
   selectedWithdrawPool,
   allowancePoolWithdraw,
+  selectedRewardToken,
+  selectedStakeToken,
 });
 
 export default connect(mapStateToProps, {
