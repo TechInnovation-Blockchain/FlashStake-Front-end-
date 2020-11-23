@@ -18,7 +18,7 @@ export const uiReducer = (
 ) => {
   switch (type) {
     case "TOGGLE_THEME_MODE": {
-      const themeMode = state.theme === "dark" ? "retro" : "dark";
+      const themeMode = state.theme === "dark" ? "light" : "dark";
       localStorage.setItem("themeMode", themeMode);
       return { ...state, theme: themeMode };
     }

@@ -294,10 +294,10 @@ let useStyles = makeStyles((theme) => ({
   },
   item: {
     "&.MuiListItem-root.Mui-selected, .MuiListItem-root.Mui-selected:hover": {
-      backgroundColor: "#000 !important",
+      color: `${theme.palette.text.secondary} !importtant`,
     },
     "&:hover": {
-      backgroundColor: "#000",
+      backgroundColor: `${theme.palette.background.secondary3} !important`,
     },
   },
   timeText: {
@@ -443,7 +443,7 @@ function Flashstake({
   };
   useEffect(() => {
     setTimeout(() => {
-      setHeightToggle(!heightToggle);
+      // setHeightToggle(!heightToggle);
       setHeightValue(ref?.current?.clientHeight);
     }, 100);
   });
@@ -468,13 +468,8 @@ function Flashstake({
   );
 
   const [days, setDays] = useState(initialValues.days);
-  const [multiplier, setMultiplier] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
-
-  useEffect(() => {
-    setMultiplier(time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400");
-  }, [time]);
 
   useEffect(() => {
     document
@@ -650,7 +645,7 @@ function Flashstake({
         <AnimateHeight
           id="example-panel"
           duration={400}
-          height={heightVal || "auto"} // see props documentation below
+          height={heightVal} // see props documentation below
         >
           <Box
             ref={ref}
@@ -747,7 +742,7 @@ function Flashstake({
                           fullWidth
                           placeholder="0"
                           value={days}
-                          error={days * multiplier > maxDays}
+                          error={days > maxDays}
                           onChange={onChangeDays}
                           type="tel"
                           inputMode="numeric"
@@ -957,9 +952,7 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) >
-                                parseFloat(walletBalance)) ||
-                            days * multiplier > maxDays
+                              parseFloat(quantity) > parseFloat(walletBalance))
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1006,9 +999,7 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) >
-                                parseFloat(walletBalance)) ||
-                            days * multiplier > maxDays
+                              parseFloat(quantity) > parseFloat(walletBalance))
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1211,8 +1202,7 @@ function Flashstake({
                         reward <= 0 ||
                         (active &&
                           account &&
-                          parseFloat(quantity) > parseFloat(walletBalance)) ||
-                        days * multiplier > maxDays
+                          parseFloat(quantity) > parseFloat(walletBalance))
                       }
                       loading={loadingRedux.approval}
                     >

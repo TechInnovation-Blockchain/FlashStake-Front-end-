@@ -14,6 +14,7 @@ import {
   TablePagination,
   Box,
   Checkbox,
+  Radio,
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
@@ -407,9 +408,10 @@ function TableComponent({
                             >
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire(
-                                    theme === "dark" ? "FlashPro5" : "$FLASH"
-                                  )}
+                                  // src={tryRequire(
+                                  //   theme === "dark" ? "FlashPro5" : "$FLASH"
+                                  // )}
+                                  src={tryRequire("FLASH2")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}

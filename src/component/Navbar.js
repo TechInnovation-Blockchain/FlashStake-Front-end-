@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -6,7 +6,7 @@ import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import logoLight from "../assets/FlashPro5.svg";
 import flashDark from "../assets/flash-dark.svg";
-import flash from "../assets/whitelogo.svg";
+import flash from "../assets/FLASH2.svg";
 import {
   setExpandAccodion,
   setAnimationDirection,
@@ -76,6 +76,7 @@ function Navbar({
   const history = useHistory();
 
   const [animate, setAnimate] = useState(false);
+  const [preTheme, setPreTheme] = useState(themeMode);
   // const handleClick3 = () => {
   //   setAnimate(true);
   //   setTimeout(() => {
@@ -83,26 +84,31 @@ function Navbar({
   //   }, 3500);
   // };
 
+  useEffect(() => {
+    if (localStorage.getItem("themeMode") === "retro") {
+      localStorage.setItem("themeMode", "dark");
+    }
+  }, []);
+
   const handleClick2 = () => {
     setExpandAccodion(false);
   };
 
   const [theme, setTheme] = useState(true);
 
-  const handleClick3 = () => {
-    // themeSwitchAction();
-    setTheme((val) => !val);
-    if (theme === true) {
-      themeMode = "retro";
-      toggleThemeMode();
-    } else {
-      themeMode = "dark";
-      toggleThemeMode();
-    }
-  };
-
-  const handleClick = (changeApp) => {
-    setRetroTheme(!changeApp);
+  let watchDouble = 0;
+  const toggle = () => {
+    watchDouble += 1;
+    setTimeout(() => {
+      if (watchDouble === 2) {
+        console.log("double" + watchDouble);
+        // toggleThemeMode2()
+      } else if (watchDouble === 1) {
+        console.log("signle" + watchDouble);
+        toggleThemeMode();
+      }
+      watchDouble = 0;
+    }, 200);
   };
 
   let index;
@@ -131,8 +137,7 @@ function Navbar({
           </Typography>
         </NavLink>
       </Box>
-      {/* <Divider orientation="vertical" flexItem /> */}
-      {/* <img src={logo} alt="logo" width={40} className={classes.logo} /> */}
+
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/swap"
@@ -158,12 +163,11 @@ function Navbar({
           src={themeMode === "dark" ? logoLight : flash}
           // src={themeModeflash}
           alt="logo"
-          width={themeMode === "dark" ? 40 : 30}
+          width={themeMode === "dark" || themeMode === "light" ? 40 : 30}
           // width={animate ? 30 : 30}
           className={classes.logo}
           onClick={() => {
-            handleClick(changeApp);
-            handleClick3();
+            toggle();
           }}
         />
       </Box>

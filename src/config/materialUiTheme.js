@@ -150,63 +150,72 @@ export const darkTheme = createMuiTheme({
   },
 });
 
-// export const lightTheme = createMuiTheme({
-//   palette: {
-//     type: "light",
-//     primary: {
-//       main: "#000000",
-//     },
-//     secondary: {
-//       main: "#171717",
-//     },
-//     secondary2: {
-//       main: "#6cc79b",
-//     },
-//     action: {
-//       hover: "#f0f0f0",
-//     },
-//     //----------------------------------------------//
-//     text: {
-//       primary: "#000000",
-//       // secondary: "#cccccc",
-//       secondary: "#000",
-//       secondary2: "#1a1a1a",
-//       secondary4: "#1a1a1a",
-//       green: "#6cc79b",
-//       primary2: "#000000",
-//     },
-//     xioRed: {
-//       main: "#e2874a",
-//     },
-//     background: {
-//       primary: "#ffffff",
-//       secondary: "#f5f5f5",
-//       secondary3: "#e5e5e5",
-//       secondary4: "#eeeee",
-//       secondary2: "#f5f5f5",
-//       selected: "#e5e5e5",
-//     },
-//     button: {
-//       dark: "#555555",
-//       red: "#e2874a",
-//     },
-//     buttonText: {
-//       dark: "#ffffff",
-//       red: "#ffffff",
-//     },
-//     border: {
-//       main: "#e2e2e2",
-//       secondary: "#0000001f",
-//     },
-//     navLink: {
-//       active: "#e2874a",
-//     },
-//   },
-//   typography: {
-//     fontFamily: "Montserrat",
-//     fontSize: 12,
-//   },
-// });
+export const lightTheme = createMuiTheme({
+  palette: {
+    type: "light",
+    primary: {
+      main: "#000000",
+    },
+    secondary: {
+      main: "#171717",
+    },
+    secondary2: {
+      main: "#6cc79b",
+    },
+    action: {
+      hover: "#f0f0f0",
+    },
+    //----------------------------------------------//
+    text: {
+      primary: "#000000",
+      // secondary: "#cccccc",
+      secondary: "#000",
+      secondary2: "#1a1a1a",
+      secondary4: "#1a1a1a",
+      green: "#6cc79b",
+      primary2: "#000000",
+    },
+    xioRed: {
+      main: "#e2874a",
+    },
+    background: {
+      primary: "#ffffff",
+      secondary: "#f5f5f5",
+      secondary3: "#e5e5e5",
+      secondary4: "#eeeee",
+      secondary2: "#f5f5f5",
+      selected: "#e5e5e5",
+    },
+    button: {
+      dark: "#555555",
+      red: "#D89C74",
+      retro: "#D89C74",
+      hover: "#d98955",
+    },
+    buttonText: {
+      dark: "#ffffff",
+      red: "#ffffff",
+    },
+    border: {
+      main: "#e2e2e2",
+      secondary: "#0000001f",
+    },
+    navLink: {
+      active: "#e2874a",
+    },
+    shadowColor: {
+      main: "transparent",
+      secondary: "transparent",
+    },
+    ButtonRadius: {
+      small: 0,
+    },
+  },
+  typography: {
+    fontFamily: "Montserrat",
+    fontSize: 11,
+  },
+});
 
 // export const theme = createMuiTheme({
 //   palette: {

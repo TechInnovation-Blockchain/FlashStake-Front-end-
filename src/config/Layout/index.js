@@ -127,6 +127,7 @@ function Layout({
   walletBackdrop,
   themeMode,
   toggleThemeMode,
+
   themeSwitchAction,
   animation,
 }) {
@@ -157,12 +158,14 @@ function Layout({
 
     if (themeMode === "dark") {
       body.style.background = "#000000";
-    } else {
-      body.style.background = `url(${Image})`;
+    } else if (themeMode === "retro") {
+      body.style.backgroundImage = `require(url(${Image}))`;
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
       body.style.backgroundAttachment = "fixed";
       body.style.backgroundSize = "cover";
+    } else {
+      body.style.background = `#f5f5f5`;
     }
   }, [themeMode]);
 
