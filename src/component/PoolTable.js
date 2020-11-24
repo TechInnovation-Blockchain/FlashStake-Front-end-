@@ -11,7 +11,7 @@ import {
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
-
+import RemoveLiquidityDropDown from "./RemoveLiquidityDropDown";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
@@ -165,6 +165,9 @@ const useStyles = makeStyles((theme) => ({
   },
   innerText: {
     textAlign: "left",
+  },
+  btns: {
+    display: "flex",
   },
 }));
 
@@ -421,18 +424,14 @@ function PoolTable({
                     </Grid>
                   </Grid>
 
-                  <Grid xs={12} spacing={2}>
-                    <Grid item xs={12} className={classes.outerBox}>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          REMOVE
-                        </Button>
-                      </Grid>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          ADD
-                        </Button>
-                      </Grid>
+                  <Grid container xs={12} spacing={2} className={classes.btns}>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <RemoveLiquidityDropDown className={classes.dropDown} />
+                    </Grid>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <Button fullWidth variant="retro">
+                        ADD
+                      </Button>
                     </Grid>
                   </Grid>
                 </AccordionDetails>
@@ -511,20 +510,20 @@ function PoolTable({
                     </Grid>
                   </Grid>
 
-                  <Grid xs={12} spacing={2}>
-                    <Grid item xs={12} className={classes.outerBox}>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          REMOVE
-                        </Button>
-                      </Grid>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          ADD
-                        </Button>
-                      </Grid>
+                  {/* <Grid xs={12} spacing={2}> */}
+                  <Grid container xs={12} spacing={2}>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <Button fullWidth variant="retro">
+                        REMOVE
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <Button fullWidth variant="retro">
+                        ADD
+                      </Button>
                     </Grid>
                   </Grid>
+                  {/* </Grid> */}
                 </AccordionDetails>
               </Accordion>
             </Grid>

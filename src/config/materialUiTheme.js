@@ -128,6 +128,7 @@ export const darkTheme = createMuiTheme({
       secondary4: "#1a1a1a",
       secondary3: "#000000",
       selected: "#171717",
+      liquidity: "#424242",
     },
     xioRed: {
       main: "#D89C74",
@@ -185,6 +186,7 @@ export const lightTheme = createMuiTheme({
       secondary4: "#eeeee",
       secondary2: "#f5f5f5",
       selected: "#e5e5e5",
+      liquidity: "#e5e5e5",
     },
     button: {
       dark: "#555555",
