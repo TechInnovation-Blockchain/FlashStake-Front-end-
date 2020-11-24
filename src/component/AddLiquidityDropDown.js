@@ -229,6 +229,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fontStyle: {
     fontWeight: 900,
+    padding: theme.spacing(0.5, 0),
   },
   removeText: {
     fontWeight: 900,
@@ -573,12 +574,12 @@ function AddLiquidityDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="h6">
+                <Typography className={classes.fontStyle} variant="h5">
                   XIO / AAVE
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography variant="h6" className={classes.fontStyle}>
+                <Typography variant="h5" className={classes.fontStyle}>
                   0.04602
                 </Typography>
               </Grid>
@@ -590,12 +591,12 @@ function AddLiquidityDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="caption">
+                <Typography className={classes.fontStyle} variant="body2">
                   Pooled XIO:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   0.00180469
                 </Typography>
               </Grid>
@@ -607,12 +608,12 @@ function AddLiquidityDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="caption">
+                <Typography className={classes.fontStyle} variant="body2">
                   Pooled AAVE:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   1.2683
                 </Typography>
               </Grid>
@@ -624,12 +625,12 @@ function AddLiquidityDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="caption">
+                <Typography className={classes.fontStyle} variant="body2">
                   Your pool share:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   {" "}
                   {"<0.01%"}{" "}
                 </Typography>

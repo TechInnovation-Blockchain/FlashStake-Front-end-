@@ -139,6 +139,10 @@ const useStyles = makeStyles((theme) => ({
   accordion: {
     marginBottom: theme.spacing(1),
     width: "100%",
+
+    "&.MuiAccordion-root.Mui-expanded": {
+      marginTop: "0 !important",
+    },
   },
 
   heading: {
@@ -163,6 +167,8 @@ const useStyles = makeStyles((theme) => ({
   },
   innerBox: {
     width: "100%",
+    margin: theme.spacing(0.5, 0),
+    fontWeight: 700,
   },
   innerText: {
     textAlign: "left",
@@ -170,6 +176,9 @@ const useStyles = makeStyles((theme) => ({
   btns: {
     display: "flex",
     margin: "0 !important",
+  },
+  fontWeight: {
+    fontWeight: 700,
   },
 }));
 
@@ -376,12 +385,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your total pool tokens:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.04602</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.04602
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -391,10 +408,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled XIO:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled XIO:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.00180469</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.00180469
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -404,10 +431,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled AAVE:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled AAVE:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">1.2683</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        1.2683
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -417,12 +454,21 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your pool share:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        {" "}
+                        {"<0.01%"}{" "}
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -460,12 +506,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your total pool tokens:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.04602</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.04602
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -475,10 +529,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled XIO:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled XIO:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.00180469</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.00180469
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -488,10 +552,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled AAVE:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled AAVE:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">1.2683</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        1.2683
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -501,12 +575,21 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your pool share:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        {" "}
+                        {"<0.01%"}{" "}
+                      </Typography>
                     </Grid>
                   </Grid>
 

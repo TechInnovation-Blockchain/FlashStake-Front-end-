@@ -213,6 +213,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     alignItems: "center",
   },
+  fontWeight: {
+    fontweight: 700,
+  },
 }));
 
 export default function RemoveDropDown({
@@ -387,8 +390,12 @@ export default function RemoveDropDown({
           </Box>
 
           <Box className={classes.info}>
-            <Typography>1 XIO = 697.58 AAVE</Typography>
-            <Typography>1 AAVE = 0.00143333 XIO</Typography>
+            <Typography className={classes.fontWeight}>
+              1 XIO = 697.58 AAVE
+            </Typography>
+            <Typography className={classes.fontWeight}>
+              1 AAVE = 0.00143333 XIO
+            </Typography>
           </Box>
 
           <Button variant="retro" fullWidth>
