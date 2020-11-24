@@ -13,11 +13,11 @@ import {
   Slider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
-import RemoveDropDown from "./RemoveDropDown";
 
 const {
   ui: { changeApp },
@@ -66,6 +66,13 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     top: "50%",
     transform: "translateY(-50%)",
+  },
+  backIcon: {
+    position: "absolute",
+    left: 0,
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: theme.palette.xioRed.main,
   },
   clearSearch: {
     position: "absolute",
@@ -149,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
   loadingIcon: {
     marginRight: 5,
   },
-  removeBtn: {
+  addBtn: {
     // backgroundColor: theme.palette.button.retro,
     border: "none",
     // height: 35,
@@ -196,13 +203,19 @@ const useStyles = makeStyles((theme) => ({
   },
   info: {
     textAlign: "left",
+    // display: "flex",
   },
   mainCont: {
     margin: "0 !important",
   },
+  burnedText: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
 }));
 
-export default function RemoveLiquidityDropDown({
+export default function AddDropDown({
   children,
   closeTimeout,
   items = [],
@@ -257,10 +270,10 @@ export default function RemoveLiquidityDropDown({
       >
         <Typography
           variant="body1"
-          className={classes.removeBtn}
+          className={classes.addBtn}
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
-          REMOVE
+          ADD LIQUIDITY
         </Typography>
       </Box>
 
@@ -272,9 +285,14 @@ export default function RemoveLiquidityDropDown({
       >
         <Container maxWidth="xs" className={classes.dialog}>
           <Box className={classes.closeBtnContainer}>
-            <Typography variant="body1" className={classes.dialogHeading}>
-              REMOVE LIQUIDITY
-            </Typography>
+            <IconButton
+              size="small"
+              onClick={onClose}
+              className={classes.backIcon}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+
             <IconButton
               size="small"
               onClick={onClose}
@@ -284,13 +302,6 @@ export default function RemoveLiquidityDropDown({
             </IconButton>
           </Box>
           <Box className={classes.closeBtnContainer}>
-            {/* <TextField
-              placeholder="SEARCH"
-              className={classes.textField}
-              fullWidth
-              value={search}
-              onChange={onChangeSearch}
-            /> */}
             {search ? (
               <IconButton
                 size="small"
@@ -302,9 +313,30 @@ export default function RemoveLiquidityDropDown({
             ) : null}
           </Box>
 
-          <Box className={classes.headingBox}>
-            <Typography className={classes.mainHeading}>
-              YOUR POSITION
+          <Box className={classes.firstBox}>
+            <Grid container xs={12} className={classes.outerBox}>
+              <Grid
+                item
+                xs={12}
+                style={{ textAlign: "left" }}
+                className={classes.innerBox}
+              >
+                <Typography className={classes.fontStyle} variant="h4">
+                  0.101949
+                </Typography>
+              </Grid>
+              <Grid xs={12} style={{ textAlign: "left" }}>
+                <Typography variant="h6" className={classes.fontStyle}>
+                  XIO/AAVE Pool Tokens
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Box className={classes.removeBox}>
+            <Typography className={classes.removeText} variant="caption">
+              Output is estimated. If the price changes by more than 0.5% your
+              transaction will revert
             </Typography>
           </Box>
 
@@ -315,29 +347,12 @@ export default function RemoveLiquidityDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="h6">
-                  XIO / AAVE
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography variant="h6" className={classes.fontStyle}>
-                  0.04602
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
                 <Typography className={classes.fontStyle} variant="caption">
-                  Pooled XIO:
+                  XIO Deposited:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   0.00180469
                 </Typography>
               </Grid>
@@ -350,12 +365,32 @@ export default function RemoveLiquidityDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="caption">
-                  Pooled AAVE:
+                  AAVE Deposited:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   1.2683
+                </Typography>
+              </Grid>
+            </Grid>
+
+            <Grid xs={12} className={classes.outerBox}>
+              <Grid
+                xs={6}
+                style={{ textAlign: "left" }}
+                className={classes.innerBox}
+              >
+                <Typography className={classes.fontStyle} variant="caption">
+                  Rates:
+                </Typography>
+              </Grid>
+              <Grid xs={6} style={{ textAlign: "right" }}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  1 XIO = 697.58 AAVE
+                </Typography>
+                <Typography className={classes.fontStyle} variant="body2">
+                  1 AAVE = 0.001433353 XIO
                 </Typography>
               </Grid>
             </Grid>
@@ -371,7 +406,7 @@ export default function RemoveLiquidityDropDown({
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="overline">
+                <Typography className={classes.fontStyle} variant="body2">
                   {" "}
                   {"<0.01%"}{" "}
                 </Typography>
@@ -379,75 +414,9 @@ export default function RemoveLiquidityDropDown({
             </Grid>
           </Box>
 
-          <Box className={classes.removeBox}>
-            <Typography className={classes.removeText} variant="body1">
-              AMOUNT TO REMOVE
-            </Typography>
-
-            <Typography className={classes.removeText} variant="h5">
-              5%
-            </Typography>
-
-            <Slider
-              value={40}
-              //   onChange={handleChange}
-              aria-labelledby="continuous-slider"
-            />
-            <Grid container spacing={1} xs={12} className={classes.mainCont}>
-              <Grid item xs={6}>
-                <Box flex={1} className={classes.outerBox2}>
-                  <Typography
-                    // variant="body2"
-                    variant="body2"
-                    className={classes.secondaryText}
-                  >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    $FLASH
-                  </Typography>
-
-                  <Typography variant="h6" className={classes.secondaryText}>
-                    610.215
-                  </Typography>
-                  {/* <Box className={classes.textFieldContainer}></Box> */}
-                </Box>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Box flex={1} className={classes.outerBox2}>
-                  <Typography
-                    // variant="body2"
-                    variant="body2"
-                    className={classes.secondaryText}
-                  >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    AAVE
-                  </Typography>
-
-                  <Typography variant="h6" className={classes.secondaryText}>
-                    610.215
-                  </Typography>
-                  {/* <Box className={classes.textFieldContainer}></Box> */}
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box className={classes.info}>
-            <Typography>1 XIO = 697.58 AAVE</Typography>
-            <Typography>1 AAVE = 0.00143333 XIO</Typography>
-          </Box>
-
-          <Grid container xs={12} spacing={2} className={classes.btns}>
-            <Grid item xs={6} className={classes.innerBox}>
-              <Button fullWidth variant="retro">
-                APPROVE
-              </Button>
-            </Grid>
-
-            <Grid item xs={6} className={classes.innerBox}>
-              <RemoveDropDown />
-            </Grid>
-          </Grid>
+          <Button variant="retro" fullWidth>
+            CONFIRM
+          </Button>
         </Container>
       </MuiDialog>
     </Fragment>

@@ -29,6 +29,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AddLiquidityDropDown from "./AddLiquidityDropDown";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -168,6 +169,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btns: {
     display: "flex",
+    margin: "0 !important",
   },
 }));
 
@@ -429,9 +431,7 @@ function PoolTable({
                       <RemoveLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                     <Grid item xs={6} className={classes.innerBox}>
-                      <Button fullWidth variant="retro">
-                        ADD
-                      </Button>
+                      <AddLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                   </Grid>
                 </AccordionDetails>
@@ -510,20 +510,14 @@ function PoolTable({
                     </Grid>
                   </Grid>
 
-                  {/* <Grid xs={12} spacing={2}> */}
-                  <Grid container xs={12} spacing={2}>
+                  <Grid container xs={12} spacing={2} className={classes.btns}>
                     <Grid item xs={6} className={classes.innerBox}>
-                      <Button fullWidth variant="retro">
-                        REMOVE
-                      </Button>
+                      <RemoveLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                     <Grid item xs={6} className={classes.innerBox}>
-                      <Button fullWidth variant="retro">
-                        ADD
-                      </Button>
+                      <AddLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                   </Grid>
-                  {/* </Grid> */}
                 </AccordionDetails>
               </Accordion>
             </Grid>

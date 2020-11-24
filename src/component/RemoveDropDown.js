@@ -157,11 +157,12 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
   },
   removeBtn: {
-    backgroundColor: theme.palette.button.retro,
+    // backgroundColor: theme.palette.button.retro,
     border: "none",
-    height: 35,
+    // height: 35,
     letterSpacing: 2,
     lineHeight: 1.2,
+    fontWeight: 700,
     borderRadius: theme.palette.ButtonRadius.small,
   },
   headingBox: {
@@ -269,7 +270,7 @@ export default function RemoveDropDown({
       >
         <Typography
           variant="body1"
-          // className={classes.removeBtn}
+          className={classes.removeBtn}
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           REMOVE
