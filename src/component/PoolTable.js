@@ -204,6 +204,9 @@ function PoolTable({
   getApprovalPoolLiquidity,
   selectedRewardToken,
   selectedStakeToken,
+  poolDataBalance,
+  pools,
+  poolItems,
 }) {
   const classes = useStyles();
   const headItems = ["POOL", "BALANCE"];
@@ -241,46 +244,32 @@ function PoolTable({
     },
     [sortBy]
   );
-  const sortedData = useCallback(() => {
-    let data = [];
-    switch (sortBy) {
-      case "POOL":
-        data = poolDashboard?.sort(
-          (
-            {
-              pool: {
-                tokenB: { symbol: a },
-              },
-            },
-            {
-              pool: {
-                tokenB: { symbol: b },
-              },
-            }
-          ) => {
-            if (a < b) {
-              return -1;
-            }
-            if (a > b) {
-              return 1;
-            }
-            return 0;
-          }
-        );
 
-        break;
-      case "BALANCE":
-        data = poolDashboard?.sort(
-          ({ balance: a }, { balance: b }) => parseFloat(a) - parseFloat(b)
-        );
-        break;
-      default:
-        data = poolDashboard;
-        // data = stakes.reverse();
-        break;
-    }
-    return sortDirection ? data.reverse() : data;
-  }, [poolDashboard, sortBy, sortDirection]);
+  // stakes.find((_stake) => _stake.id === _ids[0])
+
+  // const _pool = () => {
+  // console.log(
+  //   pools?.map((pool) =>
+  //     pool.filter((id) => {
+  //       return id === "0x0158e2b23003103bb138119f7278a60a2f755b27";
+  //     })
+  //   )
+  // );
+  //     pools.map((pool) =>
+  //       pool.id.map((id) => {
+  //         id;
+  //       })
+  //     )
+  //   );
+  // };
+
+  // useEffect(() => {
+  //   if (pools.length > 0) {
+  //     pools.map((pool) => {
+  //       console.log(Object.entries(pool));
+  //     });
+  //   }
+  // });
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -362,247 +351,138 @@ function PoolTable({
         <Fragment>
           <PageAnimation in={true} key={page} reverse={reverse}>
             <Grid container className={classes.gridSpacing} item>
-              <Accordion className={classes.accordion}>
-                <AccordionSummary
-                  expandIcon={
-                    <ExpandMoreIcon
-                      size={"large"}
-                      className={classes.expandBtn}
-                    />
-                  }
-                  className={classes.accordionSummary}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>
-                    {selectedStakeToken} / AAVE
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordionDetails}>
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
+              {Object.keys(poolDataBalance).map((id, index) => {
+                return (
+                  <Accordion className={classes.accordion}>
+                    <AccordionSummary
+                      expandIcon={
+                        <ExpandMoreIcon
+                          size={"large"}
+                          className={classes.expandBtn}
+                        />
+                      }
+                      className={classes.accordionSummary}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
                     >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Your total pool tokens:
+                      {/* {Object.Keys(poolDataBalance).filter(id)=> } */}
+                      <Typography className={classes.heading}>
+                        {selectedStakeToken} / {Object.values(poolItems)[index]}
                       </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        0.04602
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                    </AccordionSummary>
+                    <AccordionDetails className={classes.accordionDetails}>
+                      <Grid xs={12} className={classes.outerBox}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Your total pool tokens:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            {poolDataBalance[id]}
+                          </Typography>
+                        </Grid>
+                      </Grid>
 
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Pooled XIO:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        0.00180469
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                      <Grid xs={12} className={classes.outerBox}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled $FLASH:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            0.00180469
+                          </Typography>
+                        </Grid>
+                      </Grid>
 
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Pooled AAVE:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        1.2683
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                      <Grid xs={12} className={classes.outerBox}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled AAVE:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            1.2683
+                          </Typography>
+                        </Grid>
+                      </Grid>
 
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Your pool share:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        {" "}
-                        {"<0.01%"}{" "}
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                      <Grid xs={12} className={classes.outerBox}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Your pool share:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            {" "}
+                            {"<0.01%"}{" "}
+                          </Typography>
+                        </Grid>
+                      </Grid>
 
-                  <Grid container xs={12} spacing={2} className={classes.btns}>
-                    <Grid item xs={6} className={classes.innerBox}>
-                      <RemoveLiquidityDropDown className={classes.dropDown} />
-                    </Grid>
-                    <Grid item xs={6} className={classes.innerBox}>
-                      <AddLiquidityDropDown className={classes.dropDown} />
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion className={classes.accordion}>
-                <AccordionSummary
-                  expandIcon={
-                    <ExpandMoreIcon
-                      size={"large"}
-                      className={classes.expandBtn}
-                    />
-                  }
-                  className={classes.accordionSummary}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>
-                    {selectedStakeToken} / AAVE
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordionDetails}>
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
+                      <Grid
+                        container
+                        xs={12}
+                        spacing={2}
+                        className={classes.btns}
                       >
-                        Your total pool tokens:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        0.04602
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Pooled XIO:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        0.00180469
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Pooled AAVE:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        1.2683
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid xs={12} className={classes.outerBox}>
-                    <Grid
-                      xs={6}
-                      style={{ textAlign: "left" }}
-                      className={classes.innerBox}
-                    >
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        Your pool share:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography
-                        variant="body2"
-                        className={classes.fontWeight}
-                      >
-                        {" "}
-                        {"<0.01%"}{" "}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid container xs={12} spacing={2} className={classes.btns}>
-                    <Grid item xs={6} className={classes.innerBox}>
-                      <RemoveLiquidityDropDown className={classes.dropDown} />
-                    </Grid>
-                    <Grid item xs={6} className={classes.innerBox}>
-                      <AddLiquidityDropDown className={classes.dropDown} />
-                    </Grid>
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
+                        <Grid item xs={6} className={classes.innerBox}>
+                          <RemoveLiquidityDropDown
+                            className={classes.dropDown}
+                          />
+                        </Grid>
+                        <Grid item xs={6} className={classes.innerBox}>
+                          <AddLiquidityDropDown className={classes.dropDown} />
+                        </Grid>
+                      </Grid>
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
             </Grid>
           </PageAnimation>
         </Fragment>
@@ -613,7 +493,15 @@ function PoolTable({
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  user: { stakes, walletBalance, dappBalance, expiredDappBalance },
+  user: {
+    stakes,
+    walletBalance,
+    dappBalance,
+    expiredDappBalance,
+    poolDataBalance,
+    pools,
+    poolItems,
+  },
   dashboard: { selectedStakes, isStakesSelected },
   ui: { loading },
   flashstake: {
@@ -640,6 +528,9 @@ const mapStateToProps = ({
   allowancePoolWithdraw,
   selectedRewardToken,
   selectedStakeToken,
+  poolDataBalance,
+  pools,
+  poolItems,
 });
 
 export default connect(mapStateToProps, {
