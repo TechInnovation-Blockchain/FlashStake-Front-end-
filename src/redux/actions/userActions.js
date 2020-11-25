@@ -7,6 +7,7 @@ import { setLoading } from "./uiActions";
 import {
   initializeBalanceContract,
   getBalances,
+  getPoolBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 import { _error } from "../../utils/log";
@@ -284,6 +285,18 @@ export const updateAllBalances = () => async (dispatch, getState) => {
 export const setPoolData = (data) => {
   return {
     type: "POOL_DATA",
+    payload: data,
+  };
+};
+export const setPoolDataBalance = (data) => {
+  return {
+    type: "POOL_DATA_BALANCE",
+    payload: data,
+  };
+};
+export const setPoolItems = (data) => {
+  return {
+    type: "POOL_ITEMS",
     payload: data,
   };
 };
