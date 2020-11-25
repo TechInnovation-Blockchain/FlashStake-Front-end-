@@ -11,7 +11,7 @@ import {
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
-
+import RemoveLiquidityDropDown from "./RemoveLiquidityDropDown";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
@@ -29,6 +29,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AddLiquidityDropDown from "./AddLiquidityDropDown";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -138,6 +139,10 @@ const useStyles = makeStyles((theme) => ({
   accordion: {
     marginBottom: theme.spacing(1),
     width: "100%",
+
+    "&.MuiAccordion-root.Mui-expanded": {
+      marginTop: "0 !important",
+    },
   },
 
   heading: {
@@ -162,9 +167,18 @@ const useStyles = makeStyles((theme) => ({
   },
   innerBox: {
     width: "100%",
+    margin: theme.spacing(0.5, 0),
+    fontWeight: 700,
   },
   innerText: {
     textAlign: "left",
+  },
+  btns: {
+    display: "flex",
+    margin: "0 !important",
+  },
+  fontWeight: {
+    fontWeight: 700,
   },
 }));
 
@@ -371,12 +385,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your total pool tokens:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.04602</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.04602
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -386,10 +408,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled XIO:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled XIO:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.00180469</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.00180469
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -399,10 +431,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled AAVE:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled AAVE:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">1.2683</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        1.2683
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -412,27 +454,30 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your pool share:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        {" "}
+                        {"<0.01%"}{" "}
+                      </Typography>
                     </Grid>
                   </Grid>
 
-                  <Grid xs={12} spacing={2}>
-                    <Grid item xs={12} className={classes.outerBox}>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          REMOVE
-                        </Button>
-                      </Grid>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          ADD
-                        </Button>
-                      </Grid>
+                  <Grid container xs={12} spacing={2} className={classes.btns}>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <RemoveLiquidityDropDown className={classes.dropDown} />
+                    </Grid>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <AddLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                   </Grid>
                 </AccordionDetails>
@@ -461,12 +506,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your total pool tokens:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.04602</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.04602
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -476,10 +529,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled XIO:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled XIO:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">0.00180469</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        0.00180469
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -489,10 +552,20 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">Pooled AAVE:</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        Pooled AAVE:
+                      </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline">1.2683</Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        1.2683
+                      </Typography>
                     </Grid>
                   </Grid>
 
@@ -502,27 +575,30 @@ function PoolTable({
                       style={{ textAlign: "left" }}
                       className={classes.innerBox}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
                         Your pool share:
                       </Typography>
                     </Grid>
                     <Grid xs={6} style={{ textAlign: "right" }}>
-                      <Typography variant="overline"> {"<0.01%"} </Typography>
+                      <Typography
+                        variant="body2"
+                        className={classes.fontWeight}
+                      >
+                        {" "}
+                        {"<0.01%"}{" "}
+                      </Typography>
                     </Grid>
                   </Grid>
 
-                  <Grid xs={12} spacing={2}>
-                    <Grid item xs={12} className={classes.outerBox}>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          REMOVE
-                        </Button>
-                      </Grid>
-                      <Grid container xs={6} className={classes.innerBox}>
-                        <Button fullWidth variant="retro">
-                          ADD
-                        </Button>
-                      </Grid>
+                  <Grid container xs={12} spacing={2} className={classes.btns}>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <RemoveLiquidityDropDown className={classes.dropDown} />
+                    </Grid>
+                    <Grid item xs={6} className={classes.innerBox}>
+                      <AddLiquidityDropDown className={classes.dropDown} />
                     </Grid>
                   </Grid>
                 </AccordionDetails>
