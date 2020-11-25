@@ -160,6 +160,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: theme.palette.button.retro,
     border: "none",
     // height: 35,
+    color: theme.palette.buttonText.dark,
     letterSpacing: 2,
     lineHeight: 1.2,
     fontWeight: 700,

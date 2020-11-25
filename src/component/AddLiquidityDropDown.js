@@ -187,6 +187,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: theme.palette.button.retro,
     border: "none",
     // height: 35,
+    color: theme.palette.buttonText.dark,
     letterSpacing: 2,
     lineHeight: 1.2,
     borderRadius: theme.palette.ButtonRadius.small,
@@ -833,7 +834,7 @@ function AddLiquidityDropDown({
             {/* </Box> */}
           </Box>
 
-          <Grid container xs={12} spacing={2} className={classes.btns}>
+          <Grid container xs={12} className={classes.btns}>
             <Grid item xs={12} className={classes.innerBox}>
               <AddDropDown />
             </Grid>

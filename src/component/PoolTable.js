@@ -331,10 +331,10 @@ function PoolTable({
                 className={classes.tableHeadItemBtn}
                 onClick={() => onClickSortBtn(headItem)}
               >
-                <Box className={classes.sortButton}>
+                {/* <Box className={classes.sortButton}>
                   <UnfoldMore fontSize="small" className={classes.sortIcon} />
                   {headItem}
-                </Box>
+                </Box> */}
               </MuiButton>
             </Grid>
           ))}
