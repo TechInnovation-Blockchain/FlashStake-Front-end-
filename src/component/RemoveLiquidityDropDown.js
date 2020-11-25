@@ -153,6 +153,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: theme.palette.button.retro,
     border: "none",
     // height: 35,
+    color: theme.palette.buttonText.dark,
     letterSpacing: 2,
     lineHeight: 1.2,
     borderRadius: theme.palette.ButtonRadius.small,
@@ -203,6 +204,9 @@ const useStyles = makeStyles((theme) => ({
   },
   mainCont: {
     margin: "0 !important",
+  },
+  slider: {
+    color: theme.palette.xioRed.main,
   },
 }));
 
@@ -393,7 +397,8 @@ export default function RemoveLiquidityDropDown({
             </Typography>
 
             <Slider
-              value={40}
+              // value={40}
+              className={classes.slider}
               //   onChange={handleChange}
               aria-labelledby="continuous-slider"
             />
