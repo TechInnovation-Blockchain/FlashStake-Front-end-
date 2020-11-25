@@ -9,6 +9,7 @@ import {
 } from "../../redux/state";
 import Web3 from "web3";
 import { _error } from "../log";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
@@ -56,6 +57,57 @@ export const getBalances = async () => {
       return null;
     });
     return [_balancesObj, walletBalanceUSD, _poolBalanceObj];
+  } catch (e) {
+    _error("ERROR getBalances -> ", e);
+    return [{}, 0, {}];
+  }
+};
+
+export const getPoolBalances = async (dispatch) => {
+  try {
+    checkContractInitialized();
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      // throw new _error("Wallet not activated.");
+      return [{}, 0, {}];
+    }
+    const _tokenList = getTokenList();
+    const _pools = getPools();
+    let poolID = [];
+    _pools.map((pool) => {
+      poolID.push(pool.id);
+    });
+    const _balances = await contract.methods
+      .getBalances(walletAddress, poolID)
+      .call();
+
+    let balances = {};
+
+    _pools.map((pool, index) => {
+      balances[pool.id] = _balances[index];
+    });
+
+    let Symbols = {};
+
+    const {
+      user: { pools },
+    } = store.getState();
+
+    pools.map((pool, index) => {
+      Symbols[pool.tokenB.id] = pool.tokenB.symbol;
+    });
+
+    console.log("Symbols", Symbols);
+
+    store.dispatch({
+      type: "POOL_ITEMS",
+      payload: Symbols,
+    });
+
+    store.dispatch({
+      type: "POOL_DATA_BALANCE",
+      payload: balances,
+    });
   } catch (e) {
     _error("ERROR getBalances -> ", e);
     return [{}, 0, {}];

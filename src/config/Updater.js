@@ -14,6 +14,7 @@ import {
   clearUserData,
   updateAllBalances,
   setPoolData,
+  setPoolDataBalance,
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
@@ -24,6 +25,7 @@ import {
 import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
 import { getQueryData } from "../redux/actions/queryActions";
+import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
 import axios from "axios";
 
 function Updater({
@@ -47,6 +49,7 @@ function Updater({
   updateOneDay,
   oneDay,
   setPoolData,
+  setPoolDataBalance,
   poolData,
   getQueryData,
   stakeStatus,
@@ -54,6 +57,7 @@ function Updater({
   isStakesSelected,
   selectedStakes,
   totalBurn,
+  // getPoolBalances,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -62,55 +66,9 @@ function Updater({
     fetchPolicy: "network-only",
   });
 
-  // const getData = async () => {
-  //   const res = await axios
-  //     .get("https://leaderboard.xio.app:3010/getReserves")
-  //     .then((res) => {
-  //       setPoolData(res);
-  //       // getQueryData(selectedPortal);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
-  // const quote = async () => {
-  // await;
-  // };
-
-  // const getQData = async () => {
-  //   if (selectedPortal?.tokenB) {
-  //     await getQueryData(selectedPortal);
-  //     // await quote(0, "alt");
-  //   }
-  // };
-
-  // const quote = useCallback(
-  //   async (_amountA, _amountType = "alt") => {
-  //     const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
-  //       selectedPortal
-  //     );
-
-  //     console.log(
-  //       "reserveFlashAmount , reserveAltAmount",
-  //       reserveFlashAmount,
-  //       reserveAltAmount
-  //     );
-  //     const [_reserveA, _reserveB] =
-  //       _amountType === "alt"
-  //         ? [reserveAltAmount, reserveFlashAmount]
-  //         : [reserveFlashAmount, reserveAltAmount];
-  //     return (_amountA * _reserveB) / _reserveA;
-  //   },
-  //   [selectedPortal]
-  // );
-
-  // await getQueryData(selectedPortal);
-
-  // useEffect(() => {
-  //   getData();
-  //   // getQData();
-  // }, []);
+  useEffect(() => {
+    getPoolBalances();
+  });
 
   useEffect(() => {
     updateOneDay();
@@ -230,6 +188,7 @@ export default connect(mapStateToProps, {
   clearUserData,
   updateOneDay,
   setPoolData,
+  setPoolDataBalance,
   getQueryData,
   setStakeStatus,
 })(Updater);
