@@ -222,6 +222,18 @@ export const balanceOf = async () => {
   }
 };
 
+export const totalSupply = async () => {
+  try {
+    checkContractInitialized();
+
+    const _totalSupply = await contract.methods.totalSupply().call();
+    console.log("_totalSupply", _totalSupply);
+    return _totalSupply;
+  } catch (e) {
+    _error("ERROR totalSupply ->", e);
+  }
+};
+
 const checkContractInitialized = () => {
   if (!isContractInitialized) {
     throw new _error("PublicPortalContract not initialized.");

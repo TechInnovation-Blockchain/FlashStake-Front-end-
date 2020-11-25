@@ -10,6 +10,7 @@ export const userReducer = (
     pooData: {},
     poolDataBalance: {},
     poolItems: {},
+    totalSupply: {},
   },
   { type, payload }
 ) => {
@@ -70,6 +71,11 @@ export const userReducer = (
       return {
         ...state,
         poolItems: payload,
+      };
+    case "TOTAL_SUPPLY":
+      return {
+        ...state,
+        totalSupply: payload,
       };
     default:
       return state;

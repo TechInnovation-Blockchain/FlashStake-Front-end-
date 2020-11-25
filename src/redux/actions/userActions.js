@@ -19,6 +19,10 @@ import {
   initializeFlashstakePoolContract,
   getAPYStake,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
+import {
+  totalSupply,
+  initializeErc20TokenContract,
+} from "../../utils/contractFunctions/erc20TokenContractFunctions";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -298,5 +302,15 @@ export const setPoolItems = (data) => {
   return {
     type: "POOL_ITEMS",
     payload: data,
+  };
+};
+export const setTotalSupply = async (data) => {
+  console.log(data);
+  await initializeErc20TokenContract(data);
+  const _data = await totalSupply(data);
+  console.log(_data);
+  return {
+    type: "TOTAL_SUPPLY",
+    payload: _data,
   };
 };

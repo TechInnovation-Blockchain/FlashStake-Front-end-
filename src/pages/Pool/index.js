@@ -410,7 +410,7 @@ function Pool({
     setTimeout(() => {
       setHeightToggle(!heightToggle);
       setHeightValue(ref?.current?.clientHeight);
-    }, 100);
+    }, 500);
   });
 
   const toggle = () => {

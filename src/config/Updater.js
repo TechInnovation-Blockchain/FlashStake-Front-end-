@@ -26,7 +26,9 @@ import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
 import { getQueryData } from "../redux/actions/queryActions";
 import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
+import { setTotalSupply } from "../redux/actions/userActions";
 import axios from "axios";
+import { store } from "../config/reduxStore";
 
 function Updater({
   active,
@@ -66,9 +68,24 @@ function Updater({
     fetchPolicy: "network-only",
   });
 
+  const {
+    user: { poolDataBalance },
+  } = store.getState();
+
   useEffect(() => {
     getPoolBalances();
+    ts();
   });
+
+  const ts = async (key) => {
+    for (let index = 0; index < Object.keys(poolDataBalance); index++) {
+      await setTotalSupply(key);
+    }
+
+    // Object.keys(poolDataBalance).map((key) => {
+
+    // });
+  };
 
   useEffect(() => {
     updateOneDay();
