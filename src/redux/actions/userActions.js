@@ -23,6 +23,7 @@ import {
   totalSupply,
   initializeErc20TokenContract,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
+import { getQueryData } from "./queryActions";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -92,21 +93,46 @@ export const updatePools = (data) => async (dispatch) => {
   }
 };
 
-export const calculateBurnSingleStake = (_stake, oneDay) => {
-  // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
+const getPercentageUnStaked = async (_stake) => {
+  const _queryData = await getQueryData(_stake.pool.id);
+  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _locked = JSBI.subtract(
+    JSBI.BigInt(_queryData.flashBalance),
+    JSBI.BigInt(_stake.amountIn)
+  );
+  const _percentage = JSBI.divide(
+    JSBI.multiply(_locked, _precision),
+    JSBI.BigInt(_queryData.totalSupply)
+  );
+  return _percentage;
+};
+
+const getInvFPY = async (_stake) => {
+  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
+  console.log({ _getPercentageUnStaked: _getPercentageUnStaked.toString() });
+  return JSBI.subtract(_precision, _getPercentageUnStaked);
+};
+
+export const calculateBurnSingleStake = async (_stake) => {
   let _burnAmount = JSBI.BigInt(0);
   const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
+    const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
     let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
+    const _getInvFpy = await getInvFPY(_stake);
 
     _burnAmount = JSBI.divide(
       JSBI.multiply(
-        JSBI.BigInt(_stake.amountIn),
-        JSBI.BigInt(String(Math.trunc(_remainingDays)))
+        JSBI.multiply(
+          JSBI.BigInt(_stake.amountIn),
+          JSBI.BigInt(String(Math.trunc(_remainingDays)))
+        ),
+        _getInvFpy
       ),
-      JSBI.BigInt(String(Math.trunc(_stake.expiry)))
+      JSBI.multiply(JSBI.BigInt(String(Math.trunc(_stake.expiry))), _precision)
     );
   }
 
@@ -121,36 +147,38 @@ export const updateUserData = (data) => async (dispatch, getState) => {
     let dappBalance = JSBI.BigInt(0);
     let expiredDappBalance = JSBI.BigInt(0);
     let totalBurnAmount = JSBI.BigInt(0);
-    const {
-      contract: { oneDay },
-    } = await getState();
     if (data) {
-      stakes = data.stakes.map((_tempData) => {
-        const { id, amountIn, expiry, expireAfter, rewardAmount } = _tempData;
+      stakes = await Promise.all(
+        data.stakes.map(async (_tempData) => {
+          const { id, amountIn, expireAfter, rewardAmount } = _tempData;
 
-        let expired = parseFloat(expireAfter) < Date.now() / 1000;
-        dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
-        let _burnAmount = "0";
-        if (expired) {
-          expiredDappBalance = JSBI.add(
-            expiredDappBalance,
-            JSBI.BigInt(amountIn)
-          );
-          expiredTimestamps.push(id);
-        } else {
-          _burnAmount = calculateBurnSingleStake(_tempData, oneDay);
-          totalBurnAmount = JSBI.add(totalBurnAmount, JSBI.BigInt(_burnAmount));
-        }
-        return {
-          ..._tempData,
-          stakeAmount: Web3.utils.fromWei(amountIn),
-          rewardAmount: Web3.utils.fromWei(rewardAmount),
-          expiryTime: parseFloat(expireAfter),
-          expired,
-          amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
-          burnAmount: Web3.utils.fromWei(_burnAmount),
-        };
-      });
+          let expired = parseFloat(expireAfter) < Date.now() / 1000;
+          dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
+          let _burnAmount = "0";
+          if (expired) {
+            expiredDappBalance = JSBI.add(
+              expiredDappBalance,
+              JSBI.BigInt(amountIn)
+            );
+            expiredTimestamps.push(id);
+          } else {
+            _burnAmount = await calculateBurnSingleStake(_tempData);
+            totalBurnAmount = JSBI.add(
+              totalBurnAmount,
+              JSBI.BigInt(_burnAmount)
+            );
+          }
+          return {
+            ..._tempData,
+            stakeAmount: Web3.utils.fromWei(amountIn),
+            rewardAmount: Web3.utils.fromWei(rewardAmount),
+            expiryTime: parseFloat(expireAfter),
+            expired,
+            amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
+            burnAmount: Web3.utils.fromWei(_burnAmount),
+          };
+        })
+      );
       swapHistory = data.swapHistory.map((_swapHis) => ({
         ..._swapHis,
         swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
