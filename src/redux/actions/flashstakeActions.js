@@ -35,6 +35,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
     const {
       flashstake: {
         selectedRewardToken: { id },
+        slip,
       },
     } = getState();
     if (id && xioQuantity > 0 && days > 0) {
@@ -105,7 +106,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.BigInt(_reward),
         JSBI.multiply(
           JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100)),
-          JSBI.BigInt(5)
+          JSBI.BigInt(slip)
         )
       ).toString();
     }
@@ -901,4 +902,10 @@ export const setWithdrawLiquidityTxnHash = (val) => {
 
 export const setWithdrawLiquidityTxnHashIndep = (val) => {
   store.dispatch(setWithdrawLiquidityTxnHash(val));
+};
+export const setSlip = (val) => {
+  return {
+    type: "CUSTOM_SLIPPAGE",
+    payload: val,
+  };
 };

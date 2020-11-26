@@ -39,6 +39,7 @@ export const flashstakeReducer = (
     stakeTxnHash: "",
     liquidityTxnHash: "",
     withdrawLiquidityTxnHash: "",
+    slip: 5,
     reset: false,
     initialValues: {
       days: "",
@@ -219,6 +220,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         selectedWithdrawPool: payload,
+      };
+    case "CUSTOM_SLIPPAGE":
+      return {
+        ...state,
+        slip: payload,
       };
     // case "RESET":
     //   return {

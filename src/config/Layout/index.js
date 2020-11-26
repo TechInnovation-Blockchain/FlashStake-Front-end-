@@ -185,7 +185,7 @@ function Layout({
           open={walletBackdrop}
           onClick={handleClose}
         ></Backdrop>
-        <WalletConnect />
+        <WalletConnect toggleThemeMode={toggleThemeMode} />
         <Snackbar />
       </Container>
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>

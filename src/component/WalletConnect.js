@@ -18,6 +18,8 @@ import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { setWeb3Provider } from "../contracts/getContract";
 import { walletList } from "../utils/connectors";
 import { _error } from "../utils/log";
+import SettingsIcon from "@material-ui/icons/Settings";
+import SlippageDialogue from "./SippageDialogue";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -28,10 +30,21 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     zIndex: 1,
   },
+  // BtnsContainer: {
+  //   display: "flex",
+  // },
   connectWalletButton: {
-    width: 250,
+    width: 200,
     borderRadius: 0,
     marginTop: theme.spacing(4),
+    marginRight: theme.spacing(1),
+    // backgroundColor: theme.palette.,
+  },
+  slippageButton: {
+    width: 20,
+    borderRadius: 0,
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(1),
     // backgroundColor: theme.palette.,
   },
   wallentConnectText: {
@@ -58,11 +71,13 @@ function WalletConnect({
   loading,
   setLoading,
   changeApp,
+  toggleThemeMode,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
 
   const addressShorten = (address) => {
     if (address) {
@@ -166,17 +181,35 @@ function WalletConnect({
           setOpen={setOpen}
         />
 
-        <Button
-          variant={!changeApp ? "retro" : "red"}
-          className={classes.connectWalletButton}
-          onClick={() => {
-            !(active || account) ? setOpen(true) : setOpen2(true);
-          }}
-        >
-          {web3context.active
-            ? addressShorten(web3context.account)
-            : "CONNECT WALLET"}
-        </Button>
+        <SlippageDialogue
+          open={open3}
+          setOpen={setOpen3}
+          toggleThemeMode={toggleThemeMode}
+        />
+
+        <Box className={classes.BtnsContainer}>
+          <Button
+            variant={!changeApp ? "retro" : "red"}
+            className={classes.connectWalletButton}
+            onClick={() => {
+              !(active || account) ? setOpen(true) : setOpen2(true);
+            }}
+          >
+            {web3context.active
+              ? addressShorten(web3context.account)
+              : "CONNECT WALLET"}
+          </Button>
+
+          <Button
+            variant={!changeApp ? "retro" : "red"}
+            className={classes.slippageButton}
+            onClick={() => {
+              setOpen3(true);
+            }}
+          >
+            <SettingsIcon />
+          </Button>
+        </Box>
       </Box>
     </Fragment>
   );

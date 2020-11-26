@@ -432,19 +432,19 @@ function Flashstake({
 
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
-    if(localStorage.getItem('prefs-stake-time') == null) return
+    if (localStorage.getItem("prefs-stake-time") == null) return;
 
     // Determine if we are currently set to the users preference time
-    if(time !== localStorage.getItem('prefs-stake-time')) {
-      setTime(localStorage.getItem('prefs-stake-time'))
+    if (time !== localStorage.getItem("prefs-stake-time")) {
+      setTime(localStorage.getItem("prefs-stake-time"));
     }
-  })
+  });
 
   const handleChange = (event) => {
     setTime(event.target.value);
 
     // Save this to local storage
-    localStorage.setItem('prefs-stake-time', event.target.value)
+    localStorage.setItem("prefs-stake-time", event.target.value);
   };
 
   const handleClose = () => {
@@ -872,7 +872,7 @@ function Flashstake({
                           </span>{" "}
                           and{" "}
                           <span className={classes.infoTextSpan}>
-                            Time (Hours)
+                            Time ({time})
                           </span>{" "}
                           {/* YOU WILL IMMEDIATELY{" "} */}
                           are needed for time travel
