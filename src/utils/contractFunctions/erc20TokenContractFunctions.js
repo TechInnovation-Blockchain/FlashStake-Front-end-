@@ -227,7 +227,7 @@ export const totalSupply = async () => {
     checkContractInitialized();
 
     const _totalSupply = await contract.methods.totalSupply().call();
-    console.log("_totalSupply", _totalSupply);
+    // console.log("_totalSupply", _totalSupply);
     return _totalSupply;
   } catch (e) {
     _error("ERROR totalSupply ->", e);

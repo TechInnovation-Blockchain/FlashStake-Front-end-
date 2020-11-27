@@ -965,17 +965,17 @@ function Pool({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                {heightToggle ? (
-                  <PoolTable
+                {/* {heightToggle ? ( */}
+                <PoolTable
+                  onClickUnstake={onClickUnstake}
+                  onClickApprovePool={onClickApprovePool}
+                />
+                {/* ) : ( */}
+                {/* <PoolTable
                     onClickUnstake={onClickUnstake}
                     onClickApprovePool={onClickApprovePool}
-                  />
-                ) : (
-                  <PoolTable
-                    onClickUnstake={onClickUnstake}
-                    onClickApprovePool={onClickApprovePool}
-                  />
-                )}
+                  /> */}
+                {/* )} */}
               </AccordionDetails>
             </Accordion>
           </Box>

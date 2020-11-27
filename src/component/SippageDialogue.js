@@ -208,7 +208,7 @@ function SlippageDialogue({
     setSlip(value);
   };
 
-  console.log(slip);
+  // console.log(slip);
 
   const walletsItems = isMobile ? mobileWalletList : walletList;
 

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { useQuery } from "@apollo/client";
 
@@ -59,6 +59,10 @@ function Updater({
   isStakesSelected,
   selectedStakes,
   totalBurn,
+  getPoolBalances,
+  poolDataBalance,
+  poolItems,
+  pools,
   // getPoolBalances,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
@@ -68,24 +72,59 @@ function Updater({
     fetchPolicy: "network-only",
   });
 
-  const {
-    user: { poolDataBalance },
-  } = store.getState();
+  // const {
+  //   user: { poolDataBalance },
+  // } = store.getState();
 
   useEffect(() => {
     getPoolBalances();
-    ts();
-  });
+  }, [active, account, pools]);
 
-  const ts = async (key) => {
-    for (let index = 0; index < Object.keys(poolDataBalance); index++) {
-      await setTotalSupply(key);
+  useEffect(() => {
+    reserves();
+  }, [poolDataBalance]);
+
+  // const [poolDATA, setPoolDATA] = useState([]);
+  const reserves = useCallback(async () => {
+    const data1 = await axios.get("https://server.xio.app:3010/getReserves");
+    // console.log(data.data["0x2ab334fe1563ef439f28e78db4d606a71db202e9"]);
+    let POOLDATA = {};
+    if (data1) {
+      Object.keys(poolDataBalance).map((key) => {
+        if (poolDataBalance[key] > 0) {
+          POOLDATA[key] = {
+            totalSupply: data1.data[key].poolTotalSupply,
+            poolBalance: poolDataBalance[key],
+            share: poolDataBalance[key] / data1.data[key].poolTotalSupply,
+            pooledFlash:
+              (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
+              data1.data[key].reserveFlashAmount,
+            pooledAlt:
+              (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
+              data1.data[key].reserveAltAmount,
+            // symbol: Object.keys(poolItems)[key],
+          };
+        }
+      });
     }
+    setPoolData(POOLDATA);
+    // console.log(
+    //   "PoolDATA",
+    //   Object.keys(poolData).map((id) => {
+    //     console.log(poolData[id]);
+    //   })
+    // );
+  }, [poolDataBalance]);
 
-    // Object.keys(poolDataBalance).map((key) => {
+  // const ts = async (key) => {
+  //   for (let index = 0; index < Object.keys(poolDataBalance); index++) {
+  //     await setTotalSupply(key);
+  //   }
 
-    // });
-  };
+  //   // Object.keys(poolDataBalance).map((key) => {
+
+  //   // });
+  // };
 
   useEffect(() => {
     updateOneDay();
@@ -174,7 +213,7 @@ const mapStateToProps = ({
     isStakesSelected,
     selectedStakes,
   },
-  user: { currentStaked, poolData },
+  user: { currentStaked, poolData, poolDataBalance, pools, poolItems },
   flashstake: { selectedPortal },
   contract: { oneDay },
 }) => ({
@@ -190,6 +229,9 @@ const mapStateToProps = ({
   stakeStatus,
   isStakesSelected,
   selectedStakes,
+  poolDataBalance,
+  pools,
+  poolItems,
 });
 
 export default connect(mapStateToProps, {
@@ -208,4 +250,5 @@ export default connect(mapStateToProps, {
   setPoolDataBalance,
   getQueryData,
   setStakeStatus,
+  getPoolBalances,
 })(Updater);

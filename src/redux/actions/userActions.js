@@ -110,7 +110,7 @@ const getPercentageUnStaked = async (_stake) => {
 const getInvFPY = async (_stake) => {
   const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
   const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
-  console.log({ _getPercentageUnStaked: _getPercentageUnStaked.toString() });
+  // console.log({ _getPercentageUnStaked: _getPercentageUnStaked.toString() });
   return JSBI.subtract(_precision, _getPercentageUnStaked);
 };
 
@@ -315,6 +315,7 @@ export const updateAllBalances = () => async (dispatch, getState) => {
 };
 
 export const setPoolData = (data) => {
+  console.log(data);
   return {
     type: "POOL_DATA",
     payload: data,
@@ -333,10 +334,10 @@ export const setPoolItems = (data) => {
   };
 };
 export const setTotalSupply = async (data) => {
-  console.log(data);
+  // console.log(data);
   await initializeErc20TokenContract(data);
   const _data = await totalSupply(data);
-  console.log(_data);
+  // console.log(_data);
   return {
     type: "TOTAL_SUPPLY",
     payload: _data,

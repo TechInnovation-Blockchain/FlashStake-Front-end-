@@ -725,37 +725,37 @@ export const addTokenLiquidityInPool = (
   quantityXIO,
   selectedPortal
 ) => async (dispatch, getState) => {
-  try {
-    const {
-      flashstake: { selectedRewardToken },
-    } = await getState();
-    dispatch({
-      type: "LIQUIDITY_REQUEST",
-      payload: {
-        altSymbol: selectedRewardToken?.tokenB?.symbol,
-        quantityXIO,
-        quantityAlt,
-      },
-    });
-    _log(
-      "addTokenLiquidityInPool -> ",
-      Web3.utils.toWei(String(quantityXIO)),
-      Web3.utils.toWei(String(quantityAlt)),
-      Web3.utils.toWei(String(quantityXIO * 0.95)),
-      Web3.utils.toWei(String(quantityAlt * 0.95)),
-      selectedRewardToken.tokenB.id
-    );
-    initializeFlashstakeProtocolContract();
-    await addLiquidityInPool(
-      Web3.utils.toWei(String(quantityXIO)),
-      Web3.utils.toWei(String(quantityAlt)),
-      Web3.utils.toWei(String(quantityXIO * 0.95)),
-      Web3.utils.toWei(String(quantityAlt * 0.95)),
-      selectedRewardToken.tokenB.id
-    );
-  } catch (e) {
-    _error("ERROR addTokenLiquidityInPool -> ", e);
-  }
+  // try {
+  const {
+    flashstake: { selectedRewardToken },
+  } = await getState();
+  dispatch({
+    type: "LIQUIDITY_REQUEST",
+    payload: {
+      altSymbol: selectedRewardToken?.tokenB?.symbol,
+      quantityXIO,
+      quantityAlt,
+    },
+  });
+  _log(
+    "addTokenLiquidityInPool -> ",
+    Web3.utils.toWei(String(quantityXIO)),
+    Web3.utils.toWei(String(quantityAlt)),
+    // Web3.utils.toWei(String(quantityXIO * 0.95)),
+    // Web3.utils.toWei(String(quantityAlt * 0.95)),
+    selectedRewardToken.tokenB.id
+  );
+  initializeFlashstakeProtocolContract();
+  await addLiquidityInPool(
+    Web3.utils.toWei(String(quantityXIO)),
+    Web3.utils.toWei(String(quantityAlt)),
+    Web3.utils.toWei(String((quantityXIO * 0).toFixed(18))),
+    Web3.utils.toWei(String((quantityAlt * 0).toFixed(18))),
+    selectedRewardToken.tokenB.id
+  );
+  //   } catch (e) {
+  //     _error("ERROR addTokenLiquidityInPool -> ", e);
+  //   }
 };
 
 export const onSelectWithdrawPool = (_poolId) => {

@@ -63,8 +63,9 @@ export const getBalances = async () => {
   }
 };
 
-export const getPoolBalances = async (dispatch) => {
+export const getPoolBalances = () => async (dispatch) => {
   try {
+    console.log("In here");
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
@@ -86,7 +87,7 @@ export const getPoolBalances = async (dispatch) => {
     _pools.map((pool, index) => {
       balances[pool.id] = _balances[index];
     });
-
+    console.log(balances);
     let Symbols = {};
 
     const {
@@ -99,12 +100,12 @@ export const getPoolBalances = async (dispatch) => {
 
     console.log("Symbols", Symbols);
 
-    store.dispatch({
+    dispatch({
       type: "POOL_ITEMS",
       payload: Symbols,
     });
 
-    store.dispatch({
+    dispatch({
       type: "POOL_DATA_BALANCE",
       payload: balances,
     });

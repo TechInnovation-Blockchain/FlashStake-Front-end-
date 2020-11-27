@@ -7,7 +7,7 @@ export const userReducer = (
     walletBalance: "0",
     walletBalances: {},
     walletBalancesPool: {},
-    pooData: {},
+    poolData: [],
     poolDataBalance: {},
     poolItems: {},
     totalSupply: {},
@@ -58,6 +58,7 @@ export const userReducer = (
       };
 
     case "POOL_DATA":
+      console.log("Reducer", payload);
       return {
         ...state,
         poolData: payload,
