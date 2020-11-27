@@ -266,23 +266,24 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       return null;
     }
     const _allowance = await checkAllowanceMemo(
-      selectedRewardToken.id,
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       CONSTANTS.ADDRESS_XIO_RINKEBY,
       account
     );
     _log(_allowance);
-
+    console.log("allowance ==============>", _allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
     });
 
     const _allowance2 = await checkAllowanceMemo(
-      selectedRewardToken.id,
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       selectedRewardToken.tokenB.id,
       account
     );
     _log(_allowance2);
+    console.log("allowance ==============>", _allowance2);
     dispatch({
       type: "ALLOWANCE_ALT_POOL",
       payload: _allowance2 > 0,
@@ -376,7 +377,7 @@ export const getApprovalXIOPool = (step = null) => async (
       flashstake: { selectedRewardToken },
     } = getState();
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(selectedRewardToken?.id, "pool", step);
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool", step);
     dispatch(checkAllowancePool());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
@@ -399,7 +400,7 @@ export const getApprovalALTPool = (_selectedPortal) => async (
       return null;
     }
     await initializeErc20TokenContract(selectedRewardToken?.tokenB?.id);
-    await approve(selectedRewardToken?.id, "pool");
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool");
 
     dispatch(checkAllowancePool());
   } catch (e) {

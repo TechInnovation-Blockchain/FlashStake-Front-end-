@@ -68,12 +68,6 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 
-// console.log(store.getState());
-
-let {
-  ui: { changeApp },
-} = store.getState();
-
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
     textAlign: "center",
@@ -429,7 +423,6 @@ function Flashstake({
   const ref = useRef(null);
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
-
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
     if (localStorage.getItem("prefs-stake-time") == null) return;
@@ -438,7 +431,7 @@ function Flashstake({
     if (time !== localStorage.getItem("prefs-stake-time")) {
       setTime(localStorage.getItem("prefs-stake-time"));
     }
-  });
+  }, []);
 
   const handleChange = (event) => {
     setTime(event.target.value);
@@ -454,12 +447,12 @@ function Flashstake({
   const handleOpen = () => {
     setOpen(true);
   };
-  useEffect(() => {
-    setTimeout(() => {
-      // setHeightToggle(!heightToggle);
-      setHeightValue(ref?.current?.clientHeight);
-    }, 100);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     // setHeightToggle(!heightToggle);
+  //     setHeightValue(ref?.current?.clientHeight);
+  //   }, 100);
+  // });
 
   const toggle = () => {
     setHeight(height > 300 ? heightVal : "100%");

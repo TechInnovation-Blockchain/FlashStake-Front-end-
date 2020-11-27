@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { store } from "../reduxStore";
+import { Box } from "@material-ui/core";
 
 import { Flashstake, Swap, Pool, Vote } from "../../pages";
 import { Navbar, FlashstakePausedMessage } from "../../component";
@@ -28,7 +29,8 @@ const getRoutes = (paused) => {
     },
     {
       path: "/pool",
-      component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
+      component: Pool,
+      // component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
     },
     {
       path: "/vote",
@@ -54,13 +56,15 @@ function Routes({
   return (
     <BrowserRouter>
       <Navbar themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
-      <Switch>
-        {routes.map((_route) => (
-          <Route {..._route} key={_route.path} />
-        ))}
+      <Box className="transitionEase">
+        <Switch>
+          {routes.map((_route) => (
+            <Route {..._route} key={_route.path} />
+          ))}
 
-        <Route exact component={() => <Redirect to={redirectRoute} />} />
-      </Switch>
+          <Route exact component={() => <Redirect to={redirectRoute} />} />
+        </Switch>
+      </Box>
     </BrowserRouter>
   );
 }

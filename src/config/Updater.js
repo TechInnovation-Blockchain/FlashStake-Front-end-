@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { useQuery } from "@apollo/client";
 
@@ -25,10 +25,7 @@ import {
 import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
 import { getQueryData } from "../redux/actions/queryActions";
-import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
-import { setTotalSupply } from "../redux/actions/userActions";
-import axios from "axios";
-import { store } from "../config/reduxStore";
+// import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
 
 function Updater({
   active,
@@ -50,20 +47,7 @@ function Updater({
   selectedPortal,
   updateOneDay,
   oneDay,
-  setPoolData,
-  setPoolDataBalance,
-  poolData,
-  getQueryData,
-  stakeStatus,
-  setStakeStatus,
-  isStakesSelected,
-  selectedStakes,
-  totalBurn,
-  getPoolBalances,
-  poolDataBalance,
-  poolItems,
-  pools,
-  // getPoolBalances,
+  walletBalancesPool,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -76,45 +60,45 @@ function Updater({
   //   user: { poolDataBalance },
   // } = store.getState();
 
-  useEffect(() => {
-    getPoolBalances();
-  }, [active, account, pools]);
+  // useEffect(() => {
+  //   getPoolBalances();
+  // }, [active, account, pools]);
 
-  useEffect(() => {
-    reserves();
-  }, [poolDataBalance]);
+  // useEffect(() => {
+  //   reserves();
+  // }, []);
 
   // const [poolDATA, setPoolDATA] = useState([]);
-  const reserves = useCallback(async () => {
-    const data1 = await axios.get("https://server.xio.app:3010/getReserves");
-    // console.log(data.data["0x2ab334fe1563ef439f28e78db4d606a71db202e9"]);
-    let POOLDATA = {};
-    if (data1) {
-      Object.keys(poolDataBalance).map((key) => {
-        if (poolDataBalance[key] > 0) {
-          POOLDATA[key] = {
-            totalSupply: data1.data[key].poolTotalSupply,
-            poolBalance: poolDataBalance[key],
-            share: poolDataBalance[key] / data1.data[key].poolTotalSupply,
-            pooledFlash:
-              (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
-              data1.data[key].reserveFlashAmount,
-            pooledAlt:
-              (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
-              data1.data[key].reserveAltAmount,
-            // symbol: Object.keys(poolItems)[key],
-          };
-        }
-      });
-    }
-    setPoolData(POOLDATA);
-    // console.log(
-    //   "PoolDATA",
-    //   Object.keys(poolData).map((id) => {
-    //     console.log(poolData[id]);
-    //   })
-    // );
-  }, [poolDataBalance]);
+  // const reserves = useCallback(async () => {
+  //   const data1 = await axios.get("https://server.xio.app:3010/getReserves");
+  //   // console.log(data.data["0x2ab334fe1563ef439f28e78db4d606a71db202e9"]);
+  //   let POOLDATA = {};
+  //   if (data1) {
+  //     Object.keys(poolDataBalance).map((key) => {
+  //       if (poolDataBalance[key] > 0) {
+  //         POOLDATA[key] = {
+  //           totalSupply: data1.data[key].poolTotalSupply,
+  //           poolBalance: poolDataBalance[key],
+  //           share: poolDataBalance[key] / data1.data[key].poolTotalSupply,
+  //           pooledFlash:
+  //             (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
+  //             data1.data[key].reserveFlashAmount,
+  //           pooledAlt:
+  //             (poolDataBalance[key] / data1.data[key].poolTotalSupply) *
+  //             data1.data[key].reserveAltAmount,
+  //           // symbol: Object.keys(poolItems)[key],
+  //         };
+  //       }
+  //     });
+  //   }
+  //   setPoolData(POOLDATA);
+  //   // console.log(
+  //   //   "PoolDATA",
+  //   //   Object.keys(poolData).map((id) => {
+  //   //     console.log(poolData[id]);
+  //   //   })
+  //   // );
+  // }, [poolDataBalance]);
 
   // const ts = async (key) => {
   //   for (let index = 0; index < Object.keys(poolDataBalance); index++) {
@@ -190,6 +174,7 @@ function Updater({
       setRefetch(false);
     }
   }, [refetchData]);
+
   useEffect(() => {
     updatePools(data?.protocols[0]?.pools);
     updateUserData(data?.user);
@@ -209,11 +194,17 @@ const mapStateToProps = ({
     refetch,
     reCalculateExpired,
     stakeStatus,
-    totalBurn,
     isStakesSelected,
     selectedStakes,
   },
-  user: { currentStaked, poolData, poolDataBalance, pools, poolItems },
+  user: {
+    currentStaked,
+    poolData,
+    poolDataBalance,
+    pools,
+    poolItems,
+    walletBalancesPool,
+  },
   flashstake: { selectedPortal },
   contract: { oneDay },
 }) => ({
@@ -232,6 +223,7 @@ const mapStateToProps = ({
   poolDataBalance,
   pools,
   poolItems,
+  walletBalancesPool,
 });
 
 export default connect(mapStateToProps, {
@@ -250,5 +242,5 @@ export default connect(mapStateToProps, {
   setPoolDataBalance,
   getQueryData,
   setStakeStatus,
-  getPoolBalances,
+  // getPoolBalances,
 })(Updater);

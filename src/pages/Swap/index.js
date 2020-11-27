@@ -22,6 +22,7 @@ import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import withDimensions from "react-with-dimensions";
 
 import {
   Button,
@@ -564,12 +565,12 @@ function Swap({
   const [heightToggle, setHeightToggle] = useState(false);
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
-  useEffect(() => {
-    setTimeout(() => {
-      setHeightToggle(!heightToggle);
-      setHeightValue(ref?.current?.clientHeight);
-    }, 100);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHeightToggle(!heightToggle);
+  //     setHeightValue(ref?.current?.clientHeight);
+  //   }, 100);
+  // });
 
   const toggle = () => {};
 
@@ -687,14 +688,14 @@ function Swap({
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
 
-  useEffect(() => {
-    if (!expanding) {
-      setExpanded2(true);
-      setTimeout(() => {
-        setExpandAccodion(true);
-      }, 500);
-    }
-  }, [expanding, setExpandAccodion]);
+  // useEffect(() => {
+  //   if (!expanding) {
+  //     setExpanded2(true);
+  //     setTimeout(() => {
+  //       setExpandAccodion(true);
+  //     }, 500);
+  //   }
+  // }, [expanding, setExpandAccodion]);
   //#endregion
   return (
     <PageAnimation in={true} reverse={animation > 0}>

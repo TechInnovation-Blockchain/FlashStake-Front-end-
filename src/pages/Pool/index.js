@@ -406,12 +406,12 @@ function Pool({
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setHeightToggle(!heightToggle);
-      setHeightValue(ref?.current?.clientHeight);
-    }, 500);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHeightToggle(!heightToggle);
+  //     setHeightValue(ref?.current?.clientHeight);
+  //   }, 500);
+  // });
 
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");
@@ -576,14 +576,14 @@ function Pool({
   //   }
   // }, [quantity, reserveFlashAmount, reserveAltAmount]);
 
-  useEffect(() => {
-    if (!expanding) {
-      setExpanded2(true);
-      setTimeout(() => {
-        setExpandAccodion(true);
-      }, 500);
-    }
-  }, [expanding, setExpandAccodion]);
+  // useEffect(() => {
+  //   if (!expanding) {
+  //     setExpanded2(true);
+  //     setTimeout(() => {
+  //       setExpandAccodion(true);
+  //     }, 500);
+  //   }
+  // }, [expanding, setExpandAccodion]);
 
   return (
     // account !== "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (

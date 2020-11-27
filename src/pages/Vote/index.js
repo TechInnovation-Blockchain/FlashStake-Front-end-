@@ -28,9 +28,9 @@ function Vote({ animation, heightVal, setHeightValue }) {
   const ref = useRef(null);
   const [height, setHeight] = useState(heightVal);
 
-  useEffect(() => {
-    setHeightValue(ref.current.clientHeight);
-  });
+  // useEffect(() => {
+  //   setHeightValue(ref.current.clientHeight);
+  // });
 
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");

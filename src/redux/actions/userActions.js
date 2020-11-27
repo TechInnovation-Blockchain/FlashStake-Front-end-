@@ -7,7 +7,6 @@ import { setLoading } from "./uiActions";
 import {
   initializeBalanceContract,
   getBalances,
-  getPoolBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 import { _error } from "../../utils/log";
@@ -272,6 +271,7 @@ const getBalancesIntervaled = (function () {
 })();
 
 export const updateAllBalances = () => async (dispatch, getState) => {
+  console.log("yada callleeeed");
   try {
     const {
       web3: { account },

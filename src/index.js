@@ -6,7 +6,6 @@ import "./assets/css/main.css";
 import xordLogo from "./assets/xord-light.png";
 import { Typography } from "@material-ui/core";
 
-// ReactDOM.render(() => {}, document.getElementById("root"));
 const AppProtected = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [tried, setTried] = useState(false);

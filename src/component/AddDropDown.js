@@ -47,13 +47,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       background: theme.palette.button.hover,
     },
-    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
   dropdownIcon: {
     color: theme.palette.xioRed.main,
     position: "absolute",
     right: 0,
-    // margin: theme.spacing(1),
     fontWeight: 900,
   },
   closeBtnContainer: {
@@ -90,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     textAlign: "center",
     padding: theme.spacing(2),
-    // paddingBottom: 0,
 
     "&>*": {
       marginBottom: theme.spacing(2),
@@ -107,7 +104,6 @@ const useStyles = makeStyles((theme) => ({
       height: 36,
       fontWeight: "700 !important",
       padding: theme.spacing(0, 1),
-      // fontSize: 16,
       lineHeight: 1.5,
       textAlign: "center",
     },
@@ -129,10 +125,6 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
       backgroundColor: theme.palette.background.secondary3,
     },
-
-    // "&:hover": {
-    //   color: theme.palette.text.primary,
-    // },
   },
   listItemText: {
     fontWeight: 700,
@@ -140,9 +132,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   disabledText: {
-    // color: theme.palette.xioRed.main,
     color: theme.palette.text.disabled,
-    // fontSize: 12,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
@@ -158,9 +148,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
   },
   addBtn: {
-    // backgroundColor: theme.palette.button.retro,
     border: "none",
-    // height: 35,
     color: theme.palette.buttonText.dark,
     letterSpacing: 2,
     lineHeight: 1.2,
@@ -191,7 +179,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: theme.palette.background.liquidity,
     borderRadius: 5,
-    // padding: theme.spacing(2),
     height: 60,
   },
   innerBox: {
