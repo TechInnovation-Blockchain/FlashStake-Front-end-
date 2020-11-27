@@ -271,7 +271,6 @@ const getBalancesIntervaled = (function () {
 })();
 
 export const updateAllBalances = () => async (dispatch, getState) => {
-  console.log("yada callleeeed");
   try {
     const {
       web3: { account },

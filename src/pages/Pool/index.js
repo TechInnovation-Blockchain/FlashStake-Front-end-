@@ -63,6 +63,8 @@ import { getQueryData } from "../../redux/actions/queryActions";
 import Radio from "@material-ui/core/Radio";
 import axios from "axios";
 import { setPoolData } from "../../redux/actions/userActions";
+import { JSBI } from "@uniswap/sdk";
+import { _error } from "../../utils/log";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -401,10 +403,10 @@ function Pool({
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
-  const [heightToggle, setHeightToggle] = useState(false);
   const ref = useRef(null);
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
+  const [queryData, setQueryData] = useState({});
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -452,16 +454,41 @@ function Pool({
   //   quote();
   // }, [selectedPortal]);
 
+  const fetchQueryData = async () => {
+    const _queryData = await getQueryData(selectedPortal);
+    setQueryData(_queryData);
+  };
+
+  useEffect(() => {
+    if (selectedPortal) {
+      fetchQueryData();
+    }
+  }, [selectedPortal]);
+
   const quote = useCallback(
     async (_amountA, _amountType = "alt") => {
-      const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
-        selectedPortal
-      );
-      const [_reserveA, _reserveB] =
-        _amountType === "alt"
-          ? [reserveAltAmount, reserveFlashAmount]
-          : [reserveFlashAmount, reserveAltAmount];
-      return (_amountA * _reserveB) / _reserveA;
+      try {
+        const _queryData = await getQueryData(selectedPortal);
+        const { reserveFlashAmount, reserveAltAmount } = _queryData;
+        const [_reserveA, _reserveB] =
+          _amountType === "alt"
+            ? [reserveAltAmount, reserveFlashAmount]
+            : [reserveFlashAmount, reserveAltAmount];
+        return Web3.utils.fromWei(
+          String(
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(_reserveB)
+              ),
+              JSBI.BigInt(_reserveA)
+            )
+          )
+        );
+      } catch (e) {
+        _error("ERROR quote Pool -> ", e);
+        return 0;
+      }
     },
     [selectedPortal]
   );
@@ -746,13 +773,22 @@ function Pool({
                             {selectedStakeToken} per{" "}
                             {selectedRewardToken?.tokenB?.symbol}
                           </Typography>
-
-                          <Typography
-                            variant="body1"
-                            className={classes.secondaryText}
+                          <Tooltip
+                            title={
+                              queryData.reserveFlashAmount /
+                                queryData.reserveAltAmount || 0
+                            }
                           >
-                            610.215
-                          </Typography>
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                queryData.reserveFlashAmount /
+                                  queryData.reserveAltAmount
+                              ) || 0}
+                            </Typography>
+                          </Tooltip>
                           {/* <Box className={classes.textFieldContainer}></Box> */}
                         </Box>
                       </Grid>
@@ -769,12 +805,22 @@ function Pool({
                             {selectedRewardToken?.tokenB?.symbol}
                           </Typography>
 
-                          <Typography
-                            variant="body1"
-                            className={classes.secondaryText}
+                          <Tooltip
+                            title={
+                              queryData.reserveAltAmount /
+                                queryData.reserveFlashAmount || 0
+                            }
                           >
-                            610.215
-                          </Typography>
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                queryData.reserveAltAmount /
+                                  queryData.reserveFlashAmount
+                              ) || 0}
+                            </Typography>
+                          </Tooltip>
                           {/* <Box className={classes.textFieldContainer}></Box> */}
                         </Box>
                       </Grid>
@@ -786,17 +832,37 @@ function Pool({
                             variant="body2"
                             className={classes.secondaryText}
                           >
-                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                            {selectedStakeToken} per{" "}
-                            {selectedRewardToken?.tokenB?.symbol}
+                            Share of Pool
                           </Typography>
-
-                          <Typography
-                            variant="body1"
-                            className={classes.secondaryText}
+                          <Tooltip
+                            title={`${
+                              (quantityXIO /
+                                (parseFloat(quantityXIO) +
+                                  parseFloat(
+                                    Web3.utils.fromWei(
+                                      queryData.reserveFlashAmount || "0"
+                                    )
+                                  ))) *
+                                100 || 0
+                            }%`}
                           >
-                            610.215
-                          </Typography>
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                (quantityXIO /
+                                  (parseFloat(quantityXIO) +
+                                    parseFloat(
+                                      Web3.utils.fromWei(
+                                        queryData.reserveFlashAmount || "0"
+                                      )
+                                    ))) *
+                                  100
+                              ) || 0}
+                              %
+                            </Typography>
+                          </Tooltip>
                           {/* <Box className={classes.textFieldContainer}></Box> */}
                         </Box>
                       </Grid>
