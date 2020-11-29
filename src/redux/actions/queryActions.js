@@ -13,6 +13,21 @@ const getReservesData = async () => {
     return data;
   } catch (e) {
     _error("ERROR getReservesData -> ", e);
+    return {};
+  }
+};
+
+export const getAllQueryData = async () => {
+  try {
+    const _data = await getReservesData();
+    await store.dispatch({
+      type: "ALL_POOLS_DATA",
+      payload: _data,
+    });
+    return _data;
+  } catch (e) {
+    _error("ERROR updateAllQueryData -> ", e);
+    return {};
   }
 };
 
@@ -28,6 +43,10 @@ export const getQueryData = async (_poolId, forceRefetchQuery = false) => {
       forceRefetchQuery
     ) {
       const data = await getReservesData();
+      await store.dispatch({
+        type: "ALL_POOLS_DATA",
+        payload: data,
+      });
       await store.dispatch({
         type: "QUERY_DATA",
         payload: { id: _poolId, ...data[_poolId] },

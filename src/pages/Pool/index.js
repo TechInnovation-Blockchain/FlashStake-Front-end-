@@ -399,7 +399,7 @@ function Pool({
   const classes = useStyles();
   const history = useHistory();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [expanded2, setExpanded2] = useState(true);
+  const [expanded2, setExpanded2] = useState(false);
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
