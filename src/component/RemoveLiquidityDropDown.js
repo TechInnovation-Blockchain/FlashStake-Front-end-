@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Grid,
   Slider,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
@@ -18,6 +19,7 @@ import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
 import RemoveDropDown from "./RemoveDropDown";
+import { trunc } from "../utils/utilFunc";
 
 const {
   ui: { changeApp },
@@ -211,38 +213,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RemoveLiquidityDropDown({
-  children,
+  open,
+  onClose,
+  pool,
   closeTimeout,
   items = [],
   onSelect = () => {},
-  selectedValue = {},
-  disableDrop,
-  link,
-  type = "stake",
 }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-
-  const history = useHistory();
-
-  const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
-  };
-
-  const filteredData = useCallback(() => {
-    return items.filter((item) =>
-      item.tokenB?.symbol.toUpperCase().includes(search)
-    );
-  }, [search, items]);
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-
-  const onSelectLocal = (_pool) => {
-    onSelect(_pool);
-    onClose();
-  };
+  const [percentageToRemove, setPercentageToRemove] = useState(5);
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -250,219 +229,200 @@ export default function RemoveLiquidityDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
-  const tryRequire = (path) => {
-    try {
-      return require(`../assets/Tokens/${path}.png`);
-    } catch (err) {
-      return require(`../assets/Tokens/NOTFOUND.png`);
-    }
-  };
+  useEffect(() => {
+    console.log("yada -> ", pool);
+  }, [pool]);
+
   return (
-    <Fragment>
-      <Box
-        className={classes.dropdown}
-        onClick={() => !disableDrop && !link && setOpen(true)}
-      >
-        <Typography
-          variant="body1"
-          className={classes.removeBtn}
-          onClick={() => !disableDrop && !link && setOpen(true)}
-        >
-          REMOVE
-        </Typography>
-      </Box>
+    <MuiDialog
+      open={open}
+      // open={true}
+      onClose={onClose}
+      PaperProps={{ className: classes.dialogPaper }}
+    >
+      <Container maxWidth="xs" className={classes.dialog}>
+        <Box className={classes.closeBtnContainer}>
+          <Typography variant="body1" className={classes.dialogHeading}>
+            REMOVE LIQUIDITY
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={onClose}
+            className={classes.closeIcon}
+          >
+            <ClearOutlined />
+          </IconButton>
+        </Box>
 
-      <MuiDialog
-        open={open}
-        // open={true}
-        onClose={onClose}
-        PaperProps={{ className: classes.dialogPaper }}
-      >
-        <Container maxWidth="xs" className={classes.dialog}>
-          <Box className={classes.closeBtnContainer}>
-            <Typography variant="body1" className={classes.dialogHeading}>
-              REMOVE LIQUIDITY
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={onClose}
-              className={classes.closeIcon}
+        <Box className={classes.headingBox}>
+          <Typography className={classes.mainHeading}>YOUR POSITION</Typography>
+        </Box>
+
+        <Box className={classes.firstBox}>
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
             >
-              <ClearOutlined />
-            </IconButton>
-          </Box>
-          <Box className={classes.closeBtnContainer}>
-            {/* <TextField
-              placeholder="SEARCH"
-              className={classes.textField}
-              fullWidth
-              value={search}
-              onChange={onChangeSearch}
-            /> */}
-            {search ? (
-              <IconButton
-                size="small"
-                onClick={() => setSearch("")}
-                className={classes.clearSearch}
-              >
-                <ClearOutlined />
-              </IconButton>
-            ) : null}
-          </Box>
-
-          <Box className={classes.headingBox}>
-            <Typography className={classes.mainHeading}>
-              YOUR POSITION
-            </Typography>
-          </Box>
-
-          <Box className={classes.firstBox}>
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="h5">
-                  XIO / AAVE
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
+              <Typography className={classes.fontStyle} variant="h5">
+                $FLASH / {pool?.pool?.tokenB?.symbol}
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.balance || 0}>
                 <Typography variant="h5" className={classes.fontStyle}>
-                  0.04602
+                  {trunc(pool?.balance || 0)}
                 </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="body2">
-                  Pooled XIO:
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  0.00180469
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="body2">
-                  Pooled AAVE:
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  1.2683
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="body2">
-                  Your pool share:
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  {" "}
-                  {"<0.01%"}{" "}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box className={classes.removeBox}>
-            <Typography className={classes.removeText} variant="body1">
-              AMOUNT TO REMOVE
-            </Typography>
-
-            <Typography className={classes.removeText} variant="h5">
-              5%
-            </Typography>
-
-            <Slider
-              // value={40}
-              className={classes.slider}
-              //   onChange={handleChange}
-              aria-labelledby="continuous-slider"
-            />
-            <Grid container spacing={1} xs={12} className={classes.mainCont}>
-              <Grid item xs={6}>
-                <Box flex={1} className={classes.outerBox2}>
-                  <Typography
-                    // variant="body2"
-                    variant="body2"
-                    className={classes.secondaryText}
-                  >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    $FLASH
-                  </Typography>
-
-                  <Typography variant="h6" className={classes.secondaryText}>
-                    610.215
-                  </Typography>
-                  {/* <Box className={classes.textFieldContainer}></Box> */}
-                </Box>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Box flex={1} className={classes.outerBox2}>
-                  <Typography
-                    // variant="body2"
-                    variant="body2"
-                    className={classes.secondaryText}
-                  >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    AAVE
-                  </Typography>
-
-                  <Typography variant="h6" className={classes.secondaryText}>
-                    610.215
-                  </Typography>
-                  {/* <Box className={classes.textFieldContainer}></Box> */}
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box className={classes.info}>
-            <Typography className={classes.fontWeight}>
-              1 XIO = 697.58 AAVE
-            </Typography>
-            <Typography className={classes.fontWeight}>
-              1 AAVE = 0.00143333 XIO
-            </Typography>
-          </Box>
-
-          <Grid container xs={12} spacing={2} className={classes.btns}>
-            <Grid item xs={6} className={classes.innerBox}>
-              <Button fullWidth variant="retro">
-                APPROVE
-              </Button>
-            </Grid>
-
-            <Grid item xs={6} className={classes.innerBox}>
-              <RemoveDropDown />
+              </Tooltip>
             </Grid>
           </Grid>
-        </Container>
-      </MuiDialog>
-    </Fragment>
+
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Pooled $FLASH:
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.pooledFlash || 0}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  {trunc(pool?.pooledFlash || 0)}
+                </Typography>
+              </Tooltip>
+            </Grid>
+          </Grid>
+
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Pooled {pool?.pool?.tokenB?.symbol}:
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.pooledAlt || 0}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  {trunc(pool?.pooledAlt || 0)}
+                </Typography>
+              </Tooltip>
+            </Grid>
+          </Grid>
+
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Your pool share:
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={`${pool?.poolShare || 0}%`}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  {trunc(pool?.poolShare || 0)}%
+                </Typography>
+              </Tooltip>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Box className={classes.removeBox}>
+          <Typography className={classes.removeText} variant="body1">
+            AMOUNT TO REMOVE
+          </Typography>
+
+          <Typography className={classes.removeText} variant="h5">
+            {percentageToRemove}%
+          </Typography>
+
+          <Slider
+            value={percentageToRemove}
+            className={classes.slider}
+            onChange={(e, v) => setPercentageToRemove(v)}
+            aria-labelledby="continuous-slider"
+          />
+          <Grid container spacing={1} xs={12} className={classes.mainCont}>
+            <Grid item xs={6}>
+              <Box flex={1} className={classes.outerBox2}>
+                <Typography
+                  // variant="body2"
+                  variant="body2"
+                  className={classes.secondaryText}
+                >
+                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                  $FLASH
+                </Typography>
+                <Tooltip title={(percentageToRemove / 100) * pool.pooledFlash}>
+                  <Typography variant="h6" className={classes.secondaryText}>
+                    {trunc((percentageToRemove / 100) * pool.pooledFlash)}
+                  </Typography>
+                </Tooltip>
+                {/* <Box className={classes.textFieldContainer}></Box> */}
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Box flex={1} className={classes.outerBox2}>
+                <Typography
+                  // variant="body2"
+                  variant="body2"
+                  className={classes.secondaryText}
+                >
+                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                  {pool?.pool?.tokenB?.symbol}
+                </Typography>
+                <Tooltip title={(percentageToRemove / 100) * pool.pooledAlt}>
+                  <Typography variant="h6" className={classes.secondaryText}>
+                    {trunc((percentageToRemove / 100) * pool.pooledAlt)}
+                  </Typography>
+                </Tooltip>
+                {/* <Box className={classes.textFieldContainer}></Box> */}
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Box className={classes.info}>
+          <Typography className={classes.fontWeight}>
+            1 $FLASH ={" "}
+            {trunc(
+              pool?.poolQueryData?.reserveAltAmount /
+                pool?.poolQueryData?.reserveFlashAmount
+            ) || 0}{" "}
+            {pool?.pool?.tokenB?.symbol}
+          </Typography>
+          <Typography className={classes.fontWeight}>
+            1 {pool.pool?.tokenB?.symbol} ={" "}
+            {trunc(
+              pool?.poolQueryData?.reserveFlashAmount /
+                pool?.poolQueryData?.reserveAltAmount
+            ) || 0}{" "}
+            $FLASH
+          </Typography>
+        </Box>
+
+        <Grid container xs={12} spacing={2} className={classes.btns}>
+          <Grid item xs={6} className={classes.innerBox}>
+            <Button fullWidth variant="retro">
+              APPROVE
+            </Button>
+          </Grid>
+
+          <Grid item xs={6} className={classes.innerBox}>
+            <RemoveDropDown />
+          </Grid>
+        </Grid>
+      </Container>
+    </MuiDialog>
   );
 }

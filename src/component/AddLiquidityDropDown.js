@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Grid,
   Slider,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
@@ -48,6 +49,9 @@ import { setRefetch } from "../redux/actions/dashboardActions";
 import { getQueryData } from "../redux/actions/queryActions";
 import MaxBtn from "./MaxBtn";
 import { updateAllBalances } from "../redux/actions/userActions";
+import Web3 from "web3";
+import { JSBI } from "@uniswap/sdk";
+import { _error } from "../utils/log";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -250,6 +254,30 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
 
+  maxIconButton: {
+    position: "absolute",
+    right: 0,
+    top: "50%",
+    height: 35,
+    transform: "translateY(-50%)",
+    background: theme.palette.background.secondary2,
+
+    "&.Mui-disabled": {
+      display: "none",
+    },
+    "& svg": {
+      fill: "#9191A7",
+    },
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      background: theme.palette.background.secondary2,
+
+      "& svg": {
+        fill: theme.palette.xioRed.main,
+      },
+    },
+    transition: "none !important",
+  },
   textField: {
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
@@ -269,6 +297,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AddLiquidityDropDown({
+  open,
+  onClose,
+  pool,
   children,
   closeTimeout,
   items = [],
@@ -335,34 +366,14 @@ function AddLiquidityDropDown({
   withdrawLiquidityTxnHash,
   withdrawLiquidityRequest,
   poolData,
+  queryData,
+  onClickPool,
   ...props
 }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [expanded2, setExpanded2] = useState(true);
-  // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
-
-  const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
-  };
-
-  const filteredData = useCallback(() => {
-    return items.filter((item) =>
-      item.tokenB?.symbol.toUpperCase().includes(search)
-    );
-  }, [search, items]);
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-
-  const onSelectLocal = (_pool) => {
-    onSelect(_pool);
-    onClose();
-  };
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -370,18 +381,7 @@ function AddLiquidityDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
-  const tryRequire = (path) => {
-    try {
-      return require(`../assets/Tokens/${path}.png`);
-    } catch (err) {
-      return require(`../assets/Tokens/NOTFOUND.png`);
-    }
-  };
-
-  // ==========================================
-
   const regex = /^\d*(.(\d{1,18})?)?$/;
-  // const [height2, setHeight2] = useState(0);
 
   useEffect(() => {
     document
@@ -405,40 +405,53 @@ function AddLiquidityDropDown({
 
   const quote = useCallback(
     async (_amountA, _amountType = "alt") => {
-      const { reserveFlashAmount, reserveAltAmount } = await getQueryData(
-        selectedPortal
-      );
-      const [_reserveA, _reserveB] =
-        _amountType === "alt"
-          ? [reserveAltAmount, reserveFlashAmount]
-          : [reserveFlashAmount, reserveAltAmount];
-      return (_amountA * _reserveB) / _reserveA;
+      try {
+        const _queryData = await getQueryData(selectedPortal);
+        const { reserveFlashAmount, reserveAltAmount } = _queryData;
+        const [_reserveA, _reserveB] =
+          _amountType === "alt"
+            ? [reserveAltAmount, reserveFlashAmount]
+            : [reserveFlashAmount, reserveAltAmount];
+        return Web3.utils.fromWei(
+          String(
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(_reserveB)
+              ),
+              JSBI.BigInt(_reserveA)
+            )
+          )
+        );
+      } catch (e) {
+        _error("ERROR quote Pool -> ", e);
+        return 0;
+      }
     },
     [selectedPortal]
   );
 
-  const onChangeQuantityAlt = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityAlt(value);
-      const _val = await quote(value, "alt");
-      // if(_val)
-      setQuantityXIO(_val);
-    }
-  };
+  const onChangeQuantityAlt = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        setQuantityAlt(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
+        setQuantityXIO(_val);
+      }
+    },
+    [selectedRewardToken]
+  );
 
-  const onChangeQuantityXIO = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityXIO(value);
-      const _val = await quote(value, "xio");
-      setQuantityAlt(_val);
-    }
-  };
-
-  const showWalletHint = useCallback(() => {
-    if (!(active && account)) {
-      showWalletBackdrop(true);
-    }
-  }, [active, account, showWalletBackdrop]);
+  const onChangeQuantityXIO = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        setQuantityXIO(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
+        setQuantityAlt(_val);
+      }
+    },
+    [selectedRewardToken]
+  );
 
   useEffect(() => {
     // setLoading({ dapp: true });
@@ -474,374 +487,379 @@ function AddLiquidityDropDown({
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
-  // const onClickPool = useCallback(() => {
-  //   setPoolDialogStep("pendingLiquidity");
-  //   setShowStakeDialog(true);
-  //   addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
-  // }, [quantityAlt, quantityXIO, selectedPortal]);
-
-  const onClickApprove = async () => {
-    setPoolDialogStep("pendingApproval");
-    setShowStakeDialog(true);
-    if (!allowanceXIOPool) {
-      setPoolDialogStep("pendingApproval");
-      await getApprovalXIOPool(1);
-    } else if (!allowanceALTPool) {
-      setPoolDialogStep("pendingApproval");
-      await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
-    }
-  };
-
-  const onClickApprovePool = async () => {
-    setPoolDialogStep("pendingApproval");
-    setShowStakeDialog(true);
-  };
-
-  const onClickUnstake = () => {
-    setPoolDialogStep("pendingWithdrawLiquidity");
-    setShowStakeDialog(true);
-  };
-
-  const onClickClose = () => {
-    // setReset(true);
-    setShowStakeDialog(false);
-  };
-
-  const closeDialog = () => {
-    setShowStakeDialog(false);
-  };
-
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
     // console.log(evt.which);
   };
 
   return (
-    <Fragment>
-      <Box
-        className={classes.dropdown}
-        onClick={() => !disableDrop && !link && setOpen(true)}
-      >
-        <Typography
-          variant="body1"
-          className={classes.addBtn}
-          onClick={() => !disableDrop && !link && setOpen(true)}
-        >
-          ADD
-        </Typography>
-      </Box>
-
-      <MuiDialog
-        open={open}
-        // open={true}
-        onClose={onClose}
-        PaperProps={{ className: classes.dialogPaper }}
-      >
-        <Container maxWidth="xs" className={classes.dialog}>
-          <Box className={classes.closeBtnContainer}>
-            <Typography variant="body1" className={classes.dialogHeading}>
-              ADD LIQUIDITY
-            </Typography>
+    <MuiDialog
+      open={open}
+      // open={true}
+      onClose={onClose}
+      PaperProps={{ className: classes.dialogPaper }}
+    >
+      <Container maxWidth="xs" className={classes.dialog}>
+        <Box className={classes.closeBtnContainer}>
+          <Typography variant="body1" className={classes.dialogHeading}>
+            ADD LIQUIDITY
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={onClose}
+            className={classes.closeIcon}
+          >
+            <ClearOutlined />
+          </IconButton>
+        </Box>
+        <Box className={classes.closeBtnContainer}>
+          {search ? (
             <IconButton
               size="small"
-              onClick={onClose}
-              className={classes.closeIcon}
+              onClick={() => setSearch("")}
+              className={classes.clearSearch}
             >
               <ClearOutlined />
             </IconButton>
-          </Box>
-          <Box className={classes.closeBtnContainer}>
-            {search ? (
-              <IconButton
-                size="small"
-                onClick={() => setSearch("")}
-                className={classes.clearSearch}
-              >
-                <ClearOutlined />
-              </IconButton>
-            ) : null}
-          </Box>
+          ) : null}
+        </Box>
 
-          <Box className={classes.headingBox}>
-            <Typography className={classes.mainHeading}>
-              YOUR POSITION
-            </Typography>
-          </Box>
+        <Box className={classes.headingBox}>
+          <Typography className={classes.mainHeading}>YOUR POSITION</Typography>
+        </Box>
 
-          <Box className={classes.firstBox}>
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="h5">
-                  XIO / AAVE
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
+        <Box className={classes.firstBox}>
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="h5">
+                $FLASH / {pool?.pool?.tokenB?.symbol}
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.balance || 0}>
                 <Typography variant="h5" className={classes.fontStyle}>
-                  0.04602
+                  {trunc(pool?.balance || 0)}
                 </Typography>
-              </Grid>
+              </Tooltip>
             </Grid>
+          </Grid>
 
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="body2">
-                  Pooled XIO:
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  0.00180469
-                </Typography>
-              </Grid>
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Pooled $FLASH:
+              </Typography>
             </Grid>
-
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.pooledFlash || 0}>
                 <Typography className={classes.fontStyle} variant="body2">
-                  Pooled AAVE:
+                  {trunc(pool?.pooledFlash || 0)}
                 </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  1.2683
-                </Typography>
-              </Grid>
+              </Tooltip>
             </Grid>
+          </Grid>
 
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="body2">
-                  Your pool share:
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  {" "}
-                  {"<0.01%"}{" "}
-                </Typography>
-              </Grid>
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Pooled {pool?.pool?.tokenB?.symbol}:
+              </Typography>
             </Grid>
-          </Box>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={pool?.pooledAlt || 0}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  {trunc(pool?.pooledAlt || 0)}
+                </Typography>
+              </Tooltip>
+            </Grid>
+          </Grid>
 
-          <Box>
-            <Grid container spacing={2}>
-              <Grid container className={classes.gridSpace2} item xs={6}>
-                <Box flex={1}>
-                  <Typography
-                    // variant="body2"
-                    variant="body1"
-                    className={classes.secondaryText2}
-                  >
-                    {/* QUANTITY */}
-                    Quantity
-                  </Typography>
-                  <Box className={classes.textFieldContainer}>
-                    {/* <Tooltip title="Hello world" open={true}> */}
-                    <TextField
-                      className={classes.textField}
-                      fullWidth
-                      placeholder="0.0"
-                      type="number"
-                      inputMode="numeric"
-                      pattern={regex}
-                      onKeyDown={handleKeyDown}
-                      onFocus={(e) => (e.target.placeholder = "")}
-                      onBlur={(e) => (e.target.placeholder = "0.0")}
-                      value={quantityAlt}
-                      onChange={onChangeQuantityAlt}
-                      error={
-                        active &&
-                        account &&
-                        selectedPortal &&
-                        parseFloat(quantityAlt) > parseFloat(balanceALT)
-                      }
-                    />
-                    {/* </Tooltip> */}
-                    {/* <IconButton
-                      className={classes.maxIconButton}
-                      disabled={
-                        !(active || account) ||
-                        !selectedPortal ||
-                        // !walletBalancesPool[selectedPortal] ||
-                        balanceALT == quantityAlt
-                      }
-                      onClick={() =>
-                        onChangeQuantityAlt({
-                          target: {
-                            value: balanceALT,
-                          },
-                        })
-                      }
-                    >
-                      <MaxBtn width={10} />
-                    </IconButton> */}
-                  </Box>
-                </Box>
-              </Grid>
+          <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={6}
+              style={{ textAlign: "left" }}
+              className={classes.innerBox}
+            >
+              <Typography className={classes.fontStyle} variant="body2">
+                Your pool share:
+              </Typography>
+            </Grid>
+            <Grid xs={6} style={{ textAlign: "right" }}>
+              <Tooltip title={`${pool?.poolShare || 0}%`}>
+                <Typography className={classes.fontStyle} variant="body2">
+                  {trunc(pool?.poolShare || 0)}%
+                </Typography>
+              </Tooltip>
+            </Grid>
+          </Grid>
+        </Box>
 
-              <Grid item className={classes.gridSpace2} xs={6}>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid container className={classes.gridSpace2} item xs={6}>
+              <Box flex={1}>
                 <Typography
                   // variant="body2"
                   variant="body1"
                   className={classes.secondaryText2}
                 >
-                  Pool
+                  {/* QUANTITY */}
+                  Quantity
                 </Typography>
-                <DropdownDialog
-                  className={classes.dropDown}
-                  items={pools}
-                  selectedValue={selectedRewardToken}
-                  onSelect={setSelectedRewardToken}
-                  heading="SELECT TOKEN"
-                />
-              </Grid>
+                <Box className={classes.textFieldContainer}>
+                  <TextField
+                    className={classes.textField}
+                    fullWidth
+                    placeholder="0.0"
+                    type="number"
+                    inputMode="numeric"
+                    pattern={regex}
+                    onKeyDown={handleKeyDown}
+                    onFocus={(e) => (e.target.placeholder = "")}
+                    onBlur={(e) => (e.target.placeholder = "0.0")}
+                    value={quantityAlt}
+                    onChange={onChangeQuantityAlt}
+                    error={
+                      active &&
+                      account &&
+                      selectedPortal &&
+                      parseFloat(quantityAlt) > parseFloat(balanceALT)
+                    }
+                  />
+                  <IconButton
+                    className={classes.maxIconButton}
+                    disabled={
+                      !(active || account) ||
+                      !selectedPortal ||
+                      // !walletBalancesPool[selectedPortal] ||
+                      balanceALT == quantityAlt
+                    }
+                    onClick={() =>
+                      onChangeQuantityAlt({
+                        target: {
+                          value: balanceALT,
+                        },
+                      })
+                    }
+                  >
+                    <MaxBtn width={10} />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Grid>
 
-              <Grid container item xs={12}>
-                <Box flex={1}>
+            <Grid item className={classes.gridSpace2} xs={6}>
+              <Typography
+                // variant="body2"
+                variant="body1"
+                className={classes.secondaryText2}
+              >
+                Pool
+              </Typography>
+              <DropdownDialog
+                className={classes.dropDown}
+                items={pools}
+                selectedValue={selectedRewardToken}
+                onSelect={setSelectedRewardToken}
+                heading="SELECT TOKEN"
+              />
+            </Grid>
+
+            <Grid container item xs={12}>
+              <Box flex={1}>
+                <Typography
+                  // variant="body2"
+                  variant="body1"
+                  className={classes.secondaryText2}
+                >
+                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                  Amount of $FLASH required to pool
+                </Typography>
+                <Box className={classes.textFieldContainer}>
+                  {/* <Tooltip title="Hello world" open={true}> */}
+                  <TextField
+                    className={classes.textField}
+                    fullWidth
+                    placeholder="0.0"
+                    type="number"
+                    inputMode="numeric"
+                    pattern={regex}
+                    onKeyDown={handleKeyDown}
+                    onFocus={(e) => (e.target.placeholder = "")}
+                    onBlur={(e) => (e.target.placeholder = "0.0")}
+                    value={quantityXIO}
+                    onChange={onChangeQuantityXIO}
+                    error={
+                      active &&
+                      account &&
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
+                    }
+                  />
+                  {/* </Tooltip> */}
+                  <IconButton
+                    className={classes.maxIconButton}
+                    disabled={
+                      !(active || account) || walletBalance == quantityXIO
+                    }
+                    onClick={() =>
+                      onChangeQuantityXIO({
+                        target: { value: walletBalance },
+                      })
+                    }
+                  >
+                    <MaxBtn width={10} />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Grid>
+            {/* {!selectedRewardToken?.tokenB?.symbol ? ( */}
+            {/* <Grid container item style={{ display: "flex" }}> */}
+
+            <Fragment>
+              <Grid item xs={4}>
+                <Box flex={1} className={classes.outerBox3}>
                   <Typography
                     // variant="body2"
-                    variant="body1"
-                    className={classes.secondaryText2}
+                    variant="body2"
+                    className={classes.secondaryText}
                   >
                     {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    Amount of $FLASH required to pool
+                    $FLASH per {selectedRewardToken?.tokenB?.symbol}
                   </Typography>
-                  <Box className={classes.textFieldContainer}>
-                    {/* <Tooltip title="Hello world" open={true}> */}
-                    <TextField
-                      className={classes.textField}
-                      fullWidth
-                      placeholder="0.0"
-                      type="number"
-                      inputMode="numeric"
-                      pattern={regex}
-                      onKeyDown={handleKeyDown}
-                      onFocus={(e) => (e.target.placeholder = "")}
-                      onBlur={(e) => (e.target.placeholder = "0.0")}
-                      value={quantityXIO}
-                      onChange={onChangeQuantityXIO}
-                      error={
-                        active &&
-                        account &&
-                        parseFloat(quantityXIO) > parseFloat(walletBalance)
-                      }
-                    />
-                    {/* </Tooltip> */}
-                    {/* <IconButton
-                      className={classes.maxIconButton}
-                      disabled={
-                        !(active || account) || walletBalance == quantityXIO
-                      }
-                      onClick={() =>
-                        onChangeQuantityXIO({
-                          target: { value: walletBalance },
-                        })
-                      }
+                  <Tooltip
+                    title={
+                      queryData.reserveFlashAmount /
+                        queryData.reserveAltAmount || 0
+                    }
+                  >
+                    <Typography
+                      variant="body1"
+                      className={classes.secondaryText}
                     >
-                      <MaxBtn width={10} />
-                    </IconButton> */}
-                  </Box>
+                      {trunc(
+                        queryData.reserveFlashAmount /
+                          queryData.reserveAltAmount
+                      ) || 0}
+                    </Typography>
+                  </Tooltip>
                 </Box>
               </Grid>
-              {/* {!selectedRewardToken?.tokenB?.symbol ? ( */}
-              {/* <Grid container item style={{ display: "flex" }}> */}
 
-              <Fragment>
-                <Grid item xs={4}>
-                  <Box flex={1} className={classes.outerBox3}>
-                    <Typography
-                      // variant="body2"
-                      variant="body2"
-                      className={classes.secondaryText}
-                    >
-                      {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                      {selectedStakeToken} per{" "}
-                      {selectedRewardToken?.tokenB?.symbol}
-                    </Typography>
+              <Grid item xs={4}>
+                <Box flex={1} className={classes.outerBox3}>
+                  <Typography
+                    // variant="body2"
+                    variant="body2"
+                    className={classes.secondaryText}
+                  >
+                    {selectedRewardToken?.tokenB?.symbol} per $FLASH
+                  </Typography>
 
-                    <Typography
-                      variant="body1"
-                      className={classes.secondaryText}
-                    >
-                      610.215
-                    </Typography>
-                    {/* <Box className={classes.textFieldContainer}></Box> */}
-                  </Box>
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Box flex={1} className={classes.outerBox3}>
-                    <Typography
-                      // variant="body2"
-                      variant="body2"
-                      className={classes.secondaryText}
-                    >
-                      {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                      {selectedStakeToken} per{" "}
-                      {selectedRewardToken?.tokenB?.symbol}
-                    </Typography>
-
+                  <Tooltip
+                    title={
+                      queryData.reserveAltAmount /
+                        queryData.reserveFlashAmount || 0
+                    }
+                  >
                     <Typography
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      610.215
+                      {trunc(
+                        queryData.reserveAltAmount /
+                          queryData.reserveFlashAmount
+                      ) || 0}
                     </Typography>
-                    {/* <Box className={classes.textFieldContainer}></Box> */}
-                  </Box>
-                </Grid>
+                  </Tooltip>
+                  {/* <Box className={classes.textFieldContainer}></Box> */}
+                </Box>
+              </Grid>
 
-                <Grid item xs={4}>
-                  <Box flex={1} className={classes.outerBox3}>
-                    <Typography
-                      // variant="body2"
-                      variant="body2"
-                      className={classes.secondaryText}
-                    >
-                      {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                      {selectedStakeToken} per{" "}
-                      {selectedRewardToken?.tokenB?.symbol}
-                    </Typography>
-
+              <Grid item xs={4}>
+                <Box flex={1} className={classes.outerBox3}>
+                  <Typography
+                    // variant="body2"
+                    variant="body2"
+                    className={classes.secondaryText}
+                  >
+                    Share of Pool
+                  </Typography>
+                  <Tooltip
+                    title={`${
+                      (quantityXIO /
+                        (parseFloat(quantityXIO) +
+                          parseFloat(
+                            Web3.utils.fromWei(
+                              queryData.reserveFlashAmount || "0"
+                            )
+                          ))) *
+                        100 || 0
+                    }%`}
+                  >
                     <Typography
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      610.215
+                      {trunc(
+                        (quantityXIO /
+                          (parseFloat(quantityXIO) +
+                            parseFloat(
+                              Web3.utils.fromWei(
+                                queryData.reserveFlashAmount || "0"
+                              )
+                            ))) *
+                          100
+                      ) || 0}
+                      %
                     </Typography>
-                    {/* <Box className={classes.textFieldContainer}></Box> */}
-                  </Box>
-                </Grid>
-              </Fragment>
-            </Grid>
-            {/* ) : null} */}
-            {/* </Box> */}
-          </Box>
-
-          <Grid container xs={12} className={classes.btns}>
-            <Grid item xs={12} className={classes.innerBox}>
-              <AddDropDown />
-            </Grid>
+                  </Tooltip>
+                  {/* <Box className={classes.textFieldContainer}></Box> */}
+                </Box>
+              </Grid>
+            </Fragment>
           </Grid>
-        </Container>
-      </MuiDialog>
-    </Fragment>
+          {/* ) : null} */}
+          {/* </Box> */}
+        </Box>
+
+        <Grid container xs={12} className={classes.btns}>
+          <Grid item xs={12} className={classes.innerBox}>
+            <AddDropDown
+              quantityAlt={quantityAlt}
+              quantityXIO={quantityXIO}
+              selectedRewardToken={selectedRewardToken}
+              queryData={queryData}
+              disabled={
+                !active ||
+                !account ||
+                !selectedPortal ||
+                !allowanceXIOPool ||
+                !allowanceALTPool ||
+                quantityXIO <= 0 ||
+                quantityAlt <= 0 ||
+                loadingRedux.pool ||
+                chainId !== 4 ||
+                parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                parseFloat(quantityXIO) > parseFloat(walletBalance)
+              }
+              onClickPool={onClickPool}
+            />
+          </Grid>
+        </Grid>
+      </Container>
+    </MuiDialog>
   );
 }
 

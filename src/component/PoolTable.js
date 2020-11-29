@@ -181,6 +181,31 @@ const useStyles = makeStyles((theme) => ({
   fontWeight: {
     fontWeight: 700,
   },
+  liqBtn: {
+    background: theme.palette.button.retro,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: theme.spacing(1),
+    position: "relative",
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    cursor: "pointer",
+
+    "&:hover": {
+      background: theme.palette.button.hover,
+    },
+  },
+  liqBtnInner: {
+    // backgroundColor: theme.palette.button.retro,
+    border: "none",
+    // height: 35,
+    color: theme.palette.buttonText.dark,
+    letterSpacing: 2,
+    lineHeight: 1.2,
+    borderRadius: theme.palette.ButtonRadius.small,
+    fontWeight: 700,
+  },
 }));
 
 function PoolTable({
@@ -192,24 +217,48 @@ function PoolTable({
   poolDashboard,
   selectedWithdrawPool,
   checkAllowancePoolWithdraw,
-  selectedStakeToken,
+  selectedRewardToken,
   allPoolsData,
+  selectedQueryData,
+  onClickPool,
 }) {
   const classes = useStyles();
-  const headItems = ["POOL", "BALANCE"];
-
-  const [sortDirection, setSortDirection] = useState(false);
-  const [sortBy, setSortBy] = useState();
   const [page, setPage] = useState(0);
-  const [reverse, setReverse] = useState(false);
-  const [_break, _setBreak] = useState(true);
-  const [visibleRadioButtons, setVisibleRadioButtons] = useState(false);
-  const [count, setCount] = useState(0);
   const [poolsLiquidityList, setPoolsLiquidityList] = useState([]);
+  const [addLiqOpen, setAddLiqOpen] = useState(false);
+  const [remLiqOpen, setRemLiqOpen] = useState(false);
+  const [currentPool, setCurrentPool] = useState({});
+
+  const onClickOpen = (_pool, type = "add") => {
+    setCurrentPool(_pool);
+    type === "add" ? setAddLiqOpen(true) : setRemLiqOpen(true);
+  };
+
+  const onClickClose = (type = "add") => {
+    type === "add" ? setAddLiqOpen(false) : setRemLiqOpen(false);
+  };
 
   useEffect(() => {
     setPage(0);
   }, [poolDashboard]);
+
+  // useEffect(() => {
+  //   if (
+  //     poolsLiquidityList.length &&
+  //     currentPool?.pool?.id !== poolsLiquidityList[0].pool.id
+  //   ) {
+  //     onClickOpen(poolsLiquidityList[0], "add");
+  //   }
+  // }, [poolsLiquidityList]);
+
+  useEffect(() => {
+    if (selectedRewardToken?.id) {
+      const _pool = poolsLiquidityList.find(
+        (__pool) => __pool.pool.id === selectedRewardToken.id
+      );
+      setCurrentPool(_pool || { pool: selectedRewardToken });
+    }
+  }, [selectedRewardToken]);
 
   useEffect(() => {
     setPoolsLiquidityList(
@@ -239,81 +288,11 @@ function PoolTable({
     );
   }, [poolDashboard, allPoolsData]);
 
-  useEffect(() => {
-    console.log("yada poolsLiquidityList -> ", poolsLiquidityList);
-  }, [poolsLiquidityList]);
-
-  useEffect(() => {
-    if (!selectedWithdrawPool) {
-      setVisibleRadioButtons(false);
-    }
-  }, [selectedWithdrawPool]);
-
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
       showWalletBackdrop(true);
     }
   }, [active, account, showWalletBackdrop]);
-
-  const onClickSortBtn = useCallback(
-    (_sortBy) => {
-      if (sortBy === _sortBy) {
-        setSortDirection((val) => !val);
-      } else {
-        setSortBy(_sortBy);
-        setSortDirection(false);
-      }
-    },
-    [sortBy]
-  );
-
-  // stakes.find((_stake) => _stake.id === _ids[0])
-
-  // const _pool = () => {
-  // console.log(
-  //   pools?.map((pool) =>
-  //     pool.filter((id) => {
-  //       return id === "0x0158e2b23003103bb138119f7278a60a2f755b27";
-  //     })
-  //   )
-  // );
-  //     pools.map((pool) =>
-  //       pool.id.map((id) => {
-  //         id;
-  //       })
-  //     )
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (pools.length > 0) {
-  //     pools.map((pool) => {
-  //       console.log(Object.entries(pool));
-  //     });
-  //   }
-  // });
-
-  // useEffect(() => {
-  //   // Object.keys(poolData).map((pool) => {
-  //   console.log(poolData);
-  //   // });
-  // });
-
-  const handleChangePage = useCallback(
-    (event, newPage) => {
-      setReverse(newPage < page);
-      setPage(newPage);
-    },
-    [page]
-  );
-
-  const tryRequire = (path) => {
-    try {
-      return require(`../assets/Tokens/${path}.png`);
-    } catch (err) {
-      return require(`../assets/Tokens/NOTFOUND.png`);
-    }
-  };
 
   useEffect(() => {
     checkAllowancePoolWithdraw();
@@ -329,34 +308,10 @@ function PoolTable({
           <Typography className={classes.secHead} variant="h6">
             <Tooltip title={`${walletBalance} $FLASH`}>
               <span> {poolDashboard?.length || 0} </span>
-              {/* <span>{trunc(walletBalance)} $FLASH</span> */}
             </Tooltip>
           </Typography>
         </Grid>
       </Grid>
-
-      {/* <Grid container item xs={12}>
-        <Grid container item xs={12} className={classes.gridHead}>
-          {headItems.map((headItem) => (
-            <Grid
-              item
-              xs={6 - visibleRadioButtons}
-              className={classes.gridItem}
-              key={headItem}
-            >
-              <MuiButton
-                className={classes.tableHeadItemBtn}
-                onClick={() => onClickSortBtn(headItem)}
-              >
-                 <Box className={classes.sortButton}>
-                  <UnfoldMore fontSize="small" className={classes.sortIcon} />
-                  {headItem}
-                </Box>  
-              </MuiButton>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid> */}
 
       {!(active && account) ? (
         <Grid
@@ -377,11 +332,11 @@ function PoolTable({
         </Grid>
       ) : (
         <Fragment>
-          <PageAnimation in={true} key={page} reverse={reverse}>
+          <PageAnimation in={true} key={page} reverse={false}>
             <Grid container className={classes.gridSpacing} item>
               {poolsLiquidityList.length > 0 ? (
                 poolsLiquidityList.map((_pool) => (
-                  <Accordion className={classes.accordion}>
+                  <Accordion className={classes.accordion} key={_pool.pool.id}>
                     <AccordionSummary
                       expandIcon={
                         <ExpandMoreIcon
@@ -459,7 +414,7 @@ function PoolTable({
                             variant="body2"
                             className={classes.fontWeight}
                           >
-                            Pooled AAVE:
+                            Pooled {_pool.pool.tokenB.symbol}:
                           </Typography>
                         </Grid>
                         <Grid xs={6} style={{ textAlign: "right" }}>
@@ -488,12 +443,12 @@ function PoolTable({
                           </Typography>
                         </Grid>
                         <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={_pool.poolShare}>
+                          <Tooltip title={`${_pool.poolShare || 0}%`}>
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              {trunc(_pool.poolShare)}
+                              {trunc(_pool.poolShare || 0)}%
                             </Typography>
                           </Tooltip>
                         </Grid>
@@ -506,12 +461,30 @@ function PoolTable({
                         className={classes.btns}
                       >
                         <Grid item xs={6} className={classes.innerBox}>
-                          <RemoveLiquidityDropDown
-                            className={classes.dropDown}
-                          />
+                          <Box
+                            className={classes.liqBtn}
+                            onClick={() => onClickOpen(_pool, "rem")}
+                          >
+                            <Typography
+                              variant="body1"
+                              className={classes.liqBtnInner}
+                            >
+                              REMOVE
+                            </Typography>
+                          </Box>
                         </Grid>
                         <Grid item xs={6} className={classes.innerBox}>
-                          <AddLiquidityDropDown className={classes.dropDown} />
+                          <Box
+                            className={classes.liqBtn}
+                            onClick={() => onClickOpen(_pool, "add")}
+                          >
+                            <Typography
+                              variant="body1"
+                              className={classes.liqBtnInner}
+                            >
+                              ADD
+                            </Typography>
+                          </Box>
                         </Grid>
                       </Grid>
                     </AccordionDetails>
@@ -526,6 +499,19 @@ function PoolTable({
               )}
             </Grid>
           </PageAnimation>
+          <AddLiquidityDropDown
+            open={addLiqOpen}
+            pool={currentPool}
+            onClose={() => onClickClose("add")}
+            queryData={selectedQueryData}
+            onClickPool={onClickPool}
+          />
+          <RemoveLiquidityDropDown
+            open={remLiqOpen}
+            pool={currentPool}
+            onClose={() => onClickClose("rem")}
+            queryData={selectedQueryData}
+          />
         </Fragment>
       )}
     </Grid>

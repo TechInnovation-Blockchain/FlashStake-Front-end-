@@ -738,6 +738,7 @@ export const addTokenLiquidityInPool = (
       quantityAlt,
     },
   });
+  console.log("yada", { quantityXIO, quantityAlt });
   _log(
     "addTokenLiquidityInPool -> ",
     Web3.utils.toWei(String(quantityXIO)),

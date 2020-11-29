@@ -493,22 +493,28 @@ function Pool({
     [selectedPortal]
   );
 
-  const onChangeQuantityAlt = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityAlt(value);
-      const _val = await quote(value, "alt");
-      // if(_val)
-      setQuantityXIO(_val);
-    }
-  };
+  const onChangeQuantityAlt = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        console.log(value);
+        setQuantityAlt(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
+        setQuantityXIO(_val);
+      }
+    },
+    [selectedRewardToken]
+  );
 
-  const onChangeQuantityXIO = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityXIO(value);
-      const _val = await quote(value, "xio");
-      setQuantityAlt(_val);
-    }
-  };
+  const onChangeQuantityXIO = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        setQuantityXIO(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
+        setQuantityAlt(_val);
+      }
+    },
+    [selectedRewardToken]
+  );
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -550,11 +556,18 @@ function Pool({
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
-  const onClickPool = useCallback(() => {
-    setPoolDialogStep("pendingLiquidity");
-    setShowStakeDialog(true);
-    addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
-  }, [quantityAlt, quantityXIO, selectedPortal]);
+  const onClickPool = useCallback(
+    (_quantityAlt, _quantityXIO) => {
+      setPoolDialogStep("pendingLiquidity");
+      setShowStakeDialog(true);
+      if (Number(_quantityAlt) && Number(_quantityXIO)) {
+        addTokenLiquidityInPool(_quantityAlt, _quantityXIO, selectedPortal);
+      } else {
+        addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
+      }
+    },
+    [quantityAlt, quantityXIO, selectedPortal]
+  );
 
   const onClickApprove = async () => {
     setPoolDialogStep("pendingApproval");
@@ -770,8 +783,7 @@ function Pool({
                             className={classes.secondaryText}
                           >
                             {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                            {selectedStakeToken} per{" "}
-                            {selectedRewardToken?.tokenB?.symbol}
+                            $FLASH per {selectedRewardToken?.tokenB?.symbol}
                           </Typography>
                           <Tooltip
                             title={
@@ -789,7 +801,6 @@ function Pool({
                               ) || 0}
                             </Typography>
                           </Tooltip>
-                          {/* <Box className={classes.textFieldContainer}></Box> */}
                         </Box>
                       </Grid>
 
@@ -800,9 +811,7 @@ function Pool({
                             variant="body2"
                             className={classes.secondaryText}
                           >
-                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                            {selectedStakeToken} per{" "}
-                            {selectedRewardToken?.tokenB?.symbol}
+                            {selectedRewardToken?.tokenB?.symbol} per $FLASH
                           </Typography>
 
                           <Tooltip
@@ -1035,6 +1044,8 @@ function Pool({
                 <PoolTable
                   onClickUnstake={onClickUnstake}
                   onClickApprovePool={onClickApprovePool}
+                  selectedQueryData={queryData}
+                  onClickPool={onClickPool}
                 />
                 {/* ) : ( */}
                 {/* <PoolTable

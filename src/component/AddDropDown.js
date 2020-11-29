@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Grid,
   Slider,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -18,10 +19,9 @@ import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
-
-const {
-  ui: { changeApp },
-} = store.getState();
+import { trunc } from "../utils/utilFunc";
+import Web3 from "web3";
+import { JSBI } from "@uniswap/sdk";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -205,14 +205,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddDropDown({
-  children,
+  quantityAlt,
+  quantityXIO,
+  queryData,
   closeTimeout,
   items = [],
   onSelect = () => {},
-  selectedValue = {},
-  disableDrop,
-  link,
-  type = "stake",
+  selectedRewardToken,
+  disabled,
+  onClickPool,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -244,6 +245,26 @@ export default function AddDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
+  const getMintAmount = useCallback(() => {
+    const _poolTotalSupply = Web3.utils.fromWei(
+      queryData?.poolTotalSupply || "0"
+    );
+    const _reserveFlashAmount = Web3.utils.fromWei(
+      queryData?.reserveFlashAmount || "0"
+    );
+    const _reserveAltAmount = Web3.utils.fromWei(
+      queryData?.reserveAltAmount || "0"
+    );
+    if (_poolTotalSupply > 0) {
+      return Math.min(
+        (quantityXIO * _poolTotalSupply) / _reserveFlashAmount,
+        (quantityAlt * _poolTotalSupply) / _reserveAltAmount
+      );
+    } else {
+      return Math.sqrt(quantityXIO * quantityAlt * 1000);
+    }
+  }, [queryData, quantityAlt, quantityXIO]);
+
   const tryRequire = (path) => {
     try {
       return require(`../assets/Tokens/${path}.png`);
@@ -253,18 +274,23 @@ export default function AddDropDown({
   };
   return (
     <Fragment>
-      <Box
-        className={classes.dropdown}
-        onClick={() => !disableDrop && !link && setOpen(true)}
+      <Button
+        fullWidth
+        variant="retro"
+        disabled={disabled}
+        // loading={loadingRedux.pool}
+        onClick={() => setOpen(true)}
       >
-        <Typography
-          variant="body1"
-          className={classes.addBtn}
-          onClick={() => !disableDrop && !link && setOpen(true)}
-        >
+        ADD LIQUIDITY
+      </Button>
+      {/* <Box
+        className={classes.dropdown}
+        onClick={() => !disabled && setOpen(true)}
+      >
+        <Typography variant="body1" className={classes.addBtn}>
           ADD LIQUIDITY
         </Typography>
-      </Box>
+      </Box> */}
 
       <MuiDialog
         open={open}
@@ -311,7 +337,7 @@ export default function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="h4">
-                  0.101949
+                  {trunc(getMintAmount())}
                 </Typography>
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>
@@ -337,13 +363,15 @@ export default function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="caption">
-                  XIO Deposited:
+                  $FLASH Deposited:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  0.00180469
-                </Typography>
+                <Tooltip title={quantityXIO}>
+                  <Typography className={classes.fontStyle} variant="body2">
+                    {trunc(quantityXIO)}
+                  </Typography>
+                </Tooltip>
               </Grid>
             </Grid>
 
@@ -354,13 +382,15 @@ export default function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="caption">
-                  AAVE Deposited:
+                  {selectedRewardToken?.tokenB?.symbol} Deposited:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  1.2683
-                </Typography>
+                <Tooltip title={quantityAlt}>
+                  <Typography className={classes.fontStyle} variant="body2">
+                    {trunc(quantityAlt)}
+                  </Typography>
+                </Tooltip>
               </Grid>
             </Grid>
 
@@ -376,10 +406,18 @@ export default function AddDropDown({
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography className={classes.fontStyle} variant="body2">
-                  1 XIO = 697.58 AAVE
+                  1 $FLASH ={" "}
+                  {trunc(
+                    queryData.reserveAltAmount / queryData.reserveFlashAmount
+                  ) || 0}{" "}
+                  {selectedRewardToken?.tokenB?.symbol}
                 </Typography>
                 <Typography className={classes.fontStyle} variant="body2">
-                  1 AAVE = 0.001433353 XIO
+                  1 {selectedRewardToken?.tokenB?.symbol} ={" "}
+                  {trunc(
+                    queryData.reserveFlashAmount / queryData.reserveAltAmount
+                  ) || 0}{" "}
+                  $FLASH
                 </Typography>
               </Grid>
             </Grid>
@@ -395,15 +433,41 @@ export default function AddDropDown({
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography className={classes.fontStyle} variant="body2">
-                  {" "}
-                  {"<0.01%"}{" "}
-                </Typography>
+                <Tooltip
+                  title={`${
+                    (quantityXIO /
+                      (parseFloat(quantityXIO) +
+                        parseFloat(
+                          Web3.utils.fromWei(
+                            queryData.reserveFlashAmount || "0"
+                          )
+                        ))) *
+                      100 || 0
+                  }%`}
+                >
+                  <Typography className={classes.fontStyle} variant="body2">
+                    {trunc(
+                      (quantityXIO /
+                        (parseFloat(quantityXIO) +
+                          parseFloat(
+                            Web3.utils.fromWei(
+                              queryData.reserveFlashAmount || "0"
+                            )
+                          ))) *
+                        100
+                    ) || 0}
+                    %
+                  </Typography>
+                </Tooltip>
               </Grid>
             </Grid>
           </Box>
 
-          <Button variant="retro" fullWidth>
+          <Button
+            variant="retro"
+            fullWidth
+            onClick={() => onClickPool(quantityAlt, quantityXIO)}
+          >
             CONFIRM
           </Button>
         </Container>
