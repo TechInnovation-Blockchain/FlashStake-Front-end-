@@ -416,7 +416,6 @@ function Flashstake({
 }) {
   let classes = useStyles();
   const web3context = useWeb3React();
-  // console.log(props);
   const history = useHistory();
   const [height, setHeight] = useState(heightVal);
   const [heightToggle, setHeightToggle] = useState(false);
@@ -463,7 +462,6 @@ function Flashstake({
       toggle();
     }
   }, [history.location.pathname]);
-  // console.log(history.location.pathname);
 
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
@@ -572,7 +570,6 @@ function Flashstake({
   //   unStakeCompleted();
   // }, []);
 
-  // console.log(selectStake);
   const onClickUnstake = () => {
     setDialogStep("unstakeOptions");
     // setDialogStep("pendingUnstake");
@@ -601,7 +598,6 @@ function Flashstake({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    // console.log(evt.which);
   };
 
   useEffect(() => {
@@ -632,18 +628,6 @@ function Flashstake({
       setIsDisabled(true);
     }
   };
-
-  // allowanceXIO
-  // active
-  // account
-  // selectedPortal
-  // quantity
-  // days
-  // loadingRedux.reward
-  // loadingRedux.stake
-  // chainId
-  // reward
-  // console.log(reward);
 
   return (
     <PageAnimation in={true} reverse={animation > 0}>

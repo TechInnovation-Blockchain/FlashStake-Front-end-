@@ -229,9 +229,7 @@ export default function RemoveLiquidityDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
-  useEffect(() => {
-    console.log("yada -> ", pool);
-  }, [pool]);
+  useEffect(() => {}, [pool]);
 
   return (
     <MuiDialog

@@ -138,7 +138,6 @@ function Layout({
 
   // useEffect(() => {
   //   setHeight2(ref?.current?.clientHeight);
-  //   console.log("Height-->", height2);
   // }, [ref?.current?.clientHeight]);
 
   const handleClose = () => {

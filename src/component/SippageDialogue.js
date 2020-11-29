@@ -208,8 +208,6 @@ function SlippageDialogue({
     setSlip(value);
   };
 
-  // console.log(slip);
-
   const walletsItems = isMobile ? mobileWalletList : walletList;
 
   const onClose = useCallback(() => {

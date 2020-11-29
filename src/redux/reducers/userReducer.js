@@ -58,7 +58,6 @@ export const userReducer = (
       };
 
     case "POOL_DATA":
-      console.log("Reducer", payload);
       return {
         ...state,
         poolData: payload,

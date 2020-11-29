@@ -101,10 +101,8 @@ function Navbar({
     watchDouble += 1;
     setTimeout(() => {
       if (watchDouble === 2) {
-        console.log("double" + watchDouble);
         // toggleThemeMode2()
       } else if (watchDouble === 1) {
-        console.log("signle" + watchDouble);
         toggleThemeMode();
       }
       watchDouble = 0;

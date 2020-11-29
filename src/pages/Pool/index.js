@@ -424,7 +424,6 @@ function Pool({
       toggle();
     }
   }, [history.location.pathname]);
-  // console.log(history.location.pathname);
   useEffect(() => {
     document.title = "Pool - $FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
@@ -496,7 +495,6 @@ function Pool({
   const onChangeQuantityAlt = useCallback(
     async ({ target: { value } }) => {
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-        console.log(value);
         setQuantityAlt(value);
         const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
         setQuantityXIO(_val);
@@ -602,17 +600,14 @@ function Pool({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    // console.log(evt.which);
   };
 
   // useEffect(() => {
   //   if (quantity !== 0) {
   //     setEth((eth * reserveAltAmount) / reserveFlashAmount);
-  //     console.log(eth);
   //   }
   //   if (quantity2 !== 0) {
   //     setXIO((quantity * reserveFlashAmount) / reserveAltAmount);
-  //     console.log(xio);
   //   }
   // }, [quantity, reserveFlashAmount, reserveAltAmount]);
 

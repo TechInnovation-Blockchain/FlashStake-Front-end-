@@ -271,7 +271,6 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       account
     );
     _log(_allowance);
-    console.log("allowance ==============>", _allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
@@ -283,7 +282,6 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       account
     );
     _log(_allowance2);
-    console.log("allowance ==============>", _allowance2);
     dispatch({
       type: "ALLOWANCE_ALT_POOL",
       payload: _allowance2 > 0,
@@ -738,7 +736,6 @@ export const addTokenLiquidityInPool = (
       quantityAlt,
     },
   });
-  console.log("yada", { quantityXIO, quantityAlt });
   _log(
     "addTokenLiquidityInPool -> ",
     Web3.utils.toWei(String(quantityXIO)),

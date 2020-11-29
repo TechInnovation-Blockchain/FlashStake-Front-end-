@@ -489,7 +489,6 @@ function AddLiquidityDropDown({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    // console.log(evt.which);
   };
 
   return (
