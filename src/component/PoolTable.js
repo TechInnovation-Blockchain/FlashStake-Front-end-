@@ -327,7 +327,7 @@ function PoolTable({
       ) : chainId !== 4 ? (
         <Grid item xs={12} className={classes.msgContainer}>
           <Typography variant="overline" className={classes.redText}>
-            CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS
+            CHANGE NETWORK TO RINKEBY TO ADD/REMOVE LIQUIDITY
           </Typography>
         </Grid>
       ) : (

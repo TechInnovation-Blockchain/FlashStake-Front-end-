@@ -22,6 +22,7 @@ import Button from "./Button";
 import { trunc } from "../utils/utilFunc";
 import Web3 from "web3";
 import { JSBI } from "@uniswap/sdk";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -170,6 +171,7 @@ const useStyles = makeStyles((theme) => ({
   outerBox: {
     display: "flex",
     width: "100%",
+    alignItems: "center",
   },
   outerBox2: {
     display: "flex",
@@ -205,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddDropDown({
+function AddDropDown({
   quantityAlt,
   quantityXIO,
   queryData,
@@ -215,6 +217,7 @@ export default function AddDropDown({
   selectedRewardToken,
   disabled,
   onClickPool,
+  slip,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -364,8 +367,8 @@ export default function AddDropDown({
 
           <Box className={classes.removeBox}>
             <Typography className={classes.removeText} variant="body2">
-              Output is estimated. If the price changes by more than 0.5% your
-              transaction will revert
+              Output is estimated. If the price changes by more than {slip}%
+              your transaction will revert
             </Typography>
           </Box>
 
@@ -408,7 +411,11 @@ export default function AddDropDown({
               </Grid>
             </Grid>
 
-            <Grid xs={12} className={classes.outerBox}>
+            <Grid
+              xs={12}
+              style={{ padding: "10px 0" }}
+              className={classes.outerBox}
+            >
               <Grid
                 xs={6}
                 style={{ textAlign: "left" }}
@@ -418,7 +425,7 @@ export default function AddDropDown({
                   Rates:
                 </Typography>
               </Grid>
-              <Grid xs={6} style={{ textAlign: "center" }}>
+              <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography className={classes.fontStyle} variant="body2">
                   1 $FLASH ={" "}
                   {trunc(
@@ -489,3 +496,8 @@ export default function AddDropDown({
     </Fragment>
   );
 }
+const mapStateToProps = ({ flashstake: { slip } }) => ({
+  slip,
+});
+
+export default connect(mapStateToProps, {})(AddDropDown);

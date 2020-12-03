@@ -1002,8 +1002,8 @@ function Pool({
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
-                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE $FLASH</b>
+                        Before you can <b>pool</b>, you must{" "}
+                        <b>approve $FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1015,14 +1015,14 @@ function Pool({
                       className={classes.cursorPointer}
                     >
                       <Typography variant="body2" className={classes.redText}>
-                        CONNECT YOUR WALLET TO STAKE
+                        Connect you wallet to pool
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
-                        CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
+                        Change network to <b>rinkeby</b> to add liquidity
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1048,19 +1048,12 @@ function Pool({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                {/* {heightToggle ? ( */}
                 <PoolTable
                   onClickUnstake={onClickUnstake}
                   onClickApprovePool={onClickApprovePool}
                   selectedQueryData={queryData}
                   onClickPool={onClickPool}
                 />
-                {/* ) : ( */}
-                {/* <PoolTable
-                    onClickUnstake={onClickUnstake}
-                    onClickApprovePool={onClickApprovePool}
-                  /> */}
-                {/* )} */}
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1151,11 +1144,11 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU ARE GOING TO ADD{" "}
+                    You are going to add{" "}
                     <span className={classes.infoTextSpan}>
                       {quantityXIO} $FLASH
                     </span>{" "}
-                    FOR{" "}
+                    for{" "}
                     <span className={classes.infoTextSpan}>
                       {`${quantityAlt} ${
                         selectedRewardToken?.tokenB?.symbol || ""
@@ -1226,7 +1219,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    ADDING{" "}
+                    Adding{" "}
                     <Tooltip
                       title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
@@ -1235,15 +1228,15 @@ function Pool({
                         {liquidityRequest.altSymbol}
                       </span>
                     </Tooltip>{" "}
-                    AND{" "}
+                    and{" "}
                     <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
                         {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
-                    TO{" "}
+                    to{" "}
                     <span className={classes.redText}>
-                      $FLASH/{liquidityRequest.altSymbol} POOL
+                      $FLASH/{liquidityRequest.altSymbol} pool
                     </span>
                   </Typography>
                 </Fragment>
@@ -1283,7 +1276,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY ADDED{" "}
+                    You have successfully added{" "}
                     <Tooltip
                       title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
@@ -1292,15 +1285,15 @@ function Pool({
                         {liquidityRequest.altSymbol}
                       </span>
                     </Tooltip>{" "}
-                    AND{" "}
+                    and{" "}
                     <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
                         {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
-                    TO{" "}
+                    to{" "}
                     <span className={classes.redText}>
-                      {liquidityRequest.altSymbol} POOL
+                      {liquidityRequest.altSymbol} pool
                     </span>
                   </Typography>
                   <Typography
@@ -1332,7 +1325,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    WITHDRAWING{" "}
+                    Withdrawing{" "}
                     <Tooltip
                       title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
                     >
@@ -1340,9 +1333,9 @@ function Pool({
                         {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
                       </span>
                     </Tooltip>{" "}
-                    FROM{" "}
+                    from{" "}
                     <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} POOL
+                      {withdrawLiquidityRequest._token} pool
                     </span>
                   </Typography>
                 </Fragment>
@@ -1382,7 +1375,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY WITHDRAWN{" "}
+                    You have successfully withdrawn{" "}
                     <Tooltip
                       title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
                     >
@@ -1390,9 +1383,9 @@ function Pool({
                         {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
                       </span>
                     </Tooltip>{" "}
-                    FROM{" "}
+                    from{" "}
                     <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} POOL
+                      {withdrawLiquidityRequest._token} pool
                     </span>
                   </Typography>
                   <Typography

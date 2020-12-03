@@ -107,3 +107,10 @@ export const themeSwitchAction = () => async (dispatch) => {
   dispatch(setLoading({ themeSwitch: true }));
   setTimeout(() => dispatch(setLoading({ themeSwitch: false })), 2000);
 };
+
+export const setClose = (data) => {
+  return {
+    type: "CLOSE_DIALOGUE",
+    payload: data,
+  };
+};

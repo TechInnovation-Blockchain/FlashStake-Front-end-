@@ -134,6 +134,7 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
     const {
       flashstake: {
         selectedRewardToken: { id },
+        slip,
       },
     } = getState();
     if (id && altQuantity > 0) {
@@ -176,7 +177,7 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
         _swapAmount,
         JSBI.multiply(
           JSBI.divide(_swapAmount, JSBI.BigInt(100)),
-          JSBI.BigInt(5)
+          JSBI.BigInt(slip)
         )
       ).toString();
     }

@@ -420,7 +420,7 @@ function Flashstake({
   const [height, setHeight] = useState(heightVal);
   const [heightToggle, setHeightToggle] = useState(false);
   const ref = useRef(null);
-  const [time, setTime] = useState("Hrs");
+  const [time, setTime] = useState("Select");
   const [open, setOpen] = useState(false);
   useEffect(() => {
     // Stop if the preference variable is not set on the client device

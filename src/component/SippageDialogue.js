@@ -104,6 +104,10 @@ const useStyles = makeStyles((theme) => ({
   slippageHeading: {
     color: theme.palette.text.disabled,
   },
+  _slippageButton: {
+    backgroundColor: theme.palette.background.disabled,
+    color: theme.palette.text.primary,
+  },
   slippageButton: {
     backgroundColor: "#e37934",
   },
@@ -180,7 +184,7 @@ const useStyles = makeStyles((theme) => ({
   },
   perc: {
     position: "absolute",
-    top: "50%",
+    top: "60%",
     right: "5%",
   },
   sipBox: {
@@ -202,10 +206,11 @@ function SlippageDialogue({
   // const [slip, setSlip] = useState();
   const [selected, setSelected] = useState(false);
   const [btn, setBtn] = useState(4);
+  const [_slip, _setSlip] = useState(slip);
 
   const onChangeSlip = ({ target: { value } }) => {
     setBtn();
-    setSlip(value);
+    _setSlip(value);
   };
 
   const walletsItems = isMobile ? mobileWalletList : walletList;
@@ -229,25 +234,30 @@ function SlippageDialogue({
     }
   };
 
+  const onButtonClick = () => {
+    setSlip(_slip);
+    onClose();
+  };
+
   const btnSelect = (id) => {
     switch (id) {
       case 1:
         setBtn(1);
-        setSlip(0.1);
+        _setSlip(0.1);
         break;
       case 2:
         setBtn(2);
-        setSlip(0.5);
+        _setSlip(0.5);
         break;
 
       case 3:
         setBtn(3);
-        setSlip(1);
+        _setSlip(1);
         break;
 
       case 4:
         setBtn(4);
-        setSlip(5);
+        _setSlip(5);
         break;
       default:
         setBtn(0);
@@ -279,7 +289,9 @@ function SlippageDialogue({
           <Grid item xs={3}>
             <Button
               variant={"retro"}
-              className={btn === 1 ? classes.slippageButton : null}
+              className={
+                btn === 1 ? classes.slippageButton : classes._slippageButton
+              }
               onClick={() => btnSelect(1)}
               disabled={btn === 0}
             >
@@ -289,7 +301,9 @@ function SlippageDialogue({
           <Grid item xs={3}>
             <Button
               variant={"retro"}
-              className={btn === 2 ? classes.slippageButton : null}
+              className={
+                btn === 2 ? classes.slippageButton : classes._slippageButton
+              }
               onClick={() => btnSelect(2)}
               disabled={btn === 0}
             >
@@ -299,7 +313,9 @@ function SlippageDialogue({
           <Grid item xs={3}>
             <Button
               variant={"retro"}
-              className={btn === 3 ? classes.slippageButton : null}
+              className={
+                btn === 3 ? classes.slippageButton : classes._slippageButton
+              }
               onClick={() => btnSelect(3)}
               disabled={btn === 0}
             >
@@ -309,7 +325,9 @@ function SlippageDialogue({
           <Grid item xs={3}>
             <Button
               variant={"retro"}
-              className={btn === 4 ? classes.slippageButton : null}
+              className={
+                btn === 4 ? classes.slippageButton : classes._slippageButton
+              }
               onClick={() => btnSelect(4)}
               disabled={btn === 0}
             >
@@ -330,11 +348,19 @@ function SlippageDialogue({
             placeholder="Slippage"
             className={classes.textField}
             fullWidth
-            value={slip}
+            value={_slip}
             onChange={onChangeSlip}
           />
           <span className={classes.perc}>%</span>
         </Box>
+        <Button
+          variant={"retro"}
+          // className={}
+          onClick={onButtonClick}
+          // disabled={}
+        >
+          Confirm
+        </Button>
 
         <Grid container xs={12} spacing={2}>
           <Grid item xs={6} className={classes.themeTxt}>

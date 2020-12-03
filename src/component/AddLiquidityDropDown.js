@@ -230,7 +230,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   innerBox: {
-    width: "100%",
+    // width: "100%",
   },
   fontStyle: {
     fontWeight: 900,
@@ -742,8 +742,6 @@ function AddLiquidityDropDown({
                 </Box>
               </Box>
             </Grid>
-            {/* {!selectedRewardToken?.tokenB?.symbol ? ( */}
-            {/* <Grid container item style={{ display: "flex" }}> */}
 
             <Fragment>
               <Grid item xs={4}>
@@ -843,109 +841,92 @@ function AddLiquidityDropDown({
                       %
                     </Typography>
                   </Tooltip>
-                  {/* <Box className={classes.textFieldContainer}></Box> */}
                 </Box>
               </Grid>
             </Fragment>
           </Grid>
-          {/* ) : null} */}
-          {/* </Box> */}
         </Box>
 
-        <Grid container xs={12} spacing={2} className={classes.btns}>
-          <Grid item xs={12} className={classes.innerBox}>
-            {!allowanceXIOPool || !allowanceALTPool ? (
-              <Grid container item xs={12} onClick={showWalletHint}>
-                <Grid item xs={6} className={classes.btnPaddingRight}>
-                  <Button
-                    fullWidth
-                    variant="retro"
-                    onClick={
-                      (!allowanceXIOPool || !allowanceALTPool) &&
-                      !loadingRedux.approval
-                        ? onClickApprove
-                        : () => {}
-                    }
-                    disabled={
-                      !selectedPortal ||
-                      !active ||
-                      !account ||
-                      loadingRedux.pool ||
-                      loadingRedux.approval ||
-                      chainId !== 4
-                    }
-                    loading={loadingRedux.approval && loadingRedux.approvalXIO}
-                  >
-                    {loadingRedux.approval && loadingRedux.approvalXIO
-                      ? "APPROVING"
-                      : !allowanceXIOPool
-                      ? `APPROVE ${selectedStakeToken}`
-                      : `APPROVE ${selectedRewardToken.tokenB.symbol || ""}`}
-                  </Button>
-                </Grid>
-                <Grid
-                  item
-                  xs={6}
-                  spacing={2}
-                  className={classes.btnPaddingLeft}
-                >
-                  <Button
-                    fullWidth
-                    variant="retro"
-                    onClick={onClickPool}
-                    disabled={
-                      !active ||
-                      !account ||
-                      !selectedPortal ||
-                      !allowanceXIOPool ||
-                      !allowanceALTPool ||
-                      quantityXIO <= 0 ||
-                      quantityAlt <= 0 ||
-                      loadingRedux.pool ||
-                      chainId !== 4 ||
-                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                      parseFloat(quantityXIO) > parseFloat(walletBalance)
-                    }
-                    loading={loadingRedux.pool}
-                  >
-                    ADD LIQUIDITY
-                  </Button>
-                </Grid>
-              </Grid>
-            ) : (
-              <Fragment>
-                <Grid
-                  container
-                  item
-                  spacing={2}
-                  xs={12}
-                  onClick={showWalletHint}
-                >
-                  <AddDropDown
-                    quantityAlt={quantityAlt}
-                    quantityXIO={quantityXIO}
-                    selectedRewardToken={selectedRewardToken}
-                    queryData={queryData}
-                    disabled={
-                      !active ||
-                      !account ||
-                      !selectedPortal ||
-                      !allowanceXIOPool ||
-                      !allowanceALTPool ||
-                      quantityXIO <= 0 ||
-                      quantityAlt <= 0 ||
-                      loadingRedux.pool ||
-                      chainId !== 4 ||
-                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                      parseFloat(quantityXIO) > parseFloat(walletBalance)
-                    }
-                    onClickPool={onClickPool}
-                  />
-                </Grid>
-              </Fragment>
-            )}
+        {/* <Grid container xs={12} className={classes.innerBox}> */}
+        {!allowanceXIOPool || !allowanceALTPool ? (
+          <Grid container spacing={2} xs={12} onClick={showWalletHint}>
+            <Grid item xs={6} className={classes.btnPaddingRight}>
+              <Button
+                fullWidth
+                variant="retro"
+                onClick={
+                  (!allowanceXIOPool || !allowanceALTPool) &&
+                  !loadingRedux.approval
+                    ? onClickApprove
+                    : () => {}
+                }
+                disabled={
+                  !selectedPortal ||
+                  !active ||
+                  !account ||
+                  loadingRedux.pool ||
+                  loadingRedux.approval ||
+                  chainId !== 4
+                }
+                loading={loadingRedux.approval && loadingRedux.approvalXIO}
+              >
+                {loadingRedux.approval && loadingRedux.approvalXIO
+                  ? "APPROVING"
+                  : !allowanceXIOPool
+                  ? `APPROVE ${selectedStakeToken}`
+                  : `APPROVE ${selectedRewardToken.tokenB.symbol || ""}`}
+              </Button>
+            </Grid>
+            <Grid item xs={6} className={classes.btnPaddingLeft}>
+              <AddDropDown
+                quantityAlt={quantityAlt}
+                quantityXIO={quantityXIO}
+                selectedRewardToken={selectedRewardToken}
+                queryData={queryData}
+                disabled={
+                  !active ||
+                  !account ||
+                  !selectedPortal ||
+                  !allowanceXIOPool ||
+                  !allowanceALTPool ||
+                  quantityXIO <= 0 ||
+                  quantityAlt <= 0 ||
+                  loadingRedux.pool ||
+                  chainId !== 4 ||
+                  parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                  parseFloat(quantityXIO) > parseFloat(walletBalance)
+                }
+                onClickPool={onClickPool}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <Fragment>
+            <Grid item xs={12} onClick={showWalletHint}>
+              <AddDropDown
+                quantityAlt={quantityAlt}
+                quantityXIO={quantityXIO}
+                selectedRewardToken={selectedRewardToken}
+                queryData={queryData}
+                disabled={
+                  !active ||
+                  !account ||
+                  !selectedPortal ||
+                  !allowanceXIOPool ||
+                  !allowanceALTPool ||
+                  quantityXIO <= 0 ||
+                  quantityAlt <= 0 ||
+                  loadingRedux.pool ||
+                  chainId !== 4 ||
+                  parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                  parseFloat(quantityXIO) > parseFloat(walletBalance)
+                }
+                onClickPool={onClickPool}
+              />
+            </Grid>
+          </Fragment>
+        )}
+        {/* </Grid> */}
       </Container>
     </MuiDialog>
   );

@@ -18,10 +18,8 @@ import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
-
-const {
-  ui: { changeApp },
-} = store.getState();
+import { setClose } from "../redux/actions/uiActions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -204,7 +202,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
   },
   info: {
-    textAlign: "left",
+    textAlign: "center",
     // display: "flex",
   },
   mainCont: {
@@ -220,7 +218,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RemoveDropDown({
+function RemoveDropDown({
   children,
   closeTimeout,
   items = [],
@@ -229,6 +227,8 @@ export default function RemoveDropDown({
   disableDrop,
   link,
   type = "stake",
+  slip,
+  close,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -367,8 +367,8 @@ export default function RemoveDropDown({
 
           <Box className={classes.removeBox}>
             <Typography className={classes.removeText} variant="body2">
-              Output is estimated. If the price changes by more than 0.5% your
-              transaction will revert
+              Output is estimated. If the price changes by more than {slip}%
+              your transaction will revert
             </Typography>
           </Box>
 
@@ -408,3 +408,10 @@ export default function RemoveDropDown({
     </Fragment>
   );
 }
+
+const mapStateToProps = ({ flashstake: { slip }, ui: { close } }) => ({
+  slip,
+  close,
+});
+
+export default connect(mapStateToProps, { setClose })(RemoveDropDown);

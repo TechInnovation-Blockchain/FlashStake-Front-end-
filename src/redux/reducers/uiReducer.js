@@ -13,6 +13,7 @@ export const uiReducer = (
     changeApp: false,
     heightVal: "auto",
     falseSelected: true,
+    close: false,
   },
   { type, payload }
 ) => {
@@ -79,6 +80,12 @@ export const uiReducer = (
       return {
         ...state,
         falseSelected: payload,
+      };
+
+    case "CLOSE_DIALOGUE":
+      return {
+        ...state,
+        close: payload,
       };
 
     default:
