@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   firstBox: {
     backgroundColor: theme.palette.background.liquidity,
     padding: theme.spacing(2),
-    borderRadius: 5,
+    borderRadius: 10,
   },
   outerBox: {
     display: "flex",
@@ -220,13 +220,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     backgroundColor: theme.palette.background.liquidity,
-    borderRadius: 5,
+    borderRadius: 10,
     // padding: theme.spacing(2),
     height: 60,
   },
   outerBox3: {
     backgroundColor: theme.palette.background.liquidity,
-    borderRadius: 5,
+    borderRadius: 10,
     padding: theme.spacing(1),
   },
   innerBox: {
@@ -374,7 +374,8 @@ function AddLiquidityDropDown({
   const [search, setSearch] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
-
+  const [showStakeDialog, setShowStakeDialog] = useState(false);
+  // const [addLiq, setAddLiq] = useState(true);
   useEffect(() => {
     if (open && closeTimeout) {
       setTimeout(onClose, closeTimeout);
@@ -468,6 +469,18 @@ function AddLiquidityDropDown({
     }
   }, [reset]);
 
+  const onClickApprove = async () => {
+    setPoolDialogStep("pendingApproval");
+    setShowStakeDialog(true);
+    if (!allowanceXIOPool) {
+      setPoolDialogStep("pendingApproval");
+      await getApprovalXIOPool(1);
+    } else if (!allowanceALTPool) {
+      setPoolDialogStep("pendingApproval");
+      await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
+    }
+  };
+
   useEffect(() => {
     if (selectedPortal) {
       if (quantityAlt > 0) {
@@ -486,6 +499,12 @@ function AddLiquidityDropDown({
       showWalletBackdrop(false);
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
+
+  const showWalletHint = useCallback(() => {
+    if (!(active && account)) {
+      showWalletBackdrop(true);
+    }
+  }, [active, account, showWalletBackdrop]);
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
@@ -833,28 +852,98 @@ function AddLiquidityDropDown({
           {/* </Box> */}
         </Box>
 
-        <Grid container xs={12} className={classes.btns}>
+        <Grid container xs={12} spacing={2} className={classes.btns}>
           <Grid item xs={12} className={classes.innerBox}>
-            <AddDropDown
-              quantityAlt={quantityAlt}
-              quantityXIO={quantityXIO}
-              selectedRewardToken={selectedRewardToken}
-              queryData={queryData}
-              disabled={
-                !active ||
-                !account ||
-                !selectedPortal ||
-                !allowanceXIOPool ||
-                !allowanceALTPool ||
-                quantityXIO <= 0 ||
-                quantityAlt <= 0 ||
-                loadingRedux.pool ||
-                chainId !== 4 ||
-                parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                parseFloat(quantityXIO) > parseFloat(walletBalance)
-              }
-              onClickPool={onClickPool}
-            />
+            {!allowanceXIOPool || !allowanceALTPool ? (
+              <Grid container item xs={12} onClick={showWalletHint}>
+                <Grid item xs={6} className={classes.btnPaddingRight}>
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    onClick={
+                      (!allowanceXIOPool || !allowanceALTPool) &&
+                      !loadingRedux.approval
+                        ? onClickApprove
+                        : () => {}
+                    }
+                    disabled={
+                      !selectedPortal ||
+                      !active ||
+                      !account ||
+                      loadingRedux.pool ||
+                      loadingRedux.approval ||
+                      chainId !== 4
+                    }
+                    loading={loadingRedux.approval && loadingRedux.approvalXIO}
+                  >
+                    {loadingRedux.approval && loadingRedux.approvalXIO
+                      ? "APPROVING"
+                      : !allowanceXIOPool
+                      ? `APPROVE ${selectedStakeToken}`
+                      : `APPROVE ${selectedRewardToken.tokenB.symbol || ""}`}
+                  </Button>
+                </Grid>
+                <Grid
+                  item
+                  xs={6}
+                  spacing={2}
+                  className={classes.btnPaddingLeft}
+                >
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    onClick={onClickPool}
+                    disabled={
+                      !active ||
+                      !account ||
+                      !selectedPortal ||
+                      !allowanceXIOPool ||
+                      !allowanceALTPool ||
+                      quantityXIO <= 0 ||
+                      quantityAlt <= 0 ||
+                      loadingRedux.pool ||
+                      chainId !== 4 ||
+                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
+                    }
+                    loading={loadingRedux.pool}
+                  >
+                    ADD LIQUIDITY
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <Fragment>
+                <Grid
+                  container
+                  item
+                  spacing={2}
+                  xs={12}
+                  onClick={showWalletHint}
+                >
+                  <AddDropDown
+                    quantityAlt={quantityAlt}
+                    quantityXIO={quantityXIO}
+                    selectedRewardToken={selectedRewardToken}
+                    queryData={queryData}
+                    disabled={
+                      !active ||
+                      !account ||
+                      !selectedPortal ||
+                      !allowanceXIOPool ||
+                      !allowanceALTPool ||
+                      quantityXIO <= 0 ||
+                      quantityAlt <= 0 ||
+                      loadingRedux.pool ||
+                      chainId !== 4 ||
+                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
+                    }
+                    onClickPool={onClickPool}
+                  />
+                </Grid>
+              </Fragment>
+            )}
           </Grid>
         </Grid>
       </Container>

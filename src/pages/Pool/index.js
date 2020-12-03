@@ -33,6 +33,7 @@ import {
   PageAnimation,
   PoolTable,
 } from "../../component";
+import AddDropDown from "../../component/AddDropDown";
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
@@ -93,6 +94,13 @@ const useStyles = makeStyles((theme) => ({
     // [theme.breakpoints.down("xs")]: {
     //   fontSize: 8,
     // },
+  },
+  secondaryText2: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+    textAlign: "center",
+    width: "100%",
+    padding: theme.spacing(1, 0),
   },
   primaryText: {
     color: theme.palette.text.primary,
@@ -399,7 +407,7 @@ function Pool({
   const classes = useStyles();
   const history = useHistory();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
-  const [expanded2, setExpanded2] = useState(false);
+  const [expanded2, setExpanded2] = useState(true);
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
@@ -553,6 +561,29 @@ function Pool({
       showWalletBackdrop(false);
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
+
+  // const onClickPool = () => {
+  //  return <AddDropDown
+  //     quantityAlt={quantityAlt}
+  //     quantityXIO={quantityXIO}
+  //     selectedRewardToken={selectedRewardToken}
+  //     queryData={queryData}
+  //     disabled={
+  //       !active ||
+  //       !account ||
+  //       !selectedPortal ||
+  //       !allowanceXIOPool ||
+  //       !allowanceALTPool ||
+  //       quantityXIO <= 0 ||
+  //       quantityAlt <= 0 ||
+  //       loadingRedux.pool ||
+  //       chainId !== 4 ||
+  //       parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+  //       parseFloat(quantityXIO) > parseFloat(walletBalance)
+  //     }
+  //     onClickPool={onClickPool}
+  //   />;
+  // };
 
   const onClickPool = useCallback(
     (_quantityAlt, _quantityXIO) => {
@@ -765,8 +796,6 @@ function Pool({
                       </Box>
                     </Box>
                   </Grid>
-                  {/* {!selectedRewardToken?.tokenB?.symbol ? ( */}
-                  {/* <Grid container item style={{ display: "flex" }}> */}
 
                   {selectedRewardToken?.tokenB?.symbol ? (
                     <Fragment>
@@ -872,25 +901,17 @@ function Pool({
                       </Grid>
                     </Fragment>
                   ) : null}
-                  {/* </Grid> */}
-                  {/* ) : null} */}
-                  {/* </Box> */}
-                  <Grid item className={classes.gridSpace} xs={12}>
-                    {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography variant="body2" className={classes.infoText}>
-                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} $FLASH */}
-                      </Typography>
-                    ) : (
-                      <Typography
-                        variant="body1"
-                        // variant="body2"
-                        className={classes.secondaryText}
-                      >
-                        {/* SELECT A POOL TO ADD LIQUIDITY */}
-                        Select a pool to add liquidity
-                      </Typography>
-                    )}
-                  </Grid>
+
+                  {!selectedRewardToken?.tokenB?.symbol ? (
+                    <Typography
+                      variant="body1"
+                      // variant="body2"
+                      className={classes.secondaryText2}
+                    >
+                      Select a pool to add liquidity
+                    </Typography>
+                  ) : null}
+
                   {!allowanceXIOPool || !allowanceALTPool ? (
                     <Grid container item xs={12} onClick={showWalletHint}>
                       <Grid item xs={6} className={classes.btnPaddingRight}>
@@ -951,10 +972,11 @@ function Pool({
                   ) : (
                     <Fragment>
                       <Grid container item xs={12} onClick={showWalletHint}>
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          onClick={onClickPool}
+                        <AddDropDown
+                          quantityAlt={quantityAlt}
+                          quantityXIO={quantityXIO}
+                          selectedRewardToken={selectedRewardToken}
+                          queryData={queryData}
                           disabled={
                             !active ||
                             !account ||
@@ -967,18 +989,9 @@ function Pool({
                             chainId !== 4 ||
                             parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
-                            //  &&
-                            // account !==
-                            //   "0x425b9dBa4b4a355cc063C5105501797C5F50266B")
                           }
-                          loading={loadingRedux.pool}
-                        >
-                          {/* {account !==
-                          "0x425b9dBa4b4a355cc063C5105501797C5F50266B"
-                            ? "COMING SOON"
-                            : "POOL"} */}
-                          POOL
-                        </Button>
+                          onClickPool={onClickPool}
+                        />
                       </Grid>
                     </Fragment>
                   )}
@@ -1230,7 +1243,7 @@ function Pool({
                     </Tooltip>{" "}
                     TO{" "}
                     <span className={classes.redText}>
-                      {liquidityRequest.altSymbol} POOL
+                      $FLASH/{liquidityRequest.altSymbol} POOL
                     </span>
                   </Typography>
                 </Fragment>

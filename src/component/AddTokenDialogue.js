@@ -9,19 +9,11 @@ import {
   ListItem,
   TextField,
   CircularProgress,
-  Grid,
-  Slider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
-import Button from "./Button";
-
-const {
-  ui: { changeApp },
-} = store.getState();
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -33,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   dropdown: {
-    background: theme.palette.button.retro,
+    background: theme.palette.background.secondary2,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -41,11 +33,6 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
-    cursor: "pointer",
-
-    "&:hover": {
-      background: theme.palette.button.hover,
-    },
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
   dropdownIcon: {
@@ -67,13 +54,6 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     transform: "translateY(-50%)",
   },
-  backIcon: {
-    position: "absolute",
-    left: 0,
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: theme.palette.xioRed.main,
-  },
   clearSearch: {
     position: "absolute",
     right: 15,
@@ -89,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     textAlign: "center",
     padding: theme.spacing(2),
-    // paddingBottom: 0,
+    paddingBottom: 0,
 
     "&>*": {
       marginBottom: theme.spacing(2),
@@ -156,79 +136,25 @@ const useStyles = makeStyles((theme) => ({
   loadingIcon: {
     marginRight: 5,
   },
-  removeBtn: {
-    // backgroundColor: theme.palette.button.retro,
-    border: "none",
-    // height: 35,
-    color: theme.palette.buttonText.dark,
-    letterSpacing: 2,
-    lineHeight: 1.2,
-    fontWeight: 700,
-    borderRadius: theme.palette.ButtonRadius.small,
-  },
-  headingBox: {
-    paddingBottom: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.border.secondary}`,
-  },
-  mainHeading: {
-    fontWeight: 900,
-  },
-  firstBox: {
-    backgroundColor: theme.palette.background.liquidity,
-    padding: theme.spacing(2),
-    borderRadius: 10,
-  },
-  outerBox: {
-    display: "flex",
-    width: "100%",
-  },
-  outerBox2: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: theme.palette.background.liquidity,
-    borderRadius: 10,
-    // padding: theme.spacing(2),
-    height: 60,
-  },
-  innerBox: {
-    width: "100%",
-  },
-  fontStyle: {
-    fontWeight: 900,
-  },
-  removeText: {
-    fontWeight: 900,
-    textTransform: "uppercase",
-  },
-  info: {
-    textAlign: "left",
-    // display: "flex",
-  },
-  mainCont: {
-    margin: "0 !important",
-  },
-  burnedText: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  fontWeight: {
-    fontweight: 700,
-  },
+  // tokensLogo: {
+  //   filter: "grayscale(1)",
+
+  //   "&:hover": {
+  //     filter: "none",
+  //   },
+  // },
 }));
 
-export default function RemoveDropDown({
+export default function AddTokenDialogue({
   children,
   closeTimeout,
   items = [],
   onSelect = () => {},
   selectedValue = {},
+  heading = "ADD TOKEN",
   disableDrop,
   link,
-  type = "stake",
+  //   type = "stake",
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -269,18 +195,70 @@ export default function RemoveDropDown({
   };
   return (
     <Fragment>
-      <Box
-        className={classes.dropdown}
-        onClick={() => !disableDrop && !link && setOpen(true)}
-      >
-        <Typography
-          variant="body1"
-          className={classes.removeBtn}
+      {link ? (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <Box
+            className={classes.dropdown}
+            onClick={() => !disableDrop && !link && setOpen(true)}
+          >
+            <Typography variant="body1" className={classes.primaryText}>
+              {selectedValue.id ? (
+                <Fragment>
+                  <img
+                    src={tryRequire(selectedValue.tokenB.symbol)}
+                    alt="Logo"
+                    srcSet=""
+                    width={15}
+                    style={{ marginRight: 5 }}
+                  />
+                  {selectedValue.tokenB.symbol}
+                </Fragment>
+              ) : (
+                <span className={classes.disabledText}>ETH</span>
+              )}
+            </Typography>
+            {!disableDrop
+              ? {
+                  /* <IconButton className={classes.dropdownIcon} size="small">
+                <ExpandMore fontSize="large" />
+              </IconButton> */
+                }
+              : null}
+          </Box>
+        </a>
+      ) : (
+        <Box
+          className={classes.dropdown}
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
-          REMOVE
-        </Typography>
-      </Box>
+          <Typography variant="body1" className={classes.primaryText}>
+            {selectedValue.id ? (
+              <Fragment>
+                <img
+                  src={tryRequire(selectedValue.tokenB.symbol)}
+                  alt="Logo"
+                  srcSet=""
+                  width={15}
+                  style={{ marginRight: 5 }}
+                />
+                {selectedValue.tokenB.symbol}
+              </Fragment>
+            ) : (
+              <span className={classes.disabledText}>SELECT</span>
+            )}
+          </Typography>
+          {!disableDrop ? (
+            <IconButton className={classes.dropdownIcon} size="small">
+              {/* <ExpandMore fontSize="large" /> */}
+            </IconButton>
+          ) : null}
+        </Box>
+      )}
 
       <MuiDialog
         open={open}
@@ -291,17 +269,8 @@ export default function RemoveDropDown({
         <Container maxWidth="xs" className={classes.dialog}>
           <Box className={classes.closeBtnContainer}>
             <Typography variant="body1" className={classes.dialogHeading}>
-              YOU WILL RECEIVE
+              {heading}
             </Typography>
-
-            <IconButton
-              size="small"
-              onClick={onClose}
-              className={classes.backIcon}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-
             <IconButton
               size="small"
               onClick={onClose}
@@ -311,6 +280,13 @@ export default function RemoveDropDown({
             </IconButton>
           </Box>
           <Box className={classes.closeBtnContainer}>
+            <TextField
+              placeholder="TOKEN ADDRESS"
+              className={classes.textField}
+              fullWidth
+              value={search}
+              onChange={onChangeSearch}
+            />
             {search ? (
               <IconButton
                 size="small"
@@ -321,88 +297,6 @@ export default function RemoveDropDown({
               </IconButton>
             ) : null}
           </Box>
-
-          <Box className={classes.firstBox}>
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="h6">
-                  0.000905761
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography variant="h6" className={classes.fontStyle}>
-                  XIO
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Typography variant="h3" className={classes.fontStyle}>
-            {" "}
-            +
-          </Typography>
-
-          <Box className={classes.firstBox}>
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="h6">
-                  0.6314
-                </Typography>
-              </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
-                <Typography variant="h6" className={classes.fontStyle}>
-                  AAVE
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box className={classes.removeBox}>
-            <Typography className={classes.removeText} variant="body2">
-              Output is estimated. If the price changes by more than 0.5% your
-              transaction will revert
-            </Typography>
-          </Box>
-
-          <Box className={classes.firstBox}>
-            <Grid xs={12} className={classes.outerBox}>
-              <Grid
-                xs={6}
-                style={{ textAlign: "left" }}
-                className={classes.innerBox}
-              >
-                <Typography className={classes.fontStyle} variant="h6">
-                  XIO / AAVE BURNED
-                </Typography>
-              </Grid>
-              <Grid xs={6} className={classes.burnedText}>
-                <Typography variant="h6" className={classes.fontStyle}>
-                  0.0230133
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          <Box className={classes.info}>
-            <Typography className={classes.fontWeight}>
-              1 XIO = 697.58 AAVE
-            </Typography>
-            <Typography className={classes.fontWeight}>
-              1 AAVE = 0.00143333 XIO
-            </Typography>
-          </Box>
-
-          <Button variant="retro" fullWidth>
-            CONFIRM
-          </Button>
         </Container>
       </MuiDialog>
     </Fragment>

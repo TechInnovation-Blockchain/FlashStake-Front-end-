@@ -33,7 +33,7 @@ const getRoutes = (paused) => {
       // component: allowed.includes(account?.toLowerCase()) ? Pool : Vote,
     },
     {
-      path: "/vote",
+      path: "/create",
       component: Vote,
     },
   ];

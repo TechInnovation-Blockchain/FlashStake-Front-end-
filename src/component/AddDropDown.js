@@ -165,7 +165,7 @@ const useStyles = makeStyles((theme) => ({
   firstBox: {
     backgroundColor: theme.palette.background.liquidity,
     padding: theme.spacing(2),
-    borderRadius: 5,
+    borderRadius: 10,
   },
   outerBox: {
     display: "flex",
@@ -178,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     backgroundColor: theme.palette.background.liquidity,
-    borderRadius: 5,
+    borderRadius: 10,
     height: 60,
   },
   innerBox: {
@@ -189,6 +189,7 @@ const useStyles = makeStyles((theme) => ({
   },
   removeText: {
     fontWeight: 900,
+    textTransform: "uppercase",
   },
   info: {
     textAlign: "left",
@@ -221,6 +222,12 @@ export default function AddDropDown({
 
   const history = useHistory();
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     toggleFalse();
+  //   }, 5000);
+  // }, []);
+
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
@@ -232,6 +239,11 @@ export default function AddDropDown({
   }, [search, items]);
   const onClose = useCallback(() => {
     setOpen(false);
+    // setAddLiqOpen(true);
+  }, []);
+  const onBack = useCallback(() => {
+    setOpen(false);
+    // setAddLiqOpen(true);
   }, []);
 
   const onSelectLocal = (_pool) => {
@@ -279,7 +291,9 @@ export default function AddDropDown({
         variant="retro"
         disabled={disabled}
         // loading={loadingRedux.pool}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+        }}
       >
         ADD LIQUIDITY
       </Button>
@@ -302,7 +316,7 @@ export default function AddDropDown({
           <Box className={classes.closeBtnContainer}>
             <IconButton
               size="small"
-              onClick={onClose}
+              onClick={onBack}
               className={classes.backIcon}
             >
               <ArrowBackIcon />
@@ -342,14 +356,14 @@ export default function AddDropDown({
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  XIO/AAVE Pool Tokens
+                  XIO/{selectedRewardToken?.tokenB?.symbol} Pool Tokens
                 </Typography>
               </Grid>
             </Grid>
           </Box>
 
           <Box className={classes.removeBox}>
-            <Typography className={classes.removeText} variant="caption">
+            <Typography className={classes.removeText} variant="body2">
               Output is estimated. If the price changes by more than 0.5% your
               transaction will revert
             </Typography>
@@ -404,7 +418,7 @@ export default function AddDropDown({
                   Rates:
                 </Typography>
               </Grid>
-              <Grid xs={6} style={{ textAlign: "right" }}>
+              <Grid xs={6} style={{ textAlign: "center" }}>
                 <Typography className={classes.fontStyle} variant="body2">
                   1 $FLASH ={" "}
                   {trunc(

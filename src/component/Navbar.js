@@ -111,7 +111,7 @@ function Navbar({
 
   let index;
 
-  const routes = ["/stake", "/swap", "/pool", "/vote"];
+  const routes = ["/stake", "/swap", "/pool", "/create"];
 
   return (
     <Box className={classes.navContainer}>
@@ -190,7 +190,7 @@ function Navbar({
       </Box>
       <Box className={classes.navlinkBox}>
         <NavLink
-          to="/vote"
+          to="/create"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
@@ -198,12 +198,12 @@ function Navbar({
             index = routes.indexOf(history.location.pathname) - 3;
             setAnimationDirection(index);
 
-            history.push("/vote");
+            history.push("/create");
             handleClick2();
           }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
-            VOTE
+            CREATE
           </Typography>
         </NavLink>
       </Box>

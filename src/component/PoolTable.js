@@ -505,6 +505,8 @@ function PoolTable({
             onClose={() => onClickClose("add")}
             queryData={selectedQueryData}
             onClickPool={onClickPool}
+            // toggleFlase={toggleFlase}
+            // setOpen={setAddLiqOpen}
           />
           <RemoveLiquidityDropDown
             open={remLiqOpen}
