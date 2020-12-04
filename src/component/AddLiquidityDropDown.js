@@ -90,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    padding: theme.spacing(2, 0),
   },
   closeIcon: {
     position: "absolute",
@@ -529,17 +530,6 @@ function AddLiquidityDropDown({
           >
             <ClearOutlined />
           </IconButton>
-        </Box>
-        <Box className={classes.closeBtnContainer}>
-          {search ? (
-            <IconButton
-              size="small"
-              onClick={() => setSearch("")}
-              className={classes.clearSearch}
-            >
-              <ClearOutlined />
-            </IconButton>
-          ) : null}
         </Box>
 
         <Box className={classes.headingBox}>

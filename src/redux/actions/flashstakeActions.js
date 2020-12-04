@@ -294,25 +294,24 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
   }
 };
 
-export const checkAllowancePoolWithdraw = () => async (dispatch, getState) => {
+export const checkAllowancePoolWithdraw = (poolID) => async (
+  dispatch,
+  getState
+) => {
   dispatch(setLoading({ allowance: true }));
   try {
+    console.log("poolID", poolID);
     const {
       flashstake: { selectedWithdrawPool, poolDashboard },
       web3: { account },
     } = await getState();
-    if (!selectedWithdrawPool || !account) {
-      return null;
-    }
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
+    // if (!selectedWithdrawPool || !account) {
+    //   return null;
+    // }
+    const _pool = poolDashboard.find((_pool) => _pool.pool.id === poolID);
 
-    const _allowance = await checkAllowanceMemo(
-      _pool.pool.id,
-      _pool.pool.id,
-      account
-    );
+    console.log("poolID", _pool);
+    const _allowance = await checkAllowanceMemo(poolID, poolID, account);
     _log("checkAllowancePoolWithdraw -> ", _allowance);
 
     dispatch({
@@ -765,21 +764,25 @@ export const onSelectWithdrawPool = (_poolId) => {
   };
 };
 
-export const getApprovalPoolLiquidity = () => async (dispatch, getState) => {
+export const getApprovalPoolLiquidity = (poolID) => async (
+  dispatch,
+  getState
+) => {
+  console.log("poolID", poolID);
   try {
     const {
       flashstake: { selectedWithdrawPool, poolDashboard },
     } = await getState();
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
+    const _pool = poolDashboard.find((_pool) => _pool.pool.id === poolID);
     if (!_pool?.balance) {
       return;
     }
+
+    console.log("_pool", _pool);
     setLoadingIndep({ approvalWithdrawPool: true });
     await initializeErc20TokenContract(_pool.pool.id);
     await approve(_pool.pool.id, "pool");
-    dispatch(checkAllowancePoolWithdraw());
+    dispatch(checkAllowancePoolWithdraw(poolID));
   } catch (e) {
     _error("ERROR getApprovalPoolLiquidity -> ", e);
   } finally {

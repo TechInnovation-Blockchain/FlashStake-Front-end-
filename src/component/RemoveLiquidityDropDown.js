@@ -21,7 +21,12 @@ import Button from "./Button";
 import RemoveDropDown from "./RemoveDropDown";
 import { trunc } from "../utils/utilFunc";
 import { connect } from "react-redux";
-import { setRemoveLiquidity } from "../redux/actions/flashstakeActions";
+import {
+  setRemoveLiquidity,
+  // checkAllowancePoolWithdraw,
+  getApprovalPoolLiquidity,
+  setPoolDialogStep,
+} from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -60,11 +65,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    paddingTop: theme.spacing(2),
   },
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: "50%",
+    top: "70%",
     transform: "translateY(-50%)",
   },
   clearSearch: {
@@ -221,6 +227,11 @@ function RemoveLiquidityDropDown({
   selectedRewardToken,
   currentPool,
   setShowStakeDialog,
+  // checkAllowancePoolWithdraw,
+  loading: loadingRedux,
+  allowancePoolWithdraw,
+  getApprovalPoolLiquidity,
+  setPoolDialogStep,
 }) {
   const classes = useStyles();
   const [percentageToRemove, setPercentageToRemove] = useState(5);
@@ -232,6 +243,17 @@ function RemoveLiquidityDropDown({
   }, [closeTimeout, open, onClose]);
 
   useEffect(() => {}, [pool]);
+
+  console.log("In remove", pool?.pool?.tokenB?.id);
+
+  const onClickApprove = async () => {
+    setPoolDialogStep("pendingApproval");
+    setShowStakeDialog(true);
+    if (!allowancePoolWithdraw) {
+      setPoolDialogStep("pendingApproval");
+      await getApprovalPoolLiquidity(pool?.pool?.tokenB?.id);
+    }
+  };
 
   return (
     <MuiDialog
@@ -411,9 +433,9 @@ function RemoveLiquidityDropDown({
           </Typography>
         </Box>
 
-        <Grid container xs={12} spacing={2} className={classes.btns}>
+        {/* <Grid container xs={12} spacing={2} className={classes.btns}>
           <Grid item xs={6} className={classes.innerBox}>
-            <Button fullWidth variant="retro">
+            <Button disabled={checkAllowancePool} fullWidth variant="retro">
               APPROVE
             </Button>
           </Grid>
@@ -426,21 +448,76 @@ function RemoveLiquidityDropDown({
               setShowStakeDialog={setShowStakeDialog}
             />
           </Grid>
-        </Grid>
+        </Grid> */}
+
+        {!allowancePoolWithdraw ? (
+          <Grid container spacing={2} xs={12}>
+            <Grid item xs={6} className={classes.btnPaddingRight}>
+              <Button fullWidth variant="retro" onClick={onClickApprove}>
+                {loadingRedux.approval
+                  ? "APPROVING"
+                  : `APPROVE $FLASH / ${pool?.pool?.tokenB?.symbol || ""}`}
+              </Button>
+            </Grid>
+            <Grid item xs={6} className={classes.btnPaddingLeft}>
+              {/* <Button
+                fullWidth
+                variant="retro"
+                onClick={onClickPool}
+                disabled={
+                  !active ||
+                  !account ||
+                  !selectedPortal ||
+                  !checkAllowancePool ||
+                  !allowanceALTPool ||
+                  quantityXIO <= 0 ||
+                  quantityAlt <= 0 ||
+                  loadingRedux.pool ||
+                  chainId !== 4 ||
+                  parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                  parseFloat(quantityXIO) > parseFloat(walletBalance)
+                }
+                loading={loadingRedux.pool}
+              >
+                POOL
+              </Button> */}
+              <RemoveDropDown
+                pool={pool}
+                percentageToRemove={percentageToRemove}
+                currentPool={currentPool}
+                setShowStakeDialog={setShowStakeDialog}
+                allowancePoolWithdraw={allowancePoolWithdraw}
+              />
+            </Grid>
+          </Grid>
+        ) : (
+          <RemoveDropDown
+            pool={pool}
+            percentageToRemove={percentageToRemove}
+            currentPool={currentPool}
+            setShowStakeDialog={setShowStakeDialog}
+            allowancePoolWithdraw={allowancePoolWithdraw}
+          />
+        )}
       </Container>
     </MuiDialog>
   );
 }
 
 const mapStateToProps = ({
-  flashstake: { slip, removeLiquidity },
-  ui: { close },
+  flashstake: { slip, removeLiquidity, allowancePoolWithdraw },
+  ui: { close, loading },
 }) => ({
   slip,
   close,
   removeLiquidity,
+  loading,
+  allowancePoolWithdraw,
 });
 
-export default connect(mapStateToProps, { setRemoveLiquidity })(
-  RemoveLiquidityDropDown
-);
+export default connect(mapStateToProps, {
+  setRemoveLiquidity,
+  // checkAllowancePoolWithdraw,
+  getApprovalPoolLiquidity,
+  setPoolDialogStep,
+})(RemoveLiquidityDropDown);

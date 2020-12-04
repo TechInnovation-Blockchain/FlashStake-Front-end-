@@ -65,17 +65,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    paddingTop: theme.spacing(2),
   },
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: "50%",
+    top: "70%",
     transform: "translateY(-50%)",
   },
   backIcon: {
     position: "absolute",
     left: 0,
-    top: "50%",
+    top: "70%",
     transform: "translateY(-50%)",
     color: theme.palette.xioRed.main,
   },
@@ -296,7 +297,7 @@ function RemoveDropDown({
       <Button
         fullWidth
         variant="retro"
-        disabled={!checkAllowancePoolWithdraw}
+        disabled={checkAllowancePoolWithdraw}
         // loading={loadingRedux.pool}
         className={classes.removeBtn}
         onClick={() => {

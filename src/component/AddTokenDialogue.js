@@ -47,11 +47,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    paddingTop: theme.spacing(2),
   },
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: "50%",
+    top: "70%",
     transform: "translateY(-50%)",
   },
   clearSearch: {
