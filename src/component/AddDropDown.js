@@ -487,7 +487,10 @@ function AddDropDown({
           <Button
             variant="retro"
             fullWidth
-            onClick={() => onClickPool(quantityAlt, quantityXIO)}
+            onClick={() => {
+              onClickPool(quantityAlt, quantityXIO);
+              onClose();
+            }}
           >
             CONFIRM
           </Button>
