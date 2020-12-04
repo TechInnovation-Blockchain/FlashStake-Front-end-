@@ -20,6 +20,12 @@ import { store } from "../config/reduxStore";
 import Button from "./Button";
 import { setClose } from "../redux/actions/uiActions";
 import { connect } from "react-redux";
+import { trunc } from "../utils/utilFunc";
+import {
+  setRemoveLiquidity,
+  removeTokenLiquidityInPool,
+  setPoolDialogStep,
+} from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -40,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
     cursor: "pointer",
+    width: "100%",
 
     "&:hover": {
       background: theme.palette.button.hover,
@@ -229,6 +236,15 @@ function RemoveDropDown({
   type = "stake",
   slip,
   close,
+  pool,
+  percentageToRemove,
+  setRemoveLiquidity,
+  removeLiquidity,
+  removeTokenLiquidityInPool,
+  currentPool,
+  setPoolDialogStep,
+  setShowStakeDialog,
+  checkAllowancePoolWithdraw,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -267,11 +283,36 @@ function RemoveDropDown({
       return require(`../assets/Tokens/NOTFOUND.png`);
     }
   };
+
+  const removeLiq = () => {
+    // console.log("removeLiq");
+    setPoolDialogStep("pendingWithdrawLiquidity");
+    setShowStakeDialog(true);
+    onClose();
+    removeTokenLiquidityInPool(pool?.pool?.id, percentageToRemove);
+  };
   return (
     <Fragment>
-      <Box
+      <Button
+        fullWidth
+        variant="retro"
+        disabled={!checkAllowancePoolWithdraw}
+        // loading={loadingRedux.pool}
+        className={classes.removeBtn}
+        onClick={() => {
+          !disableDrop && !link && setOpen(true);
+          // setRemoveLiquidity(pool?.balance * (percentageToRemove / 100));
+        }}
+      >
+        REMOVE
+      </Button>
+      {/* <Button
         className={classes.dropdown}
-        onClick={() => !disableDrop && !link && setOpen(true)}
+        onClick={() => {
+          !disableDrop && !link && setOpen(true);
+          // setRemoveLiquidity(pool?.balance * (percentageToRemove / 100));
+        }}
+        // disabled={!checkAllowancePoolWithdraw}
       >
         <Typography
           variant="body1"
@@ -280,7 +321,7 @@ function RemoveDropDown({
         >
           REMOVE
         </Typography>
-      </Box>
+      </Button> */}
 
       <MuiDialog
         open={open}
@@ -393,14 +434,24 @@ function RemoveDropDown({
 
           <Box className={classes.info}>
             <Typography className={classes.fontWeight}>
-              1 XIO = 697.58 AAVE
+              1 $FLASH ={" "}
+              {trunc(
+                pool?.poolQueryData?.reserveAltAmount /
+                  pool?.poolQueryData?.reserveFlashAmount
+              ) || 0}{" "}
+              {pool?.pool?.tokenB?.symbol}
             </Typography>
             <Typography className={classes.fontWeight}>
-              1 AAVE = 0.00143333 XIO
+              1 {pool.pool?.tokenB?.symbol} ={" "}
+              {trunc(
+                pool?.poolQueryData?.reserveFlashAmount /
+                  pool?.poolQueryData?.reserveAltAmount
+              ) || 0}{" "}
+              $FLASH
             </Typography>
           </Box>
 
-          <Button variant="retro" fullWidth>
+          <Button variant="retro" onClick={removeLiq} fullWidth>
             CONFIRM
           </Button>
         </Container>
@@ -409,9 +460,18 @@ function RemoveDropDown({
   );
 }
 
-const mapStateToProps = ({ flashstake: { slip }, ui: { close } }) => ({
+const mapStateToProps = ({
+  flashstake: { slip, removeLiquidity },
+  ui: { close },
+}) => ({
   slip,
   close,
+  removeLiquidity,
 });
 
-export default connect(mapStateToProps, { setClose })(RemoveDropDown);
+export default connect(mapStateToProps, {
+  setClose,
+
+  removeTokenLiquidityInPool,
+  setPoolDialogStep,
+})(RemoveDropDown);

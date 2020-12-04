@@ -787,34 +787,48 @@ export const getApprovalPoolLiquidity = () => async (dispatch, getState) => {
   }
 };
 
-export const removeTokenLiquidityInPool = () => async (dispatch, getState) => {
+export const removeTokenLiquidityInPool = (
+  withdrawPool,
+  percentageToRemove
+) => async (dispatch, getState) => {
   try {
+    console.log("here1");
     const {
       flashstake: { selectedWithdrawPool, poolDashboard },
     } = await getState();
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
+    const _pool = poolDashboard.find((_pool) => _pool.pool.id === withdrawPool);
     if (!_pool?.balance) {
       return;
     }
+
+    console.log("Balance", _pool.balance, percentageToRemove);
+    // const removeLiquidity = _pool?.balance * (percentageToRemove / 100);
+    const removeLiquidity = String(
+      JSBI.divide(
+        JSBI.multiply(
+          JSBI.BigInt(Web3.utils.toWei(String(_pool.balance))),
+          JSBI.BigInt(percentageToRemove)
+        ),
+        JSBI.BigInt(100)
+      )
+    );
+
+    console.log(
+      "here2",
+      String(JSBI.divide(JSBI.BigInt(percentageToRemove), JSBI.BigInt(100)))
+    );
+    console.log("removeLiquidity", removeLiquidity);
+
     dispatch({
       type: "WITHDRAW_LIQUIDITY_REQUEST",
       payload: {
-        _liquidity: _pool.balance,
+        _liquidity: Web3.utils.fromWei(removeLiquidity),
         _token: _pool.pool.tokenB.symbol,
       },
     });
-    _log(
-      "removeLiquidityInPool -> ",
-      Web3.utils.toWei(String(_pool.balance)),
-      _pool.pool.tokenB.id
-    );
+    _log("removeLiquidityInPool -> ", removeLiquidity, _pool.pool.tokenB.id);
     initializeFlashstakeProtocolContract();
-    await removeLiquidityInPool(
-      Web3.utils.toWei(String(_pool.balance)),
-      _pool.pool.tokenB.id
-    );
+    await removeLiquidityInPool(removeLiquidity, _pool.pool.tokenB.id);
   } catch (e) {
     _error("ERROR removeTokenLiquidityInPool -> ", e);
   }
@@ -907,5 +921,12 @@ export const setSlip = (val) => {
   return {
     type: "CUSTOM_SLIPPAGE",
     payload: val,
+  };
+};
+
+export const setRemoveLiquidity = (data) => {
+  return {
+    type: "REMOVE_LIQUIDITY",
+    payload: data,
   };
 };

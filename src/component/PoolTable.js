@@ -221,6 +221,7 @@ function PoolTable({
   allPoolsData,
   selectedQueryData,
   onClickPool,
+  setShowStakeDialog,
 }) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
@@ -287,6 +288,8 @@ function PoolTable({
       })
     );
   }, [poolDashboard, allPoolsData]);
+
+  // console.log(currentPool);
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -513,6 +516,9 @@ function PoolTable({
             pool={currentPool}
             onClose={() => onClickClose("rem")}
             queryData={selectedQueryData}
+            selectedRewardToken={selectedRewardToken}
+            currentPool={currentPool}
+            setShowStakeDialog={setShowStakeDialog}
           />
         </Fragment>
       )}

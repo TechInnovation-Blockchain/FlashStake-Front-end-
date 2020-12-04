@@ -20,10 +20,8 @@ import { store } from "../config/reduxStore";
 import Button from "./Button";
 import RemoveDropDown from "./RemoveDropDown";
 import { trunc } from "../utils/utilFunc";
-
-const {
-  ui: { changeApp },
-} = store.getState();
+import { connect } from "react-redux";
+import { setRemoveLiquidity } from "../redux/actions/flashstakeActions";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -212,13 +210,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RemoveLiquidityDropDown({
+function RemoveLiquidityDropDown({
   open,
   onClose,
   pool,
   closeTimeout,
   items = [],
   onSelect = () => {},
+  setRemoveLiquidity,
+  selectedRewardToken,
+  currentPool,
+  setShowStakeDialog,
 }) {
   const classes = useStyles();
   const [percentageToRemove, setPercentageToRemove] = useState(5);
@@ -417,10 +419,28 @@ export default function RemoveLiquidityDropDown({
           </Grid>
 
           <Grid item xs={6} className={classes.innerBox}>
-            <RemoveDropDown />
+            <RemoveDropDown
+              pool={pool}
+              percentageToRemove={percentageToRemove}
+              currentPool={currentPool}
+              setShowStakeDialog={setShowStakeDialog}
+            />
           </Grid>
         </Grid>
       </Container>
     </MuiDialog>
   );
 }
+
+const mapStateToProps = ({
+  flashstake: { slip, removeLiquidity },
+  ui: { close },
+}) => ({
+  slip,
+  close,
+  removeLiquidity,
+});
+
+export default connect(mapStateToProps, { setRemoveLiquidity })(
+  RemoveLiquidityDropDown
+);

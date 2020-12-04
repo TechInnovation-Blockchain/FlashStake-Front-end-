@@ -49,6 +49,7 @@ export const flashstakeReducer = (
       amount: "",
       token: "",
     },
+    removeLiquidity: "",
   },
   { type, payload }
 ) => {
@@ -240,6 +241,12 @@ export const flashstakeReducer = (
         ...state,
         initialValues: payload,
       };
+    case "REMOVE_LIQUIDITY":
+      return {
+        ...state,
+        removeLiquidity: payload,
+      };
+
     default:
       return state;
   }

@@ -416,13 +416,6 @@ function Pool({
   const [height, setHeight] = useState(heightVal);
   const [queryData, setQueryData] = useState({});
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setHeightToggle(!heightToggle);
-  //     setHeightValue(ref?.current?.clientHeight);
-  //   }, 500);
-  // });
-
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");
   };
@@ -435,8 +428,6 @@ function Pool({
   useEffect(() => {
     document.title = "Pool - $FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
-
-  // const debouncedUpdateQueryData = useCallback(debounce(getQueryData, 500), []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
   // const [height2, setHeight2] = useState(0);
@@ -1053,6 +1044,7 @@ function Pool({
                   onClickApprovePool={onClickApprovePool}
                   selectedQueryData={queryData}
                   onClickPool={onClickPool}
+                  setShowStakeDialog={setShowStakeDialog}
                 />
               </AccordionDetails>
             </Accordion>
@@ -1135,55 +1127,26 @@ function Pool({
                 </Fragment>
               ),
               poolProposal: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    POOL
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    You are going to add{" "}
-                    <span className={classes.infoTextSpan}>
-                      {quantityXIO} $FLASH
-                    </span>{" "}
-                    for{" "}
-                    <span className={classes.infoTextSpan}>
-                      {`${quantityAlt} ${
-                        selectedRewardToken?.tokenB?.symbol || ""
-                      }`}
-                    </span>{" "}
-                  </Typography>
-                  <Button
-                    fullWidth
-                    variant="retro"
-                    onClick={onClickPool}
-                    disabled={
-                      !active ||
-                      !account ||
-                      !selectedPortal ||
-                      !allowanceXIOPool ||
-                      !allowanceALTPool ||
-                      quantityXIO <= 0 ||
-                      quantityAlt <= 0 ||
-                      loadingRedux.pool ||
-                      chainId !== 4 ||
-                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                      parseFloat(quantityXIO) > parseFloat(walletBalance)
-                      //  &&
-                      // account !==
-                      //   "0x425b9dBa4b4a355cc063C5105501797C5F50266B")
-                    }
-                    loading={loadingRedux.pool}
-                  >
-                    {/* {account !==
-                          "0x425b9dBa4b4a355cc063C5105501797C5F50266B"
-                            ? "COMING SOON"
-                            : "POOL"} */}
-                    POOL
-                  </Button>
-                </Fragment>
+                <AddDropDown
+                  quantityAlt={quantityAlt}
+                  quantityXIO={quantityXIO}
+                  selectedRewardToken={selectedRewardToken}
+                  queryData={queryData}
+                  disabled={
+                    !active ||
+                    !account ||
+                    !selectedPortal ||
+                    !allowanceXIOPool ||
+                    !allowanceALTPool ||
+                    quantityXIO <= 0 ||
+                    quantityAlt <= 0 ||
+                    loadingRedux.pool ||
+                    chainId !== 4 ||
+                    parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                    parseFloat(quantityXIO) > parseFloat(walletBalance)
+                  }
+                  onClickPool={onClickPool}
+                />
               ),
               failedApproval: (
                 <Fragment>
@@ -1414,13 +1377,6 @@ function Pool({
     </PageAnimation>
   );
 }
-// const mapStateToProps = () => ({ ui: { animation, heightVal } }) => ({
-//   animation,
-//   heightVal,
-// });
-
-// export default connect(mapStateToProps, { setHeightValue })(Pool);
-
 const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
