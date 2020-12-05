@@ -10,6 +10,7 @@ import {
   unstake,
   addLiquidityInPool,
   removeLiquidityInPool,
+  createPool,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeFlashProtocolContract,
@@ -815,6 +816,16 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
     await removeLiquidityInPool(removeLiquidity, _pool.pool.tokenB.id);
   } catch (e) {
     _error("ERROR removeTokenLiquidityInPool -> ", e);
+  }
+};
+
+export const _createPool = (_tokenAddress) => async (dispatch, getState) => {
+  try {
+    _log("createPool -> ", _tokenAddress);
+    initializeErc20TokenContract(_tokenAddress);
+    await createPool(_tokenAddress);
+  } catch (e) {
+    _error("ERROR createPool -> ", e);
   }
 };
 

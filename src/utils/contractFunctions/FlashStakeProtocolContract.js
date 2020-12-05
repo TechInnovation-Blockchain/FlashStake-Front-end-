@@ -25,7 +25,7 @@ import {
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import { analytics } from "../../config/App";
 import Web3 from "web3";
-import { _error } from "../log";
+import { _error, _log } from "../log";
 
 let contract;
 let isContractInitialized = false;
@@ -684,7 +684,7 @@ export const createPool = (_token) => {
               );
               setRefetchIndep(true);
               setLoadingIndep({ withdrawPool: false });
-
+              _log(receipt);
               return receipt;
             })
             .catch((e) => {

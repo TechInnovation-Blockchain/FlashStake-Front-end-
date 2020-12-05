@@ -15,6 +15,9 @@ import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
+import Web3 from "web3";
+import { _createPool } from "../redux/actions/flashstakeActions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -58,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   clearSearch: {
     position: "absolute",
-    right: 15,
+    right: 10,
     top: "65%",
     transform: "translateY(-50%)",
     color: theme.palette.text.disabled,
@@ -87,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
+      padding: theme.spacing(0, 8),
       // fontSize: 16,
       lineHeight: 1.5,
       textAlign: "center",
@@ -147,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function AddTokenDialogue({
+function AddTokenDialogue({
   children,
   closeTimeout,
   items = [],
@@ -157,6 +160,7 @@ export default function AddTokenDialogue({
   disableDrop,
   link,
   setCreate,
+  _createPool,
   //   type = "stake",
 }) {
   const classes = useStyles();
@@ -166,7 +170,12 @@ export default function AddTokenDialogue({
   const history = useHistory();
 
   const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
+    setSearch(value.toLowerCase());
+  };
+
+  const handleClick = () => {
+    // setCreate(search)
+    _createPool(search);
   };
 
   const filteredData = useCallback(() => {
@@ -304,8 +313,8 @@ export default function AddTokenDialogue({
           <Button
             fullWidth
             variant="retro"
-            onClick={() => setCreate(search)}
-            disabled={!search}
+            onClick={handleClick}
+            disabled={!Web3.utils.isAddress(search)}
             // loading={loadingRedux.stake}
           >
             ADD
@@ -315,3 +324,7 @@ export default function AddTokenDialogue({
     </Fragment>
   );
 }
+
+const mapStateToProps = () => ({});
+
+export default connect(mapStateToProps, { _createPool })(AddTokenDialogue);
