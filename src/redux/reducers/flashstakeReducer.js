@@ -24,6 +24,7 @@ export const flashstakeReducer = (
     dialogStep: "",
     dialogStep2: "",
     dialogStep3: "",
+    dialogStep4: "",
     poolDashboard: [],
     stakeRequest: {
       quantity: 0,
@@ -50,6 +51,7 @@ export const flashstakeReducer = (
       token: "",
     },
     removeLiquidity: "",
+    createPoolData: {},
   },
   { type, payload }
 ) => {
@@ -176,6 +178,18 @@ export const flashstakeReducer = (
       return {
         ...state,
         dialogStep3: payload,
+      };
+
+    case "CREATE_POOL_REQUEST":
+      return {
+        ...state,
+        createPoolData: payload,
+      };
+
+    case "CREATE_DIALOG_STEP":
+      return {
+        ...state,
+        dialogStep4: payload,
       };
     case "STAKE_REQUEST":
       return {

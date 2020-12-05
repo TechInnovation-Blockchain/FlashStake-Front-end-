@@ -147,13 +147,11 @@ const useStyles = makeStyles((theme) => ({
   loadingIcon: {
     marginRight: 5,
   },
-  // tokensLogo: {
-  //   filter: "grayscale(1)",
-
-  //   "&:hover": {
-  //     filter: "none",
-  //   },
-  // },
+  tokenInfoHead: {
+    display: "flex",
+    justifyContent: "space-between",
+    fontWeight: 700,
+  },
 }));
 
 function AddTokenDialogue({
@@ -268,6 +266,7 @@ function AddTokenDialogue({
 
       <MuiDialog
         open={open}
+        // open={true}
         onClose={onClose}
         PaperProps={{ className: classes.dialogPaper }}
       >
@@ -302,11 +301,29 @@ function AddTokenDialogue({
               </IconButton>
             ) : null}
           </Box>
-          <Box>
-            {token?.name}
-            {token?.symbol}
-            {token?.decimals}
-          </Box>
+          {token?.decimals ? (
+            <Box className={classes.tokenInfo}>
+              <Typography variant="body1" className={classes.tokenInfoHead}>
+                Token Name:{" "}
+                <span className={classes.dialogHeading}>{token?.name}</span>
+              </Typography>
+
+              <Typography variant="body1" className={classes.tokenInfoHead}>
+                Token Symbol:{" "}
+                <span className={classes.dialogHeading}>{token?.symbol}</span>
+              </Typography>
+
+              <Typography variant="body1" className={classes.tokenInfoHead}>
+                Token Decimals:
+                <span className={classes.dialogHeading}>{token?.decimals}</span>
+              </Typography>
+            </Box>
+          ) : (
+            <Typography variant="body2" className={classes.dialogHeading}>
+              {" "}
+              ADD TOKEN ADDRESS TO SEE DETAILS{" "}
+            </Typography>
+          )}
 
           <Button
             fullWidth

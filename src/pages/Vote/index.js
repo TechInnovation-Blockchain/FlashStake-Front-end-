@@ -52,6 +52,7 @@ import {
   unstakeXIO,
   unstakeEarly,
   createPool,
+  setCreateDialogStep,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -420,6 +421,9 @@ function Vote({
   changeApp,
   maxDays,
   createPool,
+  setCreateDialogStep,
+  dialogStep4,
+  createPoolData,
   ...props
 }) {
   let classes = useStyles();
@@ -437,6 +441,7 @@ function Vote({
   };
 
   const handleOpen = () => {
+    setCreateDialogStep("pendingLiquidity");
     setOpen(true);
   };
   // useEffect(() => {
@@ -445,6 +450,12 @@ function Vote({
   //     setHeightValue(ref?.current?.clientHeight);
   //   }, 100);
   // });
+
+  const handleCreatePool = (token) => {
+    setCreateDialogStep("pendingCreatePool");
+    setShowStakeDialog(true);
+    createPool(token);
+  };
 
   const toggle = () => {
     setHeight(height > 300 ? heightVal : "100%");
@@ -467,22 +478,6 @@ function Vote({
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
-
-  // useEffect(() => {
-  //   document
-  //     .querySelector("input[type='number']")
-  //     .addEventListener("keypress", (evt) => {
-  //       if (evt.which === 8) {
-  //         return;
-  //       }
-  //       if (evt.which === 46) {
-  //         return;
-  //       }
-  //       if (evt.which < 48 || evt.which > 57) {
-  //         evt.preventDefault();
-  //       }
-  //     });
-  // }, []);
 
   const onChangeDays = ({ target: { value } }) => {
     if (/^[0-9]*$/.test(value)) {
@@ -540,45 +535,9 @@ function Vote({
 
   useEffect(() => {
     if (active && account) {
-      // checkAllowance();
-      // getBalanceXIO();
-      // updateAllBalances();
       showWalletBackdrop(false);
     }
   }, [active, account]);
-
-  const onClickStake = (quantity, days) => {
-    setDialogStep("pendingStake");
-    setShowStakeDialog(true);
-    stakeXIO(quantity, days, time);
-  };
-
-  const onClickApprove = () => {
-    setDialogStep("pendingApproval");
-    setShowStakeDialog(true);
-    getApprovalXIO("stake");
-  };
-
-  // useEffect(() => {
-  //   unStakeCompleted();
-  // }, []);
-
-  const onClickUnstake = () => {
-    setDialogStep("unstakeOptions");
-    // setDialogStep("pendingUnstake");
-    setShowStakeDialog(true);
-  };
-
-  const onClickUnstake2 = () => {
-    if (totalBurn.totalBurn > 0) {
-      setDialogStep("partialCompleted");
-      // setDialogStep("pendingUnstake");
-    } else {
-      setDialogStep("completedStakes");
-      // setDialogStep("pendingUnstake");
-    }
-    setShowStakeDialog(true);
-  };
 
   const onClickClose = () => {
     // setReset(true);
@@ -687,7 +646,7 @@ function Vote({
                       fullWidth
                       variant="retro"
                       disabled={!token?.decimals}
-                      onClick={() => createPool(token)}
+                      onClick={() => handleCreatePool(token)}
                     >
                       CREATE
                     </Button>
@@ -765,10 +724,10 @@ function Vote({
               <AccordionDetails className={classes.accordion}>
                 {heightToggle ? (
                   <Table
-                    onClickUnstake={onClickUnstake}
-                    onClickUnstake2={onClickUnstake2}
-                    // toggle={toggle}
-                    // heightToggle={heightToggle}
+                  // onClickUnstake={onClickUnstake}
+                  // onClickUnstake2={onClickUnstake2}
+                  // toggle={toggle}
+                  // heightToggle={heightToggle}
                   />
                 ) : (
                   <CreateTable />
@@ -781,136 +740,33 @@ function Vote({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE", "STAKE"]}
-          title="FLASHSTAKE"
+          steps={["CREATE"]}
+          title="CREATE"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
-            dialogStep.includes(item)
+            dialogStep4.includes(item)
           )}
-          step={dialogStep}
-          stepperShown={
-            quantity > 0 && days > 0
-              ? dialogStep === "pendingApproval" ||
-                dialogStep === "flashstakeProposal"
-              : null
-          }
-          // stepperShown={true}
-
-          // status="success"
-
-          //successApproval: (
-          //  <Fragment>
-          //    <Typography variant="body1" className={classes.textBold}>
-          //      APPROVAL
-          //      <br />
-          //      <span className={classes.greenText}>SUCCESSFUL</span>
-          //    </Typography>
-          //    <Button variant="retro" fullWidth onClick={onClickClose}>
-          //      CLOSE
-          //    </Button>
-          //  </Fragment>
-          //),
+          step={dialogStep4}
+          // stepperShown={"pendingCreatePool"}
         >
           {
             {
-              pendingApproval: (
+              pendingCreatePool: (
                 <Fragment>
-                  <Typography variant="body2" className={classes.textBold}>
-                    APPROVAL PENDING
+                  <Typography variant="body1" className={classes.textBold}>
+                    PENDING CREATE POOL
                     <br />
+                  </Typography>
+                  <Typography variant="body1" className={classes.textBold}>
+                    Creating Pool {createPoolData?._token?.symbol} with{" "}
+                    {createPoolData?._token?.decimals} decimals{" "}
                   </Typography>
                 </Fragment>
               ),
-              flashstakeProposal:
-                quantity > 0 && days > 0 ? (
-                  <Fragment>
-                    <Typography variant="body1" className={classes.textBold}>
-                      STAKE
-                      <br />
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                    >
-                      If you stake{" "}
-                      <span className={classes.infoTextSpan}>
-                        {quantity || 0} $FLASH{" "}
-                      </span>{" "}
-                      for{" "}
-                      <span className={classes.infoTextSpan}>
-                        {days || 0} hours
-                      </span>{" "}
-                      you will{" "}
-                      <span className={classes.infoTextSpan}>immediately</span>{" "}
-                      get{" "}
-                      {loadingRedux.reward ? (
-                        <CircularProgress
-                          size={12}
-                          className={classes.loaderStyle}
-                        />
-                      ) : (
-                        <Tooltip
-                          title={`${Web3.utils.fromWei(reward)} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
-                        >
-                          <span className={classes.infoTextSpan}>
-                            {trunc(Web3.utils.fromWei(reward))}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
-                          </span>
-                        </Tooltip>
-                      )}
-                    </Typography>
-                    <Button
-                      variant="retro"
-                      fullWidth
-                      onClick={
-                        !allowanceXIOProtocol
-                          ? () => {}
-                          : () => onClickStake(quantity, days)
-                      }
-                      disabled={
-                        !active ||
-                        !account ||
-                        !selectedPortal ||
-                        quantity <= 0 ||
-                        days <= 0 ||
-                        loadingRedux.reward ||
-                        loadingRedux.stake ||
-                        chainId !== 4 ||
-                        reward <= 0 ||
-                        (active &&
-                          account &&
-                          parseFloat(quantity) > parseFloat(walletBalance))
-                      }
-                      loading={loadingRedux.approval}
-                    >
-                      STAKE
-                    </Button>
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <Typography variant="body1" className={classes.textBold}>
-                      APPROVAL
-                      <br />
-                      <CheckCircleOutline
-                        className={`${classes.dialogIcon} ${classes.greenText}`}
-                      />
-                      <div className={classes.redText}>
-                        {/* YOU HAVE SUCCESSFULLY APPROVED */}
-                        You have successfully approved
-                      </div>
-                    </Typography>
-                    <Button variant="retro" fullWidth onClick={closeDialog}>
-                      DISMISS
-                    </Button>
-                  </Fragment>
-                ),
-
-              failedApproval: (
+              failedCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL
+                    CREATE POOL FAILED
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
@@ -919,10 +775,10 @@ function Vote({
                   </Button>
                 </Fragment>
               ),
-              rejectedApproval: (
+              rejectedCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    APPROVAL
+                    CREATE POOL REJECTED
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
@@ -931,71 +787,10 @@ function Vote({
                   </Button>
                 </Fragment>
               ),
-              pendingStake: (
+              successCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    STAKE PENDING
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
-                    {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
-                    {time === "Hrs"
-                      ? days > 1
-                        ? "hours"
-                        : "hour"
-                      : time === "Mins"
-                      ? days > 1
-                        ? "Mins"
-                        : "Min"
-                      : time === "Days"
-                      ? days > 1
-                        ? "Days"
-                        : "Day"
-                      : time}{" "}
-                    to get{" "}
-                    <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
-                    >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
-                      </span>
-                    </Tooltip>{" "}
-                    instantly
-                  </Typography>
-                </Fragment>
-              ),
-              failedStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    STAKE
-                    <br />
-                    <span className={classes.redText}>FAILED</span>
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              rejectedStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    STAKE
-                    <br />
-                    <span className={classes.redText}>REJECTED</span>
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              successStake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    STAKE
+                    CREATE POOL SUCCESSFUL
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -1003,30 +798,7 @@ function Vote({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You have successfully staked {stakeRequest.quantity} $FLASH
-                    for {stakeRequest.days}{" "}
-                    {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}
-                    {time === "Hrs"
-                      ? days > 1
-                        ? "hours"
-                        : "hour"
-                      : time === "Mins"
-                      ? days > 1
-                        ? "Mins"
-                        : "Min"
-                      : time === "Days"
-                      ? days > 1
-                        ? "Days"
-                        : "Day"
-                      : time}{" "}
-                    and you were sent{" "}
-                    <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
-                    >
-                      <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
-                      </span>
-                    </Tooltip>
+                    {createPoolData?._token?.symbol} pool created successfully
                   </Typography>
                   <Typography
                     variant="body2"
@@ -1047,404 +819,7 @@ function Vote({
                   </Button>
                 </Fragment>
               ),
-              earlyUnstakeFull: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    If you unstake{" "}
-                    <Tooltip title={`${dappBalance} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(dappBalance)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    now, you will receive{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    and burn{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    in the process
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    CONFIRM UNSTAKE
-                  </Button>
-                </Fragment>
-              ),
-              completedStakes: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    You are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
-                      <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    {/* NOW, YOU WILL RECIEVE{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    AND BURN{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    IN THE PROCESS*/}
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    CONFIRM UNSTAKE
-                  </Button>
-                </Fragment>
-              ),
-
-              partialCompleted: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    Your are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
-                      <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    now, you will receive{" "}
-                    <Tooltip
-                      title={`${
-                        totalBurn.totalXIO - totalBurn.totalBurn
-                      } $FLASH`}
-                    >
-                      <span className={classes.redText}>
-                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    and burn{" "}
-                    <Tooltip title={`${totalBurn.totalBurn} $FLASH`}>
-                      <span className={classes.redText}>
-                        {trunc(totalBurn.totalBurn)} $FLASH
-                      </span>
-                    </Tooltip>{" "}
-                    in the process
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={unstakeEarly}>
-                    CONFIRM UNSTAKE
-                  </Button>
-                </Fragment>
-              ),
-
-              unstakeOptions:
-                parseFloat(dappBalance) > parseFloat(expiredDappBalance) ? (
-                  parseFloat(expiredDappBalance) === 0 ? (
-                    //If no stakes have completed yet
-                    <Fragment>
-                      <Typography variant="body1" className={classes.textBold}>
-                        UNSTAKE
-                        <br />
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                      >
-                        You are about to unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        in the process
-                      </Typography>
-                      <Button
-                        variant="retro"
-                        fullWidth
-                        onClick={() => unstakeEarly}
-                      >
-                        CONFIRM UNSTAKE
-                      </Button>
-                    </Fragment>
-                  ) : (
-                    <Fragment>
-                      <Typography variant="body1" className={classes.textBold}>
-                        UNSTAKE
-                        <br />
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                      >
-                        You are about to unstake {trunc(expiredDappBalance)}{" "}
-                        $FLASH
-                      </Typography>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <Button
-                            variant="retro"
-                            fullWidth
-                            onClick={unstakeXIO}
-                          >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                              <span>
-                                {/* COMPLETED({trunc(expiredDappBalance)} $FLASH) */}
-                                CONFIRM UNSTAKE
-                              </span>
-                            </Tooltip>
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Fragment>
-                  )
-                ) : (
-                  <Fragment>
-                    <Typography variant="body1" className={classes.textBold}>
-                      UNSTAKE
-                      <br />
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                    >
-                      You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
-                      </Tooltip>
-                    </Typography>
-                    <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>
-                          {/* COMPLETED
-                          <br />({trunc(expiredDappBalance)} $FLASH) */}
-                          CONFIRM UNSTAKE
-                        </span>
-                      </Tooltip>
-                    </Button>
-                  </Fragment>
-                ),
-              unstakeSelectedOptions:
-                parseFloat(dappBalance) > parseFloat(expiredDappBalance) ? (
-                  parseFloat(expiredDappBalance) === 0 ? (
-                    //If no stakes have completed yet
-                    <Fragment>
-                      <Typography variant="body1" className={classes.textBold}>
-                        UNSTAKE
-                        <br />
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                      >
-                        If you unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
-                          <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
-                          </span>
-                        </Tooltip>{" "}
-                        in the process
-                      </Typography>
-                      <Button
-                        variant="retro"
-                        fullWidth
-                        onClick={() => unstakeEarly}
-                      >
-                        CONFIRM UNSTAKE
-                      </Button>
-                    </Fragment>
-                  ) : (
-                    <Fragment>
-                      <Typography variant="body1" className={classes.textBold}>
-                        UNSTAKE
-                        <br />
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                      >
-                        Which stake would you like to unstake?
-                      </Typography>
-                      <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                          <Button
-                            variant="retro"
-                            fullWidth
-                            onClick={unstakeXIO}
-                          >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                              <span>
-                                {/* COMPLETED
-                                <br />({trunc(expiredDappBalance)} $FLASH) */}
-                                CONFIRM UNSTAKE
-                              </span>
-                            </Tooltip>
-                          </Button>
-                        </Grid>
-                        {/* <Grid item xs={6}>
-                          <Button
-                            variant="retro"
-                            fullWidth
-                            onClick={() => setDialogStep("earlyUnstakeFull")}
-                          >
-                            <Tooltip title={`${dappBalance} $FLASH`}>
-                              <span>
-                                ALL
-                                <br />({trunc(dappBalance)} $FLASH)
-                              </span>
-                            </Tooltip>
-                          </Button>
-                        </Grid> */}
-                      </Grid>
-                    </Fragment>
-                  )
-                ) : (
-                  <Fragment>
-                    <Typography variant="body1" className={classes.textBold}>
-                      UNSTAKE
-                      <br />
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                    >
-                      You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
-                      </Tooltip>
-                    </Typography>
-                    <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>
-                          CONFIRM UNSTAKE
-                          {/* <br />({trunc(expiredDappBalance)} $FLASH) */}
-                        </span>
-                      </Tooltip>
-                    </Button>
-                  </Fragment>
-                ),
-              pendingUnstake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE PENDING
-                    <br />
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
-                    </Tooltip>
-                  </Typography>
-                </Fragment>
-              ),
-
-              failedUnstake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                    <span className={classes.redText}>FAILED</span>
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              rejectedUnstake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                    <span className={classes.redText}>REJECTED</span>
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={closeDialog}>
-                    DISMISS
-                  </Button>
-                </Fragment>
-              ),
-              successUnstake: (
-                <Fragment>
-                  <Typography variant="body1" className={classes.textBold}>
-                    UNSTAKE
-                    <br />
-                    <span className={classes.greenText}>SUCCESSFUL</span>
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    You successfully unstaked{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
-                    </Tooltip>
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    className={`${classes.textBold} ${classes.redText}`}
-                  >
-                    <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={classes.link}
-                    >
-                      <Link fontSize="small" className={classes.linkIcon} />
-                      View on etherscan
-                    </a>
-                  </Typography>
-                  <Button variant="retro" fullWidth onClick={onClickClose}>
-                    CLOSE
-                  </Button>
-                </Fragment>
-              ),
-            }[dialogStep]
+            }[dialogStep4]
           }
         </Dialog>
       </Fragment>
@@ -1513,4 +888,5 @@ export default connect(mapStateToProps, {
   unstakeXIO,
   selectStake,
   createPool,
+  setCreateDialogStep,
 })(Vote);

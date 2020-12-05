@@ -865,9 +865,17 @@ export const setSwapDialogStep = (step) => {
     payload: step,
   };
 };
+
 export const setPoolDialogStep = (step) => {
   return {
     type: "POOL_DIALOG_STEP",
+    payload: step,
+  };
+};
+
+export const setCreateDialogStep = (step) => {
+  return {
+    type: "CREATE_DIALOG_STEP",
     payload: step,
   };
 };
@@ -878,6 +886,9 @@ export const setSwapDialogStepIndep = (step) => {
 
 export const setPoolDialogStepIndep = (step) => {
   store.dispatch(setPoolDialogStep(step));
+};
+export const setCreateDialogStepIndep = (step) => {
+  store.dispatch(setCreateDialogStep(step));
 };
 
 // export const setReset = (val) => {

@@ -19,6 +19,7 @@ import {
   setStakeTxnHashIndep,
   setResetIndep,
   setPoolDialogStepIndep,
+  setCreateDialogStepIndep,
   setLiquidityTxnHashIndep,
   setWithdrawLiquidityTxnHash,
 } from "../../redux/actions/flashstakeActions";
@@ -643,7 +644,7 @@ export const createPool = (_token) => {
 
   try {
     showSnackbarIndep("Transaction Pending.", "info");
-    setPoolDialogStepIndep("pendingCreatePool");
+    setCreateDialogStepIndep("pendingCreatePool");
     checkContractInitialized();
 
     const walletAddress = getWalletAddressReduxState();
@@ -674,7 +675,7 @@ export const createPool = (_token) => {
               );
             })
             .then(function (receipt) {
-              setPoolDialogStepIndep("successCreatePool");
+              setCreateDialogStepIndep("successCreatePool");
               showSnackbarTxnIndep(
                 "Create Pool Transaction Successful.",
                 "success",
@@ -689,10 +690,10 @@ export const createPool = (_token) => {
             })
             .catch((e) => {
               if (e.code === 4001) {
-                setPoolDialogStepIndep("rejectedCreatePool");
+                setCreateDialogStepIndep("rejectedCreatePool");
                 showSnackbarIndep("Create Pool Transaction Rejected.", "error");
               } else {
-                setPoolDialogStepIndep("failedCreatePool");
+                setCreateDialogStepIndep("failedCreatePool");
                 showSnackbarIndep("Create Pool Transaction Failed.", "error");
               }
               setLoadingIndep({ withdrawPool: false });
@@ -703,10 +704,10 @@ export const createPool = (_token) => {
       );
   } catch (e) {
     if (e.code === 4001) {
-      setDialogStepIndep("rejectedCreatePool");
+      setCreateDialogStepIndep("rejectedCreatePool");
       showSnackbarIndep("Create Pool Transaction Rejected.", "error");
     } else {
-      setDialogStepIndep("failedCreatePool");
+      setCreateDialogStepIndep("failedCreatePool");
       showSnackbarIndep("Create Pool Transaction Failed.", "error");
     }
     _error("ERROR CreatePool -> ", e);
