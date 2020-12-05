@@ -297,7 +297,7 @@ function RemoveDropDown({
       <Button
         fullWidth
         variant="retro"
-        disabled={checkAllowancePoolWithdraw}
+        disabled={!checkAllowancePoolWithdraw}
         // loading={loadingRedux.pool}
         className={classes.removeBtn}
         onClick={() => {

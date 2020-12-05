@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import logoLight from "../assets/FlashPro5.svg";
 import flashDark from "../assets/flash-dark.svg";
 import flash from "../assets/FLASH2.svg";
+import $Flash from "../assets/Tokens/$FLASH.png";
 import {
   setExpandAccodion,
   setAnimationDirection,
@@ -161,7 +162,7 @@ function Navbar({
       {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
-          src={themeMode === "dark" ? logoLight : flash}
+          src={themeMode === "retro" ? $Flash : flash}
           // src={themeModeflash}
           alt="logo"
           width={themeMode === "dark" || themeMode === "light" ? 40 : 30}
