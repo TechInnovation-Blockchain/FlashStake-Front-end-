@@ -38,6 +38,16 @@ export const symbol = async () => {
     _error("ERROR symbol -> ", e);
   }
 };
+export const name = async () => {
+  try {
+    checkContractInitialized();
+
+    const name = await contract.methods.name().call();
+    return name;
+  } catch (e) {
+    _error("ERROR name -> ", e);
+  }
+};
 
 export const decimals = async () => {
   try {

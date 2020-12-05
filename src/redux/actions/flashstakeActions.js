@@ -10,7 +10,7 @@ import {
   unstake,
   addLiquidityInPool,
   removeLiquidityInPool,
-  createPool,
+  createPool as createPoolContract,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
   initializeFlashProtocolContract,
@@ -819,11 +819,20 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
   }
 };
 
-export const _createPool = (_tokenAddress) => async (dispatch, getState) => {
+export const createPool = (_token) => async (dispatch, getState) => {
   try {
-    _log("createPool -> ", _tokenAddress);
-    initializeErc20TokenContract(_tokenAddress);
-    await createPool(_tokenAddress);
+    if (!Web3.utils.isAddress(_token.address)) {
+      return;
+    }
+    _log("createPool params -> ", _token.address);
+    dispatch({
+      type: "CREATE_POOL_REQUEST",
+      payload: {
+        _token: _token,
+      },
+    });
+    initializeFlashstakeProtocolContract();
+    await createPoolContract(_token.address);
   } catch (e) {
     _error("ERROR createPool -> ", e);
   }

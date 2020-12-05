@@ -16,8 +16,14 @@ import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import Button from "./Button";
 import Web3 from "web3";
-import { _createPool } from "../redux/actions/flashstakeActions";
 import { connect } from "react-redux";
+import {
+  initializeErc20TokenContract,
+  name,
+  symbol,
+  decimals,
+} from "../utils/contractFunctions/erc20TokenContractFunctions";
+import { debounce } from "../utils/debounceFunc";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -160,23 +166,49 @@ function AddTokenDialogue({
   disableDrop,
   link,
   setCreate,
-  _createPool,
   //   type = "stake",
+  setToken: setTokenParent,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-
-  const history = useHistory();
+  const [token, setToken] = useState({});
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toLowerCase());
   };
 
   const handleClick = () => {
-    // setCreate(search)
-    _createPool(search);
+    setTokenParent(token);
+    setOpen(false);
   };
+
+  const searchToken = async (_address) => {
+    if (Web3.utils.isAddress(_address)) {
+      await initializeErc20TokenContract(_address);
+      const _decimals = await decimals();
+      if (_decimals) {
+        const _name = await name();
+        const _symbol = await symbol();
+        setToken({
+          address: _address,
+          name: _name,
+          symbol: _symbol,
+          decimals: _decimals,
+        });
+      } else {
+        setToken({});
+      }
+    } else {
+      setToken({});
+    }
+  };
+
+  const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
+
+  useEffect(() => {
+    debouncedSearchToken(search);
+  }, [search]);
 
   const filteredData = useCallback(() => {
     return items.filter((item) =>
@@ -207,74 +239,35 @@ function AddTokenDialogue({
   };
   return (
     <Fragment>
-      {link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.link}
-        >
-          <Box
-            className={classes.dropdown}
-            onClick={() => !disableDrop && !link && setOpen(true)}
-          >
-            <Typography variant="body1" className={classes.primaryText}>
-              {selectedValue.id ? (
-                <Fragment>
-                  <img
-                    src={tryRequire(selectedValue.tokenB.symbol)}
-                    alt="Logo"
-                    srcSet=""
-                    width={15}
-                    style={{ marginRight: 5 }}
-                  />
-                  {selectedValue.tokenB.symbol}
-                </Fragment>
-              ) : (
-                <span className={classes.disabledText}>ETH</span>
-              )}
-            </Typography>
-            {!disableDrop
-              ? {
-                  /* <IconButton className={classes.dropdownIcon} size="small">
-                <ExpandMore fontSize="large" />
-              </IconButton> */
-                }
-              : null}
-          </Box>
-        </a>
-      ) : (
-        <Box
-          className={classes.dropdown}
-          onClick={() => !disableDrop && !link && setOpen(true)}
-        >
-          <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue.id ? (
-              <Fragment>
-                <img
-                  src={tryRequire(selectedValue.tokenB.symbol)}
-                  alt="Logo"
-                  srcSet=""
-                  width={15}
-                  style={{ marginRight: 5 }}
-                />
-                {selectedValue.tokenB.symbol}
-              </Fragment>
-            ) : (
-              <span className={classes.disabledText}>SELECT</span>
-            )}
-          </Typography>
-          {!disableDrop ? (
-            <IconButton className={classes.dropdownIcon} size="small">
-              {/* <ExpandMore fontSize="large" /> */}
-            </IconButton>
-          ) : null}
-        </Box>
-      )}
+      <Box
+        className={classes.dropdown}
+        onClick={() => !disableDrop && !link && setOpen(true)}
+      >
+        <Typography variant="body1" className={classes.primaryText}>
+          {token?.symbol ? (
+            <Fragment>
+              <img
+                src={tryRequire(token?.symbol)}
+                alt="Logo"
+                srcSet=""
+                width={15}
+                style={{ marginRight: 5 }}
+              />
+              {token?.symbol}
+            </Fragment>
+          ) : (
+            <span className={classes.disabledText}>SELECT</span>
+          )}
+        </Typography>
+        {!disableDrop ? (
+          <IconButton className={classes.dropdownIcon} size="small">
+            {/* <ExpandMore fontSize="large" /> */}
+          </IconButton>
+        ) : null}
+      </Box>
 
       <MuiDialog
         open={open}
-        // open={true}
         onClose={onClose}
         PaperProps={{ className: classes.dialogPaper }}
       >
@@ -309,13 +302,17 @@ function AddTokenDialogue({
               </IconButton>
             ) : null}
           </Box>
+          <Box>
+            {token?.name}
+            {token?.symbol}
+            {token?.decimals}
+          </Box>
 
           <Button
             fullWidth
             variant="retro"
             onClick={handleClick}
-            disabled={!Web3.utils.isAddress(search)}
-            // loading={loadingRedux.stake}
+            disabled={!Web3.utils.isAddress(search) || !token?.decimals}
           >
             ADD
           </Button>
@@ -327,4 +324,4 @@ function AddTokenDialogue({
 
 const mapStateToProps = () => ({});
 
-export default connect(mapStateToProps, { _createPool })(AddTokenDialogue);
+export default connect(mapStateToProps, {})(AddTokenDialogue);

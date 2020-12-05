@@ -51,6 +51,7 @@ import {
   setInitialValues,
   unstakeXIO,
   unstakeEarly,
+  createPool,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -418,6 +419,7 @@ function Vote({
   totalBurn,
   changeApp,
   maxDays,
+  createPool,
   ...props
 }) {
   let classes = useStyles();
@@ -428,7 +430,7 @@ function Vote({
   const ref = useRef(null);
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
-  const [create, setCreate] = useState("");
+  const [token, setToken] = useState({});
 
   const handleClose = () => {
     setOpen(false);
@@ -667,7 +669,7 @@ function Vote({
                     <AddTokenDialogue
                       className={classes.dropDown}
                       heading="ADD TOKEN"
-                      setCreate={setCreate}
+                      setToken={setToken}
                     />
                   </Grid>
 
@@ -680,68 +682,16 @@ function Vote({
                     </Typography>
                   </Grid>
 
-                  {allowanceXIOProtocol ? (
-                    <Grid
-                      container
-                      className={classes.gridSpace}
-                      item
-                      xs={12}
-                      onClick={showWalletHint}
+                  <Grid container item xs={12} onClick={showWalletHint}>
+                    <Button
+                      fullWidth
+                      variant="retro"
+                      disabled={!token?.decimals}
+                      onClick={() => createPool(token)}
                     >
-                      <Grid item xs={6} className={classes.btnPaddingRight}>
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          onClick={
-                            !allowanceXIOProtocol && !loadingRedux.approval
-                              ? onClickApprove
-                              : () => {}
-                          }
-                          disabled={
-                            allowanceXIOProtocol ||
-                            !active ||
-                            !account ||
-                            loadingRedux.reward ||
-                            loadingRedux.approval ||
-                            chainId !== 4
-                          }
-                          loading={
-                            loadingRedux.approval && loadingRedux.approvalXIO
-                          }
-                        >
-                          {loadingRedux.approval && loadingRedux.approvalXIO
-                            ? "APPROVING"
-                            : `APPROVE ${selectedStakeToken}`}
-                        </Button>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        // style={{ marginBottom: 10 }}
-                        className={classes.btnPaddingLeft}
-                      >
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          // onClick={
-
-                          // }
-                          disabled={!create}
-                          loading={loadingRedux.stake}
-                        >
-                          CREATE
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <Fragment>
-                      <Grid container item xs={12} onClick={showWalletHint}>
-                        <Button fullWidth variant="retro" disabled={!create}>
-                          CREATE
-                        </Button>
-                      </Grid>
-                    </Fragment>
-                  )}
+                      CREATE
+                    </Button>
+                  </Grid>
 
                   {!allowanceXIOProtocol &&
                   active &&
@@ -1562,4 +1512,5 @@ export default connect(mapStateToProps, {
   unstakeEarly,
   unstakeXIO,
   selectStake,
+  createPool,
 })(Vote);
