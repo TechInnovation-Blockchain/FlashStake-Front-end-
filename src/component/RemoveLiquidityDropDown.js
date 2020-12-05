@@ -23,7 +23,7 @@ import { trunc } from "../utils/utilFunc";
 import { connect } from "react-redux";
 import {
   setRemoveLiquidity,
-  // checkAllowancePoolWithdraw,
+  checkAllowancePoolWithdraw,
   getApprovalPoolLiquidity,
   setPoolDialogStep,
 } from "../redux/actions/flashstakeActions";
@@ -227,7 +227,7 @@ function RemoveLiquidityDropDown({
   selectedRewardToken,
   currentPool,
   setShowStakeDialog,
-  // checkAllowancePoolWithdraw,
+  checkAllowancePoolWithdraw,
   loading: loadingRedux,
   allowancePoolWithdraw,
   getApprovalPoolLiquidity,
@@ -242,9 +242,9 @@ function RemoveLiquidityDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
-  useEffect(() => {}, [pool]);
-
-  console.log("In remove", pool?.pool?.tokenB?.id);
+  useEffect(() => {
+    checkAllowancePoolWithdraw(currentPool?.pool?.id);
+  }, [currentPool]);
 
   const onClickApprove = async () => {
     setPoolDialogStep("pendingApproval");
@@ -517,7 +517,7 @@ const mapStateToProps = ({
 
 export default connect(mapStateToProps, {
   setRemoveLiquidity,
-  // checkAllowancePoolWithdraw,
+  checkAllowancePoolWithdraw,
   getApprovalPoolLiquidity,
   setPoolDialogStep,
 })(RemoveLiquidityDropDown);

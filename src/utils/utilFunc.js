@@ -41,7 +41,6 @@ export const trunc = (val, test) => {
     const __val = _val2[0].slice(_val2.length - 4, -1);
 
     const joined = [_val, __val].join("..");
-    // console.log("AS", joined, val);
     return joined;
   }
   if (_val.includes(".")) {

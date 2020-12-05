@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Grid,
   Slider,
+  Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -246,30 +247,15 @@ function RemoveDropDown({
   setPoolDialogStep,
   setShowStakeDialog,
   checkAllowancePoolWithdraw,
+  allowancePoolWithdraw,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const history = useHistory();
-
-  const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
-  };
-
-  const filteredData = useCallback(() => {
-    return items.filter((item) =>
-      item.tokenB?.symbol.toUpperCase().includes(search)
-    );
-  }, [search, items]);
   const onClose = useCallback(() => {
     setOpen(false);
   }, []);
-
-  const onSelectLocal = (_pool) => {
-    onSelect(_pool);
-    onClose();
-  };
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -277,27 +263,18 @@ function RemoveDropDown({
     }
   }, [closeTimeout, open, onClose]);
 
-  const tryRequire = (path) => {
-    try {
-      return require(`../assets/Tokens/${path}.png`);
-    } catch (err) {
-      return require(`../assets/Tokens/NOTFOUND.png`);
-    }
-  };
-
   const removeLiq = () => {
-    // console.log("removeLiq");
     setPoolDialogStep("pendingWithdrawLiquidity");
     setShowStakeDialog(true);
     onClose();
-    removeTokenLiquidityInPool(pool?.pool?.id, percentageToRemove);
+    removeTokenLiquidityInPool(pool, percentageToRemove);
   };
   return (
     <Fragment>
       <Button
         fullWidth
         variant="retro"
-        disabled={!checkAllowancePoolWithdraw}
+        disabled={!allowancePoolWithdraw}
         // loading={loadingRedux.pool}
         className={classes.removeBtn}
         onClick={() => {
@@ -371,13 +348,15 @@ function RemoveDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="h6">
-                  0.000905761
-                </Typography>
+                <Tooltip title={(percentageToRemove / 100) * pool.pooledFlash}>
+                  <Typography variant="h6" className={classes.fontStyle}>
+                    {trunc((percentageToRemove / 100) * pool.pooledFlash)}
+                  </Typography>
+                </Tooltip>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  XIO
+                  $FLASH
                 </Typography>
               </Grid>
             </Grid>
@@ -395,13 +374,15 @@ function RemoveDropDown({
                 style={{ textAlign: "left" }}
                 className={classes.innerBox}
               >
-                <Typography className={classes.fontStyle} variant="h6">
-                  0.6314
-                </Typography>
+                <Tooltip title={(percentageToRemove / 100) * pool.pooledAlt}>
+                  <Typography variant="h6" className={classes.fontStyle}>
+                    {trunc((percentageToRemove / 100) * pool.pooledAlt)}
+                  </Typography>
+                </Tooltip>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  AAVE
+                  {pool?.pool?.tokenB?.symbol}
                 </Typography>
               </Grid>
             </Grid>
@@ -409,8 +390,7 @@ function RemoveDropDown({
 
           <Box className={classes.removeBox}>
             <Typography className={classes.removeText} variant="body2">
-              Output is estimated. If the price changes by more than {slip}%
-              your transaction will revert
+              The above output is estimated
             </Typography>
           </Box>
 
@@ -422,19 +402,19 @@ function RemoveDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="h6">
-                  XIO / AAVE BURNED
+                  POOL TOKENS BURNED
                 </Typography>
               </Grid>
               <Grid xs={6} className={classes.burnedText}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  0.0230133
+                  {trunc((pool.balance * percentageToRemove) / 100)}
                 </Typography>
               </Grid>
             </Grid>
           </Box>
 
           <Box className={classes.info}>
-            <Typography className={classes.fontWeight}>
+            <Typography className={classes.fontWeight} variant="body2">
               1 $FLASH ={" "}
               {trunc(
                 pool?.poolQueryData?.reserveAltAmount /
@@ -442,7 +422,7 @@ function RemoveDropDown({
               ) || 0}{" "}
               {pool?.pool?.tokenB?.symbol}
             </Typography>
-            <Typography className={classes.fontWeight}>
+            <Typography className={classes.fontWeight} variant="body2">
               1 {pool.pool?.tokenB?.symbol} ={" "}
               {trunc(
                 pool?.poolQueryData?.reserveFlashAmount /

@@ -24,7 +24,7 @@ import {
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
-import { getQueryData } from "../redux/actions/queryActions";
+import { getQueryData, getAllQueryData } from "../redux/actions/queryActions";
 // import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
 
 function Updater({
@@ -69,7 +69,9 @@ function Updater({
       refetch();
       const _interval = window.setInterval(() => {
         updateAllBalances();
+        getAllQueryData();
       }, 60000);
+      getAllQueryData();
       updateAllBalances();
       // getBalanceALT();
       checkAllowance();

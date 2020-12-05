@@ -290,8 +290,6 @@ function PoolTable({
     );
   }, [poolDashboard, allPoolsData]);
 
-  // console.log(currentPool);
-
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
       showWalletBackdrop(true);

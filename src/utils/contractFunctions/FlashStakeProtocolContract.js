@@ -637,3 +637,78 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
     _error("ERROR removeLiquidityInPool -> ", e);
   }
 };
+
+export const createPool = (_token) => {
+  setLoadingIndep({ withdrawPool: true });
+
+  try {
+    showSnackbarIndep("Transaction Pending.", "info");
+    setPoolDialogStepIndep("pendingCreatePool");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new _error("Wallet not activated.");
+    }
+
+    contract.methods
+      .createPool(_token)
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        (error, gasAmount) => {
+          contract.methods
+            .createPool(_token)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", (txnHash) => {
+              setWithdrawLiquidityTxnHash(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
+            })
+            .then(function (receipt) {
+              setPoolDialogStepIndep("successCreatePool");
+              showSnackbarTxnIndep(
+                "Create Pool Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+              setRefetchIndep(true);
+              setLoadingIndep({ withdrawPool: false });
+
+              return receipt;
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setPoolDialogStepIndep("rejectedCreatePool");
+                showSnackbarIndep("Create Pool Transaction Rejected.", "error");
+              } else {
+                setPoolDialogStepIndep("failedCreatePool");
+                showSnackbarIndep("Create Pool Transaction Failed.", "error");
+              }
+              setLoadingIndep({ withdrawPool: false });
+
+              _error("ERROR CreatePool  -> ", e);
+            });
+        }
+      );
+  } catch (e) {
+    if (e.code === 4001) {
+      setDialogStepIndep("rejectedCreatePool");
+      showSnackbarIndep("Create Pool Transaction Rejected.", "error");
+    } else {
+      setDialogStepIndep("failedCreatePool");
+      showSnackbarIndep("Create Pool Transaction Failed.", "error");
+    }
+    _error("ERROR CreatePool -> ", e);
+  }
+};

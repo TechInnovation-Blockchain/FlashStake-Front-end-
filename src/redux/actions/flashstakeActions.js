@@ -294,30 +294,28 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
   }
 };
 
-export const checkAllowancePoolWithdraw = (poolID) => async (
+export const checkAllowancePoolWithdraw = (_poolId) => async (
   dispatch,
   getState
 ) => {
   dispatch(setLoading({ allowance: true }));
   try {
-    console.log("poolID", poolID);
     const {
-      flashstake: { selectedWithdrawPool, poolDashboard },
       web3: { account },
     } = await getState();
-    // if (!selectedWithdrawPool || !account) {
-    //   return null;
-    // }
-    const _pool = poolDashboard.find((_pool) => _pool.pool.id === poolID);
+    if (_poolId || account) {
+      const _allowance = await checkAllowanceMemo(
+        CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+        _poolId,
+        account
+      );
+      _log("checkAllowancePoolWithdraw -> ", _allowance);
 
-    console.log("poolID", _pool);
-    const _allowance = await checkAllowanceMemo(poolID, poolID, account);
-    _log("checkAllowancePoolWithdraw -> ", _allowance);
-
-    dispatch({
-      type: "ALLOWANCE_POOL_WITHDRAW",
-      payload: _allowance > 0,
-    });
+      dispatch({
+        type: "ALLOWANCE_POOL_WITHDRAW",
+        payload: _allowance > 0,
+      });
+    }
   } catch (e) {
     _error("ERROR checkAllowancePoolWithdraw -> ", e);
     dispatch({
@@ -768,7 +766,6 @@ export const getApprovalPoolLiquidity = (poolID) => async (
   dispatch,
   getState
 ) => {
-  console.log("poolID", poolID);
   try {
     const {
       flashstake: { selectedWithdrawPool, poolDashboard },
@@ -777,8 +774,6 @@ export const getApprovalPoolLiquidity = (poolID) => async (
     if (!_pool?.balance) {
       return;
     }
-
-    console.log("_pool", _pool);
     setLoadingIndep({ approvalWithdrawPool: true });
     await initializeErc20TokenContract(_pool.pool.id);
     await approve(_pool.pool.id, "pool");
@@ -790,22 +785,14 @@ export const getApprovalPoolLiquidity = (poolID) => async (
   }
 };
 
-export const removeTokenLiquidityInPool = (
-  withdrawPool,
-  percentageToRemove
-) => async (dispatch, getState) => {
+export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
+  dispatch,
+  getState
+) => {
   try {
-    console.log("here1");
-    const {
-      flashstake: { selectedWithdrawPool, poolDashboard },
-    } = await getState();
-    const _pool = poolDashboard.find((_pool) => _pool.pool.id === withdrawPool);
     if (!_pool?.balance) {
       return;
     }
-
-    console.log("Balance", _pool.balance, percentageToRemove);
-    // const removeLiquidity = _pool?.balance * (percentageToRemove / 100);
     const removeLiquidity = String(
       JSBI.divide(
         JSBI.multiply(
@@ -815,12 +802,6 @@ export const removeTokenLiquidityInPool = (
         JSBI.BigInt(100)
       )
     );
-
-    console.log(
-      "here2",
-      String(JSBI.divide(JSBI.BigInt(percentageToRemove), JSBI.BigInt(100)))
-    );
-    console.log("removeLiquidity", removeLiquidity);
 
     dispatch({
       type: "WITHDRAW_LIQUIDITY_REQUEST",
