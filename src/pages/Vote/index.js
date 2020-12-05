@@ -428,6 +428,7 @@ function Vote({
   const ref = useRef(null);
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
+  const [create, setCreate] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -618,6 +619,7 @@ function Vote({
       setIsDisabled(true);
     }
   };
+  console.log(create);
 
   return (
     <PageAnimation in={true} reverse={animation > 0}>
@@ -664,206 +666,21 @@ function Vote({
                     </Typography>
                     <AddTokenDialogue
                       className={classes.dropDown}
-                      // items={pools}
-                      // selectedValue={selectedRewardToken}
-                      // onSelect={setSelectedRewardToken}
                       heading="ADD TOKEN"
+                      setCreate={setCreate}
                     />
                   </Grid>
 
-                  {/*                   
-                  <Grid container className={classes.gridSpace} item xs={12}>
-                    <Box flex={1}>
-                      <Typography
-                        variant="body1"
-                        className={classes.secondaryText}
-                      >
-                        Fuel ($FLASH)
-                      </Typography>
-                      <Box className={classes.textFieldContainer}>
-                      
-                        <TextField
-                          className={classes.textField}
-                          error={
-                            active &&
-                            account &&
-                            parseFloat(quantity) > parseFloat(walletBalance)
-                          }
-                          fullWidth
-                          placeholder="0.0"
-                          value={quantity}
-                          onChange={onChangeQuantity}
-                          type="number"
-                          inputMode="numeric"
-                          pattern={regex}
-                          onKeyDown={handleKeyDown}
-                          onFocus={(e) => (e.target.placeholder = "")}
-                          onBlur={(e) => (e.target.placeholder = "0.0")}
-                        />
-                     
-                        <IconButton
-                          className={classes.maxIconButton}
-                          disabled={
-                            !(active || account) || walletBalance == quantity
-                          }
-                          onClick={() =>
-                            onChangeQuantity({
-                              target: { value: walletBalance },
-                            })
-                          }
-                        >
-                          <MaxBtn width={10} />
-                        </IconButton>
-                      </Box>
-                    </Box>
-
-                    <Typography variant="h6" className={classes.xIcon}>
-                      x
-                    </Typography>
-                    <Box flex={1}>
-                      <Typography
-                        variant="body1"
-                        className={classes.secondaryText}
-                      >
-                        Time ({time})
-                      </Typography>
-
-                      <Box className={classes.textFieldContainer}>
-                        <TextField
-                          className={classes.textField}
-                          fullWidth
-                          placeholder="0"
-                          value={days}
-                          error={days > maxDays}
-                          onChange={onChangeDays}
-                          type="tel"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          onKeyDown={handleKeyDown}
-                          onFocus={(e) => (e.target.placeholder = "")}
-                          onBlur={(e) => (e.target.placeholder = "0")}
-                        />
-                        <IconButton
-                          className={classes.maxIconButton}
-                          
-                          onClick={() => setOpen(true)}
-                        >
-                        
-                          <Typography
-                            variant="body2"
-                            className={classes.timeText}
-                          >
-                            {time}
-                          </Typography>
-                        </IconButton>
-                      </Box>
-                      <Select
-                        labelId="demo-controlled-open-select-label"
-                        id="demo-controlled-open-select"
-                        open={open}
-                        className={classes.select}
-                        onClose={handleClose}
-                        onOpen={handleOpen}
-                        value={time}
-                        onChange={handleChange}
-                      >
-                       
-                        <MenuItem className={classes.item} value={"Mins"}>
-                          Mins
-                        </MenuItem>
-                        <MenuItem className={classes.item} value={"Hrs"}>
-                          Hrs
-                        </MenuItem>
-                        <MenuItem className={classes.item} value={"Days"}>
-                          Days
-                        </MenuItem>
-                      </Select>
-                    </Box>
-                  </Grid> */}
-
                   <Grid item xs={12}>
-                    {selectedRewardToken?.tokenB?.symbol ? (
-                      quantity && days > 0 ? (
-                        <Typography
-                          // variant="overline"
-                          variant="body1"
-                          className={classes.infoText}
-                        >
-                          If you stake{" "}
-                          <span className={classes.infoTextSpan}>
-                            {trunc(quantity) || 0} $FLASH{" "}
-                          </span>{" "}
-                          for{" "}
-                          <span className={classes.infoTextSpan}>
-                            {trunc(days) || 0}{" "}
-                            {time === "Hrs"
-                              ? days > 1
-                                ? "hours"
-                                : "hour"
-                              : time === "Mins"
-                              ? days > 1
-                                ? "Mins"
-                                : "Min"
-                              : time === "Days"
-                              ? days > 1
-                                ? "Days"
-                                : "Day"
-                              : time}
-                            {/* {days > 1 ? "hours" : "hour"} */}
-                          </span>{" "}
-                          {/* YOU WILL IMMEDIATELY{" "} */}
-                          you will immediately {/* GET{" "} */}
-                          get{" "}
-                          {loadingRedux.reward ? (
-                            <CircularProgress
-                              size={12}
-                              className={classes.loaderStyle}
-                            />
-                          ) : quantity > 0 && days > 0 ? (
-                            <Tooltip
-                              title={`${Web3.utils.fromWei(reward)} ${
-                                selectedRewardToken?.tokenB?.symbol || ""
-                              }`}
-                            >
-                              <span className={classes.infoTextSpan}>
-                                {trunc(Web3.utils.fromWei(reward))}{" "}
-                                {selectedRewardToken?.tokenB?.symbol || ""}
-                              </span>
-                            </Tooltip>
-                          ) : (
-                            <span className={classes.infoTextSpan}>
-                              {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
-                            </span>
-                          )}
-                        </Typography>
-                      ) : (
-                        <Typography
-                          // variant="overline"
-                          variant="body1"
-                          className={classes.infoText}
-                        >
-                          <span className={classes.infoTextSpan}>
-                            Fuel ($FLASH){" "}
-                          </span>{" "}
-                          and{" "}
-                          <span className={classes.infoTextSpan}>
-                            Time ({time})
-                          </span>{" "}
-                          {/* YOU WILL IMMEDIATELY{" "} */}
-                          are needed for time travel
-                        </Typography>
-                      )
-                    ) : (
-                      <Typography
-                        variant="body1"
-                        className={`${classes.secondaryText1} `}
-                      >
-                        Select a token to view rewards
-                      </Typography>
-                    )}
+                    <Typography
+                      variant="body1"
+                      className={`${classes.secondaryText1} `}
+                    >
+                      Enter token address to create
+                    </Typography>
                   </Grid>
 
-                  {!allowanceXIOProtocol ? (
+                  {allowanceXIOProtocol ? (
                     <Grid
                       container
                       className={classes.gridSpace}
@@ -905,93 +722,22 @@ function Vote({
                       >
                         <Button
                           fullWidth
-                          variant={
-                            !allowanceXIOProtocol ||
-                            !active ||
-                            !account ||
-                            !selectedPortal ||
-                            quantity <= 0 ||
-                            days <= 0 ||
-                            loadingRedux.reward ||
-                            loadingRedux.stake ||
-                            chainId !== 4 ||
-                            reward <= 0 ||
-                            (active &&
-                              account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
-                              ? "red"
-                              : "retro"
-                          }
-                          onClick={
-                            !allowanceXIOProtocol
-                              ? () => {}
-                              : () => onClickStake(quantity, days)
-                          }
-                          disabled={
-                            !allowanceXIOProtocol ||
-                            !active ||
-                            !account ||
-                            !selectedPortal ||
-                            quantity <= 0 ||
-                            days <= 0 ||
-                            loadingRedux.reward ||
-                            loadingRedux.stake ||
-                            chainId !== 4 ||
-                            reward <= 0 ||
-                            (active &&
-                              account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
-                          }
+                          variant="retro"
+                          // onClick={
+
+                          // }
+                          disabled={!create}
                           loading={loadingRedux.stake}
                         >
-                          STAKE
+                          CREATE
                         </Button>
                       </Grid>
                     </Grid>
                   ) : (
                     <Fragment>
                       <Grid container item xs={12} onClick={showWalletHint}>
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          // variant={
-                          //   !active ||
-                          //   !account ||
-                          //   !selectedPortal ||
-                          //   quantity <= 0 ||
-                          //   days <= 0 ||
-                          //   loadingRedux.reward ||
-                          //   loadingRedux.stake ||
-                          //   chainId !== 4 ||
-                          //   reward <= 0 ||
-                          //   (active &&
-                          //     account &&
-                          //     parseFloat(quantity) > parseFloat(walletBalance))
-                          //     ? "disable"
-                          //     : "retro"
-                          // }
-                          onClick={
-                            !allowanceXIOProtocol
-                              ? () => {}
-                              : () => onClickStake(quantity, days)
-                          }
-                          disabled={
-                            !active ||
-                            !account ||
-                            !selectedPortal ||
-                            quantity <= 0 ||
-                            days <= 0 ||
-                            loadingRedux.reward ||
-                            loadingRedux.stake ||
-                            chainId !== 4 ||
-                            reward <= 0 ||
-                            (active &&
-                              account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
-                          }
-                          loading={loadingRedux.stake}
-                        >
-                          STAKE
+                        <Button fullWidth variant="retro" disabled={!create}>
+                          CREATE
                         </Button>
                       </Grid>
                     </Fragment>

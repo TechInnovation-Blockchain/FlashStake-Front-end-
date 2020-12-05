@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
+import Button from "./Button";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   clearSearch: {
     position: "absolute",
     right: 15,
-    top: "50%",
+    top: "65%",
     transform: "translateY(-50%)",
     color: theme.palette.text.disabled,
   },
@@ -155,6 +156,7 @@ export default function AddTokenDialogue({
   heading = "ADD TOKEN",
   disableDrop,
   link,
+  setCreate,
   //   type = "stake",
 }) {
   const classes = useStyles();
@@ -298,6 +300,16 @@ export default function AddTokenDialogue({
               </IconButton>
             ) : null}
           </Box>
+
+          <Button
+            fullWidth
+            variant="retro"
+            onClick={() => setCreate(search)}
+            disabled={!search}
+            // loading={loadingRedux.stake}
+          >
+            ADD
+          </Button>
         </Container>
       </MuiDialog>
     </Fragment>
