@@ -239,21 +239,6 @@ function SlippageDialogue({
     onClose();
   };
 
-  // let watchDouble = 0;
-  // const toggle = () => {
-  //   watchDouble += 1;
-  //   setTimeout(() => {
-  //     if (watchDouble === 2) {
-  //       console.log("Double Click");
-  //       toggleThemeMode2();
-  //     } else if (watchDouble === 1) {
-  //       console.log("Single Click");
-  //       toggleThemeMode();
-  //     }
-  //     watchDouble = 0;
-  //   }, 500);
-  // };
-
   const btnSelect = (id, slip) => {
     setBtn(id);
     _setSlip(slip);
