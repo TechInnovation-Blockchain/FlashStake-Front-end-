@@ -70,6 +70,7 @@ function Navbar({
   toggleThemeMode,
   changeApp,
   setRetroTheme,
+  toggleThemeMode2,
   ...props
 }) {
   const classes = useStyles();
@@ -101,12 +102,14 @@ function Navbar({
     watchDouble += 1;
     setTimeout(() => {
       if (watchDouble === 2) {
-        // toggleThemeMode2()
+        console.log("Double Click");
+        toggleThemeMode2();
       } else if (watchDouble === 1) {
+        console.log("Single Click");
         toggleThemeMode();
       }
       watchDouble = 0;
-    }, 200);
+    }, 500);
   };
 
   let index;

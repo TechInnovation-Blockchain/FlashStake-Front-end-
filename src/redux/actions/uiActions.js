@@ -14,6 +14,12 @@ export const toggleThemeModeAction = () => {
   };
 };
 
+export const toggleThemeModeActionRetro = () => {
+  return {
+    type: "TOGGLE_THEME_MODE_RETRO",
+  };
+};
+
 export const showSnackbarTxn = (
   message = "",
   type = "success",

@@ -26,7 +26,7 @@ import { store } from "../config/reduxStore";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 // , Brightness4Icon }
-import { toggleThemeModeAction } from "../redux/actions/uiActions";
+// import { toggleThemeModeAction } from "../redux/actions/uiActions";
 
 // import Brightness4Icon from '@material-ui/icons';
 
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
   slippageButton: {
-    backgroundColor: "#e37934",
+    backgroundColor: theme.palette.button.selected,
   },
   themeBtn: {
     display: "flex",
@@ -239,30 +239,24 @@ function SlippageDialogue({
     onClose();
   };
 
-  const btnSelect = (id) => {
-    switch (id) {
-      case 1:
-        setBtn(1);
-        _setSlip(0.1);
-        break;
-      case 2:
-        setBtn(2);
-        _setSlip(0.5);
-        break;
+  // let watchDouble = 0;
+  // const toggle = () => {
+  //   watchDouble += 1;
+  //   setTimeout(() => {
+  //     if (watchDouble === 2) {
+  //       console.log("Double Click");
+  //       toggleThemeMode2();
+  //     } else if (watchDouble === 1) {
+  //       console.log("Single Click");
+  //       toggleThemeMode();
+  //     }
+  //     watchDouble = 0;
+  //   }, 500);
+  // };
 
-      case 3:
-        setBtn(3);
-        _setSlip(1);
-        break;
-
-      case 4:
-        setBtn(4);
-        _setSlip(5);
-        break;
-      default:
-        setBtn(0);
-        break;
-    }
+  const btnSelect = (id, slip) => {
+    setBtn(id);
+    _setSlip(slip);
   };
 
   return (
@@ -292,7 +286,7 @@ function SlippageDialogue({
               className={
                 btn === 1 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(1)}
+              onClick={() => btnSelect(1, 0.1)}
               disabled={btn === 0}
             >
               0.1%
@@ -304,7 +298,7 @@ function SlippageDialogue({
               className={
                 btn === 2 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(2)}
+              onClick={() => btnSelect(2, 0.5)}
               disabled={btn === 0}
             >
               0.5%
@@ -316,7 +310,7 @@ function SlippageDialogue({
               className={
                 btn === 3 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(3)}
+              onClick={() => btnSelect(3, 1)}
               disabled={btn === 0}
             >
               1%
@@ -328,7 +322,7 @@ function SlippageDialogue({
               className={
                 btn === 4 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(4)}
+              onClick={() => btnSelect(4, 5)}
               disabled={btn === 0}
             >
               5%

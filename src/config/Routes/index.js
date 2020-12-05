@@ -43,6 +43,7 @@ function Routes({
   contractState,
   themeMode,
   toggleThemeMode,
+  toggleThemeMode2,
   account,
   changeApp,
 }) {
@@ -55,7 +56,11 @@ function Routes({
 
   return (
     <BrowserRouter>
-      <Navbar themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
+      <Navbar
+        themeMode={themeMode}
+        toggleThemeMode={toggleThemeMode}
+        toggleThemeMode2={toggleThemeMode2}
+      />
       <Box className="transitionEase">
         <Switch>
           {routes.map((_route) => (

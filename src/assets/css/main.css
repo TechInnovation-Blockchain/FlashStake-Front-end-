@@ -8,9 +8,9 @@ body,
   margin: 0;
 }
 
-.transitionEase {
+/* .transitionEase {
   transition: all 5s ease;
-}
+} */
 
 body {
   font-family: "Montserrat", sans-serif;

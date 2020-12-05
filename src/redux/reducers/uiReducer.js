@@ -23,6 +23,12 @@ export const uiReducer = (
       localStorage.setItem("themeMode", themeMode);
       return { ...state, theme: themeMode };
     }
+
+    case "TOGGLE_THEME_MODE_RETRO": {
+      const themeMode = state.theme === "dark" || "light" ? "retro" : "retro";
+      localStorage.setItem("themeMode", themeMode);
+      return { ...state, theme: themeMode };
+    }
     case "SHOW_SNACKBAR":
       return {
         ...state,

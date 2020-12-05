@@ -23,9 +23,6 @@ import {
   showWalletBackdrop,
   themeSwitchAction,
 } from "../../redux/actions/uiActions";
-const {
-  ui: { changeApp },
-} = store.getState();
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -127,7 +124,7 @@ function Layout({
   walletBackdrop,
   themeMode,
   toggleThemeMode,
-
+  toggleThemeMode2,
   themeSwitchAction,
   animation,
 }) {
@@ -158,7 +155,8 @@ function Layout({
     if (themeMode === "dark") {
       body.style.background = "#000000";
     } else if (themeMode === "retro") {
-      body.style.backgroundImage = `require(url(${Image}))`;
+      // body.style.background = "none";
+      body.style.backgroundImage = `url(${Image})`;
       body.style.backgroundPosition = "center";
       body.style.backgroundRepeat = "no-repeat";
       body.style.backgroundAttachment = "fixed";
@@ -176,7 +174,11 @@ function Layout({
           // ref={ref}
           className={`transitionEase ${classes.contentContainer} contentContainer1 `}
         >
-          <Routes themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
+          <Routes
+            themeMode={themeMode}
+            toggleThemeMode={toggleThemeMode}
+            toggleThemeMode2={toggleThemeMode2}
+          />
         </Box>
 
         <Backdrop

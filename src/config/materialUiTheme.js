@@ -41,7 +41,7 @@ export const retroTheme = createMuiTheme({
       dark: "#555555",
       red: "#ed3293",
       retro: "#ed3293",
-
+      selected: "#8a0751",
       hover: "#cc1675",
     },
     buttonText: {
@@ -116,6 +116,7 @@ export const darkTheme = createMuiTheme({
       red: "#D89C74",
       retro: "#D89C74",
       hover: "#d98955",
+      selected: "#e37934",
     },
     buttonText: {
       dark: "#ffffff",
@@ -195,6 +196,7 @@ export const lightTheme = createMuiTheme({
       red: "#D89C74",
       retro: "#D89C74",
       hover: "#d98955",
+      selected: "#e37934",
     },
     buttonText: {
       dark: "#ffffff",
