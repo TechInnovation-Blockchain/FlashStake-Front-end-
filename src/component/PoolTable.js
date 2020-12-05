@@ -222,6 +222,7 @@ function PoolTable({
   selectedQueryData,
   onClickPool,
   setShowStakeDialog,
+  theme,
 }) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
@@ -506,6 +507,7 @@ function PoolTable({
             onClose={() => onClickClose("add")}
             queryData={selectedQueryData}
             onClickPool={onClickPool}
+            theme={theme}
             // toggleFlase={toggleFlase}
             // setOpen={setAddLiqOpen}
           />
@@ -535,7 +537,7 @@ const mapStateToProps = ({
     pools,
   },
   dashboard: { selectedStakes, isStakesSelected },
-  ui: { loading },
+  ui: { loading, theme },
   flashstake: {
     poolDashboard,
     selectedWithdrawPool,
@@ -564,6 +566,7 @@ const mapStateToProps = ({
   poolDataBalance,
   pools,
   allPoolsData,
+  theme,
 });
 
 export default connect(mapStateToProps, {

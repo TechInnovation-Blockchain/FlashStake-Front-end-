@@ -369,6 +369,7 @@ function AddLiquidityDropDown({
   poolData,
   queryData,
   onClickPool,
+  theme,
   ...props
 }) {
   const classes = useStyles();
@@ -682,6 +683,7 @@ function AddLiquidityDropDown({
                 selectedValue={selectedRewardToken}
                 onSelect={setSelectedRewardToken}
                 heading="SELECT TOKEN"
+                _theme={theme}
               />
             </Grid>
 
@@ -924,7 +926,7 @@ function AddLiquidityDropDown({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal },
+  ui: { loading, expanding, animation, heightVal, theme },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
   query: { reserveFlashAmount, reserveAltAmount },
@@ -945,6 +947,7 @@ const mapStateToProps = ({
   reserveAltAmount,
   walletBalancesPool,
   poolData,
+  theme,
   ...contract,
 });
 

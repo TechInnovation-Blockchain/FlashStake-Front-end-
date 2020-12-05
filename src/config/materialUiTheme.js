@@ -56,6 +56,7 @@ export const retroTheme = createMuiTheme({
       secondary4: "#1a1a1a",
       secondary3: "#000000",
       selected: "#171717",
+      liquidity: "#424242",
     },
     xioRed: {
       main: "#ed3293",

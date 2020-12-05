@@ -15,11 +15,9 @@ import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 
-const {
-  ui: { changeApp },
-} = store.getState();
+// const _localStorage = localStorage.getItem("themeMode");
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
     color: theme.palette.text.primary,
     fontWeight: 700,
@@ -33,12 +31,25 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: theme.spacing(1),
+    padding: _theme === "retro" ? 7 : 9,
     position: "relative",
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
+
+  retroDropdown: {
+    background: theme.palette.background.secondary2,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 7,
+    position: "relative",
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+  },
+
   dropdownIcon: {
     color: theme.palette.xioRed.main,
     position: "absolute",
@@ -158,6 +169,7 @@ export default function DropdownDialog({
   heading = "SELECT TOKEN",
   disableDrop,
   link,
+  _theme,
   type = "stake",
 }) {
   const classes = useStyles();
@@ -247,7 +259,9 @@ export default function DropdownDialog({
           className={classes.link}
         >
           <Box
-            className={classes.dropdown}
+            className={
+              _theme === "retro" ? classes.retroDropdown : classes.dropdown
+            }
             onClick={() => !disableDrop && !link && setOpen(true)}
           >
             <Typography variant="body1" className={classes.primaryText}>
@@ -277,7 +291,9 @@ export default function DropdownDialog({
         </a>
       ) : (
         <Box
-          className={classes.dropdown}
+          className={
+            _theme === "retro" ? classes.retroDropdown : classes.dropdown
+          }
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>

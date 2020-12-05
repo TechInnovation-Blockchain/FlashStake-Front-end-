@@ -288,7 +288,7 @@ let useStyles = makeStyles((theme) => ({
   },
   item: {
     "&.MuiListItem-root.Mui-selected, .MuiListItem-root.Mui-selected:hover": {
-      color: `${theme.palette.text.secondary} !importtant`,
+      color: `${theme.palette.text.secondary} !important`,
     },
     "&:hover": {
       backgroundColor: `${theme.palette.background.secondary3} !important`,

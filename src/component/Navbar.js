@@ -146,7 +146,6 @@ function Navbar({
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 1;
             setAnimationDirection(index);
-
             history.push("/swap");
             handleClick2();
           }}
