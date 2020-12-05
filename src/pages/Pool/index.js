@@ -402,6 +402,7 @@ function Pool({
   withdrawLiquidityRequest,
   setPoolData,
   poolData,
+  theme,
   ...props
 }) {
   const classes = useStyles();
@@ -448,9 +449,14 @@ function Pool({
       });
   }, []);
 
-  // useEffect(() => {
-  //   quote();
-  // }, [selectedPortal]);
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding, setExpandAccodion]);
 
   const fetchQueryData = async () => {
     const _queryData = await getQueryData(selectedPortal);
@@ -624,24 +630,6 @@ function Pool({
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
 
-  // useEffect(() => {
-  //   if (quantity !== 0) {
-  //     setEth((eth * reserveAltAmount) / reserveFlashAmount);
-  //   }
-  //   if (quantity2 !== 0) {
-  //     setXIO((quantity * reserveFlashAmount) / reserveAltAmount);
-  //   }
-  // }, [quantity, reserveFlashAmount, reserveAltAmount]);
-
-  // useEffect(() => {
-  //   if (!expanding) {
-  //     setExpanded2(true);
-  //     setTimeout(() => {
-  //       setExpandAccodion(true);
-  //     }, 500);
-  //   }
-  // }, [expanding, setExpandAccodion]);
-
   return (
     // account !== "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
     <PageAnimation in={true} reverse={animation > 0}>
@@ -737,6 +725,7 @@ function Pool({
                       selectedValue={selectedRewardToken}
                       onSelect={setSelectedRewardToken}
                       heading="SELECT TOKEN"
+                      _theme={theme}
                     />
                   </Grid>
 
@@ -1379,7 +1368,7 @@ function Pool({
 }
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal },
+  ui: { loading, expanding, animation, heightVal, theme },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
   query: { reserveFlashAmount, reserveAltAmount },
@@ -1400,6 +1389,7 @@ const mapStateToProps = ({
   reserveAltAmount,
   walletBalancesPool,
   poolData,
+  theme,
   ...contract,
 });
 

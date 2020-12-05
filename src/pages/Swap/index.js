@@ -688,14 +688,14 @@ function Swap({
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
 
-  // useEffect(() => {
-  //   if (!expanding) {
-  //     setExpanded2(true);
-  //     setTimeout(() => {
-  //       setExpandAccodion(true);
-  //     }, 500);
-  //   }
-  // }, [expanding, setExpandAccodion]);
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding, setExpandAccodion]);
   //#endregion
   return (
     <PageAnimation in={true} reverse={animation > 0}>
