@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     position: "relative",
     paddingTop: theme.spacing(2),
+    marginTop: 6,
   },
   closeIcon: {
     position: "absolute",
@@ -301,14 +302,6 @@ function AddDropDown({
       >
         ADD LIQUIDITY
       </Button>
-      {/* <Box
-        className={classes.dropdown}
-        onClick={() => !disabled && setOpen(true)}
-      >
-        <Typography variant="body1" className={classes.addBtn}>
-          ADD LIQUIDITY
-        </Typography>
-      </Box> */}
 
       <MuiDialog
         open={open}
@@ -334,17 +327,6 @@ function AddDropDown({
               <ClearOutlined />
             </IconButton>
           </Box>
-          <Box className={classes.closeBtnContainer}>
-            {search ? (
-              <IconButton
-                size="small"
-                onClick={() => setSearch("")}
-                className={classes.clearSearch}
-              >
-                <ClearOutlined />
-              </IconButton>
-            ) : null}
-          </Box>
 
           <Box className={classes.firstBox}>
             <Grid container xs={12} className={classes.outerBox}>
@@ -360,7 +342,7 @@ function AddDropDown({
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  XIO/{selectedRewardToken?.tokenB?.symbol} Pool Tokens
+                  $FLASH/{selectedRewardToken?.tokenB?.symbol} Pool Tokens
                 </Typography>
               </Grid>
             </Grid>
@@ -368,7 +350,7 @@ function AddDropDown({
 
           <Box className={classes.removeBox}>
             <Typography className={classes.removeText} variant="body2">
-              Output is estimated. If the price changes by more than {slip}%
+              Output is estimated. If the price changes by more than {slip}%,
               your transaction will revert
             </Typography>
           </Box>
