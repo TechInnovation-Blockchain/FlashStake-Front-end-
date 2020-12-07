@@ -285,7 +285,7 @@ function AddTokenDialogue({
           </Box>
           <Box className={classes.closeBtnContainer}>
             <TextField
-              placeholder="TOKEN ADDRESS"
+              placeholder="ENTER TOKEN ADDRESS"
               className={classes.textField}
               fullWidth
               value={search}
@@ -304,17 +304,17 @@ function AddTokenDialogue({
           {token?.decimals ? (
             <Box className={classes.tokenInfo}>
               <Typography variant="body1" className={classes.tokenInfoHead}>
-                Token Name:{" "}
+                Name:
                 <span className={classes.dialogHeading}>{token?.name}</span>
               </Typography>
 
               <Typography variant="body1" className={classes.tokenInfoHead}>
-                Token Symbol:{" "}
+                Symbol:
                 <span className={classes.dialogHeading}>{token?.symbol}</span>
               </Typography>
 
               <Typography variant="body1" className={classes.tokenInfoHead}>
-                Token Decimals:
+                Decimals:
                 <span className={classes.dialogHeading}>{token?.decimals}</span>
               </Typography>
             </Box>

@@ -476,6 +476,9 @@ function Pool({
       try {
         const _queryData = await getQueryData(selectedPortal);
         const { reserveFlashAmount, reserveAltAmount } = _queryData;
+        if (reserveFlashAmount <= 0 && reserveAltAmount <= 0) {
+          return true;
+        }
         const [_reserveA, _reserveB] =
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
@@ -504,7 +507,9 @@ function Pool({
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityAlt(value);
         const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
-        setQuantityXIO(_val);
+        if (typeof _val !== "boolean") {
+          setQuantityXIO(_val);
+        }
       }
     },
     [selectedRewardToken]
@@ -515,7 +520,9 @@ function Pool({
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityXIO(value);
         const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
-        setQuantityAlt(_val);
+        if (typeof _val !== "boolean") {
+          setQuantityAlt(_val);
+        }
       }
     },
     [selectedRewardToken]
@@ -602,7 +609,7 @@ function Pool({
     setShowStakeDialog(true);
     if (!allowanceXIOPool) {
       setPoolDialogStep("pendingApproval");
-      await getApprovalXIOPool(1);
+      await getApprovalXIOPool();
     } else if (!allowanceALTPool) {
       setPoolDialogStep("pendingApproval");
       await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
@@ -1046,19 +1053,11 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={
-            !allowanceXIOPool
-              ? [
-                  "APPROVE $FLASH",
-                  // `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
-                  "POOL",
-                ]
-              : [
-                  // "APPROVE $FLASH",
-                  `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
-                  "POOL",
-                ]
-          }
+          steps={[
+            "APPROVE $FLASH",
+            `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+            "POOL",
+          ]}
           title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -1067,8 +1066,8 @@ function Pool({
           step={dialogStep3}
           stepperShown={
             quantityXIO > 0 && quantityAlt > 0
-              ? dialogStep3 === "pendingApproval" ||
-                dialogStep3 === "pendingApprovalToken" ||
+              ? // ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "approvalTokenProposal" ||
                 dialogStep3 === "poolProposal"
               : null
           }
@@ -1099,46 +1098,66 @@ function Pool({
                   </Typography>
                 </Fragment>
               ),
-              pendingApprovalToken1: (
+              approvalTokenProposal: (
                 <Fragment>
                   <Typography variant="body2" className={classes.textBold}>
-                    APPROVAL PENDING
+                    APPROVE {selectedRewardToken?.tokenB?.symbol}
                     <br />
                   </Typography>
                   <Button
                     fullWidth
                     variant="retro"
                     onClick={
-                      // ?
-                      onClickApprove
-                      // : () => {}
+                      (!allowanceXIOPool || !allowanceALTPool) &&
+                      !loadingRedux.approval
+                        ? onClickApprove
+                        : () => {}
                     }
-                  >
-                    APPROVE
-                  </Button>
-                </Fragment>
-              ),
-              pendingApprovalToken2: (
-                <Fragment>
-                  <Typography variant="body2" className={classes.textBold}>
-                    APPROVAL PENDING
-                    <br />
-                  </Typography>
-                  <Button
-                    fullWidth
-                    variant="retro"
-                    onClick={
-                      // ?
-                      onClickApprove
-                      // : () => {}
+                    disabled={
+                      !selectedPortal ||
+                      !active ||
+                      !account ||
+                      loadingRedux.pool ||
+                      loadingRedux.approval ||
+                      chainId !== 4
                     }
+                    loading={loadingRedux.approval && loadingRedux.approvalXIO}
                   >
-                    APPROVE
+                    {loadingRedux.approval && loadingRedux.approvalXIO
+                      ? "APPROVING"
+                      : !allowanceXIOPool
+                      ? `APPROVE ${selectedStakeToken}`
+                      : `APPROVE ${selectedRewardToken?.tokenB?.symbol || ""}`}
                   </Button>
                 </Fragment>
               ),
               poolProposal: (
                 <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    LIQUIDITY DEPOSIT
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    Add{" "}
+                    <Tooltip title={`${quantityXIO} $FLASH`}>
+                      <span className={classes.redText}>
+                        {trunc(quantityXIO)} $FLASH
+                      </span>
+                    </Tooltip>{" "}
+                    and{" "}
+                    <Tooltip
+                      title={`${quantityAlt} ${selectedRewardToken?.tokenB?.symbol}`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(quantityAlt)}{" "}
+                        {selectedRewardToken?.tokenB?.symbol}
+                      </span>
+                    </Tooltip>{" "}
+                    into $FLASH/{selectedRewardToken?.tokenB?.symbol} pool
+                  </Typography>
                   <AddDropDown
                     quantityAlt={quantityAlt}
                     quantityXIO={quantityXIO}

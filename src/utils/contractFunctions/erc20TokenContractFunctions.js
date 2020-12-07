@@ -104,8 +104,8 @@ export const approve = async (address, tab, step, amount) => {
           setSwapDialogStepIndep("swapProposal");
         }
         if (tab === "pool") {
-          if (step === 1) {
-            setPoolDialogStepIndep("pendingApprovalToken");
+          if (step) {
+            setPoolDialogStepIndep("approvalTokenProposal");
           } else {
             setPoolDialogStepIndep("poolProposal");
           }

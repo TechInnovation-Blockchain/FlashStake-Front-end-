@@ -476,7 +476,7 @@ function AddLiquidityDropDown({
     setShowStakeDialog(true);
     if (!allowanceXIOPool) {
       setPoolDialogStep("pendingApproval");
-      await getApprovalXIOPool(1);
+      await getApprovalXIOPool();
     } else if (!allowanceALTPool) {
       setPoolDialogStep("pendingApproval");
       await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");

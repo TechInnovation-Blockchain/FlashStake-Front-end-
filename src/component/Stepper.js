@@ -102,11 +102,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Stepper({
-  step,
-  steps = ["APPROVE $FLASH", "STAKE"],
-  tab = null,
-}) {
+export default function Stepper({ step, steps = ["APPROVE $FLASH", "STAKE"] }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   // useEffect(() => {
@@ -132,8 +128,14 @@ export default function Stepper({
   useEffect(() => {
     if (step === "pendingApproval") {
       setActiveStep(0);
-    } else if (step === "flashstakeProposal" || "swapProposal") {
+    } else if (
+      ["flashstakeProposal", "swapProposal", "approvalTokenProposal"].includes(
+        step
+      )
+    ) {
       setActiveStep(1);
+    } else if (step === "poolProposal") {
+      setActiveStep(2);
     }
   }, [step]);
 
