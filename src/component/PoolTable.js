@@ -532,6 +532,7 @@ function PoolTable({
             selectedRewardToken={selectedRewardToken}
             currentPool={currentPool}
             setShowStakeDialog={setShowStakeDialog}
+            setRemLiqOpen={setRemLiqOpen}
           />
         </Fragment>
       )}

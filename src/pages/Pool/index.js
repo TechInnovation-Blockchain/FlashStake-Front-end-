@@ -295,6 +295,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     height: "100%",
     boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
 
