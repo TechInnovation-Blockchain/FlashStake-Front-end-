@@ -611,7 +611,7 @@ function Vote({
                 </AccordionSummary>
 
                 <AccordionDetails
-                  style={{ paddingTop: "20px" }}
+                  style={{ paddingTop: "20px", paddingBottom: "20px" }}
                   className={classes.accordionDetails}
                 >
                   <Grid container spacing={2}>
@@ -710,7 +710,7 @@ function Vote({
                   </Grid>
                 </AccordionDetails>
               </Accordion>
-
+              {/* 
               <Accordion square expanded={!expanded2}>
                 <AccordionSummary
                   aria-controls="panel2d-content"
@@ -742,6 +742,7 @@ function Vote({
                   )}
                 </AccordionDetails>
               </Accordion>
+            */}
             </Box>
           ) : (
             <Box
