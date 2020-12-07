@@ -19,7 +19,7 @@ import { setWeb3Provider } from "../contracts/getContract";
 import { walletList } from "../utils/connectors";
 import { _error } from "../utils/log";
 import SettingsIcon from "@material-ui/icons/Settings";
-import SlippageDialogue from "./SippageDialogue";
+import SlippageDialogue from "./SlippageDialogue";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {

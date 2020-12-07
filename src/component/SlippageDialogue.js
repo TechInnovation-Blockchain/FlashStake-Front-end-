@@ -16,7 +16,7 @@ import { ClearOutlined } from "@material-ui/icons";
 import { isMobile } from "react-device-detect";
 import { walletList, mobileWalletList, injected } from "../utils/connectors";
 import { InjectedConnector } from "@web3-react/injected-connector";
-import { setLoading } from "../redux/actions/uiActions";
+import { setLoading, setBtn } from "../redux/actions/uiActions";
 import { setSlip } from "../redux/actions/flashstakeActions";
 import { connect } from "react-redux";
 import Button from "./Button";
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: 0,
+    top: 15,
     // top: "50%",
     // transform: "translateY(-50%)",
   },
@@ -200,16 +200,18 @@ function SlippageDialogue({
   slip,
   toggleThemeMode,
   theme,
+  btn,
+  setBtn,
 }) {
   const classes = useStyles();
   // const [search, setSearch] = useState("");
   // const [slip, setSlip] = useState();
   const [selected, setSelected] = useState(false);
-  const [btn, setBtn] = useState(4);
+  const [_btn, _setBtn] = useState(btn);
   const [_slip, _setSlip] = useState(slip);
 
   const onChangeSlip = ({ target: { value } }) => {
-    setBtn();
+    // _setBtn(value);
     _setSlip(value);
   };
 
@@ -223,6 +225,8 @@ function SlippageDialogue({
     if (open && closeTimeout) {
       setTimeout(onClose, closeTimeout);
     }
+    _setBtn(btn);
+    _setSlip(slip);
   }, [closeTimeout, open, onClose]);
 
   const addressShorten = (address) => {
@@ -236,11 +240,12 @@ function SlippageDialogue({
 
   const onButtonClick = () => {
     setSlip(_slip);
+    setBtn(_btn);
     onClose();
   };
 
   const btnSelect = (id, slip) => {
-    setBtn(id);
+    _setBtn(id);
     _setSlip(slip);
   };
 
@@ -269,10 +274,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                btn === 1 ? classes.slippageButton : classes._slippageButton
+                _btn === 1 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(1, 0.1)}
-              disabled={btn === 0}
+              disabled={_btn === 0}
             >
               0.1%
             </Button>
@@ -281,10 +286,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                btn === 2 ? classes.slippageButton : classes._slippageButton
+                _btn === 2 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(2, 0.5)}
-              disabled={btn === 0}
+              disabled={_btn === 0}
             >
               0.5%
             </Button>
@@ -293,10 +298,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                btn === 3 ? classes.slippageButton : classes._slippageButton
+                _btn === 3 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(3, 1)}
-              disabled={btn === 0}
+              disabled={_btn === 0}
             >
               1%
             </Button>
@@ -305,10 +310,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                btn === 4 ? classes.slippageButton : classes._slippageButton
+                _btn === 4 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(4, 5)}
-              disabled={btn === 0}
+              disabled={_btn === 0}
             >
               5%
             </Button>
@@ -334,6 +339,7 @@ function SlippageDialogue({
         </Box>
         <Button
           variant={"retro"}
+          fullWidth
           // className={}
           onClick={onButtonClick}
           // disabled={}
@@ -341,37 +347,43 @@ function SlippageDialogue({
           Confirm
         </Button>
 
-        <Grid container xs={12} spacing={2}>
-          <Grid item xs={6} className={classes.themeTxt}>
-            <Typography className={classes.toggleText} variant="body1">
-              Toggle Theme
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Box
-              variant={"retro"}
-              className={classes.themeBtn}
+        {theme === "dark" || theme === "light" ? (
+          <Grid container xs={12} spacing={2}>
+            <Grid item xs={6} className={classes.themeTxt}>
+              <Typography className={classes.toggleText} variant="body1">
+                Toggle Theme
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Box
+                variant={"retro"}
+                className={classes.themeBtn}
 
-              // disabled={btn === 0}
-            >
-              {theme === "dark" ? (
-                <Brightness4Icon onClick={toggleThemeMode} fontSize="large" />
-              ) : (
-                <Brightness7Icon onClick={toggleThemeMode} fontSize="large" />
-              )}
-            </Box>
+                // disabled={_btn === 0}
+              >
+                {theme === "dark" ? (
+                  <Brightness4Icon onClick={toggleThemeMode} fontSize="large" />
+                ) : (
+                  <Brightness7Icon onClick={toggleThemeMode} fontSize="large" />
+                )}
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
+        ) : null}
       </Container>
     </MuiDialog>
   );
 }
-const mapStateToProps = ({ ui: { loading, theme }, flashstake: { slip } }) => ({
+const mapStateToProps = ({
+  ui: { loading, theme, btn },
+  flashstake: { slip },
+}) => ({
   loading,
   slip,
   theme,
+  btn,
 });
 
-export default connect(mapStateToProps, { setLoading, setSlip })(
+export default connect(mapStateToProps, { setLoading, setSlip, setBtn })(
   SlippageDialogue
 );

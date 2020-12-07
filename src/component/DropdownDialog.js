@@ -192,6 +192,7 @@ export default function DropdownDialog({
   }, []);
 
   const onSelectLocal = (_pool) => {
+    console.log(_pool);
     onSelect(_pool);
     onClose();
   };

@@ -220,6 +220,7 @@ function AddDropDown({
   disabled,
   onClickPool,
   slip,
+  showBack = true,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -311,13 +312,15 @@ function AddDropDown({
       >
         <Container maxWidth="xs" className={classes.dialog}>
           <Box className={classes.closeBtnContainer}>
-            <IconButton
-              size="small"
-              onClick={onBack}
-              className={classes.backIcon}
-            >
-              <ArrowBackIcon />
-            </IconButton>
+            {showBack ? (
+              <IconButton
+                size="small"
+                onClick={onBack}
+                className={classes.backIcon}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+            ) : null}
 
             <IconButton
               size="small"
@@ -337,7 +340,7 @@ function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="h4">
-                  {trunc(getMintAmount())}
+                  {getMintAmount()}
                 </Typography>
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>

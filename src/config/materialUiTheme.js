@@ -2,10 +2,6 @@ import { createMuiTheme } from "@material-ui/core/styles";
 // import "../assets/fonts/fonts.css";
 import { store } from "./reduxStore";
 
-let {
-  ui: { changeApp },
-} = store.getState();
-
 export const retroTheme = createMuiTheme({
   palette: {
     type: "dark",
@@ -41,7 +37,7 @@ export const retroTheme = createMuiTheme({
       dark: "#555555",
       red: "#ed3293",
       retro: "#ed3293",
-      selected: "#8a0751",
+      selected: "#ed3293",
       hover: "#cc1675",
     },
     buttonText: {
@@ -57,6 +53,7 @@ export const retroTheme = createMuiTheme({
       secondary3: "#000000",
       selected: "#171717",
       liquidity: "#424242",
+      disabled: "#000000",
     },
     xioRed: {
       main: "#ed3293",

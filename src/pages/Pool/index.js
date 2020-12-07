@@ -293,6 +293,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.secondary,
     borderRadius: 5,
     padding: theme.spacing(1),
+    height: "100%",
+    boxSizing: "border-box",
   },
 }));
 
@@ -971,6 +973,7 @@ function Pool({
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
                           onClickPool={onClickPool}
+                          showBack={false}
                         />
                       </Grid>
                     </Fragment>
@@ -1096,7 +1099,26 @@ function Pool({
                   </Typography>
                 </Fragment>
               ),
-              pendingApprovalToken: (
+              pendingApprovalToken1: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVAL PENDING
+                    <br />
+                  </Typography>
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    onClick={
+                      // ?
+                      onClickApprove
+                      // : () => {}
+                    }
+                  >
+                    APPROVE
+                  </Button>
+                </Fragment>
+              ),
+              pendingApprovalToken2: (
                 <Fragment>
                   <Typography variant="body2" className={classes.textBold}>
                     APPROVAL PENDING

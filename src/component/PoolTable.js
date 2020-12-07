@@ -12,7 +12,10 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
 import RemoveLiquidityDropDown from "./RemoveLiquidityDropDown";
-import { showWalletBackdrop } from "../redux/actions/uiActions";
+import {
+  showWalletBackdrop,
+  setExpandAccodion,
+} from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
@@ -22,6 +25,7 @@ import {
   removeTokenLiquidityInPool,
   checkAllowancePoolWithdraw,
   getApprovalPoolLiquidity,
+  setSelectedRewardToken,
 } from "../redux/actions/flashstakeActions";
 import { selectStake } from "../redux/actions/dashboardActions";
 import Radio from "@material-ui/core/Radio";
@@ -223,6 +227,8 @@ function PoolTable({
   onClickPool,
   setShowStakeDialog,
   theme,
+  setExpandAccodion,
+  setSelectedRewardToken,
 }) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
@@ -233,7 +239,14 @@ function PoolTable({
 
   const onClickOpen = (_pool, type = "add") => {
     setCurrentPool(_pool);
-    type === "add" ? setAddLiqOpen(true) : setRemLiqOpen(true);
+    console.log(_pool);
+    // console.log(currentPool);
+    type === "add" ? addLiquidity(_pool) : setRemLiqOpen(true);
+  };
+
+  const addLiquidity = (_pool) => {
+    setSelectedRewardToken(_pool?.pool);
+    setExpandAccodion(false);
   };
 
   const onClickClose = (type = "add") => {
@@ -577,4 +590,6 @@ export default connect(mapStateToProps, {
   removeTokenLiquidityInPool,
   getApprovalPoolLiquidity,
   checkAllowancePoolWithdraw,
+  setExpandAccodion,
+  setSelectedRewardToken,
 })(PoolTable);

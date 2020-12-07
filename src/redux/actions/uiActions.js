@@ -106,6 +106,12 @@ export const setFalseSelected = (data) => {
     payload: data,
   };
 };
+export const setBtn = (data) => {
+  return {
+    type: "BTN_SELECT",
+    payload: data,
+  };
+};
 
 //
 

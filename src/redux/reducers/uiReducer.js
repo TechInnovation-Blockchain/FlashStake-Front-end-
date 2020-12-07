@@ -14,6 +14,7 @@ export const uiReducer = (
     heightVal: "auto",
     falseSelected: true,
     close: false,
+    btn: 4,
   },
   { type, payload }
 ) => {
@@ -57,6 +58,11 @@ export const uiReducer = (
       return {
         ...state,
         walletBackdrop: payload,
+      };
+    case "BTN_SELECT":
+      return {
+        ...state,
+        btn: payload,
       };
 
     case "EXPAND_ACCORDION":
