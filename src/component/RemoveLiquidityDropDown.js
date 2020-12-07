@@ -175,7 +175,7 @@ const useStyles = makeStyles((theme) => ({
   firstBox: {
     backgroundColor: theme.palette.background.liquidity,
     padding: theme.spacing(2),
-    borderRadius: 10,
+    borderRadius: 20,
   },
   outerBox: {
     display: "flex",
@@ -188,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     backgroundColor: theme.palette.background.liquidity,
-    borderRadius: 10,
+    borderRadius: 20,
     // padding: theme.spacing(2),
     height: 60,
   },
