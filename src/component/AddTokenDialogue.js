@@ -166,11 +166,14 @@ function AddTokenDialogue({
   setCreate,
   //   type = "stake",
   setToken: setTokenParent,
+  pools,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [token, setToken] = useState({});
+  const [exist, setExist] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toLowerCase());
@@ -182,25 +185,42 @@ function AddTokenDialogue({
   };
 
   const searchToken = async (_address) => {
-    if (Web3.utils.isAddress(_address)) {
-      await initializeErc20TokenContract(_address);
-      const _decimals = await decimals();
-      if (_decimals) {
-        const _name = await name();
-        const _symbol = await symbol();
-        setToken({
-          address: _address,
-          name: _name,
-          symbol: _symbol,
-          decimals: _decimals,
-        });
+    if (searchExistingToken(_address)) {
+      setExist(true);
+    } else {
+      setExist(false);
+      if (Web3.utils.isAddress(_address)) {
+        setLoader(true);
+        await initializeErc20TokenContract(_address);
+        const _decimals = await decimals();
+        if (_decimals) {
+          const _name = await name();
+          const _symbol = await symbol();
+          setToken({
+            address: _address,
+            name: _name,
+            symbol: _symbol,
+            decimals: _decimals,
+          });
+          setLoader(false);
+        } else {
+          setToken({});
+        }
       } else {
         setToken({});
       }
-    } else {
-      setToken({});
     }
   };
+
+  const searchExistingToken = (id) => {
+    if (pools.find((_pool) => _pool?.tokenB?.id === id)) {
+      return true;
+    }
+  };
+
+  // useEffect(() => {
+  //   searchExistingToken("0x4a92183332905bd7a0d09788a0c79e1b7ef866e0");
+  // });
 
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
@@ -318,6 +338,17 @@ function AddTokenDialogue({
                 <span className={classes.dialogHeading}>{token?.decimals}</span>
               </Typography>
             </Box>
+          ) : exist ? (
+            <Typography variant="body2" className={classes.dialogHeading}>
+              {" "}
+              TOKEN ALREADY EXISTS
+            </Typography>
+          ) : loader ? (
+            <Typography variant="body2" className={classes.dialogHeading}>
+              {" "}
+              FETCHING TOKEN DETAILS{" "}
+              <CircularProgress size={12} color={"inherit"} />
+            </Typography>
           ) : (
             <Typography variant="body2" className={classes.dialogHeading}>
               {" "}
@@ -329,7 +360,9 @@ function AddTokenDialogue({
             fullWidth
             variant="retro"
             onClick={handleClick}
-            disabled={!Web3.utils.isAddress(search) || !token?.decimals}
+            disabled={
+              !Web3.utils.isAddress(search) || !token?.decimals || exist
+            }
           >
             ADD
           </Button>
@@ -339,6 +372,6 @@ function AddTokenDialogue({
   );
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = ({ user: { pools } }) => ({ pools });
 
 export default connect(mapStateToProps, {})(AddTokenDialogue);
