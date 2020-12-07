@@ -476,6 +476,9 @@ function Pool({
       try {
         const _queryData = await getQueryData(selectedPortal);
         const { reserveFlashAmount, reserveAltAmount } = _queryData;
+        if (reserveFlashAmount <= 0 && reserveAltAmount <= 0) {
+          return true;
+        }
         const [_reserveA, _reserveB] =
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
@@ -504,7 +507,9 @@ function Pool({
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityAlt(value);
         const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
-        setQuantityXIO(_val);
+        if (typeof _val !== "boolean") {
+          setQuantityXIO(_val);
+        }
       }
     },
     [selectedRewardToken]
@@ -515,7 +520,9 @@ function Pool({
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityXIO(value);
         const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
-        setQuantityAlt(_val);
+        if (typeof _val !== "boolean") {
+          setQuantityAlt(_val);
+        }
       }
     },
     [selectedRewardToken]
