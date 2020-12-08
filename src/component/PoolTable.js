@@ -507,9 +507,7 @@ function PoolTable({
                 ))
               ) : (
                 <Grid item xs={12} className={classes.msgContainer}>
-                  <Typography variant="overline">
-                    <CircularProgress size={12} /> LOADING
-                  </Typography>
+                  <Typography variant="overline">NO POOL AVAILABLE</Typography>
                 </Grid>
               )}
             </Grid>
