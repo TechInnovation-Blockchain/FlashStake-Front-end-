@@ -585,7 +585,6 @@ function Vote({
       setIsDisabled(true);
     }
   };
-  // console.log(create);
 
   return (
     <PageAnimation in={true} reverse={animation > 0}>

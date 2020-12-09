@@ -593,7 +593,6 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
               gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
-              console.log(txnHash);
               setWithdrawLiquidityTxnHashIndep(txnHash);
               setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(

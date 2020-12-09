@@ -44,20 +44,22 @@ const useStyles = makeStyles((theme) => ({
         color: "#fff !important",
       },
     },
+    position: "relative",
   },
   connectWalletButton: {
-    width: 200,
+    width: 250,
     borderRadius: 0,
     // marginTop: theme.spacing(2),
     marginRight: theme.spacing(1),
     // backgroundColor: theme.palette.,
   },
   slippageButton: {
-    width: 20,
     borderRadius: 0,
     // marginTop: theme.spacing(2),
-    marginLeft: -10,
+    // marginLeft: -10,
     // backgroundColor: theme.palette.,
+    position: "absolute",
+    right: 0,
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
@@ -206,6 +208,7 @@ function WalletConnect({
             onClick={() => {
               !(active || account) ? setOpen(true) : setOpen2(true);
             }}
+            disableRipple={true}
           >
             {web3context.active
               ? addressShorten(web3context.account)
@@ -213,6 +216,7 @@ function WalletConnect({
           </Button>
 
           <Button
+            disableRipple={true}
             variant={!changeApp ? "retro" : "red"}
             className={classes.slippageButton}
             onClick={() => {

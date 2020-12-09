@@ -240,8 +240,6 @@ function PoolTable({
 
   const onClickOpen = (_pool, type = "add") => {
     setCurrentPool(_pool);
-    console.log(_pool);
-    // console.log(currentPool);
     type === "add" ? addLiquidity(_pool) : setRemLiqOpen(true);
   };
 

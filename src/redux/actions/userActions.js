@@ -46,7 +46,6 @@ export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
 });
 
 export const updatePools = (data) => async (dispatch) => {
-  console.log(data);
   let _pools = [];
   let _tokenList = [];
   try {
