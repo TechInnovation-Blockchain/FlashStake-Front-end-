@@ -22,6 +22,7 @@ import {
   setCreateDialogStepIndep,
   setLiquidityTxnHashIndep,
   setWithdrawLiquidityTxnHash,
+  setWithdrawLiquidityTxnHashIndep,
   setCloseLiquidityTxnHashIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
@@ -505,6 +506,7 @@ export const addLiquidityInPool = (
             })
             .on("transactionHash", (txnHash) => {
               setLiquidityTxnHashIndep(txnHash);
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Transaction Pending.",
                 "info",
@@ -512,6 +514,7 @@ export const addLiquidityInPool = (
                 txnHash,
                 true
               );
+              setCloseLiquidityTxnHashIndep(false);
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successLiquidity");
@@ -529,12 +532,14 @@ export const addLiquidityInPool = (
             })
             .catch((e) => {
               if (e.code === 4001) {
+                setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("rejectedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Rejected.",
                   "error"
                 );
               } else {
+                setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("failedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Failed.",
@@ -542,7 +547,7 @@ export const addLiquidityInPool = (
                 );
               }
               setLoadingIndep({ pool: false });
-
+              setCloseLiquidityTxnHashIndep(false);
               _error("ERROR addLiquidityInPool -> ", e);
             });
         }
@@ -550,11 +555,14 @@ export const addLiquidityInPool = (
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposit Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposits Transaction Failed.", "error");
     }
+    setCloseLiquidityTxnHashIndep(false);
     _error("ERROR addLiquidityInPool -> ", e);
   }
 };
@@ -585,7 +593,8 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
               gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
-              setWithdrawLiquidityTxnHash(txnHash);
+              console.log(txnHash);
+              setWithdrawLiquidityTxnHashIndep(txnHash);
               setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Transaction Pending.",

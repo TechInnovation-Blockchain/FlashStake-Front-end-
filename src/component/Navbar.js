@@ -105,7 +105,9 @@ function Navbar({
       if (watchDouble === 2) {
         toggleThemeMode2();
       } else if (watchDouble === 1) {
-        toggleThemeMode();
+        if (localStorage.getItem("themeMode") !== "retro") {
+          toggleThemeMode();
+        }
       }
       watchDouble = 0;
     }, 500);

@@ -221,6 +221,7 @@ function AddDropDown({
   onClickPool,
   slip,
   showBack = true,
+  closeLiquidityTxnHash,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -233,6 +234,17 @@ function AddDropDown({
   //     toggleFalse();
   //   }, 5000);
   // }, []);
+
+  const handleConfirm = (quantityAlt, quantityXIO) => {
+    onClickPool(quantityAlt, quantityXIO);
+    // onClose();
+  };
+
+  useEffect(() => {
+    if (closeLiquidityTxnHash) {
+      onClose();
+    }
+  }, [closeLiquidityTxnHash]);
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
@@ -473,10 +485,7 @@ function AddDropDown({
           <Button
             variant="retro"
             fullWidth
-            onClick={() => {
-              onClickPool(quantityAlt, quantityXIO);
-              onClose();
-            }}
+            onClick={() => handleConfirm(quantityAlt, quantityXIO)}
           >
             CONFIRM
           </Button>
@@ -485,8 +494,9 @@ function AddDropDown({
     </Fragment>
   );
 }
-const mapStateToProps = ({ flashstake: { slip } }) => ({
+const mapStateToProps = ({ flashstake: { slip, closeLiquidityTxnHash } }) => ({
   slip,
+  closeLiquidityTxnHash,
 });
 
 export default connect(mapStateToProps, {})(AddDropDown);

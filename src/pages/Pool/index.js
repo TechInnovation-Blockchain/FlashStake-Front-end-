@@ -1009,7 +1009,7 @@ function Pool({
                       className={classes.cursorPointer}
                     >
                       <Typography variant="body2" className={classes.redText}>
-                        Connect your wallet
+                        Connect your wallet to pool
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
@@ -1349,12 +1349,13 @@ function Pool({
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} FLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)} LP pool
+                        tokens
                       </span>
                     </Tooltip>{" "}
                     from{" "}
                     <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} pool
+                      $FLASH/{withdrawLiquidityRequest._token}
                     </span>
                   </Typography>
                 </Fragment>
@@ -1399,13 +1400,14 @@ function Pool({
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} FLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)} $FLASH/
+                        {withdrawLiquidityRequest._token}
                       </span>
                     </Tooltip>{" "}
-                    from{" "}
+                    {/* from{" "}
                     <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} pool
-                    </span>
+                      pool
+                    </span> */}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -1413,6 +1415,7 @@ function Pool({
                   >
                     <a
                       href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      // href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
