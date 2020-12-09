@@ -915,7 +915,7 @@ function Swap({
                             variant="body2"
                             className={classes.redText}
                           >
-                            Connect your wallet to swap tokens
+                            Connect wallet to swap
                           </Typography>
                         </Grid>
                       ) : chainId !== 4 ? (
@@ -925,7 +925,7 @@ function Swap({
                             className={classes.redText}
                           >
                             {/* CHANGE NETWORK TO RINKEBY TO SWAP TOKENS */}
-                            Change network to rinkeby to swap tokens
+                            Change network to rinkeby to swap
                           </Typography>
                         </Grid>
                       ) : !allowanceALT ? (

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     width: 250,
     borderRadius: 0,
     // marginTop: theme.spacing(2),
-    marginRight: theme.spacing(1),
+    // marginRight: theme.spacing(1),
     // backgroundColor: theme.palette.,
   },
   slippageButton: {
@@ -58,8 +58,11 @@ const useStyles = makeStyles((theme) => ({
     // marginTop: theme.spacing(2),
     // marginLeft: -10,
     // backgroundColor: theme.palette.,
+    boxSizing: "border-box",
     position: "absolute",
     right: 0,
+    borderLeft: "none",
+    boxShadow: "none",
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
@@ -174,7 +177,7 @@ function WalletConnect({
       <Box className={classes.connectWalletButtonContainer}>
         {walletBackdrop ? (
           <Typography variant="body2" className={classes.wallentConnectText}>
-            YOU MUST CONNECT YOUR WALLET FIRST
+            You must connect your wallet first
           </Typography>
         ) : null}
 

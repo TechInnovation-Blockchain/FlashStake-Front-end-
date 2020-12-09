@@ -688,8 +688,7 @@ function Vote({
                           variant="body2"
                           className={classes.redText}
                         >
-                          {/* CONNECT YOUR WALLET TO STAKE */}
-                          Connect your wallet to stake $FLASH
+                          Connect wallet to stake
                         </Typography>
                       </Grid>
                     ) : chainId !== 4 ||

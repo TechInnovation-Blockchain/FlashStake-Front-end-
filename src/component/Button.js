@@ -94,14 +94,14 @@ export default function Button({
     <MuiButton
       {...props}
       variant="outlined"
-      className={`${props.className} ${classes.commonStyles} ${
+      className={`${classes.commonStyles} ${
         {
           dark: classes.darkButton,
           retro: classes.retroButton,
           red: classes.redButton,
           disable: classes.disable,
         }[props.variant]
-      } ${fontSizeLocal ? classes[fontSizeLocal] : ""}`}
+      } ${fontSizeLocal ? classes[fontSizeLocal] : ""} ${props.className}`}
     >
       {loading ? (
         <CircularProgress

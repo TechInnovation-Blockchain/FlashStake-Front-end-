@@ -1009,7 +1009,7 @@ function Pool({
                       className={classes.cursorPointer}
                     >
                       <Typography variant="body2" className={classes.redText}>
-                        Connect your wallet to pool
+                        Connect wallet to pool
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||

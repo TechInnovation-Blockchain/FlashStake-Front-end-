@@ -330,13 +330,12 @@ function TableComponent({
             onClick={showWalletHint}
           >
             <Typography variant="body2" className={classes.redText}>
-              Connect your wallet to view you stakes
+              Connect wallet to view your stakes
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="body2" className={classes.redText}>
-              {/* CHANGE NETWORK TO RINKEBY TO UNSTAKE TOKENS */}
               Change network to rinkeby to unstake tokens
             </Typography>
           </Grid>

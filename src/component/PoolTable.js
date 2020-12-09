@@ -335,13 +335,13 @@ function PoolTable({
           onClick={showWalletHint}
         >
           <Typography variant="overline" className={classes.redText}>
-            CONNECT YOUR WALLET TO VIEW YOUR STAKES
+            Connect wallet to view your pools
           </Typography>
         </Grid>
       ) : chainId !== 4 ? (
         <Grid item xs={12} className={classes.msgContainer}>
           <Typography variant="overline" className={classes.redText}>
-            CHANGE NETWORK TO RINKEBY TO ADD/REMOVE LIQUIDITY
+            Change network to rinkeby to add/remove liquidity
           </Typography>
         </Grid>
       ) : (
