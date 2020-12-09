@@ -39,17 +39,22 @@ export default function App() {
     localStorage.setItem("themeMode", "dark");
   }
   const [themeMode, setThemeMode] = useState(theme);
-
+  // const [prevThemeMode, setPrevThemeMode] = useState(themeMode);
   const toggleThemeMode = () => {
+    // console.log(themeMode);
     setThemeMode(themeMode === "dark" ? "light" : "dark");
 
     store.dispatch(toggleThemeModeAction());
   };
 
   const toggleThemeMode2 = async () => {
-    setThemeMode("retro");
-
-    store.dispatch(toggleThemeModeActionRetro());
+    if (themeMode === "retro") {
+      // setThemeMode(themeMode === "dark" ? "light" : "dark");
+      toggleThemeMode();
+    } else {
+      setThemeMode("retro");
+      store.dispatch(toggleThemeModeActionRetro());
+    }
   };
 
   return (

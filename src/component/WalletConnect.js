@@ -31,30 +31,31 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   BtnsContainer: {
-    "&:hover": {
-      "&.slippageButton": {
-        backgroundColor: `${theme.palette.button.hover} !important`,
-      },
-    },
-
     // "&:hover": {
-    //   "& *": {
-    //     background: `${theme.palette.button.hover} !important`,
-    //     color: "#fff",
+    //   ".slippageButton": {
+    //     backgroundColor: `${theme.palette.button.hover} !important`,
     //   },
     // },
+    marginTop: theme.spacing(2),
+
+    "&:hover": {
+      "& button": {
+        background: `${theme.palette.button.hover} !important`,
+        color: "#fff !important",
+      },
+    },
   },
   connectWalletButton: {
     width: 200,
     borderRadius: 0,
-    marginTop: theme.spacing(4),
+    // marginTop: theme.spacing(2),
     marginRight: theme.spacing(1),
     // backgroundColor: theme.palette.,
   },
   slippageButton: {
     width: 20,
     borderRadius: 0,
-    marginTop: theme.spacing(4),
+    // marginTop: theme.spacing(2),
     marginLeft: -10,
     // backgroundColor: theme.palette.,
   },
