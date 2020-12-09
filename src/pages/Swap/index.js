@@ -265,7 +265,7 @@ const useStyles = makeStyles((theme) =>
           fontWeight: 700,
         },
         gridSpace: {
-          margin: theme.spacing(1),
+          margin: theme.spacing(1, 0),
         },
       }
     : {
@@ -840,8 +840,8 @@ function Swap({
                           container
                           item
                           xs={12}
-                          // className={classes.gridSpace}
-                          className={classes.msgContainer}
+                          className={classes.gridSpace}
+                          // className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
                             <Button
@@ -883,7 +883,7 @@ function Swap({
                           </Grid>
                         </Grid>
                       ) : (
-                        <Grid item xs={12}>
+                        <Grid container item xs={12}>
                           <Button
                             variant="retro"
                             fullWidth

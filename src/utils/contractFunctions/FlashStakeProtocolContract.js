@@ -586,7 +586,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
             })
             .on("transactionHash", (txnHash) => {
               setWithdrawLiquidityTxnHash(txnHash);
-
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Transaction Pending.",
                 "info",
@@ -594,6 +594,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
                 txnHash,
                 true
               );
+              setCloseLiquidityTxnHashIndep(false);
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successWithdrawLiquidity");

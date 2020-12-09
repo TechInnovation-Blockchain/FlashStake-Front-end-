@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   closeIcon: {
     position: "absolute",
     right: 0,
-    top: 15,
+    top: 0,
     // top: "50%",
     // transform: "translateY(-50%)",
   },
