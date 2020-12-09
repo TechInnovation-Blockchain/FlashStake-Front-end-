@@ -22,6 +22,7 @@ import {
   setCreateDialogStepIndep,
   setLiquidityTxnHashIndep,
   setWithdrawLiquidityTxnHash,
+  setCloseLiquidityTxnHashIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import { analytics } from "../../config/App";
@@ -585,6 +586,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
             })
             .on("transactionHash", (txnHash) => {
               setWithdrawLiquidityTxnHash(txnHash);
+
               showSnackbarTxnIndep(
                 "Transaction Pending.",
                 "info",
@@ -595,6 +597,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successWithdrawLiquidity");
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Withdraw Liquidity Transaction Successful.",
                 "success",
@@ -604,12 +607,13 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
               );
               setRefetchIndep(true);
               setLoadingIndep({ withdrawPool: false });
-
+              setCloseLiquidityTxnHashIndep(false);
               return receipt;
             })
             .catch((e) => {
               if (e.code === 4001) {
                 setPoolDialogStepIndep("rejectedWithdrawLiquidity");
+                setCloseLiquidityTxnHashIndep(true);
                 showSnackbarIndep(
                   "Withdraw Liquidity Transaction Rejected.",
                   "error"
@@ -622,6 +626,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
                 );
               }
               setLoadingIndep({ withdrawPool: false });
+              setCloseLiquidityTxnHashIndep(false);
 
               _error("ERROR removeLiquidityInPool -> ", e);
             });
@@ -630,11 +635,14 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedWithdrawLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Withdraw Liquidity Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedWithdrawLiquidity");
       showSnackbarIndep("Withdraw Liquidity Transaction Failed.", "error");
     }
+    setCloseLiquidityTxnHashIndep(false);
+
     _error("ERROR removeLiquidityInPool -> ", e);
   }
 };

@@ -929,6 +929,16 @@ export const setWithdrawLiquidityTxnHash = (val) => {
   };
 };
 
+export const setCloseLiquidityTxnHashIndep = (val) => {
+  store.dispatch(setCloseLiquidityTxnHash(val));
+};
+export const setCloseLiquidityTxnHash = (val) => {
+  return {
+    type: "CLOSE_LIQDUIDITY_TXN_HASH",
+    payload: val,
+  };
+};
+
 export const setWithdrawLiquidityTxnHashIndep = (val) => {
   store.dispatch(setWithdrawLiquidityTxnHash(val));
 };

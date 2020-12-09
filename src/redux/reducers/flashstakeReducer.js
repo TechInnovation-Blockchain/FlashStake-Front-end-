@@ -52,6 +52,7 @@ export const flashstakeReducer = (
     },
     removeLiquidity: "",
     createPoolData: {},
+    closeLiquidityTxnHash: false,
   },
   { type, payload }
 ) => {
@@ -259,6 +260,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         removeLiquidity: payload,
+      };
+    case "CLOSE_LIQDUIDITY_TXN_HASH":
+      return {
+        ...state,
+        closeLiquidityTxnHash: payload,
       };
 
     default:

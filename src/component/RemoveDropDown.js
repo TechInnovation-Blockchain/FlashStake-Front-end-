@@ -249,10 +249,13 @@ function RemoveDropDown({
   checkAllowancePoolWithdraw,
   allowancePoolWithdraw,
   setRemLiqOpen,
+  withdrawLiquidityTxnHash,
+  closeLiquidityTxnHash,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [hide, setHide] = useState(closeLiquidityTxnHash);
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -272,9 +275,20 @@ function RemoveDropDown({
   const removeLiq = () => {
     setPoolDialogStep("pendingWithdrawLiquidity");
     setShowStakeDialog(true);
-    onClose();
     removeTokenLiquidityInPool(pool, percentageToRemove);
   };
+  // };
+
+  const closeDialog = () => {
+    onClose();
+  };
+
+  useEffect(() => {
+    if (closeLiquidityTxnHash) {
+      closeDialog();
+    }
+  }, [closeLiquidityTxnHash]);
+
   return (
     <Fragment>
       <Button
@@ -448,12 +462,19 @@ function RemoveDropDown({
 }
 
 const mapStateToProps = ({
-  flashstake: { slip, removeLiquidity },
+  flashstake: {
+    slip,
+    removeLiquidity,
+    withdrawLiquidityTxnHash,
+    closeLiquidityTxnHash,
+  },
   ui: { close },
 }) => ({
   slip,
   close,
+  closeLiquidityTxnHash,
   removeLiquidity,
+  withdrawLiquidityTxnHash,
 });
 
 export default connect(mapStateToProps, {
