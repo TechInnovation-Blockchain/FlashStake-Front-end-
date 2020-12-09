@@ -105,10 +105,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.disabled,
   },
   _slippageButton: {
+    width: "70%",
     backgroundColor: theme.palette.background.disabled,
     color: theme.palette.text.primary,
   },
   slippageButton: {
+    width: "70%",
     backgroundColor: theme.palette.button.selected,
   },
   themeBtn: {
@@ -215,6 +217,10 @@ function SlippageDialogue({
     _setSlip(value);
   };
 
+  const handleKeyDown = (evt) => {
+    ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
+  };
+
   const walletsItems = isMobile ? mobileWalletList : walletList;
 
   const onClose = useCallback(() => {
@@ -248,6 +254,7 @@ function SlippageDialogue({
     _setBtn(id);
     _setSlip(slip);
   };
+  const regex = /^\d*(.(\d{1,18})?)?$/;
 
   return (
     <MuiDialog
@@ -269,7 +276,7 @@ function SlippageDialogue({
           </IconButton>
         </Box>
 
-        <Grid container spacing={2} xs={12}>
+        <Grid container xs={12}>
           <Grid item xs={3}>
             <Button
               variant={"retro"}
@@ -334,6 +341,10 @@ function SlippageDialogue({
             fullWidth
             value={_slip}
             onChange={onChangeSlip}
+            type="number"
+            inputMode="numeric"
+            pattern={regex}
+            onKeyDown={handleKeyDown}
           />
           <span className={classes.perc}>%</span>
         </Box>
