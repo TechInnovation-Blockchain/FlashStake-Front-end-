@@ -233,9 +233,10 @@ function RemoveLiquidityDropDown({
   getApprovalPoolLiquidity,
   setPoolDialogStep,
   setRemLiqOpen,
+  percentageToRemove,
+  setPercentageToRemove,
 }) {
   const classes = useStyles();
-  const [percentageToRemove, setPercentageToRemove] = useState(5);
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -246,13 +247,13 @@ function RemoveLiquidityDropDown({
   useEffect(() => {
     checkAllowancePoolWithdraw(currentPool?.pool?.id);
   }, [currentPool]);
-
+  let success = true;
   const onClickApprove = async () => {
     setPoolDialogStep("pendingApproval");
     setShowStakeDialog(true);
     if (!allowancePoolWithdraw) {
       setPoolDialogStep("pendingApproval");
-      await getApprovalPoolLiquidity(pool?.pool?.id);
+      await getApprovalPoolLiquidity(pool?.pool?.id, success);
     }
   };
 

@@ -340,7 +340,7 @@ function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="h4">
-                  {getMintAmount()}
+                  {trunc(getMintAmount())}
                 </Typography>
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>

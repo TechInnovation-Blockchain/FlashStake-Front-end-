@@ -758,7 +758,7 @@ export const onSelectWithdrawPool = (_poolId) => {
   };
 };
 
-export const getApprovalPoolLiquidity = (poolID) => async (
+export const getApprovalPoolLiquidity = (poolID, success) => async (
   dispatch,
   getState
 ) => {
@@ -772,7 +772,12 @@ export const getApprovalPoolLiquidity = (poolID) => async (
     }
     setLoadingIndep({ approvalWithdrawPool: true });
     await initializeErc20TokenContract(_pool.pool.id);
-    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool");
+    await approve(
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+      "pool",
+      undefined,
+      success
+    );
     dispatch(checkAllowancePoolWithdraw(poolID));
   } catch (e) {
     _error("ERROR getApprovalPoolLiquidity -> ", e);

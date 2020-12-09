@@ -30,9 +30,20 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     zIndex: 1,
   },
-  // BtnsContainer: {
-  //   display: "flex",
-  // },
+  BtnsContainer: {
+    "&:hover": {
+      "&.slippageButton": {
+        backgroundColor: `${theme.palette.button.hover} !important`,
+      },
+    },
+
+    // "&:hover": {
+    //   "& *": {
+    //     background: `${theme.palette.button.hover} !important`,
+    //     color: "#fff",
+    //   },
+    // },
+  },
   connectWalletButton: {
     width: 200,
     borderRadius: 0,
@@ -44,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
     borderRadius: 0,
     marginTop: theme.spacing(4),
-    marginLeft: theme.spacing(1),
+    marginLeft: -10,
     // backgroundColor: theme.palette.,
   },
   wallentConnectText: {

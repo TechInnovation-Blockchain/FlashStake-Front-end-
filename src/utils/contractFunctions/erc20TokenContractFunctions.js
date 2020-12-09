@@ -60,7 +60,7 @@ export const decimals = async () => {
   }
 };
 
-export const approve = async (address, tab, step, amount) => {
+export const approve = async (address, tab, step, success = false, amount) => {
   try {
     if (tab === "stake") {
       setDialogStepIndep("pendingApproval");
@@ -81,6 +81,7 @@ export const approve = async (address, tab, step, amount) => {
     }
     let gasAmount;
     try {
+      //
       gasAmount = await contract.methods
         .approve(address, amount ? amount : MaxUint256._hex)
         .estimateGas({ gas: 10000000, from: walletAddress });
@@ -107,10 +108,14 @@ export const approve = async (address, tab, step, amount) => {
         if (tab === "pool") {
           if (step) {
             setPoolDialogStepIndep("approvalTokenProposal");
+          }
+          if (success) {
+            setPoolDialogStepIndep("successApproval");
           } else {
             setPoolDialogStepIndep("poolProposal");
           }
         }
+
         setLoadingIndep({ approval: false });
 
         // tab === "stake"

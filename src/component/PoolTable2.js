@@ -369,7 +369,7 @@ function PoolTable({
                             xs={6 - visibleRadioButtons}
                             className={classes.gridItem}
                           >
-                            <Tooltip title={`${_pool.balance} xFlash`}>
+                            <Tooltip title={`${_pool.balance} Flash`}>
                               <span className={classes.flexCenter}>
                                 <img
                                   src={tryRequire("$FLASH")}
@@ -378,7 +378,7 @@ function PoolTable({
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
-                                {trunc(_pool.balance)} xFlash
+                                {trunc(_pool.balance)} Flash
                               </span>
                             </Tooltip>
                           </Grid>
@@ -476,7 +476,7 @@ function PoolTable({
                         loadingRedux.approvalWithdrawPool
                       }
                     >
-                      APPROVE xFLASH
+                      APPROVE FLASH
                     </Button>
                   </Grid>
                 )

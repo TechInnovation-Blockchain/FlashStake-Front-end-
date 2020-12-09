@@ -236,6 +236,7 @@ function PoolTable({
   const [addLiqOpen, setAddLiqOpen] = useState(false);
   const [remLiqOpen, setRemLiqOpen] = useState(false);
   const [currentPool, setCurrentPool] = useState({});
+  const [percentageToRemove, setPercentageToRemove] = useState(5);
 
   const onClickOpen = (_pool, type = "add") => {
     setCurrentPool(_pool);
@@ -519,13 +520,16 @@ function PoolTable({
             queryData={selectedQueryData}
             onClickPool={onClickPool}
             theme={theme}
-            // toggleFlase={toggleFlase}
-            // setOpen={setAddLiqOpen}
           />
           <RemoveLiquidityDropDown
             open={remLiqOpen}
             pool={currentPool}
-            onClose={() => onClickClose("rem")}
+            percentageToRemove={percentageToRemove}
+            setPercentageToRemove={setPercentageToRemove}
+            onClose={() => {
+              onClickClose("rem");
+              setPercentageToRemove(5);
+            }}
             queryData={selectedQueryData}
             selectedRewardToken={selectedRewardToken}
             currentPool={currentPool}

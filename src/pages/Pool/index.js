@@ -1009,7 +1009,7 @@ function Pool({
                       className={classes.cursorPointer}
                     >
                       <Typography variant="body2" className={classes.redText}>
-                        Connect you wallet to pool
+                        Connect your wallet
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
@@ -1208,6 +1208,26 @@ function Pool({
                   </Button>
                 </Fragment>
               ),
+              successApproval: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVAL
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    You have successfully approved
+                  </Typography>
+
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
+                    CLOSE
+                  </Button>
+                </Fragment>
+              ),
               pendingLiquidity: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
@@ -1326,10 +1346,10 @@ function Pool({
                   >
                     Withdrawing{" "}
                     <Tooltip
-                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                      title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)} FLASH
                       </span>
                     </Tooltip>{" "}
                     from{" "}
@@ -1376,10 +1396,10 @@ function Pool({
                   >
                     You have successfully withdrawn{" "}
                     <Tooltip
-                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                      title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)} FLASH
                       </span>
                     </Tooltip>{" "}
                     from{" "}

@@ -36,7 +36,7 @@ export const ogTrunc = (val, test) => {
 export const trunc = (val, test) => {
   let _val = ogTrunc(val, test).toString();
   const _val2 = _val.split(".");
-  if (_val2[0].length > 6) {
+  if (_val2[0].length > 10) {
     const _val = _val2[0].slice(0, 4);
     const __val = _val2[0].slice(_val2.length - 4, -1);
 
