@@ -248,12 +248,18 @@ function RemoveDropDown({
   setShowStakeDialog,
   checkAllowancePoolWithdraw,
   allowancePoolWithdraw,
+  setRemLiqOpen,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   const onClose = useCallback(() => {
+    setOpen(false);
+    setRemLiqOpen(false);
+  }, []);
+
+  const onBack = useCallback(() => {
     setOpen(false);
   }, []);
 
@@ -315,7 +321,7 @@ function RemoveDropDown({
 
             <IconButton
               size="small"
-              onClick={onClose}
+              onClick={onBack}
               className={classes.backIcon}
             >
               <ArrowBackIcon />

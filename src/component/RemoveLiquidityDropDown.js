@@ -232,6 +232,7 @@ function RemoveLiquidityDropDown({
   allowancePoolWithdraw,
   getApprovalPoolLiquidity,
   setPoolDialogStep,
+  setRemLiqOpen,
 }) {
   const classes = useStyles();
   const [percentageToRemove, setPercentageToRemove] = useState(5);
@@ -454,9 +455,7 @@ function RemoveLiquidityDropDown({
           <Grid container spacing={2} xs={12}>
             <Grid item xs={6} className={classes.btnPaddingRight}>
               <Button fullWidth variant="retro" onClick={onClickApprove}>
-                {loadingRedux.approval
-                  ? "APPROVING"
-                  : `APPROVE $FLASH / ${pool?.pool?.tokenB?.symbol || ""}`}
+                {loadingRedux.approval ? "APPROVING" : `APPROVE`}
               </Button>
             </Grid>
             <Grid item xs={6} className={classes.btnPaddingLeft}>
@@ -487,6 +486,7 @@ function RemoveLiquidityDropDown({
                 currentPool={currentPool}
                 setShowStakeDialog={setShowStakeDialog}
                 allowancePoolWithdraw={allowancePoolWithdraw}
+                setRemLiqOpen={setRemLiqOpen}
               />
             </Grid>
           </Grid>
@@ -497,6 +497,7 @@ function RemoveLiquidityDropDown({
             currentPool={currentPool}
             setShowStakeDialog={setShowStakeDialog}
             allowancePoolWithdraw={allowancePoolWithdraw}
+            setRemLiqOpen={setRemLiqOpen}
           />
         )}
       </Container>

@@ -786,58 +786,69 @@ function Flashstake({
                   <Grid item xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       quantity && days > 0 ? (
-                        <Typography
-                          // variant="overline"
-                          variant="body1"
-                          className={classes.infoText}
-                        >
-                          If you stake{" "}
-                          <span className={classes.infoTextSpan}>
-                            {trunc(quantity) || 0} $FLASH{" "}
-                          </span>{" "}
-                          for{" "}
-                          <span className={classes.infoTextSpan}>
-                            {trunc(days) || 0}{" "}
-                            {time === "Hrs"
-                              ? days > 1
-                                ? "hours"
-                                : "hour"
-                              : time === "Mins"
-                              ? days > 1
-                                ? "Mins"
-                                : "Min"
-                              : time === "Days"
-                              ? days > 1
-                                ? "Days"
-                                : "Day"
-                              : time}
-                            {/* {days > 1 ? "hours" : "hour"} */}
-                          </span>{" "}
-                          {/* YOU WILL IMMEDIATELY{" "} */}
-                          you will immediately {/* GET{" "} */}
-                          get{" "}
-                          {loadingRedux.reward ? (
-                            <CircularProgress
-                              size={12}
-                              className={classes.loaderStyle}
-                            />
-                          ) : quantity > 0 && days > 0 ? (
-                            <Tooltip
-                              title={`${Web3.utils.fromWei(reward)} ${
-                                selectedRewardToken?.tokenB?.symbol || ""
-                              }`}
-                            >
-                              <span className={classes.infoTextSpan}>
-                                {trunc(Web3.utils.fromWei(reward))}{" "}
-                                {selectedRewardToken?.tokenB?.symbol || ""}
-                              </span>
-                            </Tooltip>
-                          ) : (
+                        time !== "Select" ? (
+                          <Typography
+                            // variant="overline"
+                            variant="body1"
+                            className={classes.infoText}
+                          >
+                            If you stake{" "}
                             <span className={classes.infoTextSpan}>
-                              {`0 ${selectedRewardToken?.tokenB?.symbol || ""}`}
-                            </span>
-                          )}
-                        </Typography>
+                              {trunc(quantity) || 0} $FLASH{" "}
+                            </span>{" "}
+                            for{" "}
+                            <span className={classes.infoTextSpan}>
+                              {trunc(days) || 0}{" "}
+                              {time === "Hrs"
+                                ? days > 1
+                                  ? "hours"
+                                  : "hour"
+                                : time === "Mins"
+                                ? days > 1
+                                  ? "Mins"
+                                  : "Min"
+                                : time === "Days"
+                                ? days > 1
+                                  ? "Days"
+                                  : "Day"
+                                : time}
+                              {/* {days > 1 ? "hours" : "hour"} */}
+                            </span>{" "}
+                            {/* YOU WILL IMMEDIATELY{" "} */}
+                            you will immediately {/* GET{" "} */}
+                            get{" "}
+                            {loadingRedux.reward ? (
+                              <CircularProgress
+                                size={12}
+                                className={classes.loaderStyle}
+                              />
+                            ) : quantity > 0 && days > 0 ? (
+                              <Tooltip
+                                title={`${Web3.utils.fromWei(reward)} ${
+                                  selectedRewardToken?.tokenB?.symbol || ""
+                                }`}
+                              >
+                                <span className={classes.infoTextSpan}>
+                                  {trunc(Web3.utils.fromWei(reward))}{" "}
+                                  {selectedRewardToken?.tokenB?.symbol || ""}
+                                </span>
+                              </Tooltip>
+                            ) : (
+                              <span className={classes.infoTextSpan}>
+                                {`0 ${
+                                  selectedRewardToken?.tokenB?.symbol || ""
+                                }`}
+                              </span>
+                            )}
+                          </Typography>
+                        ) : (
+                          <Typography
+                            variant="body1"
+                            className={`${classes.secondaryText} ${classes.gridSpace} `}
+                          >
+                            Select time unit to view rewards
+                          </Typography>
+                        )
                       ) : (
                         <Typography
                           // variant="overline"
