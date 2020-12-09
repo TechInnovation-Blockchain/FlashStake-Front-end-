@@ -251,7 +251,7 @@ function RemoveLiquidityDropDown({
     setShowStakeDialog(true);
     if (!allowancePoolWithdraw) {
       setPoolDialogStep("pendingApproval");
-      await getApprovalPoolLiquidity(pool?.pool?.tokenB?.id);
+      await getApprovalPoolLiquidity(pool?.pool?.id);
     }
   };
 
