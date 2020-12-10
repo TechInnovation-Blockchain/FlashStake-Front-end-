@@ -334,14 +334,8 @@ function PoolTable({
           className={`${classes.msgContainer} ${classes.cursorPointer}`}
           onClick={showWalletHint}
         >
-          <Typography variant="overline" className={classes.redText}>
+          <Typography variant="body2" className={classes.redText}>
             Connect wallet to view your pools
-          </Typography>
-        </Grid>
-      ) : chainId !== 4 ? (
-        <Grid item xs={12} className={classes.msgContainer}>
-          <Typography variant="overline" className={classes.redText}>
-            Change network to rinkeby to add/remove liquidity
           </Typography>
         </Grid>
       ) : (
@@ -349,161 +343,172 @@ function PoolTable({
           <PageAnimation in={true} key={page} reverse={false}>
             <Grid container className={classes.gridSpacing} item>
               {poolsLiquidityList.length > 0 ? (
-                poolsLiquidityList.map((_pool) => (
-                  <Accordion className={classes.accordion} key={_pool.pool.id}>
-                    <AccordionSummary
-                      expandIcon={
-                        <ExpandMoreIcon
-                          size={"large"}
-                          className={classes.expandBtn}
-                        />
-                      }
-                      className={classes.accordionSummary}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
+                chainId !== 4 ? (
+                  <Grid item xs={12} className={classes.msgContainer}>
+                    <Typography variant="body2" className={classes.redText}>
+                      Change network to rinkeby to see swap history
+                    </Typography>
+                  </Grid>
+                ) : (
+                  poolsLiquidityList.map((_pool) => (
+                    <Accordion
+                      className={classes.accordion}
+                      key={_pool.pool.id}
                     >
-                      {/* {Object.Keys(poolDataBalance).filter(id)=> } */}
-                      <Typography className={classes.heading}>
-                        $FLASH / {_pool.pool.tokenB.symbol}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails className={classes.accordionDetails}>
-                      <Grid xs={12} className={classes.outerBox}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
-                          >
-                            Your total pool tokens:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={_pool?.balance || 0}>
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              {trunc(_pool?.balance || 0)}
-                            </Typography>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-
-                      <Grid xs={12} className={classes.outerBox}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
-                          >
-                            Pooled $FLASH:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={_pool.pooledFlash || 0}>
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              {trunc(_pool.pooledFlash || 0)}
-                            </Typography>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-
-                      <Grid xs={12} className={classes.outerBox}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
-                          >
-                            Pooled {_pool.pool.tokenB.symbol}:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={_pool.pooledAlt || 0}>
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              {trunc(_pool.pooledAlt || 0)}
-                            </Typography>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-
-                      <Grid xs={12} className={classes.outerBox}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
-                          >
-                            Your pool share:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={`${_pool.poolShare || 0}%`}>
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              {trunc(_pool.poolShare || 0)}%
-                            </Typography>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-
-                      <Grid
-                        container
-                        xs={12}
-                        spacing={2}
-                        className={classes.btns}
+                      <AccordionSummary
+                        expandIcon={
+                          <ExpandMoreIcon
+                            size={"large"}
+                            className={classes.expandBtn}
+                          />
+                        }
+                        className={classes.accordionSummary}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                       >
-                        <Grid item xs={6} className={classes.innerBox}>
-                          <Box
-                            className={classes.liqBtn}
-                            onClick={() => onClickOpen(_pool, "rem")}
+                        {/* {Object.Keys(poolDataBalance).filter(id)=> } */}
+                        <Typography className={classes.heading}>
+                          $FLASH / {_pool.pool.tokenB.symbol}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails className={classes.accordionDetails}>
+                        <Grid xs={12} className={classes.outerBox}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox}
                           >
                             <Typography
-                              variant="body1"
-                              className={classes.liqBtnInner}
+                              variant="body2"
+                              className={classes.fontWeight}
                             >
-                              REMOVE
+                              Your total pool tokens:
                             </Typography>
-                          </Box>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={_pool?.balance || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(_pool?.balance || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={6} className={classes.innerBox}>
-                          <Box
-                            className={classes.liqBtn}
-                            onClick={() => onClickOpen(_pool, "add")}
+
+                        <Grid xs={12} className={classes.outerBox}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox}
                           >
                             <Typography
-                              variant="body1"
-                              className={classes.liqBtnInner}
+                              variant="body2"
+                              className={classes.fontWeight}
                             >
-                              ADD
+                              Pooled $FLASH:
                             </Typography>
-                          </Box>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={_pool.pooledFlash || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(_pool.pooledFlash || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-                ))
+
+                        <Grid xs={12} className={classes.outerBox}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Pooled {_pool.pool.tokenB.symbol}:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={_pool.pooledAlt || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(_pool.pooledAlt || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+
+                        <Grid xs={12} className={classes.outerBox}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Your pool share:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={`${_pool.poolShare || 0}%`}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(_pool.poolShare || 0)}%
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+
+                        <Grid
+                          container
+                          xs={12}
+                          spacing={2}
+                          className={classes.btns}
+                        >
+                          <Grid item xs={6} className={classes.innerBox}>
+                            <Box
+                              className={classes.liqBtn}
+                              onClick={() => onClickOpen(_pool, "rem")}
+                            >
+                              <Typography
+                                variant="body1"
+                                className={classes.liqBtnInner}
+                              >
+                                REMOVE
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={6} className={classes.innerBox}>
+                            <Box
+                              className={classes.liqBtn}
+                              onClick={() => onClickOpen(_pool, "add")}
+                            >
+                              <Typography
+                                variant="body1"
+                                className={classes.liqBtnInner}
+                              >
+                                ADD
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))
+                )
               ) : (
                 <Grid item xs={12} className={classes.msgContainer}>
                   <Typography variant="overline">NO POOL AVAILABLE</Typography>

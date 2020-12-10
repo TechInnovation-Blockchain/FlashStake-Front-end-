@@ -305,13 +305,13 @@ function PoolTable({
             className={`${classes.msgContainer} ${classes.cursorPointer}`}
             onClick={showWalletHint}
           >
-            <Typography variant="overline" className={classes.redText}>
+            <Typography variant="body2" className={classes.redText}>
               Connect wallet to view your pools
             </Typography>
           </Grid>
         ) : chainId !== 4 ? (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.redText}>
+            <Typography variant="body2" className={classes.redText}>
               Change network to rinkeby to add/remove liquidity
             </Typography>
           </Grid>

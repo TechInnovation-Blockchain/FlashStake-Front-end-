@@ -921,7 +921,7 @@ function Swap({
                       ) : chainId !== 4 ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
-                            variant="body1"
+                            variant="body2"
                             className={classes.redText}
                           >
                             {/* CHANGE NETWORK TO RINKEBY TO SWAP TOKENS */}

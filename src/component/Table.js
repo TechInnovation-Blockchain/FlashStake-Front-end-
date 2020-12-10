@@ -333,12 +333,6 @@ function TableComponent({
               Connect wallet to view your stakes
             </Typography>
           </Grid>
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to unstake tokens
-            </Typography>
-          </Grid>
         ) : !loading ? (
           stakes?.length ? (
             <Fragment>
@@ -551,6 +545,12 @@ function TableComponent({
               </Typography>
             </Grid>
           )
+        ) : chainId !== 4 ? (
+          <Grid item xs={12} className={classes.msgContainer}>
+            <Typography variant="body2" className={classes.redText}>
+              Change network to rinkeby to unstake tokens
+            </Typography>
+          </Grid>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <CircularProgress size={12} />

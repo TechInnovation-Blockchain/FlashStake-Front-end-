@@ -107,6 +107,8 @@ const useStyles = makeStyles((theme) => ({
   _slippageButton: {
     width: "70%",
     backgroundColor: theme.palette.background.disabled,
+    boxShadow: `none !important`,
+    border: `none !important`,
     color: theme.palette.text.primary,
   },
   slippageButton: {
@@ -186,8 +188,8 @@ const useStyles = makeStyles((theme) => ({
   },
   perc: {
     position: "absolute",
-    top: "60%",
-    right: "5%",
+    top: "58%",
+    right: "34%",
   },
   sipBox: {
     position: "relative",
@@ -211,6 +213,7 @@ function SlippageDialogue({
   const [selected, setSelected] = useState(false);
   const [_btn, _setBtn] = useState(btn);
   const [_slip, _setSlip] = useState(slip);
+  const [_disabled, _setDisabled] = useState(true);
 
   const onChangeSlip = ({ target: { value } }) => {
     // _setBtn(value);
@@ -243,6 +246,8 @@ function SlippageDialogue({
       )}`;
     }
   };
+
+  console.log("HERE", _btn, _slip);
 
   const onButtonClick = () => {
     setSlip(_slip);
@@ -281,9 +286,9 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                _btn === 1 ? classes.slippageButton : classes._slippageButton
+                _btn === 0.1 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(1, 0.1)}
+              onClick={() => btnSelect(0.1, 0.1)}
               disabled={_btn === 0}
             >
               0.1%
@@ -344,7 +349,19 @@ function SlippageDialogue({
             type="number"
             inputMode="numeric"
             pattern={regex}
+            // disabled={_disabled}
+            onClick={() => {
+              // _setDisabled(false);
+              _setBtn(_slip);
+            }}
             onKeyDown={handleKeyDown}
+            // onFocus={() => {
+            //   _setDisabled(false);
+            // }}
+            // onBlur={() => {
+            //   _setDisabled(true);
+            //   _setBtn(btn);
+            // }}
           />
           <span className={classes.perc}>%</span>
         </Box>

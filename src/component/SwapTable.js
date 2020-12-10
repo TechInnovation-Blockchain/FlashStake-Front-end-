@@ -241,12 +241,6 @@ function SwapTable({
               Connect wallet to view your swap history
             </Typography>
           </Grid>
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to swap
-            </Typography>
-          </Grid>
         ) : !loading ? (
           swapHistory?.length ? (
             <Fragment>
@@ -348,6 +342,12 @@ function SwapTable({
               </Typography>
             </Grid>
           )
+        ) : chainId !== 4 ? (
+          <Grid item xs={12} className={classes.msgContainer}>
+            <Typography variant="body2" className={classes.redText}>
+              Change network to rinkeby to see swap history
+            </Typography>
+          </Grid>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="overline" className={classes.flexCenter}>
