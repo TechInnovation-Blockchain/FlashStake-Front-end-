@@ -24,6 +24,15 @@ import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
 import { utils } from "ethers";
+import { updateApyPools } from "./userActions";
+
+export const changeQuantityRedux = (quantity) => async (dispatch) => {
+  dispatch({
+    type: "STAKE_QTY",
+    payload: quantity,
+  });
+  dispatch(updateApyPools(quantity));
+};
 
 export const calculateReward = (xioQuantity, days, time) => async (
   dispatch,

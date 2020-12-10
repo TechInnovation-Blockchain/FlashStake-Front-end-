@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
+import { connect } from "react-redux";
 
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -160,7 +161,7 @@ const useStyles = makeStyles((theme, _theme) => ({
   // },
 }));
 
-export default function DropdownDialog({
+function DropdownDialog({
   children,
   closeTimeout,
   items = [],
@@ -170,6 +171,7 @@ export default function DropdownDialog({
   disableDrop,
   link,
   _theme,
+  poolsApy,
   type = "stake",
 }) {
   const classes = useStyles();
@@ -306,7 +308,17 @@ export default function DropdownDialog({
                   width={15}
                   style={{ marginRight: 5 }}
                 />
-                {selectedValue.tokenB.symbol}
+                {selectedValue.tokenB.symbol}{" "}
+                {history.location.pathname === "/stake" &&
+                poolsApy[selectedValue.id]
+                  ? `(${
+                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
+                        parseInt(poolsApy[selectedValue.id]) >
+                      0
+                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                        : parseInt(poolsApy[selectedValue.id])
+                    }%)`
+                  : null}
               </Fragment>
             ) : (
               <span className={classes.disabledText}>SELECT</span>
@@ -381,13 +393,14 @@ export default function DropdownDialog({
                     {_pool.tokenB.symbol}{" "}
                     {history.location.pathname === "/swap" && _pool.tokenPrice
                       ? `($${_pool.tokenPrice})`
-                      : history.location.pathname === "/stake" && _pool.apy
+                      : history.location.pathname === "/stake" &&
+                        poolsApy[_pool.id]
                       ? `(${
-                          parseFloat(_pool.apy).toFixed(2) -
-                            parseInt(_pool.apy) >
+                          parseFloat(poolsApy[_pool.id]).toFixed(2) -
+                            parseInt(poolsApy[_pool.id]) >
                           0
-                            ? parseFloat(_pool.apy).toFixed(2)
-                            : parseInt(_pool.apy)
+                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                            : parseInt(poolsApy[_pool.id])
                         }%)`
                       : null}
                   </Typography>
@@ -409,3 +422,7 @@ export default function DropdownDialog({
     </Fragment>
   );
 }
+
+const mapStateToProps = ({ user: { poolsApy } }) => ({ poolsApy });
+
+export default connect(mapStateToProps, {})(DropdownDialog);

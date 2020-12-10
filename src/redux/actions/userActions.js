@@ -22,8 +22,9 @@ import {
   totalSupply,
   initializeErc20TokenContract,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
-import { getQueryData } from "./queryActions";
+import { getQueryData, getAllQueryData } from "./queryActions";
 import { store } from "../../config/reduxStore";
+import { trunc } from "../../utils/utilFunc";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -52,6 +53,99 @@ export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
   return _apyStake;
 });
 
+export const updateApyPools = (quantity, poolsParam) => async (
+  dispatch,
+  getState
+) => {
+  console.log("yada hereeeeeeeeeeeeeeeeee");
+  let _apyAllPools = {};
+  let _pools = poolsParam;
+  try {
+    const {
+      user: { pools },
+      flashstake: { stakeQty },
+    } = await getState();
+    if (!_pools) {
+      _pools = pools;
+    }
+
+    let response = await _getTokenPrice();
+    const queryData = await getAllQueryData();
+
+    console.log("yadaaaaaa", response, queryData);
+    if (response?.data) {
+      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
+      for (let i = 0; i < _pools.length; i++) {
+        const data = queryData[_pools[i].id];
+        const _quantity = JSBI.BigInt(
+          Web3.utils.toWei(String(stakeQty || "1"))
+        );
+        const _getPercentStaked = JSBI.divide(
+          JSBI.multiply(
+            JSBI.add(JSBI.BigInt(data.flashBalance), _quantity),
+            _precision
+          ),
+          JSBI.BigInt(data.totalSupply)
+        );
+        const _fpy = JSBI.divide(
+          JSBI.subtract(_precision, _getPercentStaked),
+          JSBI.BigInt("2")
+        );
+        //_fpy0
+        const _getPercentStaked0 = JSBI.divide(
+          JSBI.multiply(
+            JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+            _precision
+          ),
+          JSBI.BigInt(data.totalSupply)
+        );
+        const _fpy0 = JSBI.divide(
+          JSBI.subtract(_precision, _getPercentStaked0),
+          JSBI.BigInt("2")
+        );
+        //apy
+        const _lpFee = JSBI.subtract(
+          JSBI.BigInt("1000"),
+          JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+        );
+        const _apyStake = Web3.utils.fromWei(
+          String(
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.multiply(_fpy, _lpFee),
+                JSBI.BigInt(data.reserveAltAmount)
+              ),
+              JSBI.add(
+                JSBI.multiply(
+                  JSBI.BigInt(data.reserveFlashAmount),
+                  JSBI.BigInt("1000")
+                ),
+                JSBI.multiply(_fpy, _lpFee)
+              )
+            )
+          )
+        );
+        const tokenPrice =
+          response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
+            .usd || 0;
+        // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
+        _apyAllPools[_pools[i].id] = trunc(
+          ((_apyStake * tokenPrice) /
+            response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0) * 100
+        );
+      }
+    }
+  } catch (e) {
+    console.log("ERROR updateApyPools -> ", e);
+  }
+
+  dispatch({
+    type: "APY_ALL_POOLS",
+    payload: _apyAllPools,
+  });
+};
+
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   let _tokenList = [];
@@ -63,25 +157,7 @@ export const updatePools = (data) => async (dispatch) => {
         payload: _pools,
       });
       _tokenList = _pools.map((_pool) => _pool.tokenB.id);
-      let response;
-      try {
-        response = await _getTokenPrice();
-      } catch (e) {
-        _error("ERROR pricingAPI -> ", e);
-      }
-      if (response?.data) {
-        const _fpy = await _getFPY();
-        for (let i = 0; i < _pools.length; i++) {
-          _pools[i].tokenPrice =
-            response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
-              .usd || 0;
-          const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
-
-          _pools[i].apy =
-            ((_apyStake * _pools[i].tokenPrice) /
-              response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0) * 100;
-        }
-      }
+      dispatch(updateApyPools("1", _pools));
     }
   } catch (e) {
     _error("ERROR updatePools -> ", e);

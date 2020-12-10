@@ -51,6 +51,7 @@ import {
   setInitialValues,
   unstakeXIO,
   unstakeEarly,
+  changeQuantityRedux,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -412,6 +413,8 @@ function Flashstake({
   totalBurn,
   changeApp,
   maxDays,
+  changeQuantityRedux,
+  poolsApy,
   ...props
 }) {
   let classes = useStyles();
@@ -422,6 +425,7 @@ function Flashstake({
   const ref = useRef(null);
   const [time, setTime] = useState("Select");
   const [open, setOpen] = useState(false);
+
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
     if (localStorage.getItem("prefs-stake-time") == null) return;
@@ -474,6 +478,10 @@ function Flashstake({
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
   const regex = /^\d*(.(\d{1,18})?)?$/;
+
+  useEffect(() => {
+    changeQuantityRedux(quantity);
+  }, [quantity]);
 
   useEffect(() => {
     document
@@ -851,7 +859,20 @@ function Flashstake({
                                   %)`
                                 </span> */}
                               </Fragment>
-                            )}
+                            )}{" "}
+                            {poolsApy[selectedRewardToken.id]
+                              ? `at ${
+                                  parseFloat(
+                                    poolsApy[selectedRewardToken.id]
+                                  ).toFixed(2) -
+                                    parseInt(poolsApy[selectedRewardToken.id]) >
+                                  0
+                                    ? parseFloat(
+                                        poolsApy[selectedRewardToken.id]
+                                      ).toFixed(2)
+                                    : parseInt(poolsApy[selectedRewardToken.id])
+                                }% APY`
+                              : null}
                           </Typography>
                         ) : (
                           <Typography
@@ -1192,7 +1213,20 @@ function Flashstake({
                             {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>
-                      )}
+                      )}{" "}
+                      {poolsApy[selectedRewardToken.id]
+                        ? `at ${
+                            parseFloat(
+                              poolsApy[selectedRewardToken.id]
+                            ).toFixed(2) -
+                              parseInt(poolsApy[selectedRewardToken.id]) >
+                            0
+                              ? parseFloat(
+                                  poolsApy[selectedRewardToken.id]
+                                ).toFixed(2)
+                              : parseInt(poolsApy[selectedRewardToken.id])
+                          }% APY`
+                        : null}
                     </Typography>
                     <Button
                       variant="retro"
@@ -1800,6 +1834,7 @@ const mapStateToProps = ({
     totalBurnAmount,
     totalBalanceWithBurn,
     expired,
+    poolsApy,
   },
   contract,
 }) => ({
@@ -1822,6 +1857,7 @@ const mapStateToProps = ({
   stakes,
   totalBurn,
   changeApp,
+  poolsApy,
   ...contract,
 });
 
@@ -1845,4 +1881,5 @@ export default connect(mapStateToProps, {
   unstakeEarly,
   unstakeXIO,
   selectStake,
+  changeQuantityRedux,
 })(Flashstake);

@@ -57,6 +57,11 @@ export const flashstakeReducer = (
   { type, payload }
 ) => {
   switch (type) {
+    case "STAKE_QTY":
+      return {
+        ...state,
+        stakeQty: payload,
+      };
     case "FACTORY_ADDRESS":
       return {
         ...state,

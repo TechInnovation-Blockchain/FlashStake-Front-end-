@@ -4,6 +4,7 @@ export const userReducer = (
     stakes: [],
     currentStaked: {},
     pools: [],
+    poolsApy: {},
     walletBalance: "0",
     walletBalances: {},
     walletBalancesPool: {},
@@ -15,6 +16,11 @@ export const userReducer = (
   { type, payload }
 ) => {
   switch (type) {
+    case "APY_ALL_POOLS":
+      return {
+        ...state,
+        poolsApy: payload,
+      };
     case "PORTALS":
       return {
         ...state,
