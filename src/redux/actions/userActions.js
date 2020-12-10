@@ -57,7 +57,6 @@ export const updateApyPools = (quantity, poolsParam) => async (
   dispatch,
   getState
 ) => {
-  console.log("yada hereeeeeeeeeeeeeeeeee");
   let _apyAllPools = {};
   let _pools = poolsParam;
   try {
@@ -72,7 +71,6 @@ export const updateApyPools = (quantity, poolsParam) => async (
     let response = await _getTokenPrice();
     const queryData = await getAllQueryData();
 
-    console.log("yadaaaaaa", response, queryData);
     if (response?.data) {
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
       const _zero = JSBI.BigInt("0");
@@ -137,7 +135,7 @@ export const updateApyPools = (quantity, poolsParam) => async (
       }
     }
   } catch (e) {
-    console.log("ERROR updateApyPools -> ", e);
+    _error("ERROR updateApyPools -> ", e);
   }
 
   dispatch({
