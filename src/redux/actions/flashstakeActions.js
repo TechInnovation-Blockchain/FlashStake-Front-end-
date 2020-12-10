@@ -1,130 +1,122 @@
 import Web3 from "web3";
 import { store } from "../../config/reduxStore";
-import _ from "lodash";
 import {
   initializeErc20TokenContract,
-  initializeErc20TokenInfuraContract,
   allowance,
   approve,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import {
   initializeFlashstakeProtocolContract,
-  stake,
   unstake,
   addLiquidityInPool,
   removeLiquidityInPool,
+  createPool as createPoolContract,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import {
-  initializeFlashstakePoolContract,
-  getAPYSwap,
-} from "../../utils/contractFunctions/flashstakePoolContractFunctions";
+  initializeFlashProtocolContract,
+  stake,
+  unstakeEarly as unstakeEarlyFunc,
+} from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
+import { utils } from "ethers";
+import { updateApyPools } from "./userActions";
 
-export const calculateReward = (xioQuantity, days) => async (
+export const changeQuantityRedux = (quantity) => async (dispatch) => {
+  dispatch({
+    type: "STAKE_QTY",
+    payload: quantity,
+  });
+  dispatch(updateApyPools(quantity));
+};
+
+export const calculateReward = (xioQuantity, days, time) => async (
   dispatch,
   getState
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
+  let _maxDays = 5e17 * 365 * 86400;
   try {
     const {
       flashstake: {
         selectedRewardToken: { id },
+        slip,
       },
     } = getState();
     if (id && xioQuantity > 0 && days > 0) {
       const data = await getQueryData(id);
       const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
       const _quantity = JSBI.BigInt(Web3.utils.toWei(xioQuantity));
-      const _days = JSBI.BigInt(Web3.utils.toWei(days));
-      const _rate = JSBI.divide(
-        JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
-        JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
+      const _multiplier =
+        time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
+      const _days = JSBI.BigInt(days);
+      const _expiry = JSBI.multiply(_days, JSBI.BigInt(_multiplier));
+      const _getPercentStaked = JSBI.divide(
+        JSBI.multiply(
+          JSBI.add(JSBI.BigInt(data.flashBalance), _quantity),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
       );
-      const _fpy = JSBI.greaterThan(_rate, JSBI.BigInt(Web3.utils.toWei("50")))
-        ? JSBI.BigInt(Web3.utils.toWei("50"))
-        : _rate;
-      const _output = JSBI.divide(
-        JSBI.multiply(JSBI.multiply(_quantity, _days), _fpy),
-        JSBI.multiply(_precision, JSBI.BigInt(Web3.utils.toWei("36500")))
+      const _fpy = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked),
+        JSBI.BigInt("2")
       );
-      const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
-      const _mintAmount = JSBI.greaterThan(_output, _limit) ? _limit : _output;
+      _maxDays = _maxDays / String(_fpy);
+      const _mintAmount = JSBI.divide(
+        JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
+        JSBI.multiply(_precision, JSBI.BigInt("31536000"))
+      );
+      //fpy of 0
+      const _getPercentStaked0 = JSBI.divide(
+        JSBI.multiply(
+          JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
+      );
+      const _fpy0 = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked0),
+        JSBI.BigInt("2")
+      );
+      //-----------------
+      const _lpFee = JSBI.subtract(
+        JSBI.BigInt("1000"),
+        JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+      );
       const _reward = JSBI.divide(
         JSBI.multiply(
-          JSBI.multiply(_mintAmount, JSBI.BigInt("900")),
+          JSBI.multiply(_mintAmount, _lpFee),
           JSBI.BigInt(data.reserveAltAmount)
         ),
         JSBI.add(
           JSBI.multiply(
-            JSBI.BigInt(data.reserveXioAmount),
+            JSBI.BigInt(data.reserveFlashAmount),
             JSBI.BigInt("1000")
           ),
-          JSBI.multiply(_mintAmount, JSBI.BigInt("900"))
+          JSBI.multiply(_mintAmount, _lpFee)
         )
       );
-      //     uint256 limit = _amountIn.div(2);
-      //   return output > limit ? limit : output;
 
-      //   uint256 locked = IERC20Custom(FLASH_TOKEN).balanceOf(address(this)).add(
-      //     _amountIn
-      // );
-      // uint256 rate = IERC20Custom(FLASH_TOKEN).totalSupply().mul(PRECISION).div(
-      //     locked
-      // );
-      // return rate > 50e18 ? 50e18 : rate;
-      // const output =
-      //------------------------------------------
-      // const _annualRate = JSBI.divide(
-      //   JSBI.multiply(JSBI.BigInt(data.totalSupply), _precision),
-      //   JSBI.add(JSBI.BigInt(data.xioBalance), _quantity)
-      // );
-      // const _xpy = JSBI.greaterThan(
-      //   _annualRate,
-      //   JSBI.BigInt(Web3.utils.toWei("50"))
-      // )
-      //   ? JSBI.BigInt(Web3.utils.toWei("50"))
-      //   : _annualRate;
-      // const _calculateXpyTemp = JSBI.divide(
-      //   JSBI.multiply(JSBI.multiply(_quantity, JSBI.BigInt(days)), _xpy),
-      //   JSBI.multiply(_precision, JSBI.BigInt("36500"))
-      // );
-      // const _limit = JSBI.divide(_quantity, JSBI.BigInt("2"));
-      // const _calculateXpy = JSBI.greaterThan(_calculateXpyTemp, _limit)
-      //   ? _limit
-      //   : _calculateXpyTemp;
-
-      // const _reward = JSBI.divide(
-      //   JSBI.multiply(
-      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900")),
-      //     JSBI.BigInt(data.reserveAltAmount)
-      //   ),
-      //   JSBI.add(
-      //     JSBI.multiply(
-      //       JSBI.BigInt(data.reserveXioAmount),
-      //       JSBI.BigInt("1000")
-      //     ),
-      //     JSBI.multiply(_calculateXpy, JSBI.BigInt("900"))
-      //   )
-      // );
-      //----------------------------------------------------------
-      // reward = String(_reward);
-      // initializeFlashstakeProtocolContract();
-      // initializeFlashstakePoolContract(id);
-      // let _amountIn = await calculateXPY(Web3.utils.toWei(xioQuantity), days);
-      // reward = await getAPYStake(_amountIn);
-      // console.log({ _reward: String(_reward), reward });
+      // await initializeFlashstakePoolContract(id);
+      // const _apyStake = await getAPYStake(String(_mintAmount));
+      _log("reward ==>", {
+        xioQuantity,
+        days,
+        _reward: Web3.utils.fromWei(_reward.toString()),
+      });
 
       reward = JSBI.subtract(
         JSBI.BigInt(_reward),
         JSBI.multiply(
           JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100)),
-          JSBI.BigInt(5)
+          JSBI.BigInt(slip)
         )
       ).toString();
     }
@@ -135,26 +127,67 @@ export const calculateReward = (xioQuantity, days) => async (
     type: "STAKE_REWARD",
     payload: reward,
   });
+  dispatch({
+    type: "MAX_DAYS",
+    payload: _maxDays,
+  });
   dispatch(setLoading({ reward: false }));
 };
 
-export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
+export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
+  dispatch,
+  getState
+) => {
   dispatch(setLoading({ swapReward: true }));
   let swapAmount = "0";
   try {
     const {
       flashstake: {
         selectedRewardToken: { id },
+        slip,
       },
     } = getState();
     if (id && altQuantity > 0) {
-      initializeFlashstakePoolContract(id);
-      swapAmount = await getAPYSwap(Web3.utils.toWei(altQuantity));
-      swapAmount = JSBI.subtract(
-        JSBI.BigInt(swapAmount),
+      const data = await getQueryData(id, forceRefetchQuery);
+      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
+      const _getPercentStaked0 = JSBI.divide(
         JSBI.multiply(
-          JSBI.divide(JSBI.BigInt(swapAmount), JSBI.BigInt(100)),
-          JSBI.BigInt(5)
+          JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+          _precision
+        ),
+        JSBI.BigInt(data.totalSupply)
+      );
+      const _fpy0 = JSBI.divide(
+        JSBI.subtract(_precision, _getPercentStaked0),
+        JSBI.BigInt("2")
+      );
+      const _lpFee = JSBI.subtract(
+        JSBI.BigInt("1000"),
+        JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+      );
+
+      const _amountInWithFee = JSBI.multiply(
+        JSBI.BigInt(Web3.utils.toWei(altQuantity)),
+        _lpFee
+      );
+
+      const _swapAmount = JSBI.divide(
+        JSBI.multiply(_amountInWithFee, JSBI.BigInt(data.reserveFlashAmount)),
+        JSBI.add(
+          JSBI.multiply(
+            JSBI.BigInt(data.reserveAltAmount),
+            JSBI.BigInt("1000")
+          ),
+          _amountInWithFee
+        )
+      );
+
+      swapAmount = JSBI.subtract(
+        _swapAmount,
+        JSBI.multiply(
+          JSBI.divide(_swapAmount, JSBI.BigInt(100)),
+          JSBI.BigInt(slip)
         )
       ).toString();
     }
@@ -172,7 +205,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
 // const checkAllowanceMemo = _.memoize(
 //   async (_address, _tokenAddress, _walletAddress, flag = false) => {
 //     _log("Account", { _address, _tokenAddress, _walletAddress });
-//     await initializeErc20TokenInfuraContract(_tokenAddress);
+//     await initializeErc20TokenContract(_tokenAddress);
 //     const _allowance = await allowance(_address);
 //     return _allowance;
 //   },
@@ -182,7 +215,7 @@ export const calculateSwap = (altQuantity) => async (dispatch, getState) => {
 
 const checkAllowanceMemo = async (_address, _tokenAddress, _walletAddress) => {
   _log("Account", { _address, _tokenAddress, _walletAddress });
-  await initializeErc20TokenInfuraContract(_tokenAddress);
+  await initializeErc20TokenContract(_tokenAddress);
   const _allowance = await allowance(_address);
   return _allowance;
 };
@@ -194,6 +227,16 @@ export const checkAllowance = () => async (dispatch, getState) => {
       flashstake: { selectedRewardToken },
       web3: { account },
     } = getState();
+    const _allowance3 = await checkAllowanceMemo(
+      CONSTANTS.FLASH_PROTOCOL_CONTRACT,
+      CONSTANTS.ADDRESS_XIO_RINKEBY,
+      account
+    );
+    dispatch({
+      type: "ALLOWANCE_XIO_PROTOCOL",
+      payload: _allowance3 > 0,
+    });
+
     const _allowance = await checkAllowanceMemo(
       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       CONSTANTS.ADDRESS_XIO_RINKEBY,
@@ -234,23 +277,23 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       return null;
     }
     const _allowance = await checkAllowanceMemo(
-      selectedRewardToken.id,
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       CONSTANTS.ADDRESS_XIO_RINKEBY,
       account
     );
-    _log(_allowance);
-
+    _log("Allowance Pool -> ", _allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
     });
 
     const _allowance2 = await checkAllowanceMemo(
-      selectedRewardToken.id,
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
       selectedRewardToken.tokenB.id,
       account
     );
-    _log(_allowance2);
+    _log("Allowance Pool Alt -> ", _allowance2);
+
     dispatch({
       type: "ALLOWANCE_ALT_POOL",
       payload: _allowance2 > 0,
@@ -262,31 +305,28 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
   }
 };
 
-export const checkAllowancePoolWithdraw = () => async (dispatch, getState) => {
+export const checkAllowancePoolWithdraw = (_poolId) => async (
+  dispatch,
+  getState
+) => {
   dispatch(setLoading({ allowance: true }));
   try {
     const {
-      flashstake: { selectedWithdrawPool, poolDashboard },
       web3: { account },
     } = await getState();
-    if (!selectedWithdrawPool || !account) {
-      return null;
+    if (_poolId || account) {
+      const _allowance = await checkAllowanceMemo(
+        CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+        _poolId,
+        account
+      );
+      _log("checkAllowancePoolWithdraw -> ", _allowance);
+
+      dispatch({
+        type: "ALLOWANCE_POOL_WITHDRAW",
+        payload: _allowance > 0,
+      });
     }
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
-
-    const _allowance = await checkAllowanceMemo(
-      _pool.pool.id,
-      _pool.pool.id,
-      account
-    );
-    _log("checkAllowancePoolWithdraw -> ", _allowance);
-
-    dispatch({
-      type: "ALLOWANCE_POOL_WITHDRAW",
-      payload: _allowance > 0,
-    });
   } catch (e) {
     _error("ERROR checkAllowancePoolWithdraw -> ", e);
     dispatch({
@@ -298,53 +338,11 @@ export const checkAllowancePoolWithdraw = () => async (dispatch, getState) => {
   }
 };
 
-// export const checkAllowanceXIO = () => async (dispatch, getState) => {
-//   dispatch(setLoading({ allowance: true }));
-//   try {
-//     await initializeErc20TokenInfuraContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-//     const _allowance = await allowance(
-//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
-//     );
-//     dispatch({
-//       type: "ALLOWANCE_XIO",
-//       payload: _allowance > 0,
-//     });
-//   } catch (e) {
-//     _error("ERROR checkAllowance -> ", e);
-//   } finally {
-//     dispatch(setLoading({ allowance: false }));
-//   }
-// };
-
-// export const checkAllowanceALT = () => async (dispatch, getState) => {
-//   dispatch(setLoading({ allowance: true }));
-//   try {
-//     const {
-//       flashstake: { selectedRewardToken },
-//     } = getState();
-//     if (!selectedRewardToken?.tokenB?.id) {
-//       return null;
-//     }
-//     await initializeErc20TokenInfuraContract(selectedRewardToken.tokenB.id);
-//     const _allowance = await allowance(
-//       CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS
-//     );
-//     dispatch({
-//       type: "ALLOWANCE_ALT",
-//       payload: _allowance > 0,
-//     });
-//   } catch (e) {
-//     _error("ERROR checkAllowance -> ", e);
-//   } finally {
-//     dispatch(setLoading({ allowance: false }));
-//   }
-// };
-
 export const getApprovalXIO = (tab) => async (dispatch, getState) => {
   setLoadingIndep({ approvalXIO: true });
   try {
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "stake");
+    await approve(CONSTANTS.FLASH_PROTOCOL_CONTRACT, "stake");
     dispatch(checkAllowance());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
@@ -376,14 +374,12 @@ export const getApprovalALT = (_selectedPortal, tab) => async (
   }
 };
 
-export const getApprovalXIOPool = (tab) => async (dispatch, getState) => {
+export const getApprovalXIOPool = () => async (dispatch, getState) => {
+  setLoadingIndep({ approval: true });
   setLoadingIndep({ approvalXIO: true });
   try {
-    const {
-      flashstake: { selectedRewardToken },
-    } = getState();
     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
-    await approve(selectedRewardToken?.id, "pool");
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool", true);
     dispatch(checkAllowancePool());
   } catch (e) {
     _error("ERROR getApprovalXIO -> ", e);
@@ -393,7 +389,7 @@ export const getApprovalXIOPool = (tab) => async (dispatch, getState) => {
   }
 };
 
-export const getApprovalALTPool = (_selectedPortal, tab) => async (
+export const getApprovalALTPool = (_selectedPortal) => async (
   dispatch,
   getState
 ) => {
@@ -406,7 +402,7 @@ export const getApprovalALTPool = (_selectedPortal, tab) => async (
       return null;
     }
     await initializeErc20TokenContract(selectedRewardToken?.tokenB?.id);
-    await approve(selectedRewardToken?.id, "pool");
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool");
 
     dispatch(checkAllowancePool());
   } catch (e) {
@@ -496,16 +492,20 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
   }
 };
 
-export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
+export const stakeXIO = (xioQuantity, days, time) => async (
+  dispatch,
+  getState
+) => {
   try {
     const {
       flashstake: { selectedRewardToken, reward },
-      user: { stakes },
-      dashboard: { selectedStakes },
     } = await getState();
     if (!selectedRewardToken?.tokenB?.id) {
       throw new _error("No reward token found!");
     }
+    const _multiplier =
+      time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
+    const _days = days * _multiplier;
     dispatch({
       type: "STAKE_REQUEST",
       payload: {
@@ -515,19 +515,22 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
         reward: Web3.utils.fromWei(reward),
       },
     });
-    initializeFlashstakeProtocolContract();
+    initializeFlashProtocolContract();
     _log(
       "stake params -> ",
-      selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
-      days,
+      _days,
+      selectedRewardToken.tokenB.id,
       reward
     );
+
     await stake(
-      selectedRewardToken.tokenB.id,
       Web3.utils.toWei(xioQuantity),
-      days,
-      reward
+      _days,
+      utils.defaultAbiCoder.encode(
+        ["address", "uint256"],
+        [selectedRewardToken.tokenB.id, reward]
+      )
     );
   } catch (e) {
     _error("ERROR stake -> ", e);
@@ -536,13 +539,13 @@ export const stakeXIO = (xioQuantity, days) => async (dispatch, getState) => {
   }
 };
 
-export const unstakeEarly = (unstakeAll = true) => async (
+export const unstakeEarlyFlash = (unstakeAll = true) => async (
   dispatch,
   getState
 ) => {
   try {
     const {
-      user: { stakes, expiredTimestamps, dappBalance },
+      user: { stakes, dappBalance },
       dashboard: { selectedStakes },
     } = await getState();
     if (dappBalance <= 0 || !stakes?.length) {
@@ -575,12 +578,81 @@ export const unstakeEarly = (unstakeAll = true) => async (
       },
     });
     initializeFlashstakeProtocolContract();
+
     _log(
       "unstake params -> ",
       _unstakeTimestamps
       // Web3.utils.toWei(_balanceUnstake)
     );
     await unstake(_unstakeTimestamps);
+  } catch (e) {
+    _error("ERROR unstakeEarly -> ", e);
+  }
+};
+
+export const unstakeEarly = () => async (dispatch, getState) => {
+  try {
+    const {
+      user: { stakes, dappBalance },
+      dashboard: { selectedStakes },
+    } = await getState();
+
+    if (dappBalance <= 0 || !stakes?.length) {
+      throw new _error("No stakes to withdraw!");
+    }
+    const _selectedIds = Object.keys(selectedStakes).filter(
+      (_key) => selectedStakes[_key]
+    );
+    let _quantity = 0;
+    const _selectedStakes = stakes.filter((_stake) => {
+      if (_selectedIds.includes(_stake.id)) {
+        _quantity += parseFloat(_stake.stakeAmount);
+        return true;
+      }
+      return false;
+    });
+    dispatch({
+      type: "UNSTAKE_REQUEST",
+      payload: {
+        timestamps: _selectedIds,
+        quantity: _quantity,
+      },
+    });
+    if (_selectedIds.length === 1 && _selectedStakes[0].burnAmount > 0) {
+      await initializeFlashProtocolContract();
+      await unstakeEarlyFunc(_selectedIds[0]);
+    } else {
+      await initializeFlashstakeProtocolContract();
+      await unstake(_selectedIds);
+    }
+
+    // let _balanceUnstake = 0;
+    // let _unstakeTimestamps = [];
+
+    // if (unstakeAll) {
+    //   _balanceUnstake = dappBalance;
+    //   _unstakeTimestamps = stakes.map((_stake) => _stake.id);
+    // } else {
+    //   _unstakeTimestamps = stakes
+    //     .filter((_stake) => {
+    //       if (selectedStakes[_stake.id]) {
+    //         _balanceUnstake += parseFloat(_stake.stakeAmount);
+    //         return true;
+    //       } else {
+    //         return false;
+    //       }
+    //     })
+    //     .map((_stake) => _stake.id);
+    // }
+
+    //
+
+    // _log(
+    //   "unstake params -> ",
+    //   _unstakeTimestamps
+    //   // Web3.utils.toWei(_balanceUnstake)
+    // );
+    //
   } catch (e) {
     _error("ERROR unstakeEarly -> ", e);
   }
@@ -606,12 +678,8 @@ export const unstakeXIO = () => async (dispatch, getState) => {
       },
     });
     initializeFlashstakeProtocolContract();
-    _log(
-      "unstake params -> ",
-      expiredTimestamps,
-      Web3.utils.toWei(expiredDappBalance)
-    );
-    await unstake(expiredTimestamps, Web3.utils.toWei(expiredDappBalance));
+    _log("unstake params -> ", expiredTimestamps);
+    await unstake(expiredTimestamps);
   } catch (e) {
     _error("ERROR unstake -> ", e);
   }
@@ -650,6 +718,9 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
     setSwapDialogStepIndep("failedSwap");
     showSnackbarIndep("Swap Transaction Failed.", "error");
   }
+  dispatch({
+    type: "RECALC_SWAP",
+  });
 };
 
 export const addTokenLiquidityInPool = (
@@ -657,37 +728,37 @@ export const addTokenLiquidityInPool = (
   quantityXIO,
   selectedPortal
 ) => async (dispatch, getState) => {
-  try {
-    const {
-      flashstake: { selectedRewardToken },
-    } = await getState();
-    dispatch({
-      type: "LIQUIDITY_REQUEST",
-      payload: {
-        altSymbol: selectedRewardToken?.tokenB?.symbol,
-        quantityXIO,
-        quantityAlt,
-      },
-    });
-    _log(
-      "addTokenLiquidityInPool -> ",
-      Web3.utils.toWei(String(quantityXIO)),
-      Web3.utils.toWei(String(quantityAlt)),
-      Web3.utils.toWei(String(quantityXIO * 0.95)),
-      Web3.utils.toWei(String(quantityAlt * 0.95)),
-      selectedRewardToken.tokenB.id
-    );
-    initializeFlashstakeProtocolContract();
-    await addLiquidityInPool(
-      Web3.utils.toWei(String(quantityXIO)),
-      Web3.utils.toWei(String(quantityAlt)),
-      Web3.utils.toWei(String(quantityXIO * 0.95)),
-      Web3.utils.toWei(String(quantityAlt * 0.95)),
-      selectedRewardToken.tokenB.id
-    );
-  } catch (e) {
-    _error("ERROR addTokenLiquidityInPool -> ", e);
-  }
+  // try {
+  const {
+    flashstake: { selectedRewardToken },
+  } = await getState();
+  dispatch({
+    type: "LIQUIDITY_REQUEST",
+    payload: {
+      altSymbol: selectedRewardToken?.tokenB?.symbol,
+      quantityXIO,
+      quantityAlt,
+    },
+  });
+  _log(
+    "addTokenLiquidityInPool -> ",
+    Web3.utils.toWei(String(quantityXIO)),
+    Web3.utils.toWei(String(quantityAlt)),
+    // Web3.utils.toWei(String(quantityXIO * 0.95)),
+    // Web3.utils.toWei(String(quantityAlt * 0.95)),
+    selectedRewardToken.tokenB.id
+  );
+  initializeFlashstakeProtocolContract();
+  await addLiquidityInPool(
+    Web3.utils.toWei(String(quantityXIO)),
+    Web3.utils.toWei(String(quantityAlt)),
+    Web3.utils.toWei(String((quantityXIO * 0).toFixed(18))),
+    Web3.utils.toWei(String((quantityAlt * 0).toFixed(18))),
+    selectedRewardToken.tokenB.id
+  );
+  //   } catch (e) {
+  //     _error("ERROR addTokenLiquidityInPool -> ", e);
+  //   }
 };
 
 export const onSelectWithdrawPool = (_poolId) => {
@@ -697,21 +768,42 @@ export const onSelectWithdrawPool = (_poolId) => {
   };
 };
 
-export const getApprovalPoolLiquidity = () => async (dispatch, getState) => {
+// export const getApprovalXIOPool = () => async (dispatch, getState) => {
+//   setLoadingIndep({ approval: true });
+//   setLoadingIndep({ approvalXIO: true });
+//   try {
+//     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+//     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool", true);
+//     dispatch(checkAllowancePool());
+//   } catch (e) {
+//     _error("ERROR getApprovalXIO -> ", e);
+//   } finally {
+//     setLoadingIndep({ approval: false });
+//     setLoadingIndep({ approvalXIO: false });
+//   }
+// };
+
+export const getApprovalPoolLiquidity = (poolID, success) => async (
+  dispatch,
+  getState
+) => {
   try {
     const {
-      flashstake: { selectedWithdrawPool, poolDashboard },
+      flashstake: { poolDashboard },
     } = await getState();
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
+    const _pool = poolDashboard.find((_pool) => _pool.pool.id === poolID);
     if (!_pool?.balance) {
       return;
     }
     setLoadingIndep({ approvalWithdrawPool: true });
     await initializeErc20TokenContract(_pool.pool.id);
-    await approve(_pool.pool.id, "pool");
-    dispatch(checkAllowancePoolWithdraw());
+    await approve(
+      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
+      "pool",
+      true,
+      success
+    );
+    dispatch(checkAllowancePoolWithdraw(poolID));
   } catch (e) {
     _error("ERROR getApprovalPoolLiquidity -> ", e);
   } finally {
@@ -719,36 +811,55 @@ export const getApprovalPoolLiquidity = () => async (dispatch, getState) => {
   }
 };
 
-export const removeTokenLiquidityInPool = () => async (dispatch, getState) => {
+export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
+  dispatch,
+  getState
+) => {
   try {
-    const {
-      flashstake: { selectedWithdrawPool, poolDashboard },
-    } = await getState();
-    const _pool = poolDashboard.find(
-      (_pool) => _pool.pool.id === selectedWithdrawPool
-    );
     if (!_pool?.balance) {
       return;
     }
+    const removeLiquidity = String(
+      JSBI.divide(
+        JSBI.multiply(
+          JSBI.BigInt(Web3.utils.toWei(String(_pool.balance))),
+          JSBI.BigInt(percentageToRemove)
+        ),
+        JSBI.BigInt(100)
+      )
+    );
+
     dispatch({
       type: "WITHDRAW_LIQUIDITY_REQUEST",
       payload: {
-        _liquidity: _pool.balance,
+        _liquidity: Web3.utils.fromWei(removeLiquidity),
         _token: _pool.pool.tokenB.symbol,
       },
     });
-    _log(
-      "removeLiquidityInPool -> ",
-      Web3.utils.toWei(String(_pool.balance)),
-      _pool.pool.tokenB.id
-    );
+    _log("removeLiquidityInPool -> ", removeLiquidity, _pool.pool.tokenB.id);
     initializeFlashstakeProtocolContract();
-    await removeLiquidityInPool(
-      Web3.utils.toWei(String(_pool.balance)),
-      _pool.pool.tokenB.id
-    );
+    await removeLiquidityInPool(removeLiquidity, _pool.pool.tokenB.id);
   } catch (e) {
     _error("ERROR removeTokenLiquidityInPool -> ", e);
+  }
+};
+
+export const createPool = (_token) => async (dispatch, getState) => {
+  try {
+    if (!Web3.utils.isAddress(_token.address)) {
+      return;
+    }
+    _log("createPool params -> ", _token.address);
+    dispatch({
+      type: "CREATE_POOL_REQUEST",
+      payload: {
+        _token: _token,
+      },
+    });
+    initializeFlashstakeProtocolContract();
+    await createPoolContract(_token.address);
+  } catch (e) {
+    _error("ERROR createPool -> ", e);
   }
 };
 
@@ -779,9 +890,17 @@ export const setSwapDialogStep = (step) => {
     payload: step,
   };
 };
+
 export const setPoolDialogStep = (step) => {
   return {
     type: "POOL_DIALOG_STEP",
+    payload: step,
+  };
+};
+
+export const setCreateDialogStep = (step) => {
+  return {
+    type: "CREATE_DIALOG_STEP",
     payload: step,
   };
 };
@@ -792,6 +911,9 @@ export const setSwapDialogStepIndep = (step) => {
 
 export const setPoolDialogStepIndep = (step) => {
   store.dispatch(setPoolDialogStep(step));
+};
+export const setCreateDialogStepIndep = (step) => {
+  store.dispatch(setCreateDialogStep(step));
 };
 
 // export const setReset = (val) => {
@@ -832,6 +954,29 @@ export const setWithdrawLiquidityTxnHash = (val) => {
   };
 };
 
+export const setCloseLiquidityTxnHashIndep = (val) => {
+  store.dispatch(setCloseLiquidityTxnHash(val));
+};
+export const setCloseLiquidityTxnHash = (val) => {
+  return {
+    type: "CLOSE_LIQDUIDITY_TXN_HASH",
+    payload: val,
+  };
+};
+
 export const setWithdrawLiquidityTxnHashIndep = (val) => {
   store.dispatch(setWithdrawLiquidityTxnHash(val));
+};
+export const setSlip = (val) => {
+  return {
+    type: "CUSTOM_SLIPPAGE",
+    payload: val,
+  };
+};
+
+export const setRemoveLiquidity = (data) => {
+  return {
+    type: "REMOVE_LIQUIDITY",
+    payload: data,
+  };
 };

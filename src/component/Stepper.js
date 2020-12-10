@@ -102,15 +102,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Stepper({ step, steps = ["APPROVE FLASH", "STAKE"] }) {
+export default function Stepper({ step, steps = ["APPROVE $FLASH", "STAKE"] }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  // useEffect(() => {
+  //   if (tab === "pool") {
+  //     if (step === "pendingApproval") {
+  //       setActiveStep(0);
+  //     } else if (step === "pendingApprovalToken") {
+  //       setActiveStep(1);
+  //     } else if (step === "poolProposal") {
+  //       setActiveStep(2);
+  //     }
+  //   } else {
+  //     if (step === "pendingApproval") {
+  //       setActiveStep(0);
+  //     } else if (step === "pendingApprovalToken") {
+  //       setActiveStep(1);
+  //     } else if (step === "flashstakeProposal" || "swapProposal") {
+  //       setActiveStep(1);
+  //     }
+  //   }
+  // }, [step]);
 
   useEffect(() => {
     if (step === "pendingApproval") {
       setActiveStep(0);
-    } else if (step === "flashstakeProposal" || "swapProposal") {
+    } else if (
+      ["flashstakeProposal", "swapProposal", "approvalTokenProposal"].includes(
+        step
+      )
+    ) {
       setActiveStep(1);
+    } else if (step === "poolProposal") {
+      setActiveStep(2);
     }
   }, [step]);
 

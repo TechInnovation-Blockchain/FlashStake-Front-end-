@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
     height: 35,
     letterSpacing: 2,
     lineHeight: 1.2,
-    borderRadius: 0,
+    borderRadius: theme.palette.ButtonRadius.small,
+
     transition: "none !important",
     "&.MuiButton-label": {
       ...theme.typography.body1,
@@ -50,7 +51,31 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.buttonText.red,
     "&:hover": {
       // background: theme.palette.xioRed.main,
-      background: "#e2874a",
+      background: theme.palette.button.hover,
+    },
+    "&.Mui-disabled": {
+      background: theme.palette.border.main,
+    },
+  },
+  disable: {
+    background: theme.palette.border.main,
+    color: theme.palette.buttonText.red,
+    "&:hover": {
+      // background: theme.palette.xioRed.main,
+      background: theme.palette.border.main,
+    },
+    "&.Mui-disabled": {
+      background: theme.palette.border.main,
+    },
+  },
+  retroButton: {
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.main}`,
+    background: theme.palette.button.retro,
+    color: "#fff",
+    "&:hover": {
+      // background: theme.palette.xioRed.main,
+      background: theme.palette.button.hover,
     },
     "&.Mui-disabled": {
       background: theme.palette.border.main,
@@ -58,15 +83,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Button({ fontSizeLocal, loading, ...props }) {
+export default function Button({
+  fontSizeLocal,
+  loading,
+  isDisabled,
+  ...props
+}) {
   const classes = useStyles();
   return (
     <MuiButton
       {...props}
       variant="outlined"
-      className={`${props.className} ${classes.commonStyles} ${
-        { dark: classes.darkButton, red: classes.redButton }[props.variant]
-      } ${fontSizeLocal ? classes[fontSizeLocal] : ""}`}
+      className={`${classes.commonStyles} ${
+        {
+          dark: classes.darkButton,
+          retro: classes.retroButton,
+          red: classes.redButton,
+          disable: classes.disable,
+        }[props.variant]
+      } ${fontSizeLocal ? classes[fontSizeLocal] : ""} ${props.className}`}
     >
       {loading ? (
         <CircularProgress

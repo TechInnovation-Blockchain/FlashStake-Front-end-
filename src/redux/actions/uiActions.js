@@ -14,6 +14,12 @@ export const toggleThemeModeAction = () => {
   };
 };
 
+export const toggleThemeModeActionRetro = () => {
+  return {
+    type: "TOGGLE_THEME_MODE_RETRO",
+  };
+};
+
 export const showSnackbarTxn = (
   message = "",
   type = "success",
@@ -87,7 +93,36 @@ export const setHeightValue = (data) => {
   };
 };
 
+export const setRetroTheme = (data) => {
+  return {
+    type: "RETRO_THEME",
+    payload: data,
+  };
+};
+
+export const setFalseSelected = (data) => {
+  return {
+    type: "FALSE_SELECTION",
+    payload: data,
+  };
+};
+export const setBtn = (data) => {
+  return {
+    type: "BTN_SELECT",
+    payload: data,
+  };
+};
+
+//
+
 export const themeSwitchAction = () => async (dispatch) => {
   dispatch(setLoading({ themeSwitch: true }));
   setTimeout(() => dispatch(setLoading({ themeSwitch: false })), 2000);
+};
+
+export const setClose = (data) => {
+  return {
+    type: "CLOSE_DIALOGUE",
+    payload: data,
+  };
 };

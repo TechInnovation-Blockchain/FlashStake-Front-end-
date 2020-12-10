@@ -5,7 +5,6 @@ import {
 import { _error } from "../log";
 
 let contract;
-let infuraContract;
 let isContractInitialized = false;
 
 export const initializeFlashstakePoolContract = (_address) => {
@@ -13,7 +12,6 @@ export const initializeFlashstakePoolContract = (_address) => {
   if (!contract) {
     contract = xioFlashstakePoolInfuraContract(_address);
   }
-  infuraContract = xioFlashstakePoolInfuraContract(_address);
   isContractInitialized = true;
 };
 
@@ -26,7 +24,7 @@ export const getAPYStake = async (_amountIn) => {
   try {
     checkContractInitialized();
 
-    const apy = await infuraContract.methods.getAPYStake(_amountIn).call();
+    const apy = await contract.methods.getAPYStake(_amountIn).call();
     return apy;
   } catch (e) {
     _error("ERROR getAPYStake -> ", e);
@@ -38,7 +36,7 @@ export const getAPYSwap = async (_amountIn) => {
   try {
     checkContractInitialized();
 
-    const apy = await infuraContract.methods.getAPYSwap(_amountIn).call();
+    const apy = await contract.methods.getAPYSwap(_amountIn).call();
     return apy;
   } catch (e) {
     _error("ERROR getAPYSwap -> ", e);

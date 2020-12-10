@@ -13,9 +13,11 @@ import "./smooth.css";
 import { WalletConnect, Snackbar } from "../../component";
 import Routes from "../Routes";
 // import { setReset } from "../../redux/actions/flashstakeActions";
-import xordLogo from "../../assets/xord-logo.png";
+import xordLogo from "../../assets/xord-light.png";
 import "../../assets/css/main.css";
 import AnimateHeight from "react-animate-height";
+import Image from "../../assets/retroBackground.jpg";
+import { store } from "../reduxStore";
 
 import {
   showWalletBackdrop,
@@ -25,6 +27,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     // padding: theme.spacing(4, 0),
+
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
@@ -48,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     // minHeight: 420,
     minHeight: "100%",
+    // boxShadow: ` 0px 0px 8px 16px ${theme.palette.shadowColor.main} `,
+    boxShadow: `0px 0px 50px 10px ${theme.palette.shadowColor.main}`,
   },
   backdrop: {
     zIndex: 1,
@@ -86,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   poweredText: {
     marginBottom: theme.spacing(0.5),
-    color: theme.palette.text.disabled,
+    color: "#fff",
     fontWeight: 700,
   },
   logo: {
@@ -119,6 +124,7 @@ function Layout({
   walletBackdrop,
   themeMode,
   toggleThemeMode,
+  toggleThemeMode2,
   themeSwitchAction,
   animation,
 }) {
@@ -129,7 +135,6 @@ function Layout({
 
   // useEffect(() => {
   //   setHeight2(ref?.current?.clientHeight);
-  //   console.log("Height-->", height2);
   // }, [ref?.current?.clientHeight]);
 
   const handleClose = () => {
@@ -138,21 +143,42 @@ function Layout({
 
   useEffect(() => {
     const body = document.querySelector("#body");
+    // css = {
+    //   backgroundImage: `require(url(${Image}))`,
+    //   backgroundRepeat: no-repeat,
+    //   backgroundAttachment: fixed,
+    //   backgroundPosition: center,
+    //   backgroundSize: cover,
+    // };
     // body.style.backgroundColor = "#171717";
 
-    themeMode === "dark"
-      ? (body.style.backgroundColor = "#000000")
-      : (body.style.backgroundColor = "#f5f5f5");
+    if (themeMode === "dark") {
+      body.style.background = "#000000";
+    } else if (themeMode === "retro") {
+      // body.style.background = "none";
+      body.style.backgroundImage = `url(${Image})`;
+      body.style.backgroundPosition = "center";
+      body.style.backgroundRepeat = "no-repeat";
+      body.style.backgroundAttachment = "fixed";
+      body.style.backgroundSize = "cover";
+    } else {
+      body.style.background = `#f5f5f5`;
+    }
   }, [themeMode]);
 
   return (
     <Fragment>
+      {/* <Box> */}
       <Container maxWidth="sm" className={classes.mainContainer}>
         <Box
           // ref={ref}
           className={`transitionEase ${classes.contentContainer} contentContainer1 `}
         >
-          <Routes themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
+          <Routes
+            themeMode={themeMode}
+            toggleThemeMode={toggleThemeMode}
+            toggleThemeMode2={toggleThemeMode2}
+          />
         </Box>
 
         <Backdrop
@@ -160,7 +186,7 @@ function Layout({
           open={walletBackdrop}
           onClick={handleClose}
         ></Backdrop>
-        <WalletConnect />
+        <WalletConnect toggleThemeMode={toggleThemeMode} />
         <Snackbar />
       </Container>
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>
@@ -187,6 +213,7 @@ function Layout({
         </a>
       </Backdrop>
       <div ref={walletBtnRef}></div>
+      {/* </Box> */}
     </Fragment>
   );
 }

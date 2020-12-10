@@ -6,12 +6,15 @@ import { setLoading } from "../redux/actions/uiActions";
 import {
   setRefetch,
   setReCalculateExpired,
+  setStakeStatus,
 } from "../redux/actions/dashboardActions";
 import {
   updatePools,
   updateUserData,
   clearUserData,
   updateAllBalances,
+  setPoolData,
+  setPoolDataBalance,
 } from "../redux/actions/userActions";
 import { userStakesQuery } from "../graphql/queries/userStakesQuery";
 import {
@@ -20,6 +23,9 @@ import {
   checkAllowance,
 } from "../redux/actions/flashstakeActions";
 import { analytics } from "./App";
+import { updateOneDay } from "../redux/actions/contractActions";
+import { getQueryData, getAllQueryData } from "../redux/actions/queryActions";
+// import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
 
 function Updater({
   active,
@@ -39,6 +45,9 @@ function Updater({
   checkAllowance,
   clearUserData,
   selectedPortal,
+  updateOneDay,
+  oneDay,
+  walletBalancesPool,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -46,6 +55,10 @@ function Updater({
     },
     fetchPolicy: "network-only",
   });
+
+  useEffect(() => {
+    updateOneDay();
+  }, []);
 
   useEffect(() => {
     if (active && account) {
@@ -56,7 +69,9 @@ function Updater({
       refetch();
       const _interval = window.setInterval(() => {
         updateAllBalances();
+        getAllQueryData();
       }, 60000);
+      getAllQueryData();
       updateAllBalances();
       // getBalanceALT();
       checkAllowance();
@@ -107,6 +122,7 @@ function Updater({
       setRefetch(false);
     }
   }, [refetchData]);
+
   useEffect(() => {
     updatePools(data?.protocols[0]?.pools);
     updateUserData(data?.user);
@@ -115,16 +131,30 @@ function Updater({
       updateUserData(data?.user);
     }, 60000);
     return () => clearInterval(reCalculateInterval);
-  }, [data, updatePools, updateUserData]);
+  }, [data, updatePools, updateUserData, oneDay]);
 
   return null;
 }
 
 const mapStateToProps = ({
   web3: { active, account, chainId },
-  dashboard: { refetch, reCalculateExpired },
-  user: { currentStaked },
+  dashboard: {
+    refetch,
+    reCalculateExpired,
+    stakeStatus,
+    isStakesSelected,
+    selectedStakes,
+  },
+  user: {
+    currentStaked,
+    poolData,
+    poolDataBalance,
+    pools,
+    poolItems,
+    walletBalancesPool,
+  },
   flashstake: { selectedPortal },
+  contract: { oneDay },
 }) => ({
   active,
   account,
@@ -133,6 +163,15 @@ const mapStateToProps = ({
   currentStaked,
   reCalculateExpired,
   selectedPortal,
+  oneDay,
+  poolData,
+  stakeStatus,
+  isStakesSelected,
+  selectedStakes,
+  poolDataBalance,
+  pools,
+  poolItems,
+  walletBalancesPool,
 });
 
 export default connect(mapStateToProps, {
@@ -146,4 +185,10 @@ export default connect(mapStateToProps, {
   updateAllBalances,
   checkAllowance,
   clearUserData,
+  updateOneDay,
+  setPoolData,
+  setPoolDataBalance,
+  getQueryData,
+  setStakeStatus,
+  // getPoolBalances,
 })(Updater);

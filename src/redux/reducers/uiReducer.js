@@ -10,13 +10,23 @@ export const uiReducer = (
     walletBackdrop: false,
     expanding: true,
     animation: 0,
-    heightVal: "",
+    changeApp: false,
+    heightVal: "auto",
+    falseSelected: true,
+    close: false,
+    btn: 5,
   },
   { type, payload }
 ) => {
   switch (type) {
     case "TOGGLE_THEME_MODE": {
       const themeMode = state.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("themeMode", themeMode);
+      return { ...state, theme: themeMode };
+    }
+
+    case "TOGGLE_THEME_MODE_RETRO": {
+      const themeMode = state.theme === "dark" || "light" ? "retro" : "retro";
       localStorage.setItem("themeMode", themeMode);
       return { ...state, theme: themeMode };
     }
@@ -49,6 +59,11 @@ export const uiReducer = (
         ...state,
         walletBackdrop: payload,
       };
+    case "BTN_SELECT":
+      return {
+        ...state,
+        btn: payload,
+      };
 
     case "EXPAND_ACCORDION":
       return {
@@ -65,6 +80,24 @@ export const uiReducer = (
       return {
         ...state,
         heightVal: payload,
+      };
+
+    case "RETRO_THEME":
+      return {
+        ...state,
+        changeApp: payload,
+      };
+
+    case "FALSE_SELECTION":
+      return {
+        ...state,
+        falseSelected: payload,
+      };
+
+    case "CLOSE_DIALOGUE":
+      return {
+        ...state,
+        close: payload,
       };
 
     default:

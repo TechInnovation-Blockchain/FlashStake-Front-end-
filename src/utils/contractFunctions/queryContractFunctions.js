@@ -8,25 +8,30 @@ import {
   getPools,
 } from "../../redux/state";
 import Web3 from "web3";
-import { _error } from "../log";
+import axios from "axios";
+import { _error, _log } from "../../utils/log";
+import { useState } from "react";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
 
 export const initializeQueryContract = async () => {
   contract = queryContract();
-  isContractInitialized = true;
-};
-
-export const initializeQueryInfuraContract = async () => {
-  contract = queryInfuraContract();
+  if (!contract) {
+    contract = queryInfuraContract();
+  }
   isContractInitialized = true;
 };
 
 export const getReserves = async (_pool) => {
+  const {
+    user: { poolData },
+  } = store.getState();
   try {
     checkContractInitialized();
-    const _reserves = await contract.methods.getReserves(_pool).call();
+    const _reserves = poolData?.data[_pool];
+    _log("Reserves -->", _reserves);
     return { ..._reserves, id: _pool };
   } catch (e) {
     _error("ERROR getReserves -> ", e);

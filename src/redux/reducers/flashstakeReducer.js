@@ -5,16 +5,18 @@ export const flashstakeReducer = (
     portals: [],
     stakeTokens: [],
     rewardTokens: [],
-    selectedStakeToken: "FLASH",
+    selectedStakeToken: "$FLASH",
     selectedRewardToken: {},
     selectedPortal: "",
     allowanceXIO: true,
     allowanceALT: true,
     allowanceXIOPool: true,
     allowanceALTPool: true,
+    allowanceXIOProtocol: true,
     allowancePoolWithdraw: true,
     selectedWithdrawPool: "",
     reward: "0",
+    maxDays: 99999999,
     swapOutput: "0",
     balanceXIO: 0,
     balanceALT: 0,
@@ -22,6 +24,7 @@ export const flashstakeReducer = (
     dialogStep: "",
     dialogStep2: "",
     dialogStep3: "",
+    dialogStep4: "",
     poolDashboard: [],
     stakeRequest: {
       quantity: 0,
@@ -37,6 +40,7 @@ export const flashstakeReducer = (
     stakeTxnHash: "",
     liquidityTxnHash: "",
     withdrawLiquidityTxnHash: "",
+    slip: 5,
     reset: false,
     initialValues: {
       days: "",
@@ -46,10 +50,18 @@ export const flashstakeReducer = (
       amount: "",
       token: "",
     },
+    removeLiquidity: "",
+    createPoolData: {},
+    closeLiquidityTxnHash: false,
   },
   { type, payload }
 ) => {
   switch (type) {
+    case "STAKE_QTY":
+      return {
+        ...state,
+        stakeQty: payload,
+      };
     case "FACTORY_ADDRESS":
       return {
         ...state,
@@ -95,6 +107,11 @@ export const flashstakeReducer = (
         ...state,
         allowanceXIO: payload,
       };
+    case "MAX_DAYS":
+      return {
+        ...state,
+        maxDays: payload,
+      };
     case "ALLOWANCE_ALT":
       return {
         ...state,
@@ -110,6 +127,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         allowanceALTPool: payload,
+      };
+    case "ALLOWANCE_XIO_PROTOCOL":
+      return {
+        ...state,
+        allowanceXIOProtocol: payload,
       };
     case "ALLOWANCE_POOL_WITHDRAW":
       return {
@@ -163,6 +185,18 @@ export const flashstakeReducer = (
         ...state,
         dialogStep3: payload,
       };
+
+    case "CREATE_POOL_REQUEST":
+      return {
+        ...state,
+        createPoolData: payload,
+      };
+
+    case "CREATE_DIALOG_STEP":
+      return {
+        ...state,
+        dialogStep4: payload,
+      };
     case "STAKE_REQUEST":
       return {
         ...state,
@@ -208,6 +242,11 @@ export const flashstakeReducer = (
         ...state,
         selectedWithdrawPool: payload,
       };
+    case "CUSTOM_SLIPPAGE":
+      return {
+        ...state,
+        slip: payload,
+      };
     // case "RESET":
     //   return {
     //     ...state,
@@ -222,6 +261,17 @@ export const flashstakeReducer = (
         ...state,
         initialValues: payload,
       };
+    case "REMOVE_LIQUIDITY":
+      return {
+        ...state,
+        removeLiquidity: payload,
+      };
+    case "CLOSE_LIQDUIDITY_TXN_HASH":
+      return {
+        ...state,
+        closeLiquidityTxnHash: payload,
+      };
+
     default:
       return state;
   }

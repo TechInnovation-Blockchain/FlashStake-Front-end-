@@ -1,4 +1,82 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+// import "../assets/fonts/fonts.css";
+import { store } from "./reduxStore";
+
+export const retroTheme = createMuiTheme({
+  palette: {
+    type: "dark",
+    primary: {
+      main: "#ed3293",
+    },
+    secondary: {
+      main: "#171717",
+    },
+    secondary2: {
+      main: "#6cc79b",
+    },
+    text: {
+      primary: "#ffffff",
+      primary2: "#000000",
+      // secondary: "#d1d1d1",
+      // primary: "#000000",
+      green: "#6cc79b",
+      secondary: "#cccccc",
+      secondary2: "#cccccc",
+      secondary4: "#696969",
+      grey: "#696969",
+    },
+    action: {
+      hover: "#f0f0f0",
+    },
+    border: {
+      main: "#000",
+      secondary: "#ffffff1f",
+      gray: "#121212",
+    },
+    button: {
+      dark: "#555555",
+      red: "#ed3293",
+      retro: "#ed3293",
+      selected: "#ed3293",
+      hover: "#cc1675",
+    },
+    buttonText: {
+      dark: "#ffffff",
+      red: "#ffffff",
+      retro: "#646464",
+    },
+    background: {
+      primary: "#121212",
+      secondary: "#1A1A1A",
+      secondary2: "#000000",
+      secondary4: "#1a1a1a",
+      secondary3: "#000000",
+      selected: "#171717",
+      liquidity: "#424242",
+      disabled: "#000000",
+    },
+    xioRed: {
+      main: "#ed3293",
+    },
+
+    navLink: {
+      active: "#ed3293",
+    },
+    shadowColor: {
+      main: "#59e7d5",
+      secondary: "#ed3293",
+    },
+    ButtonRadius: {
+      small: 10,
+    },
+  },
+
+  typography: {
+    fontFamily: "ZCOOL QingKe HuangYou",
+    fontSize: 13,
+    fontWeight: "900",
+  },
+});
 
 export const darkTheme = createMuiTheme({
   palette: {
@@ -34,6 +112,9 @@ export const darkTheme = createMuiTheme({
     button: {
       dark: "#555555",
       red: "#D89C74",
+      retro: "#D89C74",
+      hover: "#d98955",
+      selected: "#e37934",
     },
     buttonText: {
       dark: "#ffffff",
@@ -46,6 +127,8 @@ export const darkTheme = createMuiTheme({
       secondary4: "#1a1a1a",
       secondary3: "#000000",
       selected: "#171717",
+      liquidity: "#424242",
+      disabled: "#000000",
     },
     xioRed: {
       main: "#D89C74",
@@ -54,10 +137,17 @@ export const darkTheme = createMuiTheme({
     navLink: {
       active: "#D89C74",
     },
+    shadowColor: {
+      main: "transparent",
+      secondary: "transparent",
+    },
+    ButtonRadius: {
+      small: 0,
+    },
   },
   typography: {
     fontFamily: "Montserrat",
-    fontSize: 12,
+    fontSize: 11,
   },
 });
 
@@ -96,10 +186,15 @@ export const lightTheme = createMuiTheme({
       secondary4: "#eeeee",
       secondary2: "#f5f5f5",
       selected: "#e5e5e5",
+      liquidity: "#e5e5e5",
+      disabled: "#E2E2E2",
     },
     button: {
       dark: "#555555",
-      red: "#e2874a",
+      red: "#D89C74",
+      retro: "#D89C74",
+      hover: "#d98955",
+      selected: "#e37934",
     },
     buttonText: {
       dark: "#ffffff",
@@ -112,10 +207,17 @@ export const lightTheme = createMuiTheme({
     navLink: {
       active: "#e2874a",
     },
+    shadowColor: {
+      main: "transparent",
+      secondary: "transparent",
+    },
+    ButtonRadius: {
+      small: 0,
+    },
   },
   typography: {
     fontFamily: "Montserrat",
-    fontSize: 12,
+    fontSize: 11,
   },
 });
 
@@ -143,7 +245,7 @@ export const lightTheme = createMuiTheme({
 //       primary2: "#000000",
 //     },
 //     xioRed: {
-//       main: "#D89C74",
+//       main: "#c983d4",
 //     },
 //     background: {
 //       primary: "#000000",
@@ -152,7 +254,7 @@ export const lightTheme = createMuiTheme({
 //     },
 //     button: {
 //       dark: "#555555",
-//       red: "#D89C74",
+//       red: "#c983d4",
 //     },
 //     buttonText: {
 //       dark: "#ffffff",

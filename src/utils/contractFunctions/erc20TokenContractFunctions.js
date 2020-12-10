@@ -22,11 +22,9 @@ let isContractInitialized = false;
 
 export const initializeErc20TokenContract = async (address) => {
   contract = erc20TokenContract(address);
-  isContractInitialized = true;
-};
-
-export const initializeErc20TokenInfuraContract = async (address) => {
-  contract = erc20TokenInfuraContract(address);
+  if (!contract) {
+    contract = erc20TokenInfuraContract(address);
+  }
   isContractInitialized = true;
 };
 
@@ -38,6 +36,16 @@ export const symbol = async () => {
     return symbol;
   } catch (e) {
     _error("ERROR symbol -> ", e);
+  }
+};
+export const name = async () => {
+  try {
+    checkContractInitialized();
+
+    const name = await contract.methods.name().call();
+    return name;
+  } catch (e) {
+    _error("ERROR name -> ", e);
   }
 };
 
@@ -52,7 +60,7 @@ export const decimals = async () => {
   }
 };
 
-export const approve = async (address, tab, amount) => {
+export const approve = async (address, tab, step, success = false, amount) => {
   try {
     if (tab === "stake") {
       setDialogStepIndep("pendingApproval");
@@ -73,12 +81,14 @@ export const approve = async (address, tab, amount) => {
     }
     let gasAmount;
     try {
+      //
       gasAmount = await contract.methods
         .approve(address, amount ? amount : MaxUint256._hex)
         .estimateGas({ gas: 10000000, from: walletAddress });
     } catch (e) {
       _error("ERROR Approve gasAmount -> ", e);
     }
+    //amount ? amount : MaxUint256._hex.
     const _approve = await contract.methods
       .approve(address, amount ? amount : MaxUint256._hex)
       .send({
@@ -96,8 +106,19 @@ export const approve = async (address, tab, amount) => {
           setSwapDialogStepIndep("swapProposal");
         }
         if (tab === "pool") {
-          setPoolDialogStepIndep("poolProposal");
+          if (success) {
+            setPoolDialogStepIndep("successApproval");
+          } else {
+            if (step) {
+              setPoolDialogStepIndep("approvalTokenProposal");
+            } else {
+              setPoolDialogStepIndep("poolProposal");
+            }
+          }
         }
+
+        setLoadingIndep({ approval: false });
+
         // tab === "stake"
         //   ? setDialogStepIndep("flashstakeProposal")
         //   : setSwapDialogStepIndep("swapProposal");
@@ -215,6 +236,17 @@ export const balanceOf = async () => {
     return _balance;
   } catch (e) {
     _error("ERROR balanceOf -> ", e);
+  }
+};
+
+export const totalSupply = async () => {
+  try {
+    checkContractInitialized();
+
+    const _totalSupply = await contract.methods.totalSupply().call();
+    return _totalSupply;
+  } catch (e) {
+    _error("ERROR totalSupply ->", e);
   }
 };
 

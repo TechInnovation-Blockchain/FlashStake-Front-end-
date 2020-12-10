@@ -5,19 +5,26 @@ import Web3 from "web3";
 import { CONSTANTS } from "../../utils/constants";
 import { setLoading } from "./uiActions";
 import {
-  initializeBalanceInfuraContract,
+  initializeBalanceContract,
   getBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
 import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
 import { _error } from "../../utils/log";
 import {
-  initializeFlashstakeProtocolContract,
-  getXPY,
-} from "../../utils/contractFunctions/FlashStakeProtocolContract";
+  initializeFlashProtocolContract,
+  getFPY,
+} from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import {
   initializeFlashstakePoolContract,
   getAPYStake,
 } from "../../utils/contractFunctions/flashstakePoolContractFunctions";
+import {
+  totalSupply,
+  initializeErc20TokenContract,
+} from "../../utils/contractFunctions/erc20TokenContractFunctions";
+import { getQueryData, getAllQueryData } from "./queryActions";
+import { store } from "../../config/reduxStore";
+import { trunc } from "../../utils/utilFunc";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -28,10 +35,16 @@ export const _getTokenPrice = _.memoize(async () => {
   return response;
 });
 
-export const _getXPY = _.memoize(async () => {
-  await initializeFlashstakeProtocolContract();
-  const _xpy = await getXPY();
-  return _xpy;
+export const _getFPY = _.memoize(async () => {
+  // const {
+  //   flashStake: {
+  //     initialValues: { quantity },
+  //   },
+  // } = store.getState();
+
+  await initializeFlashProtocolContract();
+  const _fpy = await getFPY();
+  return _fpy;
 });
 
 export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
@@ -40,36 +53,114 @@ export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
   return _apyStake;
 });
 
+export const updateApyPools = (quantity, poolsParam) => async (
+  dispatch,
+  getState
+) => {
+  let _apyAllPools = {};
+  let _pools = poolsParam;
+  try {
+    const {
+      user: { pools },
+      flashstake: { stakeQty },
+    } = await getState();
+    if (!_pools) {
+      _pools = pools;
+    }
+
+    let response = await _getTokenPrice();
+    const queryData = await getAllQueryData();
+
+    if (response?.data) {
+      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _zero = JSBI.BigInt("0");
+      for (let i = 0; i < _pools.length; i++) {
+        const data = queryData[_pools[i].id];
+        const _quantity = JSBI.BigInt(
+          Web3.utils.toWei(String(stakeQty || "1"))
+        );
+        const _getPercentStaked = JSBI.divide(
+          JSBI.multiply(
+            JSBI.add(JSBI.BigInt(data.flashBalance), _quantity),
+            _precision
+          ),
+          JSBI.BigInt(data.totalSupply)
+        );
+        const _fpy = JSBI.divide(
+          JSBI.subtract(_precision, _getPercentStaked),
+          JSBI.BigInt("2")
+        );
+        //_fpy0
+        const _getPercentStaked0 = JSBI.divide(
+          JSBI.multiply(
+            JSBI.add(JSBI.BigInt(data.flashBalance), _zero),
+            _precision
+          ),
+          JSBI.BigInt(data.totalSupply)
+        );
+        const _fpy0 = JSBI.divide(
+          JSBI.subtract(_precision, _getPercentStaked0),
+          JSBI.BigInt("2")
+        );
+        //apy
+        const _lpFee = JSBI.subtract(
+          JSBI.BigInt("1000"),
+          JSBI.divide(_fpy0, JSBI.BigInt(5e15))
+        );
+        const _apyStake = Web3.utils.fromWei(
+          String(
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.multiply(_fpy, _lpFee),
+                JSBI.BigInt(data.reserveAltAmount)
+              ),
+              JSBI.add(
+                JSBI.multiply(
+                  JSBI.BigInt(data.reserveFlashAmount),
+                  JSBI.BigInt("1000")
+                ),
+                JSBI.multiply(_fpy, _lpFee)
+              )
+            )
+          )
+        );
+        const tokenPrice =
+          response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
+            .usd || 0;
+        // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
+        _apyAllPools[_pools[i].id] = trunc(
+          ((_apyStake * tokenPrice) /
+            response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0) * 100
+        );
+      }
+    }
+  } catch (e) {
+    _error("ERROR updateApyPools -> ", e);
+  }
+
+  dispatch({
+    type: "APY_ALL_POOLS",
+    payload: _apyAllPools,
+  });
+};
+
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   let _tokenList = [];
   try {
     if (data?.length) {
-      dispatch(setLoading({ dapp: false }));
       _pools = JSON.parse(JSON.stringify(data));
+      dispatch({
+        type: "POOL",
+        payload: _pools,
+      });
       _tokenList = _pools.map((_pool) => _pool.tokenB.id);
-      let response;
-      try {
-        response = await _getTokenPrice();
-      } catch (e) {
-        _error("ERROR pricingAPI -> ", e);
-      }
-      if (response?.data) {
-        const _xpy = await _getXPY();
-        for (let i = 0; i < _pools.length; i++) {
-          _pools[i].tokenPrice =
-            response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
-              .usd || 0;
-          const _apyStake = await _getAPYStake(_pools[i].id, _xpy);
-          _pools[i].apy =
-            (_apyStake * _pools[i].tokenPrice) /
-              response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0;
-        }
-      }
+      dispatch(updateApyPools("1", _pools));
     }
   } catch (e) {
     _error("ERROR updatePools -> ", e);
   } finally {
+    dispatch(setLoading({ dapp: false }));
     dispatch({
       type: "POOL",
       payload: _pools,
@@ -82,108 +173,128 @@ export const updatePools = (data) => async (dispatch) => {
   }
 };
 
-export const calculateBurnSingleStake = (_stake) => {
-  // burnAmount = ((_amount.mul(_remainingDays)).div(_totalDays));
+const getPercentageUnStaked = async (_stake) => {
+  const _queryData = await getQueryData(_stake.pool.id);
+  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _locked = JSBI.subtract(
+    JSBI.BigInt(_queryData.flashBalance),
+    JSBI.BigInt(_stake.amountIn)
+  );
+  const _percentage = JSBI.divide(
+    JSBI.multiply(_locked, _precision),
+    JSBI.BigInt(_queryData.totalSupply)
+  );
+  return _percentage;
+};
+
+const getInvFPY = async (_stake) => {
+  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
+  return JSBI.subtract(_precision, _getPercentageUnStaked);
+};
+
+export const calculateBurnSingleStake = async (_stake) => {
   let _burnAmount = JSBI.BigInt(0);
-  const _expiry =
-    parseFloat(_stake.initiationTimestamp) +
-    parseFloat(_stake.expiredTimestamp);
+  const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
-    const _totalDays = parseFloat(_stake.expiredTimestamp) / 60;
-    let _remainingDays = (_expiry - _currentTime) / 60;
+    const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+    let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
+    const _getInvFpy = await getInvFPY(_stake);
 
     _burnAmount = JSBI.divide(
       JSBI.multiply(
-        JSBI.BigInt(_stake.stakeAmount),
-        JSBI.BigInt(String(Math.trunc(_remainingDays)))
+        JSBI.multiply(
+          JSBI.BigInt(_stake.amountIn),
+          JSBI.BigInt(String(Math.trunc(_remainingDays)))
+        ),
+        _getInvFpy
       ),
-      JSBI.BigInt(String(Math.trunc(_totalDays)))
+      JSBI.multiply(JSBI.BigInt(String(Math.trunc(_stake.expiry))), _precision)
     );
   }
 
   return _burnAmount.toString();
 };
 
-export const updateUserData = (data) => async (dispatch) => {
-  let stakes;
-  let swapHistory;
-  let expiredTimestamps = [];
-  let dappBalance = JSBI.BigInt(0);
-  let expiredDappBalance = JSBI.BigInt(0);
-  let totalBurnAmount = JSBI.BigInt(0);
-  if (data) {
-    stakes = data.stakes.map((_tempData) => {
-      const {
-        id,
-        initiationTimestamp,
-        expiredTimestamp,
-        stakeAmount,
-        rewardAmount,
-      } = _tempData;
+export const updateUserData = (data) => async (dispatch, getState) => {
+  try {
+    let stakes;
+    let swapHistory;
+    let expiredTimestamps = [];
+    let dappBalance = JSBI.BigInt(0);
+    let expiredDappBalance = JSBI.BigInt(0);
+    let totalBurnAmount = JSBI.BigInt(0);
+    if (data) {
+      stakes = await Promise.all(
+        data.stakes.map(async (_tempData) => {
+          const { id, amountIn, expireAfter, rewardAmount } = _tempData;
 
-      let expiryTime =
-        parseFloat(initiationTimestamp) + parseFloat(expiredTimestamp);
-      let expired = expiryTime < Date.now() / 1000;
-      dappBalance = JSBI.add(dappBalance, JSBI.BigInt(stakeAmount));
-      let _burnAmount = "0";
-      if (expired) {
-        expiredDappBalance = JSBI.add(
-          expiredDappBalance,
-          JSBI.BigInt(stakeAmount)
-        );
-        expiredTimestamps.push(id);
-      } else {
-        _burnAmount = calculateBurnSingleStake(_tempData);
-        totalBurnAmount = JSBI.add(totalBurnAmount, JSBI.BigInt(_burnAmount));
-      }
-      return {
-        ..._tempData,
-        stakeAmount: Web3.utils.fromWei(stakeAmount),
-        rewardAmount: Web3.utils.fromWei(rewardAmount),
-        expiryTime,
-        expired,
-        amountAvailable: expired
-          ? Web3.utils.fromWei(_tempData.stakeAmount)
-          : "0",
-        burnAmount: Web3.utils.fromWei(_burnAmount),
-      };
-    });
-    swapHistory = data.swapHistory.map((_swapHis) => ({
-      ..._swapHis,
-      swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
-      flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
-    }));
-    dispatch({
-      type: "USER_DATA",
-      payload: {
-        ...data,
-        expiredTimestamps,
-        stakes,
-        dappBalance: Web3.utils.fromWei(dappBalance.toString()),
-        swapHistory,
-        expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
-        totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
-        totalBalanceWithBurn: Web3.utils.fromWei(
-          String(JSBI.subtract(dappBalance, totalBurnAmount))
-        ),
-      },
-    });
-    dispatch(updateAllBalances());
-  } else {
-    dispatch({
-      type: "USER_DATA",
-      payload: {
-        swapHistory: [],
-        stakes: [],
-        dappBalance: "0",
-        expiredDappBalance: "0",
-        expiredTimestamps: [],
-        totalBurnAmount: "0",
-        totalBalanceWithBurn: "0",
-      },
-    });
+          let expired = parseFloat(expireAfter) < Date.now() / 1000;
+          dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
+          let _burnAmount = "0";
+          if (expired) {
+            expiredDappBalance = JSBI.add(
+              expiredDappBalance,
+              JSBI.BigInt(amountIn)
+            );
+            expiredTimestamps.push(id);
+          } else {
+            _burnAmount = await calculateBurnSingleStake(_tempData);
+            totalBurnAmount = JSBI.add(
+              totalBurnAmount,
+              JSBI.BigInt(_burnAmount)
+            );
+          }
+          return {
+            ..._tempData,
+            stakeAmount: Web3.utils.fromWei(amountIn),
+            rewardAmount: Web3.utils.fromWei(rewardAmount),
+            expiryTime: parseFloat(expireAfter),
+            expired,
+            amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
+            burnAmount: Web3.utils.fromWei(_burnAmount),
+          };
+        })
+      );
+      swapHistory = data.swapHistory.map((_swapHis) => ({
+        ..._swapHis,
+        swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
+        flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
+      }));
+      dispatch({
+        type: "USER_DATA",
+        payload: {
+          ...data,
+          expiredTimestamps,
+          stakes,
+          dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+          swapHistory,
+          expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
+          totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
+          totalBalanceWithBurn: Web3.utils.fromWei(
+            String(JSBI.subtract(dappBalance, totalBurnAmount))
+          ),
+        },
+      });
+      dispatch(updateAllBalances());
+    } else {
+      dispatch({
+        type: "USER_DATA",
+        payload: {
+          swapHistory: [],
+          stakes: [],
+          dappBalance: "0",
+          expiredDappBalance: "0",
+          expiredTimestamps: [],
+          totalBurnAmount: "0",
+          totalBalanceWithBurn: "0",
+        },
+      });
+    }
+  } catch (e) {
+    _error("ERROR updateUserData -> ", e);
   }
 };
 
@@ -224,7 +335,7 @@ const getBalancesIntervaled = (function () {
       _poolsLenght !== poolsLenght
     ) {
       try {
-        await initializeBalanceInfuraContract();
+        await initializeBalanceContract();
         _lastOutput = await getBalances();
         _lastCalledTimestamp = Date.now();
         _account = account;
@@ -280,4 +391,31 @@ export const updateAllBalances = () => async (dispatch, getState) => {
   } catch (e) {
     _error("ERROR updateAllBalances -> ", e);
   }
+};
+
+export const setPoolData = (data) => {
+  return {
+    type: "POOL_DATA",
+    payload: data,
+  };
+};
+export const setPoolDataBalance = (data) => {
+  return {
+    type: "POOL_DATA_BALANCE",
+    payload: data,
+  };
+};
+export const setPoolItems = (data) => {
+  return {
+    type: "POOL_ITEMS",
+    payload: data,
+  };
+};
+export const setTotalSupply = async (data) => {
+  await initializeErc20TokenContract(data);
+  const _data = await totalSupply(data);
+  return {
+    type: "TOTAL_SUPPLY",
+    payload: _data,
+  };
 };

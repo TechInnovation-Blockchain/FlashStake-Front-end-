@@ -2,6 +2,7 @@ import { store } from "../../config/reduxStore";
 import { setLoading } from "./uiActions";
 import { JSBI } from "@uniswap/sdk";
 import Web3 from "web3";
+import React from "react";
 
 import {
   initializeFlashstakeProtocolContract,
@@ -63,7 +64,7 @@ export const getDashboardProps = (data) => async (dispatch) => {
     }
   } catch (e) {
     stakedPortals = [];
-    console.error("ERROR getDashboardProps -> ", e);
+    _error("ERROR getDashboardProps -> ", e);
   }
   dispatch({
     type: "STAKED_PORTALS",
@@ -79,18 +80,19 @@ const burnSingleStake = (quantity, _baseInterestRate, remainingDuration) => {
 export const calculateBurnStakes = (stakes) => {
   let burn = 0;
   const {
-    contract: { baseInterestRate },
+    contract: { baseInterestRate, oneDay },
   } = store.getState();
   const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
 
   stakes
     .filter(
       (_stake) =>
-        !_stake.expired && _stake.expiry > parseFloat(Date.now() / 1000)
+        !_stake.expired && _stake.expireAfter > parseFloat(Date.now() / 1000)
     )
     .map((_stake) => {
       const remainingDuration =
-        (parseFloat(_stake.expiry) - Math.ceil(Date.now() / 1000)) / 60;
+        (parseFloat(_stake.expireAfter) - Math.ceil(Date.now() / 1000)) /
+        oneDay;
       burn += burnSingleStake(
         Web3.utils.fromWei(_stake.stakeAmount),
         _baseInterestRate,
@@ -104,7 +106,7 @@ export const calculateBurnStakes = (stakes) => {
 export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
   let burn = 0;
   const {
-    contract: { baseInterestRate },
+    contract: { baseInterestRate, oneDay },
   } = store.getState();
   const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
 
@@ -122,7 +124,7 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
           (parseFloat(_stake.initialTimestamp) +
             parseFloat(_stake.endTimestamp) -
             Math.ceil(Date.now() / 1000)) /
-          60;
+          oneDay;
 
         if (remainingAmount > parseFloat(_stake.stakeAmountConverted)) {
           remainingAmount -= parseFloat(_stake.stakeAmountConverted);
@@ -154,13 +156,13 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
       type: "WITHDRAW_REQUEST",
       payload: {
         quantity: _amount ? _amount : Web3.utils.fromWei(amount.toString()),
-        symbol: "FLASH",
+        symbol: "$FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
     await unstakeALT(timestamps, amount.toString());
   } catch (e) {
-    console.error("ERROR withdrawSpecificStakes -> ", e);
+    _error("ERROR withdrawSpecificStakes -> ", e);
   }
 };
 
@@ -175,7 +177,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
             : type === "max"
             ? portal.totalStakeAmount - calculateBurn(portal)
             : amount - calculateBurn(portal, false, amount),
-        symbol: "FLASH",
+        symbol: "$FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
@@ -197,7 +199,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
           ])
     );
   } catch (e) {
-    console.error("ERROR withdraw -> ", e);
+    _error("ERROR withdraw -> ", e);
   }
 };
 
@@ -250,22 +252,124 @@ export const toggleAccordianExpanded = (val) => {
   };
 };
 
+// export const selectStake = (id) => async (dispatch, getState) => {
+//   try {
+//     const {
+//       user: { stakes },
+//       dashboard: { selectedStakes },
+//       ui: { falseSelected },
+//     } = await getState();
+
+//     if (Object.keys(selectedStakes).length === 0) {
+//       dispatch({
+//         type: "SELECT_STAKE",
+//         payload: id,
+//       });
+//     } else {
+//       const exp = stakes?.filter((stake) => stake.id === id);
+//       if (!exp[0].expired) {
+//         if (exp[0].id !== id) {
+//           dispatch({
+//             type: "CLEAR_SELECTION",
+//             payload: {},
+//           });
+//         }
+//         dispatch({
+//           type: "SELECT_STAKE",
+//           payload: id,
+//         });
+//         dispatch({
+//           type: "FALSE_SELECTION",
+//           payload: false,
+//         });
+//         // setFalseSelected(false);
+//       }
+//       if (exp[0].expired) {
+//         const exp2 = stakes?.filter((stake) => id === stake.id);
+//         if (exp2[0].expired && !falseSelected) {
+//           dispatch({
+//             type: "CLEAR_SELECTION",
+//             payload: {},
+//           });
+//         }
+//         dispatch({
+//           type: "FALSE_SELECTION",
+//           payload: true,
+//         });
+//         dispatch({
+//           type: "SELECT_STAKE",
+//           payload: id,
+//         });
+//       }
+//     }
+
+//     const {
+//       user: { stakes: Stakes },
+//       dashboard: { selectedStakes: SelectedStakes },
+//     } = await getState();
+
+//     const _SelectedStakes = Stakes.filter((stake) => SelectedStakes[stake.id]);
+//     let totalBurn = 0;
+//     let totalXIO = 0;
+
+//     _SelectedStakes.map((_stake) => {
+//       totalBurn += parseFloat(_stake.burnAmount) || 0;
+//       totalXIO += parseFloat(_stake.stakeAmount) || 0;
+//     });
+
+//     dispatch({
+//       type: "SUM_OF_BURN",
+//       payload: {
+//         totalBurn,
+//         totalXIO,
+//       },
+//     });
+//   } catch (e) {
+//     _error("ERROR  -> ", e);
+//     // setDialogStepIndep("failedStake");
+//     // showSnackbarIndep("Stake Transaction Failed.", "error");
+//   }
+// };
+
 export const selectStake = (id) => async (dispatch, getState) => {
   try {
+    const {
+      user: { stakes },
+      dashboard: { selectedStakes },
+    } = await getState();
+
+    const _currentStake = stakes.find((stake) => stake.id === id);
+    const _ids = Object.keys(selectedStakes).filter(
+      (_key) => selectedStakes[_key]
+    );
+
+    const _firstStake = stakes.find((_stake) => _stake.id === _ids[0]);
+    if (
+      _firstStake &&
+      ((!_firstStake.expired && _firstStake.id !== id) ||
+        (!_firstStake.expired && _currentStake.expired) ||
+        (_firstStake.expired && !_currentStake.expired))
+    ) {
+      dispatch({
+        type: "CLEAR_SELECTION",
+      });
+    }
+
     dispatch({
       type: "SELECT_STAKE",
       payload: id,
     });
 
     const {
-      user: { stakes },
-      dashboard: { selectedStakes },
+      user: { stakes: Stakes },
+      dashboard: { selectedStakes: SelectedStakes },
     } = await getState();
 
+    const _SelectedStakes = Stakes.filter((stake) => SelectedStakes[stake.id]);
     let totalBurn = 0;
     let totalXIO = 0;
-    const _selectedStakes = stakes.filter((stake) => selectedStakes[stake.id]);
-    _selectedStakes.map((_stake) => {
+
+    _SelectedStakes.map((_stake) => {
       totalBurn += parseFloat(_stake.burnAmount) || 0;
       totalXIO += parseFloat(_stake.stakeAmount) || 0;
     });
@@ -279,13 +383,18 @@ export const selectStake = (id) => async (dispatch, getState) => {
     });
   } catch (e) {
     _error("ERROR  -> ", e);
-    // setDialogStepIndep("failedStake");
-    // showSnackbarIndep("Stake Transaction Failed.", "error");
   }
 };
 
 export const clearSelection = () => {
   return {
     type: "CLEAR_SELECTION",
+  };
+};
+
+export const setStakeStatus = (data) => {
+  return {
+    type: "STAKE_STATUS",
+    payload: data,
   };
 };

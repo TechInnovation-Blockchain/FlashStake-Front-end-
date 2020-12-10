@@ -2,7 +2,6 @@ import {
   xioFlashstakeContract,
   xioFlashstakeInfuraContract,
 } from "../../contracts/getContract";
-// import { baseInterestRate } from "./xioPublicFactoryContractFunctions";
 import { getWalletAddressReduxState } from "../../redux/state";
 import {
   setLoadingIndep,
@@ -20,18 +19,18 @@ import {
   setStakeTxnHashIndep,
   setResetIndep,
   setPoolDialogStepIndep,
+  setCreateDialogStepIndep,
   setLiquidityTxnHashIndep,
   setWithdrawLiquidityTxnHash,
+  setWithdrawLiquidityTxnHashIndep,
+  setCloseLiquidityTxnHashIndep,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
-import axios from "axios";
-import { CONSTANTS } from "../constants";
 import { analytics } from "../../config/App";
 import Web3 from "web3";
-import { _log, _error } from "../log";
+import { _error, _log } from "../log";
 
 let contract;
-let infuraContract;
 let isContractInitialized = false;
 
 export const initializeFlashstakeProtocolContract = () => {
@@ -39,7 +38,6 @@ export const initializeFlashstakeProtocolContract = () => {
   if (!contract) {
     contract = xioFlashstakeInfuraContract();
   }
-  infuraContract = xioFlashstakeInfuraContract();
   isContractInitialized = true;
 };
 
@@ -67,80 +65,80 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     }
     contract.methods
       .stake(_token, xioQuantity, days, reward)
-      .estimateGas({ gas: 10000000, from: walletAddress }, async function (
-        error,
-        gasAmount
-      ) {
-        // const txHash = await web3.utils.sha3(
-        //   contract.methods.stake(_token, xioQuantity, days, reward)
-        // );
-        contract.methods
-          .stake(_token, xioQuantity, days, reward)
-          .send({
-            from: walletAddress,
-            gasLimit: gasAmount || 400000,
-            gasPrice: "10000000000",
-          })
-          .on("transactionHash", async (txnHash) => {
-            analytics.logEvent("USER_STAKE_TXN", {
-              address: `Address -> ${walletAddress}`,
-              txnHash,
-              amount: xioQuantity,
-              days: days,
-              selctedToken: _token,
-            });
-            addToTxnQueueIndep(txnHash);
-            setStakeTxnHashIndep(txnHash);
-            showSnackbarTxnIndep(
-              "Transaction Pending.",
-              "info",
-              "txnEtherScan",
-              txnHash,
-              true
-            );
-
-            const data = {
-              _id: txnHash,
-              txn: {
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        async function (error, gasAmount) {
+          // const txHash = await web3.utils.sha3(
+          //   contract.methods.stake(_token, xioQuantity, days, reward)
+          // );
+          contract.methods
+            .stake(_token, xioQuantity, days, reward)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", async (txnHash) => {
+              analytics.logEvent("USER_STAKE_TXN", {
+                address: `Address -> ${walletAddress}`,
+                txnHash,
                 amount: xioQuantity,
                 days: days,
                 selctedToken: _token,
-              },
-              type: "stake",
-            };
+              });
+              addToTxnQueueIndep(txnHash);
+              setStakeTxnHashIndep(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
+              // const data = {
+              //   _id: txnHash,
+              //   txn: {
+              //     amount: xioQuantity,
+              //     days: days,
+              //     selctedToken: _token,
+              //   },
+              //   type: "stake",
+              // };
+
+              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              //   _log("Transaction Hash Added", res);
+              // });
+            })
+            .then(function (receipt) {
+              setTimeout(() => {
+                setRefetchIndep(true);
+              }, 2000);
+              setStakeDialogStepIndep("successStake");
+              setLoadingIndep({ stake: false });
+
+              setResetIndep(true);
+              showSnackbarTxnIndep(
+                "Stake Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setStakeDialogStepIndep("rejectedStake");
+                showSnackbarIndep("Stake Transaction Rejected.", "error");
+              } else {
+                setStakeDialogStepIndep("failedStake");
+                showSnackbarIndep("Stake Transaction Failed.", "error");
+              }
+              setLoadingIndep({ stake: false });
+              _error("ERROR stake -> ", e);
             });
-          })
-          .then(function (receipt) {
-            setTimeout(() => {
-              setRefetchIndep(true);
-            }, 5000);
-            setStakeDialogStepIndep("successStake");
-            setLoadingIndep({ stake: false });
-
-            setResetIndep(true);
-            showSnackbarTxnIndep(
-              "Stake Transaction Successful.",
-              "success",
-              "txnEtherScan",
-              receipt.transactionHash,
-              false
-            );
-          })
-          .catch((e) => {
-            if (e.code === 4001) {
-              setStakeDialogStepIndep("rejectedStake");
-              showSnackbarIndep("Stake Transaction Rejected.", "error");
-            } else {
-              setStakeDialogStepIndep("failedStake");
-              showSnackbarIndep("Stake Transaction Failed.", "error");
-            }
-            setLoadingIndep({ stake: false });
-            _error("ERROR stake -> ", e);
-          });
-      });
+        }
+      );
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedStake");
@@ -173,73 +171,73 @@ export const unstake = async (_expiredIds) => {
     }
     contract.methods
       .unstake(_expiredIds)
-      .estimateGas({ gas: 10000000, from: walletAddress }, function (
-        error,
-        gasAmount
-      ) {
-        contract.methods
-          .unstake(_expiredIds)
-          .send({
-            from: walletAddress,
-            gasLimit: gasAmount || 400000,
-            gasPrice: "10000000000",
-          })
-          .on("transactionHash", async (txnHash) => {
-            analytics.logEvent("USER_UNSTAKE_TXN", {
-              address: `Address -> ${walletAddress}`,
-              txnHash,
-              _expiredIds,
-            });
-            addToTxnQueueIndep(txnHash);
-            setStakeTxnHashIndep(txnHash);
-            showSnackbarTxnIndep(
-              "Transaction Pending.",
-              "info",
-              "txnEtherScan",
-              txnHash,
-              true
-            );
-
-            const data = {
-              _id: txnHash,
-              txn: {
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        function (error, gasAmount) {
+          contract.methods
+            .unstake(_expiredIds)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", async (txnHash) => {
+              analytics.logEvent("USER_UNSTAKE_TXN", {
+                address: `Address -> ${walletAddress}`,
+                txnHash,
                 _expiredIds,
-              },
-              type: "unstake",
-            };
+              });
+              addToTxnQueueIndep(txnHash);
+              setStakeTxnHashIndep(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
+              // const data = {
+              //   _id: txnHash,
+              //   txn: {
+              //     _expiredIds,
+              //   },
+              //   type: "unstake",
+              // };
+
+              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              //   _log("Transaction Hash Added", res);
+              // });
+            })
+            .then(function (receipt) {
+              setTimeout(() => {
+                setRefetchIndep(true);
+              }, 2000);
+              setStakeDialogStepIndep("successUnstake");
+              setLoadingIndep({ unstake: false });
+
+              setResetIndep(true);
+              showSnackbarTxnIndep(
+                "Unstake Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setStakeDialogStepIndep("rejectedUnstake");
+                showSnackbarIndep("Unstake Transaction Rejected.", "error");
+              } else {
+                setStakeDialogStepIndep("failedUnstake");
+                showSnackbarIndep("Unstake Transaction Failed.", "error");
+              }
+              setLoadingIndep({ unstake: false });
+              _error("ERROR stake -> ", e);
             });
-          })
-          .then(function (receipt) {
-            setTimeout(() => {
-              setRefetchIndep(true);
-            }, 5000);
-            setStakeDialogStepIndep("successUnstake");
-            setLoadingIndep({ unstake: false });
-
-            setResetIndep(true);
-            showSnackbarTxnIndep(
-              "Unstake Transaction Successful.",
-              "success",
-              "txnEtherScan",
-              receipt.transactionHash,
-              false
-            );
-          })
-          .catch((e) => {
-            if (e.code === 4001) {
-              setStakeDialogStepIndep("rejectedUnstake");
-              showSnackbarIndep("Unstake Transaction Rejected.", "error");
-            } else {
-              setStakeDialogStepIndep("failedUnstake");
-              showSnackbarIndep("Unstake Transaction Failed.", "error");
-            }
-            setLoadingIndep({ unstake: false });
-            _error("ERROR stake -> ", e);
-          });
-      });
+        }
+      );
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedUnstake");
@@ -271,77 +269,77 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     }
     contract.methods
       .swap(_altQuantity, _token, _expectedOutput)
-      .estimateGas({ gas: 10000000, from: walletAddress }, function (
-        error,
-        gasAmount
-      ) {
-        contract.methods
-          .swap(_altQuantity, _token, _expectedOutput)
-          .send({
-            from: walletAddress,
-            gasLimit: gasAmount || 400000,
-            gasPrice: "10000000000",
-          })
-          .on("transactionHash", async (txnHash) => {
-            analytics.logEvent("USER_SWAP_TXN", {
-              address: `Address -> ${walletAddress}`,
-              txnHash,
-              _altQuantity,
-              _token,
-              _expectedOutput,
-            });
-            addToTxnQueueIndep(txnHash);
-            setStakeTxnHashIndep(txnHash);
-            showSnackbarTxnIndep(
-              "Transaction Pending.",
-              "info",
-              "txnEtherScan",
-              txnHash,
-              true
-            );
-
-            const data = {
-              _id: txnHash,
-              txn: {
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        function (error, gasAmount) {
+          contract.methods
+            .swap(_altQuantity, _token, _expectedOutput)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", async (txnHash) => {
+              analytics.logEvent("USER_SWAP_TXN", {
+                address: `Address -> ${walletAddress}`,
+                txnHash,
                 _altQuantity,
                 _token,
                 _expectedOutput,
-              },
-              type: "swap",
-            };
+              });
+              addToTxnQueueIndep(txnHash);
+              setStakeTxnHashIndep(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
 
-            axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              _log("Transaction Hash Added", res);
+              // const data = {
+              //   _id: txnHash,
+              //   txn: {
+              //     _altQuantity,
+              //     _token,
+              //     _expectedOutput,
+              //   },
+              //   type: "swap",
+              // };
+
+              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+              //   _log("Transaction Hash Added", res);
+              // });
+            })
+            .then(function (receipt) {
+              setTimeout(() => {
+                setRefetchIndep(true);
+              }, 2000);
+              setSwapDialogStepIndep("successSwap");
+              setLoadingIndep({ swap: false });
+
+              setResetIndep(true);
+              showSnackbarTxnIndep(
+                "Swap Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setSwapDialogStepIndep("rejectedSwap");
+                showSnackbarIndep("Swap Transaction Rejected.", "error");
+              } else {
+                setSwapDialogStepIndep("failedSwap");
+                showSnackbarIndep("Swap Transaction Failed.", "error");
+              }
+              setLoadingIndep({ swap: false });
+              _error("ERROR swap -> ", e);
             });
-          })
-          .then(function (receipt) {
-            setTimeout(() => {
-              setRefetchIndep(true);
-            }, 2000);
-            setSwapDialogStepIndep("successSwap");
-            setLoadingIndep({ swap: false });
-
-            setResetIndep(true);
-            showSnackbarTxnIndep(
-              "Swap Transaction Successful.",
-              "success",
-              "txnEtherScan",
-              receipt.transactionHash,
-              false
-            );
-          })
-          .catch((e) => {
-            if (e.code === 4001) {
-              setSwapDialogStepIndep("rejectedSwap");
-              showSnackbarIndep("Swap Transaction Rejected.", "error");
-            } else {
-              setSwapDialogStepIndep("failedSwap");
-              showSnackbarIndep("Swap Transaction Failed.", "error");
-            }
-            setLoadingIndep({ swap: false });
-            _error("ERROR swap -> ", e);
-          });
-      });
+        }
+      );
   } catch (e) {
     if (e.code === 4001) {
       setSwapDialogStepIndep("rejectedSwap");
@@ -363,7 +361,7 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
 
 export const paused = async () => {
   try {
-    const _paused = await infuraContract.methods.paused().call();
+    const _paused = await contract.methods.paused().call();
     return _paused;
   } catch (e) {
     _error("ERROR paused -> ", e);
@@ -375,26 +373,12 @@ export const calculateXPY = async (xioQuantity, days) => {
   try {
     checkContractInitialized();
 
-    const xpy = await infuraContract.methods
+    const xpy = await contract.methods
       .getMintAmountFromProtocol(xioQuantity, days)
       .call();
     return xpy;
   } catch (e) {
     _error("ERROR calculateXPY -> ", e);
-  }
-  return 0;
-};
-
-export const getXPY = async () => {
-  try {
-    checkContractInitialized();
-
-    const xpy = await infuraContract.methods
-      .getFPYFromProtocol(Web3.utils.toWei("1"))
-      .call();
-    return xpy;
-  } catch (e) {
-    _error("ERROR getXPY -> ", e);
   }
   return 0;
 };
@@ -522,6 +506,7 @@ export const addLiquidityInPool = (
             })
             .on("transactionHash", (txnHash) => {
               setLiquidityTxnHashIndep(txnHash);
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Transaction Pending.",
                 "info",
@@ -529,6 +514,7 @@ export const addLiquidityInPool = (
                 txnHash,
                 true
               );
+              setCloseLiquidityTxnHashIndep(false);
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successLiquidity");
@@ -546,12 +532,14 @@ export const addLiquidityInPool = (
             })
             .catch((e) => {
               if (e.code === 4001) {
+                setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("rejectedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Rejected.",
                   "error"
                 );
               } else {
+                setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("failedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Failed.",
@@ -559,7 +547,7 @@ export const addLiquidityInPool = (
                 );
               }
               setLoadingIndep({ pool: false });
-
+              setCloseLiquidityTxnHashIndep(false);
               _error("ERROR addLiquidityInPool -> ", e);
             });
         }
@@ -567,11 +555,14 @@ export const addLiquidityInPool = (
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposit Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposits Transaction Failed.", "error");
     }
+    setCloseLiquidityTxnHashIndep(false);
     _error("ERROR addLiquidityInPool -> ", e);
   }
 };
@@ -602,7 +593,8 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
               gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
-              setWithdrawLiquidityTxnHash(txnHash);
+              setWithdrawLiquidityTxnHashIndep(txnHash);
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Transaction Pending.",
                 "info",
@@ -610,9 +602,11 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
                 txnHash,
                 true
               );
+              setCloseLiquidityTxnHashIndep(false);
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successWithdrawLiquidity");
+              setCloseLiquidityTxnHashIndep(true);
               showSnackbarTxnIndep(
                 "Withdraw Liquidity Transaction Successful.",
                 "success",
@@ -622,12 +616,13 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
               );
               setRefetchIndep(true);
               setLoadingIndep({ withdrawPool: false });
-
+              setCloseLiquidityTxnHashIndep(false);
               return receipt;
             })
             .catch((e) => {
               if (e.code === 4001) {
                 setPoolDialogStepIndep("rejectedWithdrawLiquidity");
+                setCloseLiquidityTxnHashIndep(true);
                 showSnackbarIndep(
                   "Withdraw Liquidity Transaction Rejected.",
                   "error"
@@ -640,6 +635,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
                 );
               }
               setLoadingIndep({ withdrawPool: false });
+              setCloseLiquidityTxnHashIndep(false);
 
               _error("ERROR removeLiquidityInPool -> ", e);
             });
@@ -648,11 +644,89 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedWithdrawLiquidity");
+      setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Withdraw Liquidity Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedWithdrawLiquidity");
       showSnackbarIndep("Withdraw Liquidity Transaction Failed.", "error");
     }
+    setCloseLiquidityTxnHashIndep(false);
+
     _error("ERROR removeLiquidityInPool -> ", e);
+  }
+};
+
+export const createPool = (_token) => {
+  setLoadingIndep({ withdrawPool: true });
+
+  try {
+    showSnackbarIndep("Transaction Pending.", "info");
+    setCreateDialogStepIndep("pendingCreatePool");
+    checkContractInitialized();
+
+    const walletAddress = getWalletAddressReduxState();
+    if (!walletAddress) {
+      throw new _error("Wallet not activated.");
+    }
+
+    contract.methods
+      .createPool(_token)
+      .estimateGas(
+        { gas: 10000000, from: walletAddress },
+        (error, gasAmount) => {
+          contract.methods
+            .createPool(_token)
+            .send({
+              from: walletAddress,
+              gasLimit: gasAmount || 400000,
+              gasPrice: "10000000000",
+            })
+            .on("transactionHash", (txnHash) => {
+              setWithdrawLiquidityTxnHash(txnHash);
+              showSnackbarTxnIndep(
+                "Transaction Pending.",
+                "info",
+                "txnEtherScan",
+                txnHash,
+                true
+              );
+            })
+            .then(function (receipt) {
+              setCreateDialogStepIndep("successCreatePool");
+              showSnackbarTxnIndep(
+                "Create Pool Transaction Successful.",
+                "success",
+                "txnEtherScan",
+                receipt.transactionHash,
+                false
+              );
+              setRefetchIndep(true);
+              setLoadingIndep({ withdrawPool: false });
+              _log(receipt);
+              return receipt;
+            })
+            .catch((e) => {
+              if (e.code === 4001) {
+                setCreateDialogStepIndep("rejectedCreatePool");
+                showSnackbarIndep("Create Pool Transaction Rejected.", "error");
+              } else {
+                setCreateDialogStepIndep("failedCreatePool");
+                showSnackbarIndep("Create Pool Transaction Failed.", "error");
+              }
+              setLoadingIndep({ withdrawPool: false });
+
+              _error("ERROR CreatePool  -> ", e);
+            });
+        }
+      );
+  } catch (e) {
+    if (e.code === 4001) {
+      setCreateDialogStepIndep("rejectedCreatePool");
+      showSnackbarIndep("Create Pool Transaction Rejected.", "error");
+    } else {
+      setCreateDialogStepIndep("failedCreatePool");
+      showSnackbarIndep("Create Pool Transaction Failed.", "error");
+    }
+    _error("ERROR CreatePool -> ", e);
   }
 };

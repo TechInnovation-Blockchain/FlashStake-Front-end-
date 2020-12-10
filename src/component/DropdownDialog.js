@@ -8,12 +8,17 @@ import {
   List,
   ListItem,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
+import { store } from "../config/reduxStore";
+import { connect } from "react-redux";
 
-const useStyles = makeStyles((theme) => ({
+// const _localStorage = localStorage.getItem("themeMode");
+
+const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
     color: theme.palette.text.primary,
     fontWeight: 700,
@@ -27,9 +32,25 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: theme.spacing(1),
+    padding: _theme === "retro" ? 7 : 9,
     position: "relative",
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
+
+  retroDropdown: {
+    background: theme.palette.background.secondary2,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 7,
+    position: "relative",
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+  },
+
   dropdownIcon: {
     color: theme.palette.xioRed.main,
     position: "absolute",
@@ -65,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(2),
     paddingBottom: 0,
+
     "&>*": {
       marginBottom: theme.spacing(2),
     },
@@ -120,9 +142,15 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 700,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   link: {
     textDecoration: "none",
+  },
+  loadingIcon: {
+    marginRight: 5,
   },
   // tokensLogo: {
   //   filter: "grayscale(1)",
@@ -133,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function DropdownDialog({
+function DropdownDialog({
   children,
   closeTimeout,
   items = [],
@@ -142,6 +170,8 @@ export default function DropdownDialog({
   heading = "SELECT TOKEN",
   disableDrop,
   link,
+  _theme,
+  poolsApy,
   type = "stake",
 }) {
   const classes = useStyles();
@@ -231,7 +261,9 @@ export default function DropdownDialog({
           className={classes.link}
         >
           <Box
-            className={classes.dropdown}
+            className={
+              _theme === "retro" ? classes.retroDropdown : classes.dropdown
+            }
             onClick={() => !disableDrop && !link && setOpen(true)}
           >
             <Typography variant="body1" className={classes.primaryText}>
@@ -261,7 +293,9 @@ export default function DropdownDialog({
         </a>
       ) : (
         <Box
-          className={classes.dropdown}
+          className={
+            _theme === "retro" ? classes.retroDropdown : classes.dropdown
+          }
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>
@@ -274,7 +308,17 @@ export default function DropdownDialog({
                   width={15}
                   style={{ marginRight: 5 }}
                 />
-                {selectedValue.tokenB.symbol}
+                {selectedValue.tokenB.symbol}{" "}
+                {history.location.pathname === "/stake" &&
+                poolsApy[selectedValue.id]
+                  ? `(${
+                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
+                        parseInt(poolsApy[selectedValue.id]) >
+                      0
+                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                        : parseInt(poolsApy[selectedValue.id])
+                    }%)`
+                  : null}
               </Fragment>
             ) : (
               <span className={classes.disabledText}>SELECT</span>
@@ -347,22 +391,30 @@ export default function DropdownDialog({
                       style={{ marginRight: 5 }}
                     />
                     {_pool.tokenB.symbol}{" "}
-                    {history.location.pathname === "/swap"
+                    {history.location.pathname === "/swap" && _pool.tokenPrice
                       ? `($${_pool.tokenPrice})`
-                      : `(${
-                          parseFloat(_pool.apy).toFixed(2) -
-                            parseInt(_pool.apy) >
+                      : history.location.pathname === "/stake" &&
+                        poolsApy[_pool.id]
+                      ? `(${
+                          parseFloat(poolsApy[_pool.id]).toFixed(2) -
+                            parseInt(poolsApy[_pool.id]) >
                           0
-                            ? parseFloat(_pool.apy).toFixed(2)
-                            : parseInt(_pool.apy)
-                        }%)`}
+                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                            : parseInt(poolsApy[_pool.id])
+                        }%)`
+                      : null}
                   </Typography>
                 </ListItem>
               ))}
             </List>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
-              NOTHING TO SHOW
+              <CircularProgress
+                size={12}
+                color="inherit"
+                className={classes.loadingIcon}
+              />{" "}
+              GETTING TOKENS
             </Typography>
           )}
         </Container>
@@ -370,3 +422,7 @@ export default function DropdownDialog({
     </Fragment>
   );
 }
+
+const mapStateToProps = ({ user: { poolsApy } }) => ({ poolsApy });
+
+export default connect(mapStateToProps, {})(DropdownDialog);

@@ -33,12 +33,11 @@ import {
   PageAnimation,
   PoolTable,
 } from "../../component";
+import AddDropDown from "../../component/AddDropDown";
 import {
   setSelectedStakeToken,
   setSelectedRewardToken,
-  getApprovalXIO,
   calculateReward,
-  checkAllowance,
   getBalanceXIO,
   stakeXIO,
   setPoolDialogStep,
@@ -50,7 +49,6 @@ import {
   removeTokenLiquidityInPool,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
-import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import {
   setLoading,
@@ -64,6 +62,10 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { getQueryData } from "../../redux/actions/queryActions";
 import Radio from "@material-ui/core/Radio";
+import axios from "axios";
+import { setPoolData } from "../../redux/actions/userActions";
+import { JSBI } from "@uniswap/sdk";
+import { _error } from "../../utils/log";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -71,6 +73,18 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     // justifyContent: "space-evenly",
+  },
+  contentContainer2: {
+    padding: theme.spacing(4),
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    // height: "200px",
+  },
+  comingSoon: {
+    color: theme.palette.xioRed.main,
+    fontWeight: 700,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
@@ -80,6 +94,13 @@ const useStyles = makeStyles((theme) => ({
     // [theme.breakpoints.down("xs")]: {
     //   fontSize: 8,
     // },
+  },
+  secondaryText2: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+    textAlign: "center",
+    width: "100%",
+    padding: theme.spacing(1, 0),
   },
   primaryText: {
     color: theme.palette.text.primary,
@@ -128,6 +149,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     background: theme.palette.background.secondary2,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
@@ -153,6 +177,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 0,
     top: "50%",
+    height: 35,
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
 
@@ -232,7 +257,7 @@ const useStyles = makeStyles((theme) => ({
   dashboardAccordian: {
     color: theme.palette.text.grey,
     "&:hover": {
-      color: "#D89C74",
+      color: theme.palette.xioRed.main,
     },
   },
   accordion: {
@@ -257,6 +282,23 @@ const useStyles = makeStyles((theme) => ({
     // position: "absolute",
     // left: 2,
     // top: "10%",
+  },
+  gridSpace: {
+    margin: theme.spacing(1),
+  },
+  gridSpace2: {
+    margin: theme.spacing(1, 0),
+  },
+  outerBox: {
+    backgroundColor: theme.palette.background.secondary,
+    borderRadius: 5,
+    padding: theme.spacing(1),
+    height: "100%",
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
 
@@ -358,31 +400,28 @@ function Pool({
   allowanceALTPool,
   getApprovalXIOPool,
   getApprovalALTPool,
-  reserveXioAmount,
+  reserveFlashAmount,
   reserveAltAmount,
   walletBalancesPool,
   liquidityRequest,
   withdrawLiquidityTxnHash,
   withdrawLiquidityRequest,
+  setPoolData,
+  poolData,
+  theme,
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
-  const [days, setDays] = useState(initialValues.days);
   // const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
   const ref = useRef(null);
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setHeightValue(ref?.current?.clientHeight);
-    }, 100);
-  });
+  const [queryData, setQueryData] = useState({});
 
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");
@@ -393,12 +432,9 @@ function Pool({
       toggle();
     }
   }, [history.location.pathname]);
-  // console.log(history.location.pathname);
   useEffect(() => {
-    document.title = "Pool - XIO | The Future is at Stake";
+    document.title = "Pool - $FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
-
-  // const debouncedUpdateQueryData = useCallback(debounce(getQueryData, 500), []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
   // const [height2, setHeight2] = useState(0);
@@ -419,35 +455,82 @@ function Pool({
       });
   }, []);
 
+  useEffect(() => {
+    if (!expanding) {
+      setExpanded2(true);
+      setTimeout(() => {
+        setExpandAccodion(true);
+      }, 500);
+    }
+  }, [expanding, setExpandAccodion]);
+
+  const fetchQueryData = async () => {
+    const _queryData = await getQueryData(selectedPortal);
+    setQueryData(_queryData);
+  };
+
+  useEffect(() => {
+    if (selectedPortal) {
+      fetchQueryData();
+    }
+  }, [selectedPortal]);
+
   const quote = useCallback(
     async (_amountA, _amountType = "alt") => {
-      const { reserveXioAmount, reserveAltAmount } = await getQueryData(
-        selectedPortal
-      );
-      const [_reserveA, _reserveB] =
-        _amountType === "alt"
-          ? [reserveAltAmount, reserveXioAmount]
-          : [reserveXioAmount, reserveAltAmount];
-      return (_amountA * _reserveB) / _reserveA;
+      try {
+        const _queryData = await getQueryData(selectedPortal);
+        const { reserveFlashAmount, reserveAltAmount } = _queryData;
+        if (reserveFlashAmount <= 0 && reserveAltAmount <= 0) {
+          return true;
+        }
+        const [_reserveA, _reserveB] =
+          _amountType === "alt"
+            ? [reserveAltAmount, reserveFlashAmount]
+            : [reserveFlashAmount, reserveAltAmount];
+        return Web3.utils.fromWei(
+          String(
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(_reserveB)
+              ),
+              JSBI.BigInt(_reserveA)
+            )
+          )
+        );
+      } catch (e) {
+        _error("ERROR quote Pool -> ", e);
+        return 0;
+      }
     },
     [selectedPortal]
   );
 
-  const onChangeQuantityAlt = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityAlt(value);
-      const _val = await quote(value, "alt");
-      setQuantityXIO(_val);
-    }
-  };
+  const onChangeQuantityAlt = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        setQuantityAlt(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
+        if (typeof _val !== "boolean") {
+          setQuantityXIO(_val);
+        }
+      }
+    },
+    [selectedRewardToken]
+  );
 
-  const onChangeQuantityXIO = async ({ target: { value } }) => {
-    if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
-      setQuantityXIO(value);
-      const _val = await quote(value, "xio");
-      setQuantityAlt(_val);
-    }
-  };
+  const onChangeQuantityXIO = useCallback(
+    async ({ target: { value } }) => {
+      if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
+        setQuantityXIO(value);
+        const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
+        if (typeof _val !== "boolean") {
+          setQuantityAlt(_val);
+        }
+      }
+    },
+    [selectedRewardToken]
+  );
 
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
@@ -456,7 +539,6 @@ function Pool({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Stake - XIO | The Future is at Stake";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -490,18 +572,50 @@ function Pool({
     }
   }, [active, account, selectedRewardToken, allowanceXIOPool]);
 
-  const onClickPool = useCallback(() => {
-    setPoolDialogStep("pendingLiquidity");
-    setShowStakeDialog(true);
-    addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
-  }, [quantityAlt, quantityXIO, selectedPortal]);
+  // const onClickPool = () => {
+  //  return <AddDropDown
+  //     quantityAlt={quantityAlt}
+  //     quantityXIO={quantityXIO}
+  //     selectedRewardToken={selectedRewardToken}
+  //     queryData={queryData}
+  //     disabled={
+  //       !active ||
+  //       !account ||
+  //       !selectedPortal ||
+  //       !allowanceXIOPool ||
+  //       !allowanceALTPool ||
+  //       quantityXIO <= 0 ||
+  //       quantityAlt <= 0 ||
+  //       loadingRedux.pool ||
+  //       chainId !== 4 ||
+  //       parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+  //       parseFloat(quantityXIO) > parseFloat(walletBalance)
+  //     }
+  //     onClickPool={onClickPool}
+  //   />;
+  // };
+
+  const onClickPool = useCallback(
+    (_quantityAlt, _quantityXIO) => {
+      setPoolDialogStep("pendingLiquidity");
+      setShowStakeDialog(true);
+      if (Number(_quantityAlt) && Number(_quantityXIO)) {
+        addTokenLiquidityInPool(_quantityAlt, _quantityXIO, selectedPortal);
+      } else {
+        addTokenLiquidityInPool(quantityAlt, quantityXIO, selectedPortal);
+      }
+    },
+    [quantityAlt, quantityXIO, selectedPortal]
+  );
 
   const onClickApprove = async () => {
     setPoolDialogStep("pendingApproval");
     setShowStakeDialog(true);
     if (!allowanceXIOPool) {
-      await getApprovalXIOPool("pool");
+      setPoolDialogStep("pendingApproval");
+      await getApprovalXIOPool();
     } else if (!allowanceALTPool) {
+      setPoolDialogStep("pendingApproval");
       await getApprovalALTPool(selectedRewardToken?.tokenB?.symbol, "pool");
     }
   };
@@ -527,30 +641,10 @@ function Pool({
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
-    // console.log(evt.which);
   };
 
-  // useEffect(() => {
-  //   if (quantity !== 0) {
-  //     setEth((eth * reserveAltAmount) / reserveXioAmount);
-  //     console.log(eth);
-  //   }
-  //   if (quantity2 !== 0) {
-  //     setXIO((quantity * reserveXioAmount) / reserveAltAmount);
-  //     console.log(xio);
-  //   }
-  // }, [quantity, reserveXioAmount, reserveAltAmount]);
-
-  useEffect(() => {
-    if (!expanding) {
-      setExpanded2(true);
-      setTimeout(() => {
-        setExpandAccodion(true);
-      }, 500);
-    }
-  }, [expanding, setExpandAccodion]);
-
   return (
+    // account !== "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
         <AnimateHeight
@@ -576,13 +670,15 @@ function Pool({
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
-                  <Grid container item xs={6}>
+                  <Grid container className={classes.gridSpace2} item xs={6}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        // variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        QUANTITY
+                        {/* QUANTITY */}
+                        Quantity
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -628,12 +724,13 @@ function Pool({
                     </Box>
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item className={classes.gridSpace2} xs={6}>
                     <Typography
-                      variant="overline"
+                      // variant="body2"
+                      variant="body1"
                       className={classes.secondaryText}
                     >
-                      POOL
+                      Pool
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -641,16 +738,19 @@ function Pool({
                       selectedValue={selectedRewardToken}
                       onSelect={setSelectedRewardToken}
                       heading="SELECT TOKEN"
+                      _theme={theme}
                     />
                   </Grid>
 
                   <Grid container item xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        // variant="body2"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        AMOUNT OF FLASH REQUIRED TO POOL
+                        {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                        Amount of $FLASH required to pool
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -689,29 +789,128 @@ function Pool({
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12}>
-                    {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography
-                        variant="overline"
-                        className={classes.infoText}
-                      >
-                        {/* YOU ARE ABOUT TO POOL {quantity} ETH + {quantity2} FLASH */}
-                      </Typography>
-                    ) : (
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
-                        SELECT A POOL TO ADD LIQUIDITY
-                      </Typography>
-                    )}
-                  </Grid>
+
+                  {selectedRewardToken?.tokenB?.symbol ? (
+                    <Fragment>
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                            $FLASH per {selectedRewardToken?.tokenB?.symbol}
+                          </Typography>
+                          <Tooltip
+                            title={
+                              queryData.reserveFlashAmount /
+                                queryData.reserveAltAmount || 0
+                            }
+                          >
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                queryData.reserveFlashAmount /
+                                  queryData.reserveAltAmount
+                              ) || 0}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            {selectedRewardToken?.tokenB?.symbol} per $FLASH
+                          </Typography>
+
+                          <Tooltip
+                            title={
+                              queryData.reserveAltAmount /
+                                queryData.reserveFlashAmount || 0
+                            }
+                          >
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                queryData.reserveAltAmount /
+                                  queryData.reserveFlashAmount
+                              ) || 0}
+                            </Typography>
+                          </Tooltip>
+                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Box flex={1} className={classes.outerBox}>
+                          <Typography
+                            // variant="body2"
+                            variant="body2"
+                            className={classes.secondaryText}
+                          >
+                            Share of Pool
+                          </Typography>
+                          <Tooltip
+                            title={`${
+                              (quantityXIO /
+                                (parseFloat(quantityXIO) +
+                                  parseFloat(
+                                    Web3.utils.fromWei(
+                                      queryData.reserveFlashAmount || "0"
+                                    )
+                                  ))) *
+                                100 || 0
+                            }%`}
+                          >
+                            <Typography
+                              variant="body1"
+                              className={classes.secondaryText}
+                            >
+                              {trunc(
+                                (quantityXIO /
+                                  (parseFloat(quantityXIO) +
+                                    parseFloat(
+                                      Web3.utils.fromWei(
+                                        queryData.reserveFlashAmount || "0"
+                                      )
+                                    ))) *
+                                  100
+                              ) || 0}
+                              %
+                            </Typography>
+                          </Tooltip>
+                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                        </Box>
+                      </Grid>
+                    </Fragment>
+                  ) : null}
+
+                  {!selectedRewardToken?.tokenB?.symbol ? (
+                    <Typography
+                      variant="body1"
+                      // variant="body2"
+                      className={classes.secondaryText2}
+                    >
+                      Select a pool to add liquidity
+                    </Typography>
+                  ) : null}
+
                   {!allowanceXIOPool || !allowanceALTPool ? (
                     <Grid container item xs={12} onClick={showWalletHint}>
                       <Grid item xs={6} className={classes.btnPaddingRight}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={
                             (!allowanceXIOPool || !allowanceALTPool) &&
                             !loadingRedux.approval
@@ -735,14 +934,14 @@ function Pool({
                             : !allowanceXIOPool
                             ? `APPROVE ${selectedStakeToken}`
                             : `APPROVE ${
-                                selectedRewardToken.tokenB.symbol || ""
+                                selectedRewardToken?.tokenB?.symbol || ""
                               }`}
                         </Button>
                       </Grid>
                       <Grid item xs={6} className={classes.btnPaddingLeft}>
                         <Button
                           fullWidth
-                          variant="red"
+                          variant="retro"
                           onClick={onClickPool}
                           disabled={
                             !active ||
@@ -766,10 +965,11 @@ function Pool({
                   ) : (
                     <Fragment>
                       <Grid container item xs={12} onClick={showWalletHint}>
-                        <Button
-                          fullWidth
-                          variant="red"
-                          onClick={onClickPool}
+                        <AddDropDown
+                          quantityAlt={quantityAlt}
+                          quantityXIO={quantityXIO}
+                          selectedRewardToken={selectedRewardToken}
+                          queryData={queryData}
                           disabled={
                             !active ||
                             !account ||
@@ -783,10 +983,9 @@ function Pool({
                             parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
-                          loading={loadingRedux.pool}
-                        >
-                          POOL
-                        </Button>
+                          onClickPool={onClickPool}
+                          showBack={false}
+                        />
                       </Grid>
                     </Fragment>
                   )}
@@ -796,12 +995,9 @@ function Pool({
                   selectedRewardToken &&
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
-                        BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE FLASH</b>
+                      <Typography variant="body2" className={classes.redText}>
+                        Before you can <b>pool</b>, you must{" "}
+                        <b>approve $FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -812,28 +1008,21 @@ function Pool({
                       onClick={showWalletHint}
                       className={classes.cursorPointer}
                     >
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
-                        CONNECT YOUR WALLET TO STAKE
+                      <Typography variant="body2" className={classes.redText}>
+                        Connect wallet to pool
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item xs={12}>
-                      <Typography
-                        variant="overline"
-                        className={classes.redText}
-                      >
-                        CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b>
+                      <Typography variant="body2" className={classes.redText}>
+                        Change network to <b>rinkeby</b> to add liquidity
                       </Typography>
                     </Grid>
                   ) : null}
                 </Grid>
               </AccordionDetails>
             </Accordion>
-
             <Accordion square expanded={!expanded2}>
               <AccordionSummary
                 aria-controls="panel2d-content"
@@ -856,6 +1045,9 @@ function Pool({
                 <PoolTable
                   onClickUnstake={onClickUnstake}
                   onClickApprovePool={onClickApprovePool}
+                  selectedQueryData={queryData}
+                  onClickPool={onClickPool}
+                  setShowStakeDialog={setShowStakeDialog}
                 />
               </AccordionDetails>
             </Accordion>
@@ -865,7 +1057,11 @@ function Pool({
         <Dialog
           open={showStakeDialog}
           // open={true}
-          steps={["APPROVE FLASH", "POOL"]}
+          steps={[
+            "APPROVE $FLASH",
+            `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+            "POOL",
+          ]}
           title="POOL"
           onClose={() => setShowStakeDialog(false)}
           status={["pending", "success", "failed", "rejected"].find((item) =>
@@ -873,11 +1069,11 @@ function Pool({
           )}
           step={dialogStep3}
           stepperShown={
-            // quantity > 0 && days > 0
-            //   ? dialogStep3 === "pendingApproval" ||
-            //     dialogStep3 === "poolProposal"
-            //   : null
-            false
+            quantityXIO > 0 && quantityAlt > 0
+              ? // ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "approvalTokenProposal" ||
+                dialogStep3 === "poolProposal"
+              : null
           }
           // stepperShown={true}
 
@@ -890,7 +1086,7 @@ function Pool({
           //      <br />
           //      <span className={classes.greenText}>SUCCESSFUL</span>
           //    </Typography>
-          //    <Button variant="red" fullWidth onClick={onClickClose}>
+          //    <Button variant="retro" fullWidth onClick={onClickClose}>
           //      CLOSE
           //    </Button>
           //  </Fragment>
@@ -906,72 +1102,86 @@ function Pool({
                   </Typography>
                 </Fragment>
               ),
+              approvalTokenProposal: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVE {selectedRewardToken?.tokenB?.symbol}
+                    <br />
+                  </Typography>
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    onClick={
+                      (!allowanceXIOPool || !allowanceALTPool) &&
+                      !loadingRedux.approval
+                        ? onClickApprove
+                        : () => {}
+                    }
+                    disabled={
+                      !selectedPortal ||
+                      !active ||
+                      !account ||
+                      loadingRedux.pool ||
+                      loadingRedux.approval ||
+                      chainId !== 4
+                    }
+                    loading={loadingRedux.approval && loadingRedux.approvalXIO}
+                  >
+                    {loadingRedux.approval && loadingRedux.approvalXIO
+                      ? "APPROVING"
+                      : !allowanceXIOPool
+                      ? `APPROVE ${selectedStakeToken}`
+                      : `APPROVE ${selectedRewardToken?.tokenB?.symbol || ""}`}
+                  </Button>
+                </Fragment>
+              ),
               poolProposal: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    POOOL
+                    LIQUIDITY DEPOSIT
                     <br />
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    IF YOU STAKE{" "}
-                    <span className={classes.infoTextSpan}>
-                      {/* {quantity || 0} FLASH{" "} */}
-                    </span>{" "}
-                    FOR{" "}
-                    <span className={classes.infoTextSpan}>
-                      {days || 0} MINS
-                    </span>{" "}
-                    YOU WILL{" "}
-                    <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "}
-                    GET{" "}
-                    {loadingRedux.reward ? (
-                      <CircularProgress
-                        size={12}
-                        className={classes.loaderStyle}
-                      />
-                    ) : (
-                      <Tooltip
-                        title={`${Web3.utils.fromWei(reward)} ${
-                          selectedRewardToken?.tokenB?.symbol || ""
-                        }`}
-                      >
-                        <span className={classes.infoTextSpan}>
-                          {trunc(Web3.utils.fromWei(reward))}{" "}
-                          {selectedRewardToken?.tokenB?.symbol || ""}
-                        </span>
-                      </Tooltip>
-                    )}
+                    Add{" "}
+                    <Tooltip title={`${quantityXIO} $FLASH`}>
+                      <span className={classes.redText}>
+                        {trunc(quantityXIO)} $FLASH
+                      </span>
+                    </Tooltip>{" "}
+                    and{" "}
+                    <Tooltip
+                      title={`${quantityAlt} ${selectedRewardToken?.tokenB?.symbol}`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(quantityAlt)}{" "}
+                        {selectedRewardToken?.tokenB?.symbol}
+                      </span>
+                    </Tooltip>{" "}
+                    into $FLASH/{selectedRewardToken?.tokenB?.symbol} pool
                   </Typography>
-                  <Button
-                    variant="red"
-                    fullWidth
-                    // onClick={
-                    //   !allowanceXIO
-                    //     ? () => {}
-                    //     : () => onClickPool(quantity, days)
-                    // }
+                  <AddDropDown
+                    quantityAlt={quantityAlt}
+                    quantityXIO={quantityXIO}
+                    selectedRewardToken={selectedRewardToken}
+                    queryData={queryData}
                     disabled={
                       !active ||
                       !account ||
                       !selectedPortal ||
-                      // quantity <= 0 ||
-                      days <= 0 ||
-                      loadingRedux.reward ||
-                      loadingRedux.stake ||
+                      !allowanceXIOPool ||
+                      !allowanceALTPool ||
+                      quantityXIO <= 0 ||
+                      quantityAlt <= 0 ||
+                      loadingRedux.pool ||
                       chainId !== 4 ||
-                      reward <= 0
-                      // ||
-                      // (active &&
-                      //   account &&
-                      //   parseFloat(quantity) > parseFloat(walletBalance))
+                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
                     }
-                    loading={loadingRedux.approval}
-                  >
-                    STAKE
-                  </Button>
+                    onClickPool={onClickPool}
+                  />
                 </Fragment>
               ),
               failedApproval: (
@@ -981,7 +1191,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -993,8 +1203,28 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              successApproval: (
+                <Fragment>
+                  <Typography variant="body2" className={classes.textBold}>
+                    APPROVAL
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    You have successfully approved
+                  </Typography>
+
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
+                    CLOSE
                   </Button>
                 </Fragment>
               ),
@@ -1008,7 +1238,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    ADDING{" "}
+                    Adding{" "}
                     <Tooltip
                       title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
@@ -1017,15 +1247,15 @@ function Pool({
                         {liquidityRequest.altSymbol}
                       </span>
                     </Tooltip>{" "}
-                    AND{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                    and{" "}
+                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                        {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
-                    TO{" "}
+                    to{" "}
                     <span className={classes.redText}>
-                      {liquidityRequest.altSymbol} POOL
+                      $FLASH/{liquidityRequest.altSymbol} pool
                     </span>
                   </Typography>
                 </Fragment>
@@ -1037,7 +1267,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1049,7 +1279,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1065,7 +1295,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY ADDED{" "}
+                    You have successfully added{" "}
                     <Tooltip
                       title={`${liquidityRequest.quantityAlt} ${liquidityRequest.altSymbol}`}
                     >
@@ -1074,15 +1304,15 @@ function Pool({
                         {liquidityRequest.altSymbol}
                       </span>
                     </Tooltip>{" "}
-                    AND{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
+                    and{" "}
+                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} FLASH
+                        {trunc(liquidityRequest.quantityXIO)} $FLASH
                       </span>
                     </Tooltip>{" "}
-                    TO{" "}
+                    to{" "}
                     <span className={classes.redText}>
-                      {liquidityRequest.altSymbol} POOL
+                      {liquidityRequest.altSymbol} pool
                     </span>
                   </Typography>
                   <Typography
@@ -1099,7 +1329,7 @@ function Pool({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>
@@ -1114,17 +1344,16 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    WITHDRAWING{" "}
+                    Withdrawing{" "}
                     <Tooltip
-                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                      title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)}
                       </span>
                     </Tooltip>{" "}
-                    FROM{" "}
                     <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} POOL
+                      $FLASH/{withdrawLiquidityRequest._token} LP tokens
                     </span>
                   </Typography>
                 </Fragment>
@@ -1136,7 +1365,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>FAILED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1148,7 +1377,7 @@ function Pool({
                     <br />
                     <span className={classes.redText}>REJECTED</span>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={closeDialog}>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
                     DISMISS
                   </Button>
                 </Fragment>
@@ -1164,18 +1393,15 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    YOU HAVE SUCCESSFULLY WITHDRAWN{" "}
+                    You have successfully withdrawn{" "}
                     <Tooltip
-                      title={`${withdrawLiquidityRequest._liquidity} xFLASH`}
+                      title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} xFLASH
+                        {trunc(withdrawLiquidityRequest._liquidity)} $FLASH/
+                        {withdrawLiquidityRequest._token} LP tokens
                       </span>
                     </Tooltip>{" "}
-                    FROM{" "}
-                    <span className={classes.redText}>
-                      {withdrawLiquidityRequest._token} POOL
-                    </span>
                   </Typography>
                   <Typography
                     variant="body2"
@@ -1183,6 +1409,7 @@ function Pool({
                   >
                     <a
                       href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      // href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1191,7 +1418,7 @@ function Pool({
                       VIEW ON ETHERSCAN
                     </a>
                   </Typography>
-                  <Button variant="red" fullWidth onClick={onClickClose}>
+                  <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
                 </Fragment>
@@ -1203,19 +1430,12 @@ function Pool({
     </PageAnimation>
   );
 }
-// const mapStateToProps = () => ({ ui: { animation, heightVal } }) => ({
-//   animation,
-//   heightVal,
-// });
-
-// export default connect(mapStateToProps, { setHeightValue })(Pool);
-
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal },
+  ui: { loading, expanding, animation, heightVal, theme },
   web3: { active, account, chainId },
-  user: { currentStaked, pools, walletBalance, walletBalancesPool },
-  query: { reserveXioAmount, reserveAltAmount },
+  user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
+  query: { reserveFlashAmount, reserveAltAmount },
   contract,
 }) => ({
   ...flashstake,
@@ -1229,9 +1449,11 @@ const mapStateToProps = ({
   walletBalance,
   animation,
   heightVal,
-  reserveXioAmount,
+  reserveFlashAmount,
   reserveAltAmount,
   walletBalancesPool,
+  poolData,
+  theme,
   ...contract,
 });
 
@@ -1255,4 +1477,5 @@ export default connect(mapStateToProps, {
   setExpandAccodion,
   updateAllBalances,
   setHeightValue,
+  setPoolData,
 })(Pool);

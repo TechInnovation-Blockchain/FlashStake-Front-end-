@@ -18,6 +18,8 @@ import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { setWeb3Provider } from "../contracts/getContract";
 import { walletList } from "../utils/connectors";
 import { _error } from "../utils/log";
+import SettingsIcon from "@material-ui/icons/Settings";
+import SlippageDialogue from "./SlippageDialogue";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -28,11 +30,39 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     zIndex: 1,
   },
+  BtnsContainer: {
+    // "&:hover": {
+    //   ".slippageButton": {
+    //     backgroundColor: `${theme.palette.button.hover} !important`,
+    //   },
+    // },
+    marginTop: theme.spacing(2),
+
+    "&:hover": {
+      "& button": {
+        background: `${theme.palette.button.hover} !important`,
+        color: "#fff !important",
+      },
+    },
+    position: "relative",
+  },
   connectWalletButton: {
     width: 250,
     borderRadius: 0,
-    marginTop: theme.spacing(2),
-    backgroundColor: theme.palette.background.secondary4,
+    // marginTop: theme.spacing(2),
+    // marginRight: theme.spacing(1),
+    // backgroundColor: theme.palette.,
+  },
+  slippageButton: {
+    borderRadius: 0,
+    // marginTop: theme.spacing(2),
+    // marginLeft: -10,
+    // backgroundColor: theme.palette.,
+    boxSizing: "border-box",
+    position: "absolute",
+    right: 0,
+    borderLeft: "none",
+    boxShadow: "none",
   },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
@@ -46,6 +76,10 @@ const useStyles = makeStyles((theme) => ({
     right: 20,
     zIndex: 10,
   },
+  connectText: {
+    paddingRight: theme.spacing(1),
+    // textAlign: "left !important",
+  },
 }));
 
 function WalletConnect({
@@ -57,11 +91,14 @@ function WalletConnect({
   balance,
   loading,
   setLoading,
+  changeApp,
+  toggleThemeMode,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
 
   const addressShorten = (address) => {
     if (address) {
@@ -144,7 +181,7 @@ function WalletConnect({
       <Box className={classes.connectWalletButtonContainer}>
         {walletBackdrop ? (
           <Typography variant="body2" className={classes.wallentConnectText}>
-            YOU MUST CONNECT YOUR WALLET FIRST
+            You must connect your wallet first
           </Typography>
         ) : null}
 
@@ -165,26 +202,50 @@ function WalletConnect({
           setOpen={setOpen}
         />
 
-        <Button
-          variant="dark"
-          className={classes.connectWalletButton}
-          onClick={() => {
-            !(active || account) ? setOpen(true) : setOpen2(true);
-          }}
-        >
-          {web3context.active
-            ? addressShorten(web3context.account)
-            : "CONNECT WALLET"}
-        </Button>
+        <SlippageDialogue
+          open={open3}
+          setOpen={setOpen3}
+          toggleThemeMode={toggleThemeMode}
+        />
+
+        <Box className={classes.BtnsContainer}>
+          <Button
+            variant={!changeApp ? "retro" : "red"}
+            className={classes.connectWalletButton}
+            onClick={() => {
+              !(active || account) ? setOpen(true) : setOpen2(true);
+            }}
+            disableRipple={true}
+          >
+            {web3context.active ? (
+              addressShorten(web3context.account)
+            ) : (
+              <Typography variant="body2" className={classes.connectText}>
+                CONNECT WALLET
+              </Typography>
+            )}
+          </Button>
+
+          <Button
+            disableRipple={true}
+            variant={!changeApp ? "retro" : "red"}
+            className={classes.slippageButton}
+            onClick={() => {
+              setOpen3(true);
+            }}
+          >
+            <SettingsIcon />
+          </Button>
+        </Box>
       </Box>
     </Fragment>
   );
 }
 
 const mapStateToProps = ({
-  ui: { walletBackdrop },
+  ui: { walletBackdrop, changeApp },
   web3: { active, account },
-}) => ({ walletBackdrop, active, account });
+}) => ({ walletBackdrop, active, account, changeApp });
 
 export default connect(mapStateToProps, { storeWeb3Context, setLoading })(
   WalletConnect

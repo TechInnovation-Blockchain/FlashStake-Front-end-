@@ -1,21 +1,57 @@
 import { _error } from "../../utils/log";
 import { store } from "../../config/reduxStore";
-import {
-  initializeQueryInfuraContract,
-  getReserves,
-} from "../../utils/contractFunctions/queryContractFunctions";
+import axios from "axios";
+import { CONSTANTS } from "../../utils/constants";
+// import {
+// initializeQueryContract,
+//   getReserves,
+// } from "../../utils/contractFunctions/queryContractFunctions";
 
-export const getQueryData = async (_poolId) => {
+const getReservesData = async () => {
   try {
-    const { query } = await store.getState();
-    if (Date.now() - query.timestamp >= 15000 || query.id !== _poolId) {
-      await initializeQueryInfuraContract();
-      const payload = await getReserves(_poolId);
+    const { data } = await axios.get(CONSTANTS.CACHE_SERVER);
+    return data;
+  } catch (e) {
+    _error("ERROR getReservesData -> ", e);
+    return {};
+  }
+};
+
+export const getAllQueryData = async () => {
+  try {
+    const _data = await getReservesData();
+    await store.dispatch({
+      type: "ALL_POOLS_DATA",
+      payload: _data,
+    });
+    return _data;
+  } catch (e) {
+    _error("ERROR updateAllQueryData -> ", e);
+    return {};
+  }
+};
+
+export const getQueryData = async (_poolId, forceRefetchQuery = false) => {
+  try {
+    const {
+      query,
+      // poolData
+    } = await store.getState();
+    if (
+      Date.now() - query.timestamp >= 15000 ||
+      query.id !== _poolId ||
+      forceRefetchQuery
+    ) {
+      const data = await getReservesData();
+      await store.dispatch({
+        type: "ALL_POOLS_DATA",
+        payload: data,
+      });
       await store.dispatch({
         type: "QUERY_DATA",
-        payload,
+        payload: { id: _poolId, ...data[_poolId] },
       });
-      return payload;
+      return data[_poolId];
     } else {
       return query;
     }

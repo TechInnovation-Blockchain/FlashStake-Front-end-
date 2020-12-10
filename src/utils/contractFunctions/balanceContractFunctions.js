@@ -15,11 +15,9 @@ let isContractInitialized = false;
 
 export const initializeBalanceContract = async () => {
   contract = balanceContract();
-  isContractInitialized = true;
-};
-
-export const initializeBalanceInfuraContract = async () => {
-  contract = balanceInfuraContract();
+  if (!contract) {
+    contract = balanceInfuraContract();
+  }
   isContractInitialized = true;
 };
 

@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
-import logoLight from "../assets/xio-logo-light.svg";
+import logoLight from "../assets/FlashPro5.svg";
 import flashDark from "../assets/flash-dark.svg";
 import flash from "../assets/FLASH2.svg";
+import $Flash from "../assets/Tokens/$FLASH.png";
 import {
   setExpandAccodion,
   setAnimationDirection,
+  setRetroTheme,
 } from "../redux/actions/uiActions";
 import { useHistory } from "react-router";
 
@@ -40,11 +42,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   navLinkText: {
+    // fontFamily: "Quota Bold",
     fontWeight: 900,
   },
   activeNavlink: {
     color: theme.palette.navLink.active,
     fontWeight: 900,
+    // borderBottom: `1px solid ${theme.palette.shadowColor.main}`,
   },
   navlinkFlash: {
     textDecoration: "none",
@@ -65,18 +69,28 @@ function Navbar({
   setExpandAccodion,
   themeMode,
   toggleThemeMode,
+  changeApp,
+  setRetroTheme,
+  toggleThemeMode2,
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
 
   const [animate, setAnimate] = useState(false);
-  const handleClick3 = () => {
-    setAnimate(true);
-    setTimeout(() => {
-      setAnimate(false);
-    }, 3500);
-  };
+  const [preTheme, setPreTheme] = useState(themeMode);
+  // const handleClick3 = () => {
+  //   setAnimate(true);
+  //   setTimeout(() => {
+  //     setAnimate(false);
+  //   }, 3500);
+  // };
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("themeMode") === "retro") {
+  //     localStorage.setItem("themeMode", "dark");
+  //   }
+  // }, []);
 
   const handleClick2 = () => {
     setExpandAccodion(false);
@@ -84,21 +98,24 @@ function Navbar({
 
   const [theme, setTheme] = useState(true);
 
-  const handleClick = () => {
-    // themeSwitchAction();
-    setTheme((val) => !val);
-    if (theme === true) {
-      themeMode = "dark";
-      toggleThemeMode();
-    } else {
-      themeMode = "light";
-      toggleThemeMode();
-    }
+  let watchDouble = 0;
+  const toggle = () => {
+    watchDouble += 1;
+    setTimeout(() => {
+      if (watchDouble === 2) {
+        toggleThemeMode2();
+      } else if (watchDouble === 1) {
+        if (localStorage.getItem("themeMode") !== "retro") {
+          toggleThemeMode();
+        }
+      }
+      watchDouble = 0;
+    }, 500);
   };
 
   let index;
 
-  const routes = ["/stake", "/swap", "/pool", "/vote"];
+  const routes = ["/stake", "/swap", "/pool", "/create"];
 
   return (
     <Box className={classes.navContainer}>
@@ -111,16 +128,18 @@ function Navbar({
           // onClick={handleClick2}
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 0;
+            setAnimationDirection(index);
             history.push("/stake");
             handleClick2();
           }}
           exact
         >
-          <Typography className={classes.navLinkText}>STAKE</Typography>
+          <Typography variant="body1" className={classes.navLinkText}>
+            STAKE
+          </Typography>
         </NavLink>
       </Box>
-      {/* <Divider orientation="vertical" flexItem /> */}
-      {/* <img src={logo} alt="logo" width={40} className={classes.logo} /> */}
+
       <Box className={classes.navlinkBox}>
         <NavLink
           to="/swap"
@@ -129,7 +148,6 @@ function Navbar({
           onClick={() => {
             index = routes.indexOf(history.location.pathname) - 1;
             setAnimationDirection(index);
-
             history.push("/swap");
             handleClick2();
           }}
@@ -143,14 +161,14 @@ function Navbar({
       {/* </Box> */}
       <Box className={classes.navlinkBox}>
         <img
-          // src={themeMode === "dark" ? flash : logoLight}
-          src={flash}
+          src={themeMode === "retro" ? $Flash : flash}
+          // src={themeModeflash}
           alt="logo"
-          width={animate ? 30 : 30}
+          width={themeMode === "dark" || themeMode === "light" ? 40 : 30}
+          // width={animate ? 30 : 30}
           className={classes.logo}
           onClick={() => {
-            handleClick3();
-            handleClick();
+            toggle();
           }}
         />
       </Box>
@@ -175,7 +193,7 @@ function Navbar({
       </Box>
       <Box className={classes.navlinkBox}>
         <NavLink
-          to="/vote"
+          to="/create"
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           exact
@@ -183,12 +201,12 @@ function Navbar({
             index = routes.indexOf(history.location.pathname) - 3;
             setAnimationDirection(index);
 
-            history.push("/vote");
+            history.push("/create");
             handleClick2();
           }}
         >
           <Typography variant="body1" className={classes.navLinkText}>
-            VOTE
+            CREATE
           </Typography>
         </NavLink>
       </Box>
@@ -197,12 +215,14 @@ function Navbar({
   );
 }
 
-const mapStateToProps = ({ ui: { expanding, animation } }) => ({
+const mapStateToProps = ({ ui: { expanding, animation, changeApp } }) => ({
   expanding,
   animation,
+  changeApp,
 });
 
 export default connect(mapStateToProps, {
   setExpandAccodion,
   setAnimationDirection,
+  setRetroTheme,
 })(Navbar);

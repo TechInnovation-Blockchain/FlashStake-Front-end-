@@ -22,6 +22,7 @@ import { withStyles } from "@material-ui/core/styles";
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import withDimensions from "react-with-dimensions";
 
 import {
   Button,
@@ -56,199 +57,410 @@ import AnimateHeight from "react-animate-height";
 
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { useHistory } from "react-router-dom";
+import { store } from "../../config/reduxStore";
 
-const useStyles = makeStyles((theme) => ({
-  contentContainer: {
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    // height: "200px",
-  },
-  secondaryText: {
-    color: theme.palette.text.secondary,
-    fontWeight: 700,
-    // fontSize: 10,
-    marginBottom: theme.spacing(1),
-    // [theme.breakpoints.down("xs")]: {
-    // fontSize: 8,
-    // },
-  },
-  primaryText: {
-    color: theme.palette.text.primary,
-    fontWeight: 700,
-  },
-  greenText: {
-    color: theme.palette.text.green,
-    fontWeight: 700,
-  },
-  redText: {
-    // fontSize: 10,
-    color: theme.palette.xioRed.main,
-    fontWeight: 700,
-  },
-  infoText: {
-    // fontSize: 10,
-    color: theme.palette.text.secondary,
-    fontWeight: 700,
-  },
-  infoTextSpan: {
-    // fontSize: 10,
-    color: theme.palette.xioRed.main,
-    fontWeight: 900,
-  },
-  secondaryTextWOMargin: {
-    color: theme.palette.text.secondary,
-    fontWeight: 700,
-  },
-  textBold: {
-    fontWeight: 700,
-  },
-  xIcon: {
-    color: theme.palette.xioRed.main,
-    fontWeight: 900,
-    marginTop: 28,
-    // fontSize: 15,
-    alignSelf: "center",
-    margin: theme.spacing(2),
-  },
-  checkbox: {
-    padding: 0,
-    "&.Mui-checked": {
-      color: theme.palette.xioRed.main,
-    },
-  },
-  textField: {
-    background: theme.palette.background.secondary2,
-    "& .MuiInputBase-input": {
-      height: 36,
-      fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
-      lineHeight: 1.5,
-      textAlign: "center",
-    },
-    "& .Mui-error": {
-      color: theme.palette.xioRed.main,
-    },
-  },
-  link: {
-    color: "inherit",
-    textDecoration: "none",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textFieldContainer: {
-    position: "relative",
-  },
-  maxIconButton: {
-    position: "absolute",
-    right: 0,
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: theme.palette.background.secondary2,
-    "&.Mui-disabled": {
-      display: "none",
-    },
-    "& svg": {
-      fill: "#9191A7",
-    },
-    "&:hover": {
-      // background: theme.palette.background.primary,
-      background: theme.palette.background.secondary2,
-      "& svg": {
-        fill: theme.palette.xioRed.main,
-      },
-    },
-    transition: "none !important",
-  },
-  linkIcon: {
-    color: theme.palette.xioRed.main,
-    paddingRight: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  btnPaddingLeft: {
-    paddingLeft: theme.spacing(1),
-  },
-  btnPaddingRight: {
-    paddingRight: theme.spacing(1),
-  },
-  cursorPointer: {
-    cursor: "pointer",
-  },
-  restakeableXio: {
-    display: "flex",
+const {
+  ui: { changeApp },
+} = store.getState();
 
-    justifyContent: "center",
-    alignItems: "center ",
-  },
-  restakeText: {
-    color: "#555555",
-    fontWeight: 700,
-    // fontSize: 11,
-    cursor: "pointer",
-  },
-  dropDown: {
-    "& .makeStyles-dropdown": {
-      backgroundColor: "#000",
-    },
-  },
-  btn: {
-    marginTop: theme.spacing(2),
-  },
-  btn3: {
-    backgroundColor: theme.palette.background.secondary,
-    padding: "0 !important",
-    margin: "0 !important",
+const useStyles = makeStyles((theme) =>
+  !changeApp
+    ? {
+        contentContainer: {
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          // height: "200px",
+        },
+        secondaryText: {
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+          // fontSize: 10,
+          marginBottom: theme.spacing(1),
+          // [theme.breakpoints.down("xs")]: {
+          // fontSize: 8,
+          // },
+        },
+        primaryText: {
+          color: theme.palette.text.primary,
+          fontWeight: 700,
+        },
+        greenText: {
+          color: theme.palette.text.green,
+          fontWeight: 700,
+        },
+        redText: {
+          // fontSize: 10,
+          color: theme.palette.xioRed.main,
+          fontWeight: 700,
+        },
+        infoText: {
+          // fontSize: 10,
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+        },
+        infoTextSpan: {
+          // fontSize: 10,
+          color: theme.palette.xioRed.main,
+          fontWeight: 900,
+        },
+        secondaryTextWOMargin: {
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+        },
+        textBold: {
+          fontWeight: 700,
+        },
+        xIcon: {
+          color: theme.palette.xioRed.main,
+          fontWeight: 900,
+          marginTop: 28,
+          // fontSize: 15,
+          alignSelf: "center",
+          margin: theme.spacing(2),
+        },
+        checkbox: {
+          padding: 0,
+          "&.Mui-checked": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        textField: {
+          background: theme.palette.background.secondary2,
+          border: `2px solid ${theme.palette.shadowColor.main}`,
+          borderRadius: theme.palette.ButtonRadius.small,
+          // borderRadius: 10,
+          // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+          "& .MuiInputBase-input": {
+            height: 36,
+            fontWeight: "700 !important",
+            padding: theme.spacing(0, 1),
+            lineHeight: 1.5,
+            textAlign: "center",
+          },
+          "& .Mui-error": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        link: {
+          color: "inherit",
+          textDecoration: "none",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        textFieldContainer: {
+          position: "relative",
+        },
+        maxIconButton: {
+          position: "absolute",
+          right: 0,
+          top: "50%",
+          height: 35,
+          transform: "translateY(-50%)",
+          background: theme.palette.background.secondary2,
+          "&.Mui-disabled": {
+            display: "none",
+          },
+          "& svg": {
+            fill: "#9191A7",
+          },
+          "&:hover": {
+            // background: theme.palette.background.primary,
+            background: theme.palette.background.secondary2,
+            "& svg": {
+              fill: theme.palette.xioRed.main,
+            },
+          },
+          transition: "none !important",
+        },
+        linkIcon: {
+          color: theme.palette.xioRed.main,
+          paddingRight: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        btnPaddingLeft: {
+          paddingLeft: theme.spacing(1),
+        },
+        btnPaddingRight: {
+          paddingRight: theme.spacing(1),
+        },
+        cursorPointer: {
+          cursor: "pointer",
+        },
+        restakeableXio: {
+          display: "flex",
 
-    "& .MuiAccordionSummary-content": {
-      display: "block",
-      margin: 0,
-    },
-  },
-  _btn3: {
-    borderTopWidth: 1,
-    borderTopRightRadius: "10px",
-    borderTopLeftRadius: "10px",
-    backgroundColor: theme.palette.background.secondary,
-    padding: "0 !important",
+          justifyContent: "center",
+          alignItems: "center ",
+        },
+        restakeText: {
+          color: "#555555",
+          fontWeight: 700,
+          // fontSize: 11,
+          cursor: "pointer",
+        },
+        dropDown: {
+          border: `2px solid ${theme.palette.shadowColor.main}`,
+          borderRadius: 10,
+          // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+          "& .makeStyles-dropdown": {
+            backgroundColor: "#000",
+          },
+        },
+        btn: {
+          marginTop: theme.spacing(2),
+        },
+        btn3: {
+          backgroundColor: theme.palette.background.secondary,
+          padding: "0 !important",
+          margin: "0 !important",
 
-    "& .MuiAccordionSummary-content": {
-      display: "block",
-      margin: 0,
-    },
-  },
-  dashboardAccordian: {
-    color: theme.palette.text.grey,
-    "&:hover": {
-      color: "#D89C74",
-    },
-  },
-  accordion: {
-    backgroundColor: theme.palette.background.secondary,
-  },
-  stakeDashBtn: {
-    color: "inherit",
-    fontWeight: 700,
-  },
-  icon: {
-    color: theme.palette.xioRed.main,
-  },
-  accordionDetails: {
-    borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
-    // borderBottomWidth: 1,
-    // borderBottomColor: theme.palette.text.gray,
-    borderBottomLeftRadius: "10px",
-    borderBottomRightRadius: "10px",
-  },
-  dialogIcon: {
-    fontSize: 80,
-  },
-  greenText: {
-    color: theme.palette.text.green,
-    fontWeight: 700,
-  },
-}));
+          "& .MuiAccordionSummary-content": {
+            display: "block",
+            margin: 0,
+          },
+        },
+        _btn3: {
+          borderTopWidth: 1,
+          borderTopRightRadius: "10px",
+          borderTopLeftRadius: "10px",
+          backgroundColor: theme.palette.background.secondary,
+          padding: "0 !important",
+
+          "& .MuiAccordionSummary-content": {
+            display: "block",
+            margin: 0,
+          },
+        },
+        dashboardAccordian: {
+          color: theme.palette.text.grey,
+          "&:hover": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        accordion: {
+          backgroundColor: theme.palette.background.secondary,
+        },
+        stakeDashBtn: {
+          color: "inherit",
+          fontWeight: 700,
+        },
+        icon: {
+          color: theme.palette.xioRed.main,
+        },
+        accordionDetails: {
+          borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+          // borderBottomWidth: 1,
+          // borderBottomColor: theme.palette.text.gray,
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+        },
+        dialogIcon: {
+          fontSize: 80,
+        },
+        greenText: {
+          color: theme.palette.text.green,
+          fontWeight: 700,
+        },
+        gridSpace: {
+          margin: theme.spacing(1, 0),
+        },
+      }
+    : {
+        contentContainer: {
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          // height: "200px",
+        },
+        secondaryText: {
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+          // fontSize: 10,
+          marginBottom: theme.spacing(1),
+          // [theme.breakpoints.down("xs")]: {
+          // fontSize: 8,
+          // },
+        },
+        primaryText: {
+          color: theme.palette.text.primary,
+          fontWeight: 700,
+        },
+        greenText: {
+          color: theme.palette.text.green,
+          fontWeight: 700,
+        },
+        redText: {
+          // fontSize: 10,
+          color: theme.palette.xioRed.main,
+          fontWeight: 700,
+        },
+        infoText: {
+          // fontSize: 10,
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+        },
+        infoTextSpan: {
+          // fontSize: 10,
+          color: theme.palette.xioRed.main,
+          fontWeight: 900,
+        },
+        secondaryTextWOMargin: {
+          color: theme.palette.text.secondary,
+          fontWeight: 700,
+        },
+        textBold: {
+          fontWeight: 700,
+        },
+        xIcon: {
+          color: theme.palette.xioRed.main,
+          fontWeight: 900,
+          marginTop: 28,
+          // fontSize: 15,
+          alignSelf: "center",
+          margin: theme.spacing(2),
+        },
+        checkbox: {
+          padding: 0,
+          "&.Mui-checked": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        textField: {
+          background: theme.palette.background.secondary2,
+          "& .MuiInputBase-input": {
+            height: 36,
+            fontWeight: "700 !important",
+            padding: theme.spacing(0, 1),
+            lineHeight: 1.5,
+            textAlign: "center",
+          },
+          "& .Mui-error": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        link: {
+          color: "inherit",
+          textDecoration: "none",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        textFieldContainer: {
+          position: "relative",
+        },
+        maxIconButton: {
+          position: "absolute",
+          right: 0,
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: theme.palette.background.secondary2,
+          "&.Mui-disabled": {
+            display: "none",
+          },
+          "& svg": {
+            fill: "#9191A7",
+          },
+          "&:hover": {
+            // background: theme.palette.background.primary,
+            background: theme.palette.background.secondary2,
+            "& svg": {
+              fill: theme.palette.xioRed.main,
+            },
+          },
+          transition: "none !important",
+        },
+        linkIcon: {
+          color: theme.palette.xioRed.main,
+          paddingRight: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        btnPaddingLeft: {
+          paddingLeft: theme.spacing(1),
+        },
+        btnPaddingRight: {
+          paddingRight: theme.spacing(1),
+        },
+        cursorPointer: {
+          cursor: "pointer",
+        },
+        restakeableXio: {
+          display: "flex",
+
+          justifyContent: "center",
+          alignItems: "center ",
+        },
+        restakeText: {
+          color: "#555555",
+          fontWeight: 700,
+          // fontSize: 11,
+          cursor: "pointer",
+        },
+        dropDown: {
+          "& .makeStyles-dropdown": {
+            backgroundColor: "#000",
+          },
+        },
+        btn: {
+          marginTop: theme.spacing(2),
+        },
+        btn3: {
+          backgroundColor: theme.palette.background.secondary,
+          padding: "0 !important",
+          margin: "0 !important",
+
+          "& .MuiAccordionSummary-content": {
+            display: "block",
+            margin: 0,
+          },
+        },
+        _btn3: {
+          borderTopWidth: 1,
+          borderTopRightRadius: "10px",
+          borderTopLeftRadius: "10px",
+          backgroundColor: theme.palette.background.secondary,
+          padding: "0 !important",
+
+          "& .MuiAccordionSummary-content": {
+            display: "block",
+            margin: 0,
+          },
+        },
+        dashboardAccordian: {
+          color: theme.palette.text.grey,
+          "&:hover": {
+            color: theme.palette.xioRed.main,
+          },
+        },
+        accordion: {
+          backgroundColor: theme.palette.background.secondary,
+        },
+        stakeDashBtn: {
+          color: "inherit",
+          fontWeight: 700,
+        },
+        icon: {
+          color: theme.palette.xioRed.main,
+        },
+        accordionDetails: {
+          borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+          // borderBottomWidth: 1,
+          // borderBottomColor: theme.palette.text.gray,
+          borderBottomLeftRadius: "10px",
+          borderBottomRightRadius: "10px",
+        },
+        dialogIcon: {
+          fontSize: 80,
+        },
+        greenText: {
+          color: theme.palette.text.green,
+          fontWeight: 700,
+        },
+      }
+);
 
 const Accordion = withStyles((theme) => ({
   root: {
@@ -343,20 +555,22 @@ function Swap({
   animation,
   setHeightValue,
   heightVal,
+  recalcSwap,
   ...props
 }) {
   const classes = useStyles();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
   const history = useHistory();
-  const [height, setHeight] = useState(heightVal);
-
+  const [recalc, setRecalc] = useState(false);
+  const [heightToggle, setHeightToggle] = useState(false);
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
-  useEffect(() => {
-    setTimeout(() => {
-      setHeightValue(ref?.current?.clientHeight);
-    }, 100);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setHeightToggle(!heightToggle);
+  //     setHeightValue(ref?.current?.clientHeight);
+  //   }, 100);
+  // });
 
   const toggle = () => {};
 
@@ -389,7 +603,7 @@ function Swap({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Swap - XIO | The Future is at Stake";
+    document.title = "Swap - $FLASH | THE TIME TRAVEL OF MONEY";
     setRefetch();
     // setLoading({ dapp: true });
   }, [setRefetch]);
@@ -412,6 +626,15 @@ function Swap({
   useEffect(() => {
     getBalanceALT();
   }, [selectedPortal, getBalanceALT]);
+
+  useEffect(() => {
+    if (recalcSwap !== recalc) {
+      setRecalc(recalcSwap);
+      if (selectedPortal) {
+        debouncedCalculateSwap(quantity, true);
+      }
+    }
+  }, [recalcSwap, recalc, quantity, debouncedCalculateSwap, selectedPortal]);
 
   useEffect(() => {
     if (selectedPortal) {
@@ -500,12 +723,12 @@ function Swap({
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     <Typography
-                      variant="overline"
+                      variant="body1"
                       className={classes.secondaryText}
                     >
-                      WHAT DO YOU WANT TO SWAP FOR FLASH
+                      What do you want to swap for $FLASH
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -516,13 +739,13 @@ function Swap({
                       type="swap"
                     />
                   </Grid>
-                  <Grid container item xs={12}>
+                  <Grid container item className={classes.gridSpace} xs={12}>
                     <Box flex={1}>
                       <Typography
-                        variant="overline"
+                        variant="body1"
                         className={classes.secondaryText}
                       >
-                        SWAP QUANTITY
+                        Swap Quantity
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         <TextField
@@ -561,44 +784,53 @@ function Swap({
                   </Grid>
                   <Grid item xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
-                      <Typography
-                        variant="overline"
-                        className={classes.infoText}
-                      >
-                        IF YOU SWAP{" "}
-                        <Tooltip
-                          title={`${quantity} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
+                      quantity > 0 ? (
+                        <Typography
+                          variant="body1"
+                          className={classes.infoText}
                         >
-                          <span className={classes.infoTextSpan}>
-                            {trunc(quantity)}{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
-                          </span>
-                        </Tooltip>{" "}
-                        YOU WILL IMMEDIATELY{" "}
-                        {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
-                        EARN{" "}
-                        {loadingRedux.swapReward ? (
-                          <CircularProgress
-                            size={12}
-                            className={classes.loaderStyle}
-                          />
-                        ) : (
-                          <Tooltip title={`${swapOutput} FLASH`}>
+                          If you swap{" "}
+                          <Tooltip
+                            title={`${quantity} ${
+                              selectedRewardToken?.tokenB?.symbol || ""
+                            }`}
+                          >
                             <span className={classes.infoTextSpan}>
-                              {" "}
-                              {trunc(swapOutput)} FLASH
+                              {trunc(quantity)}{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""}
                             </span>
-                          </Tooltip>
-                        )}
-                      </Typography>
+                          </Tooltip>{" "}
+                          you will immediately{" "}
+                          {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
+                          get{" "}
+                          {loadingRedux.swapReward ? (
+                            <CircularProgress
+                              size={12}
+                              className={classes.loaderStyle}
+                            />
+                          ) : (
+                            <Tooltip title={`${swapOutput} $FLASH`}>
+                              <span className={classes.infoTextSpan}>
+                                {" "}
+                                {trunc(swapOutput)} $FLASH
+                              </span>
+                            </Tooltip>
+                          )}
+                        </Typography>
+                      ) : (
+                        <Typography
+                          variant="body1"
+                          className={classes.infoText}
+                        >
+                          Enter swap quantity above
+                        </Typography>
+                      )
                     ) : (
                       <Typography
-                        variant="overline"
-                        className={classes.redText}
+                        variant="body1"
+                        className={`${classes.secondaryText} ${classes.gridSpace} `}
                       >
-                        SELECT A TOKEN TO VIEW SWAP OUTPUT AMOUNT
+                        Select a token to view swap output amount
                       </Typography>
                     )}
 
@@ -608,11 +840,12 @@ function Swap({
                           container
                           item
                           xs={12}
-                          className={classes.msgContainer}
+                          className={classes.gridSpace}
+                          // className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickApprove}
                               disabled={
@@ -632,7 +865,7 @@ function Swap({
                           </Grid>
                           <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={() => onClickSwap(quantity)}
                               disabled={
@@ -650,9 +883,9 @@ function Swap({
                           </Grid>
                         </Grid>
                       ) : (
-                        <Grid item xs={12} className={classes.msgContainer}>
+                        <Grid container item xs={12}>
                           <Button
-                            variant="red"
+                            variant="retro"
                             fullWidth
                             onClick={() => onClickSwap(quantity)}
                             disabled={
@@ -679,28 +912,29 @@ function Swap({
                           onClick={showWalletHint}
                         >
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.redText}
                           >
-                            CONNECT YOUR WALLET SWAP TOKENS
+                            Connect wallet to swap
                           </Typography>
                         </Grid>
                       ) : chainId !== 4 ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
-                            variant="overline"
+                            variant="body2"
                             className={classes.redText}
                           >
-                            CHANGE NETWORK TO RINKEBY TO SWAP TOKENS
+                            {/* CHANGE NETWORK TO RINKEBY TO SWAP TOKENS */}
+                            Change network to rinkeby to swap
                           </Typography>
                         </Grid>
                       ) : !allowanceALT ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
-                            variant="overline"
+                            variant="body1"
                             className={classes.redText}
                           >
-                            BEFORE YOU CAN SWAP, YOU MUST APPROVE{" "}
+                            Before you can swap, you must approve{" "}
                             {selectedRewardToken?.tokenB?.symbol || ""}
                           </Typography>
                         </Grid>
@@ -711,7 +945,7 @@ function Swap({
                   <Dialog
                     open={showStakeDialog}
                     // open={true}
-                    steps={["APPROVE FLASH", "SWAP"]}
+                    steps={["APPROVE", "SWAP"]}
                     title="SWAP"
                     onClose={() => setShowStakeDialog(false)}
                     status={[
@@ -739,7 +973,7 @@ function Swap({
                         pendingApproval: (
                           <Fragment>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={classes.textBold}
                             >
                               APPROVAL PENDING
@@ -760,7 +994,7 @@ function Swap({
                               </span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickClose}
                             >
@@ -778,10 +1012,10 @@ function Swap({
                                 SWAP
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="body1"
                                 className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                               >
-                                IF YOU SWAP{" "}
+                                If you swap{" "}
                                 <Tooltip
                                   title={`${quantity} ${
                                     selectedRewardToken?.tokenB?.symbol || ""
@@ -792,28 +1026,28 @@ function Swap({
                                     {selectedRewardToken?.tokenB?.symbol || ""}
                                   </span>
                                 </Tooltip>{" "}
-                                YOU WILL{" "}
+                                you will{" "}
                                 <span className={classes.infoTextSpan}>
-                                  IMMEDIATELY
+                                  immediately
                                 </span>{" "}
-                                EARN{" "}
+                                earn{" "}
                                 {loadingRedux.reward ? (
                                   <CircularProgress
                                     size={12}
                                     className={classes.loaderStyle}
                                   />
                                 ) : (
-                                  <Tooltip title={`${swapOutput} FLASH`}>
+                                  <Tooltip title={`${swapOutput} $FLASH`}>
                                     <span className={classes.infoTextSpan}>
                                       {" "}
-                                      {trunc(swapOutput)} FLASH
+                                      {trunc(swapOutput)} $FLASH
                                     </span>
                                   </Tooltip>
                                 )}
                               </Typography>
 
                               <Button
-                                variant="red"
+                                variant="retro"
                                 fullWidth
                                 onClick={
                                   !allowanceALT
@@ -846,11 +1080,11 @@ function Swap({
                                   className={`${classes.dialogIcon} ${classes.greenText}`}
                                 />
                                 <div className={classes.redText}>
-                                  YOU HAVE SUCCESSFUL APPROVED
+                                  You have successfully approved
                                 </div>
                               </Typography>
                               <Button
-                                variant="red"
+                                variant="retro"
                                 fullWidth
                                 onClick={closeDialog}
                               >
@@ -869,7 +1103,7 @@ function Swap({
                               <span className={classes.redText}>FAILED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -888,7 +1122,7 @@ function Swap({
                               <span className={classes.redText}>REJECTED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -906,12 +1140,12 @@ function Swap({
                               <br />
                             </Typography>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                             >
-                              SWAPPING {trunc(swapHist?.amount)}{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""} FOR{" "}
-                              {trunc(swapOutput)} FLASH{" "}
+                              Swapping {trunc(swapHist?.amount)}{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
+                              {trunc(swapOutput)} $FLASH{" "}
                               {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
@@ -920,7 +1154,7 @@ function Swap({
                                 {stakeRequest.token}
                               </span>
                             </Tooltip>{" "} */}
-                              INSTANTLY
+                              instantly
                             </Typography>
                           </Fragment>
                         ),
@@ -935,7 +1169,7 @@ function Swap({
                               <span className={classes.redText}>FAILED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -954,7 +1188,7 @@ function Swap({
                               <span className={classes.redText}>REJECTED</span>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={closeDialog}
                             >
@@ -975,15 +1209,15 @@ function Swap({
                               </span>
                             </Typography>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                             >
-                              YOU HAVE SUCCESSFULLY SWAPPED {swapHist?.amount}{" "}
-                              {swapHist?.token || ""} FOR {trunc(swapOutput)}{" "}
-                              FLASH
+                              You have successfully swapped {swapHist?.amount}{" "}
+                              {swapHist?.token || ""} for {trunc(swapOutput)}{" "}
+                              $FLASH
                             </Typography>
                             <Typography
-                              variant="body2"
+                              variant="body1"
                               className={`${classes.textBold} ${classes.redText}`}
                             >
                               <a
@@ -996,11 +1230,11 @@ function Swap({
                                   fontSize="small"
                                   className={classes.linkIcon}
                                 />
-                                VIEW ON ETHERSCAN
+                                View on etherscan
                               </a>
                             </Typography>
                             <Button
-                              variant="red"
+                              variant="retro"
                               fullWidth
                               onClick={onClickClose}
                             >
@@ -1030,11 +1264,11 @@ function Swap({
                   <ArrowDropDownIcon size="large" className={classes.icon} />
                 )}
                 <Typography variant="body2" className={classes.stakeDashBtn}>
-                  SWAP DASHBOARD
+                  SWAP HISTORY
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className={classes.accordion}>
-                <SwapTable />
+                {heightToggle ? <SwapTable /> : <SwapTable />}
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -1050,6 +1284,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   user: { currentStaked, pools },
   flashstake: { swapHist },
+  query: { recalcSwap },
   contract,
 }) => ({
   ...flashstake,
@@ -1063,6 +1298,7 @@ const mapStateToProps = ({
   swapHist,
   pools,
   heightVal,
+  recalcSwap,
   ...contract,
 });
 

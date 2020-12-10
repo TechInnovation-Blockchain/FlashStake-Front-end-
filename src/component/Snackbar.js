@@ -9,7 +9,7 @@ import { Link } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   snackbarStyles: {
-    width: 250,
+    width: 280,
     display: "flex",
     alignItems: "center",
 
@@ -53,6 +53,7 @@ function Snackbar({ snackbar, hideSnackbar, showSnackbar }) {
         vertical: "bottom",
         horizontal: "center",
       }}
+      // open={snackbar.open}
       open={snackbar.open}
       // open={true}
       {...(snackbar.noAutoHide ? {} : { autoHideDuration: 6000 })}
