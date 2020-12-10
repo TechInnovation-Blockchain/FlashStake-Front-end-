@@ -413,7 +413,9 @@ function TableComponent({
                                     // src={tryRequire(
                                     //   theme === "dark" ? "FlashPro5" : "$FLASH"
                                     // )}
-                                    src={tryRequire("FLASH2")}
+                                    src={tryRequire(
+                                      theme === "dark" ? "FlashPro5" : "$FLASH"
+                                    )}
                                     alt="Logo"
                                     srcSet=""
                                     width={15}

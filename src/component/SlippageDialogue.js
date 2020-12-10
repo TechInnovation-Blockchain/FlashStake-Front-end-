@@ -137,6 +137,20 @@ const useStyles = makeStyles((theme) => ({
       textAlign: "center",
     },
   },
+
+  textField2: {
+    background: theme.palette.background.secondary3,
+    "& .MuiInputBase-input": {
+      height: 36,
+      fontWeight: "700 !important",
+      padding: theme.spacing(0, 1),
+      // fontSize: 16,
+      color: theme.palette.text.disabled,
+      lineHeight: 1.5,
+      textAlign: "center",
+    },
+  },
+
   list: {
     maxHeight: 500,
     overflowY: "scroll",
@@ -194,6 +208,9 @@ const useStyles = makeStyles((theme) => ({
   sipBox: {
     position: "relative",
   },
+  "input.MuiInputBase-input.MuiInput-input": {
+    color: "000",
+  },
 }));
 
 function SlippageDialogue({
@@ -214,6 +231,7 @@ function SlippageDialogue({
   const [_btn, _setBtn] = useState(btn);
   const [_slip, _setSlip] = useState(slip);
   const [_disabled, _setDisabled] = useState(true);
+  const [__disabled, __setDisabled] = useState(true);
 
   const onChangeSlip = ({ target: { value } }) => {
     if (value <= 50) {
@@ -258,6 +276,7 @@ function SlippageDialogue({
   };
 
   const btnSelect = (id, slip) => {
+    _setDisabled(true);
     _setBtn(id);
     _setSlip(slip);
   };
@@ -291,7 +310,7 @@ function SlippageDialogue({
                 _btn == 0.1 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(0.1, 0.1)}
-              disabled={_btn == 0}
+              // disabled={_slip.length > 0}
             >
               0.1%
             </Button>
@@ -303,7 +322,7 @@ function SlippageDialogue({
                 _btn == 0.5 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(0.5, 0.5)}
-              disabled={_btn == 0}
+              // disabled={_slip.length > 0}
             >
               0.5%
             </Button>
@@ -315,7 +334,7 @@ function SlippageDialogue({
                 _btn == 1 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(1, 1)}
-              disabled={_btn == 0}
+              // disabled={_slip.length > 0}
             >
               1%
             </Button>
@@ -327,7 +346,7 @@ function SlippageDialogue({
                 _btn == 5 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(5, 5)}
-              disabled={_btn == 0}
+              // disabled={_slip.length > 0}
             >
               5%
             </Button>
@@ -344,20 +363,20 @@ function SlippageDialogue({
           </Typography>
           <TextField
             placeholder={`${slip}`}
-            className={classes.textField}
+            className={!_disabled ? classes.textField : classes.textField2}
             fullWidth
             value={_slip}
             onChange={onChangeSlip}
             type="number"
             inputMode="numeric"
             pattern={regex}
-            // disabled={_disabled}
-            // onClick={() => {
-            //   _setDisabled(false);
-            // }}
             onKeyDown={handleKeyDown}
+            onClick={() => {
+              _setDisabled(false);
+              __setDisabled(true);
+            }}
             // onFocus={(e) => (e.target.placeholder = "")}
-            // onBlur={(e) => (e.target.placeholder = _slip)}
+            onBlur={() => _setDisabled(true)}
           />
         </Box>
         <Button
