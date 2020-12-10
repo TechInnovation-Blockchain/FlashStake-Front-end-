@@ -346,7 +346,7 @@ function PoolTable({
                 chainId !== 4 ? (
                   <Grid item xs={12} className={classes.msgContainer}>
                     <Typography variant="body2" className={classes.redText}>
-                      Change network to rinkeby to see swap history
+                      Change network to rinkeby to see pools
                     </Typography>
                   </Grid>
                 ) : (

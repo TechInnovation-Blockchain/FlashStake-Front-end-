@@ -23,6 +23,7 @@ import {
   initializeErc20TokenContract,
 } from "../../utils/contractFunctions/erc20TokenContractFunctions";
 import { getQueryData } from "./queryActions";
+import { store } from "../../config/reduxStore";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -34,6 +35,12 @@ export const _getTokenPrice = _.memoize(async () => {
 });
 
 export const _getFPY = _.memoize(async () => {
+  // const {
+  //   flashStake: {
+  //     initialValues: { quantity },
+  //   },
+  // } = store.getState();
+
   await initializeFlashProtocolContract();
   const _fpy = await getFPY();
   return _fpy;

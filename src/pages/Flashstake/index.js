@@ -834,11 +834,23 @@ function Flashstake({
                                 </span>
                               </Tooltip>
                             ) : (
-                              <span className={classes.infoTextSpan}>
-                                {`0 ${
-                                  selectedRewardToken?.tokenB?.symbol || ""
-                                }`}
-                              </span>
+                              <Fragment>
+                                <span className={classes.infoTextSpan}>
+                                  {`0 ${
+                                    selectedRewardToken?.tokenB?.symbol || ""
+                                  }`}
+                                </span>
+                                {/* with
+                                <span className={classes.infoTextSpan}>
+                                  `($
+                                  {parseFloat(pools.apy).toFixed(2) -
+                                    parseInt(pools.apy) >
+                                  0
+                                    ? parseFloat(pools.apy).toFixed(2)
+                                    : parseInt(pools.apy)}
+                                  %)`
+                                </span> */}
+                              </Fragment>
                             )}
                           </Typography>
                         ) : (

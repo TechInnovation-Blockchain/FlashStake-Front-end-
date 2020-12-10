@@ -335,111 +335,120 @@ function TableComponent({
           </Grid>
         ) : !loading ? (
           stakes?.length ? (
-            <Fragment>
-              <PageAnimation in={true} key={page} reverse={reverse}>
-                <Grid container>
-                  {sortedData()
-                    .slice(page * 5, page * 5 + 5)
-                    .map((_stake) => {
-                      // const _remDur =
-                      //   (_stake.expiryTime - Date.now() / 1000) / 3600;
-                      // const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
-                      // const _minRem = Math.ceil(_remDur * 60);
-                      const _remDur = _stake.expiryTime - Date.now() / 1000;
-                      const _daysRem = Math.trunc(_remDur / 86400);
-                      const _hoursRem = Math.trunc(
-                        (_remDur - _daysRem * 86400) / 3600
-                      );
-                      const _minsRem = Math.ceil(
-                        (_remDur - _daysRem * 86400 - _hoursRem * 3600) / 60
-                      );
-                      return (
-                        // <a
-                        //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
-                        //   className={classes.link}
-                        //   target="_blank"
-                        // >
+            chainId !== 4 ? (
+              <Grid item xs={12} className={classes.msgContainer}>
+                <Typography variant="body2" className={classes.redText}>
+                  Change network to rinkeby to unstake tokens
+                </Typography>
+              </Grid>
+            ) : (
+              <Fragment>
+                <PageAnimation in={true} key={page} reverse={reverse}>
+                  <Grid container>
+                    {sortedData()
+                      .slice(page * 5, page * 5 + 5)
+                      .map((_stake) => {
+                        // const _remDur =
+                        //   (_stake.expiryTime - Date.now() / 1000) / 3600;
+                        // const _daysRem = _remDur < 1 ? null : Math.ceil(_remDur);
+                        // const _minRem = Math.ceil(_remDur * 60);
+                        const _remDur = _stake.expiryTime - Date.now() / 1000;
+                        const _daysRem = Math.trunc(_remDur / 86400);
+                        const _hoursRem = Math.trunc(
+                          (_remDur - _daysRem * 86400) / 3600
+                        );
+                        const _minsRem = Math.ceil(
+                          (_remDur - _daysRem * 86400 - _hoursRem * 3600) / 60
+                        );
+                        return (
+                          // <a
+                          //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
+                          //   className={classes.link}
+                          //   target="_blank"
+                          // >
 
-                        //   isStakesSelected && totalBurn.totalBurn > 0
-                        //       ? clearSelection()
-                        //     : selectStake(_stake.id)
+                          //   isStakesSelected && totalBurn.totalBurn > 0
+                          //       ? clearSelection()
+                          //     : selectStake(_stake.id)
 
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          key={_stake.id}
-                          // ////////////////////////////// LOGIC ERROR HERE
-                          onClick={() => selectStake(_stake.id)}
-                          className={`${classes.cursorPointer} ${
-                            selectedStakes[_stake.id] ? classes.selected : null
-                          }`}
-                        >
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {/* <Tooltip
+                          <Grid
+                            container
+                            item
+                            xs={12}
+                            key={_stake.id}
+                            // ////////////////////////////// LOGIC ERROR HERE
+                            onClick={() => selectStake(_stake.id)}
+                            className={`${classes.cursorPointer} ${
+                              selectedStakes[_stake.id]
+                                ? classes.selected
+                                : null
+                            }`}
+                          >
+                            <Grid item xs={4} className={classes.gridItem}>
+                              {/* <Tooltip
                         title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                       > */}
-                            <span className={classes.flexCenter}>
-                              <img
-                                src={tryRequire(_stake.pool.tokenB.symbol)}
-                                alt="Logo"
-                                srcSet=""
-                                width={15}
-                                style={{ marginRight: 5 }}
-                              />
-                              {_stake.pool.tokenB.symbol}
-                            </span>
-                            {/* </Tooltip> */}
-                          </Grid>
-                          <Grid item xs={4} className={classes.gridItem}>
-                            <Tooltip
-                              title={`${
-                                _stake.amountAvailable > 0
-                                  ? _stake.amountAvailable
-                                  : _stake.stakeAmount - _stake.burnAmount
-                              }/${_stake.stakeAmount} $FLASH`}
-                            >
                               <span className={classes.flexCenter}>
                                 <img
-                                  // src={tryRequire(
-                                  //   theme === "dark" ? "FlashPro5" : "$FLASH"
-                                  // )}
-                                  src={tryRequire("FLASH2")}
+                                  src={tryRequire(_stake.pool.tokenB.symbol)}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}
                                   style={{ marginRight: 5 }}
                                 />
-                                {trunc(
+                                {_stake.pool.tokenB.symbol}
+                              </span>
+                              {/* </Tooltip> */}
+                            </Grid>
+                            <Grid item xs={4} className={classes.gridItem}>
+                              <Tooltip
+                                title={`${
                                   _stake.amountAvailable > 0
                                     ? _stake.amountAvailable
                                     : _stake.stakeAmount - _stake.burnAmount
-                                )}
-                                /{trunc(_stake.stakeAmount)} $FLASH
-                              </span>
-                            </Tooltip>
-                          </Grid>
+                                }/${_stake.stakeAmount} $FLASH`}
+                              >
+                                <span className={classes.flexCenter}>
+                                  <img
+                                    // src={tryRequire(
+                                    //   theme === "dark" ? "FlashPro5" : "$FLASH"
+                                    // )}
+                                    src={tryRequire("FLASH2")}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    style={{ marginRight: 5 }}
+                                  />
+                                  {trunc(
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}
+                                  /{trunc(_stake.stakeAmount)} $FLASH
+                                </span>
+                              </Tooltip>
+                            </Grid>
 
-                          <Grid item xs={4} className={classes.gridItem}>
-                            {!_stake.expired &&
-                            _stake.expiryTime > Date.now() / 1000 ? (
-                              <Fragment>
-                                {_daysRem > 0
-                                  ? `${_daysRem} ${
-                                      _daysRem > 1 ? "days" : "day"
-                                    } ${_hoursRem} ${
-                                      _hoursRem > 1 ? "hrs" : "hr"
-                                    }`
-                                  : _hoursRem > 0
-                                  ? `${_hoursRem} ${
-                                      _hoursRem > 1 ? "hrs" : "hr"
-                                    } ${_minsRem} ${
-                                      _minsRem > 1 ? "mins" : "min"
-                                    }`
-                                  : `${_minsRem} ${
-                                      _minsRem > 1 ? "mins" : "min"
-                                    }`}
-                                {/* // {_daysRem || _minRem}{" "}
+                            <Grid item xs={4} className={classes.gridItem}>
+                              {!_stake.expired &&
+                              _stake.expiryTime > Date.now() / 1000 ? (
+                                <Fragment>
+                                  {_daysRem > 0
+                                    ? `${_daysRem} ${
+                                        _daysRem > 1 ? "days" : "day"
+                                      } ${_hoursRem} ${
+                                        _hoursRem > 1 ? "hrs" : "hr"
+                                      }`
+                                    : _hoursRem > 0
+                                    ? `${_hoursRem} ${
+                                        _hoursRem > 1 ? "hrs" : "hr"
+                                      } ${_minsRem} ${
+                                        _minsRem > 1 ? "mins" : "min"
+                                      }`
+                                    : `${_minsRem} ${
+                                        _minsRem > 1 ? "mins" : "min"
+                                      }`}
+                                  {/* // {_daysRem || _minRem}{" "}
                                 // {_daysRem
                                 //   ? _daysRem === 1
                                 //     ? "hour"
@@ -447,97 +456,84 @@ function TableComponent({
                                 //   : _minRem === 1
                                 //   ? "min"
                                 //   : "mins"} */}
-                              </Fragment>
-                            ) : (
-                              "Completed"
-                            )}
-                            {isStakesSelected ? (
-                              <Checkbox
-                                size="small"
-                                checked={
-                                  selectedStakes[_stake.id] ? true : false
-                                }
-                                // checked={false}
-                                // disabled
-                                // inputProps={{
-                                // //   "aria-label": "disabled checkbox",
-                                // }}
-                                className={classes.checkbox}
-                              />
-                            ) : null}
+                                </Fragment>
+                              ) : (
+                                "Completed"
+                              )}
+                              {isStakesSelected ? (
+                                <Checkbox
+                                  size="small"
+                                  checked={
+                                    selectedStakes[_stake.id] ? true : false
+                                  }
+                                  // checked={false}
+                                  // disabled
+                                  // inputProps={{
+                                  // //   "aria-label": "disabled checkbox",
+                                  // }}
+                                  className={classes.checkbox}
+                                />
+                              ) : null}
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      );
-                    })}
-                </Grid>
-
-                {/* {totalBurn.totalBurn > 0 &&
-                  isStakesSelected &&
-                  allowSelect > 0 && (
-                    <Grid item xs={12} className={classes.marginBottomMsg1}>
+                        );
+                      })}
+                  </Grid>
+                </PageAnimation>
+                {sortedData().length > 5 ? (
+                  <Grid item xs={12} className={classes.gridItem}>
+                    <TablePagination
+                      rowsPerPageOptions={[]}
+                      component="div"
+                      count={sortedData().length}
+                      rowsPerPage={5}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      labelRowsPerPage=""
+                      // onChangeRowsPerPage={toggle()}
+                      nextIconButtonProps={{ color: "primary" }}
+                    />
+                  </Grid>
+                ) : null}
+                {sortedData().length && dappBalance > 0 ? (
+                  <Fragment>
+                    <Grid item xs={12} className={classes.marginBottomMsg}>
                       <Typography
-                        variant="overline"
-                        className={classes.redText}
+                        variant="body2"
+                        className={classes.disabledText}
                         // onClick={toggleTable}
                       >
-                        EXPIRED AND UNEXPIRED CANNOT BE UNSTAKED AT ONCE
+                        {/* SELECT STAKES TO WITHDRAW SPECIFIC ONES */}
+                        Select stakes to withdraw specific ones
                       </Typography>
                     </Grid>
-                  )} */}
-              </PageAnimation>
-              {sortedData().length > 5 ? (
-                <Grid item xs={12} className={classes.gridItem}>
-                  <TablePagination
-                    rowsPerPageOptions={[]}
-                    component="div"
-                    count={sortedData().length}
-                    rowsPerPage={5}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    labelRowsPerPage=""
-                    // onChangeRowsPerPage={toggle()}
-                    nextIconButtonProps={{ color: "primary" }}
-                  />
-                </Grid>
-              ) : null}
-              {sortedData().length && dappBalance > 0 ? (
-                <Fragment>
-                  <Grid item xs={12} className={classes.marginBottomMsg}>
-                    <Typography
-                      variant="body2"
-                      className={classes.disabledText}
-                      // onClick={toggleTable}
-                    >
-                      {/* SELECT STAKES TO WITHDRAW SPECIFIC ONES */}
-                      Select stakes to withdraw specific ones
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} className={classes.gridItem2}>
-                    <Button
-                      variant={!changeApp ? "retro" : "red"}
-                      fullWidth
-                      onClick={
-                        isStakesSelected ? onClickUnstake2 : onClickUnstake
-                      }
-                      disabled={
-                        (!isStakesSelected && !(expiredDappBalance > 0)) ||
-                        //   : !isStakesSelected
-                        loadingRedux.unstake
-                        // loadingRedux.unstake || !(dappBalance > 0)
-                      }
-                      fontSizeLocal="body2"
-                      loading={loadingRedux.unstake}
-                    >
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>
-                          {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
-                        </span>
-                      </Tooltip>
-                    </Button>
-                  </Grid>
-                </Fragment>
-              ) : null}
-            </Fragment>
+                    <Grid item xs={12} className={classes.gridItem2}>
+                      <Button
+                        variant={!changeApp ? "retro" : "red"}
+                        fullWidth
+                        onClick={
+                          isStakesSelected ? onClickUnstake2 : onClickUnstake
+                        }
+                        disabled={
+                          (!isStakesSelected && !(expiredDappBalance > 0)) ||
+                          //   : !isStakesSelected
+                          loadingRedux.unstake
+                          // loadingRedux.unstake || !(dappBalance > 0)
+                        }
+                        fontSizeLocal="body2"
+                        loading={loadingRedux.unstake}
+                      >
+                        <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                          <span>
+                            {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
+                          </span>
+                        </Tooltip>
+                      </Button>
+                    </Grid>
+                  </Fragment>
+                ) : null}
+              </Fragment>
+            )
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
               <Typography variant="body2" className={classes.msg}>
@@ -545,12 +541,6 @@ function TableComponent({
               </Typography>
             </Grid>
           )
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to unstake tokens
-            </Typography>
-          </Grid>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <CircularProgress size={12} />

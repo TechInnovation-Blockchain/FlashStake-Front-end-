@@ -429,6 +429,7 @@ function Vote({
   setCreateDialogStep,
   dialogStep4,
   createPoolData,
+  withdrawLiquidityTxnHash,
   ...props
 }) {
   let classes = useStyles();
@@ -757,8 +758,7 @@ function Vote({
                     <br />
                   </Typography>
                   <Typography variant="body1" className={classes.textBold}>
-                    Creating Pool {createPoolData?._token?.symbol} with{" "}
-                    {createPoolData?._token?.decimals} decimals{" "}
+                    Creating $FLASH/{createPoolData?._token?.symbol} pool
                   </Typography>
                 </Fragment>
               ),
@@ -797,14 +797,15 @@ function Vote({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {createPoolData?._token?.symbol} pool created successfully
+                    $FLASH/{createPoolData?._token?.symbol} pool created
+                    successfully
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}

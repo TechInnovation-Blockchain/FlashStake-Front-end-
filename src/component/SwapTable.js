@@ -243,45 +243,52 @@ function SwapTable({
           </Grid>
         ) : !loading ? (
           swapHistory?.length ? (
-            <Fragment>
-              <PageAnimation in={true} key={page} reverse={reverse}>
-                <Grid container>
-                  {sortedData()
-                    .slice(page * 5, page * 5 + 5)
-                    .map((_swap, index) => {
-                      return (
-                        <a
-                          href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}
-                          className={classes.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          key={_swap.id}
-                        >
-                          <Grid
-                            container
-                            item
-                            xs={12}
+            chainId !== 4 ? (
+              <Grid item xs={12} className={classes.msgContainer}>
+                <Typography variant="body2" className={classes.redText}>
+                  Change network to rinkeby to see swap history
+                </Typography>
+              </Grid>
+            ) : (
+              <Fragment>
+                <PageAnimation in={true} key={page} reverse={reverse}>
+                  <Grid container>
+                    {sortedData()
+                      .slice(page * 5, page * 5 + 5)
+                      .map((_swap, index) => {
+                        return (
+                          <a
+                            href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}
+                            className={classes.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             key={_swap.id}
-                            className={`${classes.cursorPointer} ${_swap.id}`}
                           >
-                            <Grid item xs={6} className={classes.gridItem}>
-                              <Tooltip
-                                title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
-                              >
-                                <span className={classes.flexCenter}>
-                                  <img
-                                    src={tryRequire(_swap.pool.tokenB.symbol)}
-                                    alt="Logo"
-                                    srcSet=""
-                                    width={15}
-                                    style={{ marginRight: 5 }}
-                                  />{" "}
-                                  {trunc(_swap.swapAmount)}{" "}
-                                  {_swap.pool.tokenB.symbol}
-                                </span>
-                              </Tooltip>
-                            </Grid>
-                            {/* 
+                            <Grid
+                              container
+                              item
+                              xs={12}
+                              key={_swap.id}
+                              className={`${classes.cursorPointer} ${_swap.id}`}
+                            >
+                              <Grid item xs={6} className={classes.gridItem}>
+                                <Tooltip
+                                  title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
+                                >
+                                  <span className={classes.flexCenter}>
+                                    <img
+                                      src={tryRequire(_swap.pool.tokenB.symbol)}
+                                      alt="Logo"
+                                      srcSet=""
+                                      width={15}
+                                      style={{ marginRight: 5 }}
+                                    />{" "}
+                                    {trunc(_swap.swapAmount)}{" "}
+                                    {_swap.pool.tokenB.symbol}
+                                  </span>
+                                </Tooltip>
+                              </Grid>
+                              {/* 
                               <Grid item xs={4} className={classes.gridItem}>
                               <Tooltip title={`${_swap.pool.tokenB.symbol}`}>
                                 <span className={classes.flexCenter}>
@@ -297,44 +304,49 @@ function SwapTable({
                               </Tooltip>
                             </Grid> */}
 
-                            <Grid item xs={6} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.flashReceived} $FLASH`}>
-                                <span className={classes.flexCenter}>
-                                  <img
-                                    // src={tryRequire("FlashPro5")}
-                                    src={tryRequire(
-                                      theme === "dark" ? "FlashPro5" : "$FLASH"
-                                    )}
-                                    alt="Logo"
-                                    srcSet=""
-                                    width={15}
-                                    style={{ marginRight: 5 }}
-                                  />{" "}
-                                  {trunc(_swap.flashReceived)} $FLASH
-                                </span>
-                              </Tooltip>
+                              <Grid item xs={6} className={classes.gridItem}>
+                                <Tooltip
+                                  title={`${_swap.flashReceived} $FLASH`}
+                                >
+                                  <span className={classes.flexCenter}>
+                                    <img
+                                      // src={tryRequire("FlashPro5")}
+                                      src={tryRequire(
+                                        theme === "dark"
+                                          ? "FlashPro5"
+                                          : "$FLASH"
+                                      )}
+                                      alt="Logo"
+                                      srcSet=""
+                                      width={15}
+                                      style={{ marginRight: 5 }}
+                                    />{" "}
+                                    {trunc(_swap.flashReceived)} $FLASH
+                                  </span>
+                                </Tooltip>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </a>
-                      );
-                    })}
-                </Grid>
-              </PageAnimation>
-              {swapHistory?.length > 5 ? (
-                <Grid item xs={12} className={classes.gridItem}>
-                  <TablePagination
-                    rowsPerPageOptions={[]}
-                    component="div"
-                    count={swapHistory.length}
-                    rowsPerPage={5}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    labelRowsPerPage=""
-                    nextIconButtonProps={{ color: "primary" }}
-                  />
-                </Grid>
-              ) : null}
-            </Fragment>
+                          </a>
+                        );
+                      })}
+                  </Grid>
+                </PageAnimation>
+                {swapHistory?.length > 5 ? (
+                  <Grid item xs={12} className={classes.gridItem}>
+                    <TablePagination
+                      rowsPerPageOptions={[]}
+                      component="div"
+                      count={swapHistory.length}
+                      rowsPerPage={5}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      labelRowsPerPage=""
+                      nextIconButtonProps={{ color: "primary" }}
+                    />
+                  </Grid>
+                ) : null}
+              </Fragment>
+            )
           ) : (
             <Grid item xs={12} className={classes.msgContainer}>
               <Typography variant="body2" className={classes.msg}>
@@ -342,12 +354,6 @@ function SwapTable({
               </Typography>
             </Grid>
           )
-        ) : chainId !== 4 ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to see swap history
-            </Typography>
-          </Grid>
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="overline" className={classes.flexCenter}>

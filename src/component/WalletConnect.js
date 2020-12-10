@@ -76,6 +76,10 @@ const useStyles = makeStyles((theme) => ({
     right: 20,
     zIndex: 10,
   },
+  connectText: {
+    paddingRight: theme.spacing(1),
+    // textAlign: "left !important",
+  },
 }));
 
 function WalletConnect({
@@ -213,9 +217,13 @@ function WalletConnect({
             }}
             disableRipple={true}
           >
-            {web3context.active
-              ? addressShorten(web3context.account)
-              : "CONNECT WALLET"}
+            {web3context.active ? (
+              addressShorten(web3context.account)
+            ) : (
+              <Typography variant="body2" className={classes.connectText}>
+                CONNECT WALLET
+              </Typography>
+            )}
           </Button>
 
           <Button
