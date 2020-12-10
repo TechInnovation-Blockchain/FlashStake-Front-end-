@@ -511,7 +511,7 @@ function PoolTable({
                 )
               ) : (
                 <Grid item xs={12} className={classes.msgContainer}>
-                  <Typography variant="overline">NO POOL AVAILABLE</Typography>
+                  <Typography variant="overline">NO POOLS AVAILABLE</Typography>
                 </Grid>
               )}
             </Grid>

@@ -86,11 +86,11 @@ function Navbar({
   //   }, 3500);
   // };
 
-  useEffect(() => {
-    if (localStorage.getItem("themeMode") === "retro") {
-      localStorage.setItem("themeMode", "dark");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem("themeMode") === "retro") {
+  //     localStorage.setItem("themeMode", "dark");
+  //   }
+  // }, []);
 
   const handleClick2 = () => {
     setExpandAccodion(false);

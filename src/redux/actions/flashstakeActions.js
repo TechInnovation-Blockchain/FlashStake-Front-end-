@@ -759,6 +759,21 @@ export const onSelectWithdrawPool = (_poolId) => {
   };
 };
 
+// export const getApprovalXIOPool = () => async (dispatch, getState) => {
+//   setLoadingIndep({ approval: true });
+//   setLoadingIndep({ approvalXIO: true });
+//   try {
+//     await initializeErc20TokenContract(CONSTANTS.ADDRESS_XIO_RINKEBY);
+//     await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool", true);
+//     dispatch(checkAllowancePool());
+//   } catch (e) {
+//     _error("ERROR getApprovalXIO -> ", e);
+//   } finally {
+//     setLoadingIndep({ approval: false });
+//     setLoadingIndep({ approvalXIO: false });
+//   }
+// };
+
 export const getApprovalPoolLiquidity = (poolID, success) => async (
   dispatch,
   getState
@@ -773,12 +788,7 @@ export const getApprovalPoolLiquidity = (poolID, success) => async (
     }
     setLoadingIndep({ approvalWithdrawPool: true });
     await initializeErc20TokenContract(_pool.pool.id);
-    await approve(
-      CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS,
-      "pool",
-      undefined,
-      success
-    );
+    await approve(CONSTANTS.FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS, "pool", true);
     dispatch(checkAllowancePoolWithdraw(poolID));
   } catch (e) {
     _error("ERROR getApprovalPoolLiquidity -> ", e);

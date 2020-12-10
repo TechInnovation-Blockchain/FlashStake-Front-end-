@@ -216,15 +216,19 @@ function SlippageDialogue({
   const [_disabled, _setDisabled] = useState(true);
 
   const onChangeSlip = ({ target: { value } }) => {
-    // _setBtn(value);
-    _setSlip(value);
+    if (value <= 50) {
+      _setBtn(value);
+      _setSlip(value);
+    }
   };
+
+  // useEffect(() => {
+  //   btnSelect(btn, slip);
+  // }, []);
 
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
-
-  const walletsItems = isMobile ? mobileWalletList : walletList;
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -246,8 +250,6 @@ function SlippageDialogue({
       )}`;
     }
   };
-
-  console.log("HERE", _btn, _slip);
 
   const onButtonClick = () => {
     setSlip(_slip);
@@ -286,10 +288,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                _btn === 0.1 ? classes.slippageButton : classes._slippageButton
+                _btn == 0.1 ? classes.slippageButton : classes._slippageButton
               }
               onClick={() => btnSelect(0.1, 0.1)}
-              disabled={_btn === 0}
+              disabled={_btn == 0}
             >
               0.1%
             </Button>
@@ -298,10 +300,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                _btn === 2 ? classes.slippageButton : classes._slippageButton
+                _btn == 0.5 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(2, 0.5)}
-              disabled={_btn === 0}
+              onClick={() => btnSelect(0.5, 0.5)}
+              disabled={_btn == 0}
             >
               0.5%
             </Button>
@@ -310,10 +312,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                _btn === 3 ? classes.slippageButton : classes._slippageButton
+                _btn == 1 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(3, 1)}
-              disabled={_btn === 0}
+              onClick={() => btnSelect(1, 1)}
+              disabled={_btn == 0}
             >
               1%
             </Button>
@@ -322,10 +324,10 @@ function SlippageDialogue({
             <Button
               variant={"retro"}
               className={
-                _btn === 4 ? classes.slippageButton : classes._slippageButton
+                _btn == 5 ? classes.slippageButton : classes._slippageButton
               }
-              onClick={() => btnSelect(4, 5)}
-              disabled={_btn === 0}
+              onClick={() => btnSelect(5, 5)}
+              disabled={_btn == 0}
             >
               5%
             </Button>
@@ -338,10 +340,10 @@ function SlippageDialogue({
             style={{ paddingBottom: 5 }}
             className={classes.slippageHeading}
           >
-            Custom Slippage
+            Custom Slippage(%)
           </Typography>
           <TextField
-            placeholder="Slippage"
+            placeholder="5"
             className={classes.textField}
             fullWidth
             value={_slip}
@@ -350,20 +352,13 @@ function SlippageDialogue({
             inputMode="numeric"
             pattern={regex}
             // disabled={_disabled}
-            onClick={() => {
-              // _setDisabled(false);
-              _setBtn(_slip);
-            }}
-            onKeyDown={handleKeyDown}
-            // onFocus={() => {
+            // onClick={() => {
             //   _setDisabled(false);
             // }}
-            // onBlur={() => {
-            //   _setDisabled(true);
-            //   _setBtn(btn);
-            // }}
+            onKeyDown={handleKeyDown}
+            // onFocus={(e) => (e.target.placeholder = "")}
+            // onBlur={(e) => (e.target.placeholder = _slip)}
           />
-          <span className={classes.perc}>%</span>
         </Box>
         <Button
           variant={"retro"}

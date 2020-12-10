@@ -934,7 +934,7 @@ function Pool({
                             : !allowanceXIOPool
                             ? `APPROVE ${selectedStakeToken}`
                             : `APPROVE ${
-                                selectedRewardToken.tokenB.symbol || ""
+                                selectedRewardToken?.tokenB?.symbol || ""
                               }`}
                         </Button>
                       </Grid>
@@ -1349,13 +1349,11 @@ function Pool({
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} LP pool
-                        tokens
+                        {trunc(withdrawLiquidityRequest._liquidity)}
                       </span>
                     </Tooltip>{" "}
-                    from{" "}
                     <span className={classes.redText}>
-                      $FLASH/{withdrawLiquidityRequest._token}
+                      $FLASH/{withdrawLiquidityRequest._token} LP tokens
                     </span>
                   </Typography>
                 </Fragment>
@@ -1401,13 +1399,9 @@ function Pool({
                     >
                       <span className={classes.redText}>
                         {trunc(withdrawLiquidityRequest._liquidity)} $FLASH/
-                        {withdrawLiquidityRequest._token}
+                        {withdrawLiquidityRequest._token} LP tokens
                       </span>
                     </Tooltip>{" "}
-                    {/* from{" "}
-                    <span className={classes.redText}>
-                      pool
-                    </span> */}
                   </Typography>
                   <Typography
                     variant="body2"
