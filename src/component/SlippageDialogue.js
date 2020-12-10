@@ -343,7 +343,7 @@ function SlippageDialogue({
             Custom Slippage(%)
           </Typography>
           <TextField
-            placeholder="5"
+            placeholder={`${slip}`}
             className={classes.textField}
             fullWidth
             value={_slip}
