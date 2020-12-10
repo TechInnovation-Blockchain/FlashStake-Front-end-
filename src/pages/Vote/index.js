@@ -658,24 +658,6 @@ function Vote({
                       </Button>
                     </Grid>
 
-                    {!allowanceXIOProtocol &&
-                    active &&
-                    account &&
-                    selectedRewardToken &&
-                    !loadingRedux.allowance ? (
-                      <Grid item xs={12}>
-                        <Typography
-                          // variant="overline"
-                          variant="body1"
-                          className={classes.redText}
-                        >
-                          {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE $FLASH</b> */}
-                          Before you can <b>stake</b>, you must{" "}
-                          <b>approve $FLASH</b>
-                        </Typography>
-                      </Grid>
-                    ) : null}
                     {!(active && account) ? (
                       <Grid
                         item
@@ -688,7 +670,7 @@ function Vote({
                           variant="body2"
                           className={classes.redText}
                         >
-                          Connect wallet to stake
+                          Connect wallet to create pools
                         </Typography>
                       </Grid>
                     ) : chainId !== 4 ||
@@ -700,7 +682,8 @@ function Vote({
                           className={classes.redText}
                         >
                           {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                          Change network to <b>rinkeby</b> to <b>create</b>
+                          Change network to <b>rinkeby</b> to create{" "}
+                          <b>pools</b>
                         </Typography>
                       </Grid>
                     ) : null}

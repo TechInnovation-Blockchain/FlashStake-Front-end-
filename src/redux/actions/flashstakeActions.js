@@ -272,7 +272,7 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       CONSTANTS.ADDRESS_XIO_RINKEBY,
       account
     );
-    _log(_allowance);
+    _log("Allowance Pool -> ", _allowance);
     dispatch({
       type: "ALLOWANCE_XIO_POOL",
       payload: _allowance > 0,
@@ -283,7 +283,8 @@ export const checkAllowancePool = () => async (dispatch, getState) => {
       selectedRewardToken.tokenB.id,
       account
     );
-    _log(_allowance2);
+    _log("Allowance Pool Alt -> ", _allowance2);
+
     dispatch({
       type: "ALLOWANCE_ALT_POOL",
       payload: _allowance2 > 0,

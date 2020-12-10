@@ -341,20 +341,20 @@ function AddTokenDialogue({
           ) : exist ? (
             <Typography variant="body2" className={classes.dialogHeading}>
               {" "}
-              TOKEN ALREADY EXISTS
+              {/* TOKEN ALREADY EXISTS */}
+              Token already exists
             </Typography>
           ) : loader ? (
             <Typography variant="body2" className={classes.dialogHeading}>
               {" "}
-              FETCHING TOKEN DETAILS{" "}
+              fetching token details{" "}
               <CircularProgress size={12} color={"inherit"} />
             </Typography>
-          ) : (
-            <Typography variant="body2" className={classes.dialogHeading}>
-              {" "}
-              ADD TOKEN ADDRESS TO SEE DETAILS{" "}
-            </Typography>
-          )}
+          ) : // <Typography variant="body2" className={classes.dialogHeading}>
+          //   {" "}
+          //   ADD TOKEN ADDRESS TO SEE DETAILS{" "}
+          // </Typography>
+          null}
 
           <Button
             fullWidth
