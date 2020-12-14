@@ -88,7 +88,7 @@ export const updateApyPools = (quantity, poolsParam) => async (
         const data = queryData[_pools[i].id];
         const _quantity = JSBI.BigInt(
           utils.parseUnits(
-            String(stakeQty.toString() || "1"),
+            String(stakeQty?.toString() || "1"),
             selectedRewardToken?.tokenB?.decimal
           )
         );
@@ -188,9 +188,7 @@ export const updatePools = (data) => async (dispatch) => {
 
 const getPercentageUnStaked = async (_stake) => {
   const _queryData = await getQueryData(_stake.pool.id);
-  const _precision = JSBI.BigInt(
-    utils.parseUntis("1", selectedRewardToken?.tokenB?.decimal)
-  );
+  const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
   const _locked = JSBI.subtract(
     JSBI.BigInt(_queryData.flashBalance),
     JSBI.BigInt(_stake.amountIn)
@@ -203,9 +201,7 @@ const getPercentageUnStaked = async (_stake) => {
 };
 
 const getInvFPY = async (_stake) => {
-  const _precision = JSBI.BigInt(
-    utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
-  );
+  const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
   const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
   return JSBI.subtract(_precision, _getPercentageUnStaked);
 };
@@ -215,9 +211,7 @@ export const calculateBurnSingleStake = async (_stake) => {
   const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
-    const _precision = JSBI.BigInt(
-      utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
-    );
+    const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
     let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
     const _getInvFpy = await getInvFPY(_stake);

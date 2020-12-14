@@ -529,8 +529,7 @@ export const stakeXIO = (xioQuantity, days, time) => async (
         quantity: xioQuantity,
         days,
         reward: utils.formatUnits(
-          reward,
-          toString(),
+          reward.toString(),
           selectedRewardToken?.tokenB?.decimal
         ),
       },
@@ -548,10 +547,9 @@ export const stakeXIO = (xioQuantity, days, time) => async (
     );
 
     await stake(
-      utils.parseUnits(
-        xioQuantity.toString(),
-        selectedRewardToken.tokenB.decimal
-      ),
+      utils
+        .parseUnits(xioQuantity.toString(), selectedRewardToken.tokenB.decimal)
+        .toString(),
       _days,
       utils.defaultAbiCoder.encode(
         ["address", "uint256"],
@@ -732,20 +730,24 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
         selectedRewardToken.tokenB.id,
         utils.parseUnits(
           swapOutput.toString(),
-          selectedRewardToken.tokenB.decimal
+          selectedRewardToken?.tokenB?.decimal
         )
       );
 
       await swap(
-        utils.parseUnit(
-          _altQuantity.toString(),
-          selectedRewardToken.tokenB.decimal
-        ),
+        utils
+          .parseUnits(
+            _altQuantity?.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          )
+          .toString(),
         selectedRewardToken.tokenB.id,
-        utils.parseUnits(
-          swapOutput.toString(),
-          selectedRewardToken.tokenB.decimal
-        )
+        utils
+          .parseUnits(
+            swapOutput.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          )
+          .toString()
       );
     }
   } catch (e) {

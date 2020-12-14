@@ -496,7 +496,7 @@ function Pool({
               JSBI.multiply(
                 JSBI.BigInt(
                   utils.parseUnits(
-                    _amountA.toString(),
+                    _amountA?.toString(),
                     selectedRewardToken?.tokenB?.decimal
                   )
                 ),
@@ -875,7 +875,7 @@ function Pool({
                                 (parseFloat(quantityXIO) +
                                   parseFloat(
                                     utils.formatUnits(
-                                      queryData.reserveFlashAmount.toString() ||
+                                      queryData?.reserveFlashAmount?.toString() ||
                                         "0",
                                       selectedRewardToken?.tokenB?.decimal
                                     )
@@ -892,7 +892,7 @@ function Pool({
                                   (parseFloat(quantityXIO) +
                                     parseFloat(
                                       utils.formatUnits(
-                                        queryData.reserveFlashAmount.toString() ||
+                                        queryData?.reserveFlashAmount?.toString() ||
                                           "0",
                                         selectedRewardToken?.tokenB?.decimal
                                       )

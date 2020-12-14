@@ -278,15 +278,15 @@ function AddDropDown({
 
   const getMintAmount = useCallback(() => {
     const _poolTotalSupply = utils.formatUnits(
-      queryData?.poolTotalSupply.toString() || "0",
+      queryData?.poolTotalSupply?.toString() || "0",
       selectedRewardToken?.tokenB?.decimal
     );
     const _reserveFlashAmount = utils.formatUnits(
-      queryData?.reserveFlashAmount.toString() || "0",
+      queryData?.reserveFlashAmount?.toString() || "0",
       selectedRewardToken?.tokenB?.decimal
     );
-    const _reserveAltAmount = Web3.utils.formatUnits(
-      queryData?.reserveAltAmount.toString() || "0",
+    const _reserveAltAmount = utils.formatUnits(
+      queryData?.reserveAltAmount?.toString() || "0",
       selectedRewardToken?.tokenB?.decimal
     );
     if (_poolTotalSupply > 0) {
@@ -462,7 +462,7 @@ function AddDropDown({
                       (parseFloat(quantityXIO) +
                         parseFloat(
                           utils.formatUnits(
-                            queryData.reserveFlashAmount.toString() || "0",
+                            queryData?.reserveFlashAmount?.toString() || "0",
                             selectedRewardToken?.tokenB?.decimal
                           )
                         ))) *
@@ -475,7 +475,7 @@ function AddDropDown({
                         (parseFloat(quantityXIO) +
                           parseFloat(
                             utils.formatUnits(
-                              queryData.reserveFlashAmount.toString() || "0",
+                              queryData?.reserveFlashAmount?.toString() || "0",
                               selectedRewardToken?.tokenB?.decimal
                             )
                           ))) *
