@@ -68,6 +68,7 @@ import { setRefetch, selectStake } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
+import { utils } from "ethers";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -832,12 +833,20 @@ function Flashstake({
                               />
                             ) : quantity > 0 && days > 0 ? (
                               <Tooltip
-                                title={`${Web3.utils.fromWei(reward)} ${
+                                title={`${utils.formatUnits(
+                                  reward.toString(),
+                                  selectedRewardToken?.tokenB?.decimal
+                                )} ${
                                   selectedRewardToken?.tokenB?.symbol || ""
                                 }`}
                               >
                                 <span className={classes.infoTextSpan}>
-                                  {trunc(Web3.utils.fromWei(reward))}{" "}
+                                  {trunc(
+                                    utils.formatUnits(
+                                      reward.toString(),
+                                      selectedRewardToken?.tokenB?.decimal
+                                    )
+                                  )}{" "}
                                   {selectedRewardToken?.tokenB?.symbol || ""}
                                 </span>
                               </Tooltip>
@@ -1204,12 +1213,18 @@ function Flashstake({
                         />
                       ) : (
                         <Tooltip
-                          title={`${Web3.utils.fromWei(reward)} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
+                          title={`${utils.formatUnits(
+                            reward.toString(),
+                            selectedRewardToken?.tokenB?.decimal
+                          )} ${selectedRewardToken?.tokenB?.symbol || ""}`}
                         >
                           <span className={classes.infoTextSpan}>
-                            {trunc(Web3.utils.fromWei(reward))}{" "}
+                            {trunc(
+                              utils.formatUnits(
+                                reward.toString(),
+                                selectedRewardToken?.tokenB?.decimal
+                              )
+                            )}{" "}
                             {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>

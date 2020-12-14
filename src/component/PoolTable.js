@@ -35,6 +35,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddLiquidityDropDown from "./AddLiquidityDropDown";
 import Web3 from "web3";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -283,13 +284,23 @@ function PoolTable({
         let pooledAlt = 0;
         if (poolQueryData) {
           _percentageShare =
-            _pool.balance / Web3.utils.fromWei(poolQueryData.poolTotalSupply);
+            _pool.balance /
+            utils.formatUnits(
+              poolQueryData.poolTotalSupply.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            );
           pooledFlash =
             _percentageShare *
-            Web3.utils.fromWei(poolQueryData.reserveFlashAmount);
+            utils.formatUnits(
+              poolQueryData.reserveFlashAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            );
           pooledAlt =
             _percentageShare *
-            Web3.utils.fromWei(poolQueryData.reserveAltAmount);
+            utils.formatUnits(
+              poolQueryData.reserveAltAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            );
         }
         return {
           ..._pool,

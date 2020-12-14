@@ -114,7 +114,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
       _log("reward ==>", {
         xioQuantity,
         days,
-        _reward: Web3.utils.fromWei(_reward.toString()),
+        _reward: utils.formatUnits(_reward.toString(), decimal),
       });
 
       reward = JSBI.subtract(
@@ -203,10 +203,17 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
   } catch (e) {
     _error("ERROR calculateSwap -> ", e);
   }
+  const {
+    flashstake: {
+      selectedRewardToken: {
+        tokenB: { decimal },
+      },
+    },
+  } = getState();
 
   dispatch({
     type: "SWAP_OUTPUT",
-    payload: Web3.utils.fromWei(swapAmount),
+    payload: utils.formatUnits(swapAmount.toString(), decimal),
   });
   dispatch(setLoading({ swapReward: false }));
 };
@@ -521,7 +528,11 @@ export const stakeXIO = (xioQuantity, days, time) => async (
         token: selectedRewardToken.tokenB.symbol,
         quantity: xioQuantity,
         days,
-        reward: Web3.utils.fromWei(reward),
+        reward: utils.formatUnits(
+          reward,
+          toString(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
       },
     });
     initializeFlashProtocolContract();
@@ -872,7 +883,10 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
     dispatch({
       type: "WITHDRAW_LIQUIDITY_REQUEST",
       payload: {
-        _liquidity: Web3.utils.fromWei(removeLiquidity),
+        _liquidity: utils.formatUnits(
+          removeLiquidity.toStrig(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
         _token: _pool.pool.tokenB.symbol,
       },
     });

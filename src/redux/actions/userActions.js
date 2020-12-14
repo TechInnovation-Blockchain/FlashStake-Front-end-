@@ -54,7 +54,10 @@ export const _getFPY = _.memoize(async () => {
 
 export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
   await initializeFlashstakePoolContract(_pool);
-  const _apyStake = Web3.utils.fromWei(await getAPYStake(_xpy));
+  const _apyStake = utils.formatUnits(
+    await getAPYStake(_xpy).toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
   return _apyStake;
 });
 
@@ -79,9 +82,7 @@ export const updateApyPools = (quantity, poolsParam) => async (
 
     console.log("yadaaaaaa", response, queryData);
     if (response?.data) {
-      const _precision = JSBI.BigInt(
-        utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
-      );
+      const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
       const _zero = JSBI.BigInt("0");
       for (let i = 0; i < _pools.length; i++) {
         const data = queryData[_pools[i].id];
@@ -267,19 +268,39 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           }
           return {
             ..._tempData,
-            stakeAmount: Web3.utils.fromWei(amountIn),
-            rewardAmount: Web3.utils.fromWei(rewardAmount),
+            stakeAmount: utils.formatUnits(
+              amountIn.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
+            rewardAmount: utils.formatUnits(
+              rewardAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
             expiryTime: parseFloat(expireAfter),
             expired,
-            amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
-            burnAmount: Web3.utils.fromWei(_burnAmount),
+            amountAvailable: expired
+              ? utils.formatUnits(
+                  amountIn.toString(),
+                  selectedRewardToken?.tokenB?.decimal
+                )
+              : "0",
+            burnAmount: utils.formatUnits(
+              _burnAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
           };
         })
       );
       swapHistory = data.swapHistory.map((_swapHis) => ({
         ..._swapHis,
-        swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
-        flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
+        swapAmount: utils.formatUnits(
+          _swapHis.swapAmount.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
+        flashReceived: utils.formatUnits(
+          _swapHis.flashReceived.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
       }));
       dispatch({
         type: "USER_DATA",
@@ -287,12 +308,24 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           ...data,
           expiredTimestamps,
           stakes,
-          dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+          dappBalance: utils.formatUnits(
+            dappBalance.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
           swapHistory,
-          expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
-          totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
-          totalBalanceWithBurn: Web3.utils.fromWei(
-            String(JSBI.subtract(dappBalance, totalBurnAmount))
+          expiredDappBalance: utils.formatUnits(
+            expiredDappBalance.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
+          totalBurnAmount: utils.formatUnits(
+            totalBurnAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
+          totalBalanceWithBurn: utils.formatUnits(
+            String(
+              JSBI.subtract(dappBalance, totalBurnAmount),
+              selectedRewardToken?.tokenB?.decimal
+            )
           ),
         },
       });

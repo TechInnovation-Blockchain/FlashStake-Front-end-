@@ -55,9 +55,13 @@ export const getDashboardProps = (data) => async (dispatch) => {
 
         return {
           ..._portal,
-          totalStakeAmount: Web3.utils.fromWei(totalStakeAmount.toString()),
-          availableStakeAmount: Web3.utils.fromWei(
-            availableStakeAmount.toString()
+          totalStakeAmount: utils.formatUnits(
+            totalStakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
+          availableStakeAmount: utils.formatUnits(
+            availableStakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
           ),
           expiredTimestamps,
           timestamps,
@@ -86,7 +90,10 @@ export const calculateBurnStakes = (stakes) => {
   const {
     contract: { baseInterestRate, oneDay },
   } = store.getState();
-  const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
+  const _baseInterestRate = utils.formatUnits(
+    baseInterestRate.toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
 
   stakes
     .filter(
@@ -98,7 +105,10 @@ export const calculateBurnStakes = (stakes) => {
         (parseFloat(_stake.expireAfter) - Math.ceil(Date.now() / 1000)) /
         oneDay;
       burn += burnSingleStake(
-        Web3.utils.fromWei(_stake.stakeAmount),
+        utils.formatUnits(
+          _stake.stakeAmount.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
         _baseInterestRate,
         remainingDuration > 0 ? remainingDuration : 0
       );
@@ -112,7 +122,10 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
   const {
     contract: { baseInterestRate, oneDay },
   } = store.getState();
-  const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
+  const _baseInterestRate = utils.formatUnits(
+    baseInterestRate.toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
 
   let remainingAmount =
     amount > parseFloat(portal.availableStakeAmount)
@@ -139,7 +152,10 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
         }
         timestamps.push(_stake.id);
         burn += burnSingleStake(
-          Web3.utils.fromWei(_stake.stakeAmount),
+          utils.formatUnits(
+            _stake.stakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
           _baseInterestRate,
           remainingDuration > 0 ? remainingDuration : 0
         );
@@ -159,7 +175,12 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
     dispatch({
       type: "WITHDRAW_REQUEST",
       payload: {
-        quantity: _amount ? _amount : Web3.utils.fromWei(amount.toString()),
+        quantity: _amount
+          ? _amount
+          : utils.formatUnits(
+              amount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
         symbol: "$FLASH",
       },
     });

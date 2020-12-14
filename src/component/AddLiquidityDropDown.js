@@ -416,7 +416,7 @@ function AddLiquidityDropDown({
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
             : [reserveFlashAmount, reserveAltAmount];
-        return Web3.utils.fromWei(
+        return utils.formatUnits(
           String(
             JSBI.divide(
               JSBI.multiply(
@@ -815,8 +815,9 @@ function AddLiquidityDropDown({
                       (quantityXIO /
                         (parseFloat(quantityXIO) +
                           parseFloat(
-                            Web3.utils.fromWei(
-                              queryData.reserveFlashAmount || "0"
+                            utils.formatUnits(
+                              queryData.reserveFlashAmount.toString() || "0",
+                              selectedRewardToken?.tokenB?.decimal
                             )
                           ))) *
                         100 || 0
@@ -830,8 +831,9 @@ function AddLiquidityDropDown({
                         (quantityXIO /
                           (parseFloat(quantityXIO) +
                             parseFloat(
-                              Web3.utils.fromWei(
-                                queryData.reserveFlashAmount || "0"
+                              utils.formatUnits(
+                                queryData.reserveFlashAmount.toString() || "0",
+                                selectedRewardToken?.tokenB?.decimal
                               )
                             ))) *
                           100

@@ -488,7 +488,9 @@ function Pool({
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
             : [reserveFlashAmount, reserveAltAmount];
-        return Web3.utils.fromWei(
+
+        /////////////////////////////////////////
+        return utils.formatUnits(
           String(
             JSBI.divide(
               JSBI.multiply(
@@ -502,7 +504,8 @@ function Pool({
               ),
               JSBI.BigInt(_reserveA)
             )
-          )
+          ),
+          selectedRewardToken?.tokenB?.decimal
         );
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
@@ -871,8 +874,10 @@ function Pool({
                               (quantityXIO /
                                 (parseFloat(quantityXIO) +
                                   parseFloat(
-                                    Web3.utils.fromWei(
-                                      queryData.reserveFlashAmount || "0"
+                                    utils.formatUnits(
+                                      queryData.reserveFlashAmount.toString() ||
+                                        "0",
+                                      selectedRewardToken?.tokenB?.decimal
                                     )
                                   ))) *
                                 100 || 0
@@ -886,8 +891,10 @@ function Pool({
                                 (quantityXIO /
                                   (parseFloat(quantityXIO) +
                                     parseFloat(
-                                      Web3.utils.fromWei(
-                                        queryData.reserveFlashAmount || "0"
+                                      utils.formatUnits(
+                                        queryData.reserveFlashAmount.toString() ||
+                                          "0",
+                                        selectedRewardToken?.tokenB?.decimal
                                       )
                                     ))) *
                                   100

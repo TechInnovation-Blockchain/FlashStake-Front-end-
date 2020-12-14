@@ -23,6 +23,7 @@ import { trunc } from "../utils/utilFunc";
 import Web3 from "web3";
 import { JSBI } from "@uniswap/sdk";
 import { connect } from "react-redux";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -276,14 +277,17 @@ function AddDropDown({
   }, [closeTimeout, open, onClose]);
 
   const getMintAmount = useCallback(() => {
-    const _poolTotalSupply = Web3.utils.fromWei(
-      queryData?.poolTotalSupply || "0"
+    const _poolTotalSupply = utils.formatUnits(
+      queryData?.poolTotalSupply.toString() || "0",
+      selectedRewardToken?.tokenB?.decimal
     );
-    const _reserveFlashAmount = Web3.utils.fromWei(
-      queryData?.reserveFlashAmount || "0"
+    const _reserveFlashAmount = utils.formatUnits(
+      queryData?.reserveFlashAmount.toString() || "0",
+      selectedRewardToken?.tokenB?.decimal
     );
-    const _reserveAltAmount = Web3.utils.fromWei(
-      queryData?.reserveAltAmount || "0"
+    const _reserveAltAmount = Web3.utils.formatUnits(
+      queryData?.reserveAltAmount.toString() || "0",
+      selectedRewardToken?.tokenB?.decimal
     );
     if (_poolTotalSupply > 0) {
       return Math.min(
@@ -457,8 +461,9 @@ function AddDropDown({
                     (quantityXIO /
                       (parseFloat(quantityXIO) +
                         parseFloat(
-                          Web3.utils.fromWei(
-                            queryData.reserveFlashAmount || "0"
+                          utils.formatUnits(
+                            queryData.reserveFlashAmount.toString() || "0",
+                            selectedRewardToken?.tokenB?.decimal
                           )
                         ))) *
                       100 || 0
@@ -469,8 +474,9 @@ function AddDropDown({
                       (quantityXIO /
                         (parseFloat(quantityXIO) +
                           parseFloat(
-                            Web3.utils.fromWei(
-                              queryData.reserveFlashAmount || "0"
+                            utils.formatUnits(
+                              queryData.reserveFlashAmount.toString() || "0",
+                              selectedRewardToken?.tokenB?.decimal
                             )
                           ))) *
                         100
