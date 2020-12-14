@@ -66,6 +66,7 @@ import axios from "axios";
 import { setPoolData } from "../../redux/actions/userActions";
 import { JSBI } from "@uniswap/sdk";
 import { _error } from "../../utils/log";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -491,7 +492,12 @@ function Pool({
           String(
             JSBI.divide(
               JSBI.multiply(
-                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(
+                  utils.parseUnits(
+                    _amountA.toString(),
+                    selectedRewardToken?.tokenB?.decimal
+                  )
+                ),
                 JSBI.BigInt(_reserveB)
               ),
               JSBI.BigInt(_reserveA)

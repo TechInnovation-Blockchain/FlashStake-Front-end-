@@ -52,6 +52,7 @@ import { updateAllBalances } from "../redux/actions/userActions";
 import Web3 from "web3";
 import { JSBI } from "@uniswap/sdk";
 import { _error } from "../utils/log";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -419,7 +420,12 @@ function AddLiquidityDropDown({
           String(
             JSBI.divide(
               JSBI.multiply(
-                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(
+                  utils.parseUnits(
+                    _amountA.toString(),
+                    selectedRewardToken?.tokenB?.decimal
+                  )
+                ),
                 JSBI.BigInt(_reserveB)
               ),
               JSBI.BigInt(_reserveA)

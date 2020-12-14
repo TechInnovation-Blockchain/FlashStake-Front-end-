@@ -25,6 +25,7 @@ import {
 import { getQueryData, getAllQueryData } from "./queryActions";
 import { store } from "../../config/reduxStore";
 import { trunc } from "../../utils/utilFunc";
+import { utils } from "ethers";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -34,6 +35,10 @@ export const _getTokenPrice = _.memoize(async () => {
   );
   return response;
 });
+
+const {
+  flashstake: { selectedRewardToken },
+} = store.getState();
 
 export const _getFPY = _.memoize(async () => {
   // const {
@@ -63,7 +68,7 @@ export const updateApyPools = (quantity, poolsParam) => async (
   try {
     const {
       user: { pools },
-      flashstake: { stakeQty },
+      flashstake: { stakeQty, selectedRewardToken },
     } = await getState();
     if (!_pools) {
       _pools = pools;
@@ -74,12 +79,17 @@ export const updateApyPools = (quantity, poolsParam) => async (
 
     console.log("yadaaaaaa", response, queryData);
     if (response?.data) {
-      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _precision = JSBI.BigInt(
+        utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
+      );
       const _zero = JSBI.BigInt("0");
       for (let i = 0; i < _pools.length; i++) {
         const data = queryData[_pools[i].id];
         const _quantity = JSBI.BigInt(
-          Web3.utils.toWei(String(stakeQty || "1"))
+          utils.parseUnits(
+            String(stakeQty.toString() || "1"),
+            selectedRewardToken?.tokenB?.decimal
+          )
         );
         const _getPercentStaked = JSBI.divide(
           JSBI.multiply(
@@ -177,7 +187,9 @@ export const updatePools = (data) => async (dispatch) => {
 
 const getPercentageUnStaked = async (_stake) => {
   const _queryData = await getQueryData(_stake.pool.id);
-  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _precision = JSBI.BigInt(
+    utils.parseUntis("1", selectedRewardToken?.tokenB?.decimal)
+  );
   const _locked = JSBI.subtract(
     JSBI.BigInt(_queryData.flashBalance),
     JSBI.BigInt(_stake.amountIn)
@@ -190,7 +202,9 @@ const getPercentageUnStaked = async (_stake) => {
 };
 
 const getInvFPY = async (_stake) => {
-  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _precision = JSBI.BigInt(
+    utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
+  );
   const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
   return JSBI.subtract(_precision, _getPercentageUnStaked);
 };
@@ -200,7 +214,9 @@ export const calculateBurnSingleStake = async (_stake) => {
   const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
-    const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+    const _precision = JSBI.BigInt(
+      utils.parseUnits("1", selectedRewardToken?.tokenB?.decimal)
+    );
     let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
     const _getInvFpy = await getInvFPY(_stake);

@@ -10,6 +10,7 @@ export const userStakesQuery = gql`
         tokenB {
           id
           symbol
+          decimal
         }
       }
     }
@@ -20,6 +21,7 @@ export const userStakesQuery = gql`
         pool {
           tokenB {
             symbol
+            decimal
           }
           transactionHash
         }
@@ -40,6 +42,7 @@ export const userStakesQuery = gql`
           tokenB {
             id
             symbol
+            decimal
           }
         }
       }
@@ -51,9 +54,11 @@ export const userStakesQuery = gql`
           id
           tokenA {
             symbol
+            decimal
           }
           tokenB {
             symbol
+            decimal
           }
           transactionHash
         }

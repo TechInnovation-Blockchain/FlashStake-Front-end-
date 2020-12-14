@@ -27,9 +27,15 @@ import { analytics } from "../../config/App";
 import Web3 from "web3";
 import { _error } from "../log";
 import { CONSTANTS } from "../constants";
+import { utils } from "ethers";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
+
+const {
+  flashstake: { selectedRewardToken },
+} = store.getState();
 
 export const initializeFlashProtocolContract = () => {
   contract = flashProtocolContract();
@@ -62,7 +68,14 @@ export const getFPY = async (amount = "1") => {
   try {
     checkContractInitialized();
 
-    const fpy = await contract.methods.getFPY(Web3.utils.toWei(amount)).call();
+    const fpy = await contract.methods
+      .getFPY(
+        utils.parseUnits(
+          amount.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        )
+      )
+      .call();
     return fpy;
   } catch (e) {
     _error("ERROR getFPY -> ", e);
