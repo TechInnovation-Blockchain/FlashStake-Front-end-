@@ -28,4 +28,27 @@ export const CONSTANTS = {
   BALANCE_CONTRACT: "0x3cDA8420E25510765490201E1D054c517D085a7E",
   QUERY_CONTRACT: "0x6b3A75483ad3FDcB4ACC5a3139aAD37Cf2b0841A",
   CACHE_SERVER: "https://server.xio.app:3015/getReserves",
+
+  TOKENS_LIST: [
+    {
+      name: "CMC DeFi",
+      uri:
+        "https://bafybeia2zujfb5qraeekvil62gxemmzumvigoe4lymtqxo2ey4jdlt3p7i.ipfs.dweb.link/",
+      logoURI: "ipfs://QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx",
+    },
+    {
+      name: "1inch",
+      uri:
+        "https://bafybeie3s4wjvyvqjvw53n2wt7olu566wib4vtisj3lcjryq6xtzompbji.ipfs.dweb.link/",
+      logoURI: "https://1inch.exchange/assets/images/logo.png",
+    },
+    {
+      name: "Zerion Explore",
+      uri:
+        "https://bafybeie7zq6yerhz4kjdifceszzqoxqakb3pftwjr422zvivkc4wp7evri.ipfs.dweb.link/",
+      logoURI:
+        "https://token-icons.s3.amazonaws.com/brand/1_z-white_blue-rounded-square.png",
+    },
+    { name: "Default" },
+  ],
 };

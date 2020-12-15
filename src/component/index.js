@@ -3,6 +3,7 @@ import Button from "./Button";
 import Button2 from "./Button2";
 import Dialog from "./Dialog";
 import DropdownDialog from "./DropdownDialog";
+import ManageListsDropDown from "./ManageListsDropDown";
 import DropdownDialog2 from "./DropdownDialog2";
 import Table from "./Table";
 import SwapTable from "./SwapTable";
@@ -34,4 +35,5 @@ export {
   PageAnimation,
   FlashstakePausedMessage,
   Accordion,
+  ManageListsDropDown,
 };

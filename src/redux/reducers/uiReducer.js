@@ -15,6 +15,15 @@ export const uiReducer = (
     falseSelected: true,
     close: false,
     btn: 5,
+    tokensURI: {
+      name: "Default",
+      uri: "",
+    },
+    // defaultTokenList:[{
+    //   name: "Default List",
+    //     uri: "tokens.1inch.eth",
+    //     logoURI: "https://1inch.exchange/assets/images/logo.png",
+    // }],
   },
   { type, payload }
 ) => {
@@ -98,6 +107,11 @@ export const uiReducer = (
       return {
         ...state,
         close: payload,
+      };
+    case "SELECT_TOKENS_LIST":
+      return {
+        ...state,
+        tokensURI: payload,
       };
 
     default:

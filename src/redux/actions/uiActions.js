@@ -112,6 +112,12 @@ export const setBtn = (data) => {
     payload: data,
   };
 };
+export const setTokensURI = (data) => {
+  return {
+    type: "SELECT_TOKENS_LIST",
+    payload: data,
+  };
+};
 
 //
 
