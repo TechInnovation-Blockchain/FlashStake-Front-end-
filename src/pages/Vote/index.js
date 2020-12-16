@@ -83,7 +83,7 @@ let useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontWeight: 700,
     // fontSize: 10,
-    marginBottom: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     // [theme.breakpoints.down("xs")]: {
     //   fontSize: 8,
     // },
@@ -148,6 +148,7 @@ let useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
@@ -614,7 +615,7 @@ function Vote({
                   style={{ paddingTop: "20px", paddingBottom: "20px" }}
                   className={classes.accordionDetails}
                 >
-                  <Grid container spacing={2}>
+                  <Grid container>
                     <Grid item xs={12}>
                       <TextField
                         className={classes.textField}
@@ -625,7 +626,7 @@ function Vote({
                       />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         variant="body1"
                         className={classes.secondaryText}
@@ -639,7 +640,7 @@ function Vote({
                       />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         variant="body1"
                         className={`${classes.secondaryText1} `}
@@ -648,7 +649,12 @@ function Vote({
                       </Typography>
                     </Grid>
 
-                    <Grid container item xs={12} onClick={showWalletHint}>
+                    <Grid
+                      item
+                      className={classes.gridSpace}
+                      xs={12}
+                      onClick={showWalletHint}
+                    >
                       <Button
                         fullWidth
                         variant="retro"
@@ -676,7 +682,7 @@ function Vote({
                       </Grid>
                     ) : chainId !== 4 ||
                       web3context.error instanceof UnsupportedChainIdError ? (
-                      <Grid item xs={12}>
+                      <Grid item className={classes.gridSpace} xs={12}>
                         <Typography
                           // variant="overline"
                           variant="body2"

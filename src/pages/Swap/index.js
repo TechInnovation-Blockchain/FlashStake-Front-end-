@@ -63,404 +63,213 @@ const {
   ui: { changeApp },
 } = store.getState();
 
-const useStyles = makeStyles((theme) =>
-  !changeApp
-    ? {
-        contentContainer: {
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          // height: "200px",
-        },
-        secondaryText: {
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-          // fontSize: 10,
-          marginBottom: theme.spacing(1),
-          // [theme.breakpoints.down("xs")]: {
-          // fontSize: 8,
-          // },
-        },
-        primaryText: {
-          color: theme.palette.text.primary,
-          fontWeight: 700,
-        },
-        greenText: {
-          color: theme.palette.text.green,
-          fontWeight: 700,
-        },
-        redText: {
-          // fontSize: 10,
-          color: theme.palette.xioRed.main,
-          fontWeight: 700,
-        },
-        infoText: {
-          // fontSize: 10,
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-        },
-        infoTextSpan: {
-          // fontSize: 10,
-          color: theme.palette.xioRed.main,
-          fontWeight: 900,
-        },
-        secondaryTextWOMargin: {
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-        },
-        textBold: {
-          fontWeight: 700,
-        },
-        xIcon: {
-          color: theme.palette.xioRed.main,
-          fontWeight: 900,
-          marginTop: 28,
-          // fontSize: 15,
-          alignSelf: "center",
-          margin: theme.spacing(2),
-        },
-        checkbox: {
-          padding: 0,
-          "&.Mui-checked": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        textField: {
-          background: theme.palette.background.secondary2,
-          border: `2px solid ${theme.palette.shadowColor.main}`,
-          borderRadius: theme.palette.ButtonRadius.small,
-          // borderRadius: 10,
-          // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
-          "& .MuiInputBase-input": {
-            height: 36,
-            fontWeight: "700 !important",
-            padding: theme.spacing(0, 1),
-            lineHeight: 1.5,
-            textAlign: "center",
-          },
-          "& .Mui-error": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        link: {
-          color: "inherit",
-          textDecoration: "none",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        textFieldContainer: {
-          position: "relative",
-        },
-        maxIconButton: {
-          position: "absolute",
-          right: 0,
-          top: "50%",
-          height: 35,
-          transform: "translateY(-50%)",
-          background: theme.palette.background.secondary2,
-          "&.Mui-disabled": {
-            display: "none",
-          },
-          "& svg": {
-            fill: "#9191A7",
-          },
-          "&:hover": {
-            // background: theme.palette.background.primary,
-            background: theme.palette.background.secondary2,
-            "& svg": {
-              fill: theme.palette.xioRed.main,
-            },
-          },
-          transition: "none !important",
-        },
-        linkIcon: {
-          color: theme.palette.xioRed.main,
-          paddingRight: 5,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        btnPaddingLeft: {
-          paddingLeft: theme.spacing(1),
-        },
-        btnPaddingRight: {
-          paddingRight: theme.spacing(1),
-        },
-        cursorPointer: {
-          cursor: "pointer",
-        },
-        restakeableXio: {
-          display: "flex",
+const useStyles = makeStyles((theme) => ({
+  contentContainer: {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    // height: "200px",
+  },
+  secondaryText: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+    // fontSize: 10,
+    marginBottom: theme.spacing(1),
+    // [theme.breakpoints.down("xs")]: {
+    // fontSize: 8,
+    // },
+  },
+  primaryText: {
+    color: theme.palette.text.primary,
+    fontWeight: 700,
+  },
+  greenText: {
+    color: theme.palette.text.green,
+    fontWeight: 700,
+  },
+  redText: {
+    // fontSize: 10,
+    color: theme.palette.xioRed.main,
+    fontWeight: 700,
+  },
+  infoText: {
+    // fontSize: 10,
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+  },
+  infoTextSpan: {
+    // fontSize: 10,
+    color: theme.palette.xioRed.main,
+    fontWeight: 900,
+  },
+  secondaryTextWOMargin: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+  },
+  textBold: {
+    fontWeight: 700,
+  },
+  xIcon: {
+    color: theme.palette.xioRed.main,
+    fontWeight: 900,
+    marginTop: 28,
+    // fontSize: 15,
+    alignSelf: "center",
+    margin: theme.spacing(2),
+  },
+  checkbox: {
+    padding: 0,
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  textField: {
+    background: theme.palette.background.secondary2,
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
+    // borderRadius: 10,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    "& .MuiInputBase-input": {
+      height: 36,
+      fontWeight: "700 !important",
+      padding: theme.spacing(0, 1),
+      lineHeight: 1.5,
+      textAlign: "center",
+    },
+    "& .Mui-error": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  link: {
+    color: "inherit",
+    textDecoration: "none",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textFieldContainer: {
+    position: "relative",
+  },
+  maxIconButton: {
+    position: "absolute",
+    right: 0,
+    top: "50%",
+    height: 35,
+    transform: "translateY(-50%)",
+    background: theme.palette.background.secondary2,
+    "&.Mui-disabled": {
+      display: "none",
+    },
+    "& svg": {
+      fill: "#9191A7",
+    },
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      background: theme.palette.background.secondary2,
+      "& svg": {
+        fill: theme.palette.xioRed.main,
+      },
+    },
+    transition: "none !important",
+  },
+  linkIcon: {
+    color: theme.palette.xioRed.main,
+    paddingRight: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnPaddingLeft: {
+    paddingLeft: theme.spacing(1),
+  },
+  btnPaddingRight: {
+    paddingRight: theme.spacing(1),
+  },
+  cursorPointer: {
+    cursor: "pointer",
+  },
+  restakeableXio: {
+    display: "flex",
 
-          justifyContent: "center",
-          alignItems: "center ",
-        },
-        restakeText: {
-          color: "#555555",
-          fontWeight: 700,
-          // fontSize: 11,
-          cursor: "pointer",
-        },
-        dropDown: {
-          border: `2px solid ${theme.palette.shadowColor.main}`,
-          borderRadius: 10,
-          // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
-          "& .makeStyles-dropdown": {
-            backgroundColor: "#000",
-          },
-        },
-        btn: {
-          marginTop: theme.spacing(2),
-        },
-        btn3: {
-          backgroundColor: theme.palette.background.secondary,
-          padding: "0 !important",
-          margin: "0 !important",
+    justifyContent: "center",
+    alignItems: "center ",
+  },
+  restakeText: {
+    color: "#555555",
+    fontWeight: 700,
+    // fontSize: 11,
+    cursor: "pointer",
+  },
+  dropDown: {
+    border: `2px solid ${theme.palette.shadowColor.main}`,
+    borderRadius: 10,
+    // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
+    "& .makeStyles-dropdown": {
+      backgroundColor: "#000",
+    },
+  },
+  btn: {
+    marginTop: theme.spacing(2),
+  },
+  btn3: {
+    backgroundColor: theme.palette.background.secondary,
+    padding: "0 !important",
+    margin: "0 !important",
 
-          "& .MuiAccordionSummary-content": {
-            display: "block",
-            margin: 0,
-          },
-        },
-        _btn3: {
-          borderTopWidth: 1,
-          borderTopRightRadius: "10px",
-          borderTopLeftRadius: "10px",
-          backgroundColor: theme.palette.background.secondary,
-          padding: "0 !important",
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  _btn3: {
+    borderTopWidth: 1,
+    borderTopRightRadius: "10px",
+    borderTopLeftRadius: "10px",
+    backgroundColor: theme.palette.background.secondary,
+    padding: "0 !important",
 
-          "& .MuiAccordionSummary-content": {
-            display: "block",
-            margin: 0,
-          },
-        },
-        dashboardAccordian: {
-          color: theme.palette.text.grey,
-          "&:hover": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        accordion: {
-          backgroundColor: theme.palette.background.secondary,
-        },
-        stakeDashBtn: {
-          color: "inherit",
-          fontWeight: 700,
-        },
-        icon: {
-          color: theme.palette.xioRed.main,
-        },
-        accordionDetails: {
-          borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
-          // borderBottomWidth: 1,
-          // borderBottomColor: theme.palette.text.gray,
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-        },
-        dialogIcon: {
-          fontSize: 80,
-        },
-        greenText: {
-          color: theme.palette.text.green,
-          fontWeight: 700,
-        },
-        gridSpace: {
-          margin: theme.spacing(1, 0),
-        },
-      }
-    : {
-        contentContainer: {
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          // height: "200px",
-        },
-        secondaryText: {
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-          // fontSize: 10,
-          marginBottom: theme.spacing(1),
-          // [theme.breakpoints.down("xs")]: {
-          // fontSize: 8,
-          // },
-        },
-        primaryText: {
-          color: theme.palette.text.primary,
-          fontWeight: 700,
-        },
-        greenText: {
-          color: theme.palette.text.green,
-          fontWeight: 700,
-        },
-        redText: {
-          // fontSize: 10,
-          color: theme.palette.xioRed.main,
-          fontWeight: 700,
-        },
-        infoText: {
-          // fontSize: 10,
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-        },
-        infoTextSpan: {
-          // fontSize: 10,
-          color: theme.palette.xioRed.main,
-          fontWeight: 900,
-        },
-        secondaryTextWOMargin: {
-          color: theme.palette.text.secondary,
-          fontWeight: 700,
-        },
-        textBold: {
-          fontWeight: 700,
-        },
-        xIcon: {
-          color: theme.palette.xioRed.main,
-          fontWeight: 900,
-          marginTop: 28,
-          // fontSize: 15,
-          alignSelf: "center",
-          margin: theme.spacing(2),
-        },
-        checkbox: {
-          padding: 0,
-          "&.Mui-checked": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        textField: {
-          background: theme.palette.background.secondary2,
-          "& .MuiInputBase-input": {
-            height: 36,
-            fontWeight: "700 !important",
-            padding: theme.spacing(0, 1),
-            lineHeight: 1.5,
-            textAlign: "center",
-          },
-          "& .Mui-error": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        link: {
-          color: "inherit",
-          textDecoration: "none",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        textFieldContainer: {
-          position: "relative",
-        },
-        maxIconButton: {
-          position: "absolute",
-          right: 0,
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: theme.palette.background.secondary2,
-          "&.Mui-disabled": {
-            display: "none",
-          },
-          "& svg": {
-            fill: "#9191A7",
-          },
-          "&:hover": {
-            // background: theme.palette.background.primary,
-            background: theme.palette.background.secondary2,
-            "& svg": {
-              fill: theme.palette.xioRed.main,
-            },
-          },
-          transition: "none !important",
-        },
-        linkIcon: {
-          color: theme.palette.xioRed.main,
-          paddingRight: 5,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        btnPaddingLeft: {
-          paddingLeft: theme.spacing(1),
-        },
-        btnPaddingRight: {
-          paddingRight: theme.spacing(1),
-        },
-        cursorPointer: {
-          cursor: "pointer",
-        },
-        restakeableXio: {
-          display: "flex",
-
-          justifyContent: "center",
-          alignItems: "center ",
-        },
-        restakeText: {
-          color: "#555555",
-          fontWeight: 700,
-          // fontSize: 11,
-          cursor: "pointer",
-        },
-        dropDown: {
-          "& .makeStyles-dropdown": {
-            backgroundColor: "#000",
-          },
-        },
-        btn: {
-          marginTop: theme.spacing(2),
-        },
-        btn3: {
-          backgroundColor: theme.palette.background.secondary,
-          padding: "0 !important",
-          margin: "0 !important",
-
-          "& .MuiAccordionSummary-content": {
-            display: "block",
-            margin: 0,
-          },
-        },
-        _btn3: {
-          borderTopWidth: 1,
-          borderTopRightRadius: "10px",
-          borderTopLeftRadius: "10px",
-          backgroundColor: theme.palette.background.secondary,
-          padding: "0 !important",
-
-          "& .MuiAccordionSummary-content": {
-            display: "block",
-            margin: 0,
-          },
-        },
-        dashboardAccordian: {
-          color: theme.palette.text.grey,
-          "&:hover": {
-            color: theme.palette.xioRed.main,
-          },
-        },
-        accordion: {
-          backgroundColor: theme.palette.background.secondary,
-        },
-        stakeDashBtn: {
-          color: "inherit",
-          fontWeight: 700,
-        },
-        icon: {
-          color: theme.palette.xioRed.main,
-        },
-        accordionDetails: {
-          borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
-          // borderBottomWidth: 1,
-          // borderBottomColor: theme.palette.text.gray,
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-        },
-        dialogIcon: {
-          fontSize: 80,
-        },
-        greenText: {
-          color: theme.palette.text.green,
-          fontWeight: 700,
-        },
-      }
-);
+    "& .MuiAccordionSummary-content": {
+      display: "block",
+      margin: 0,
+    },
+  },
+  dashboardAccordian: {
+    color: theme.palette.text.grey,
+    "&:hover": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  accordion: {
+    backgroundColor: theme.palette.background.secondary,
+  },
+  stakeDashBtn: {
+    color: "inherit",
+    fontWeight: 700,
+  },
+  icon: {
+    color: theme.palette.xioRed.main,
+  },
+  accordionDetails: {
+    borderBottom: `1px solid ${theme.palette.border.secondary} !important`,
+    // borderBottomWidth: 1,
+    // borderBottomColor: theme.palette.text.gray,
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+  },
+  dialogIcon: {
+    fontSize: 80,
+  },
+  greenText: {
+    color: theme.palette.text.green,
+    fontWeight: 700,
+  },
+  gridSpace: {
+    // margin: theme.spacing(1, 0),
+  },
+  boxSizing: {
+    boxSizing: "border-box",
+  },
+}));
 
 const Accordion = withStyles((theme) => ({
   root: {
@@ -719,7 +528,7 @@ function Swap({
               </AccordionSummary>
 
               <AccordionDetails
-                style={{ paddingTop: "20px" }}
+                style={{ paddingTop: "20px", paddingBottom: "0px" }}
                 className={classes.accordionDetails}
               >
                 <Grid container spacing={2}>
@@ -739,7 +548,7 @@ function Swap({
                       type="swap"
                     />
                   </Grid>
-                  <Grid container item className={classes.gridSpace} xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     <Box flex={1}>
                       <Typography
                         variant="body1"
