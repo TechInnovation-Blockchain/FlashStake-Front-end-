@@ -40,6 +40,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
+  let __reward = "0";
   let _maxDays = 5e17 * 365 * 86400;
   try {
     const {
@@ -124,7 +125,14 @@ export const calculateReward = (xioQuantity, days, time) => async (
           JSBI.BigInt(slip)
         )
       ).toString();
-      console.log(reward);
+
+      __reward = JSBI.subtract(
+        JSBI.BigInt(_reward),
+        JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100))
+      ).toString();
+
+      console.log("reward", reward);
+      console.log("reward", __reward);
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);
@@ -132,6 +140,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
   dispatch({
     type: "STAKE_REWARD",
     payload: reward,
+  });
+  dispatch({
+    type: "PRECISE_STAKE_REWARD",
+    payload: __reward,
   });
   dispatch({
     type: "MAX_DAYS",

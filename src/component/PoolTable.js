@@ -238,6 +238,7 @@ function PoolTable({
   const [remLiqOpen, setRemLiqOpen] = useState(false);
   const [currentPool, setCurrentPool] = useState({});
   const [percentageToRemove, setPercentageToRemove] = useState(5);
+  const [toExpand, setToExpand] = useState("");
 
   const onClickOpen = (_pool, type = "add") => {
     setCurrentPool(_pool);
@@ -265,6 +266,10 @@ function PoolTable({
   //     onClickOpen(poolsLiquidityList[0], "add");
   //   }
   // }, [poolsLiquidityList]);
+
+  const handleChange = (_expanded) => (event, newExpanded) => {
+    setToExpand(newExpanded ? _expanded : false);
+  };
 
   useEffect(() => {
     if (selectedRewardToken?.id) {
@@ -312,7 +317,7 @@ function PoolTable({
       })
     );
   }, [poolDashboard, allPoolsData]);
-
+  console.log(toExpand);
   const showWalletHint = useCallback(() => {
     if (!(active && account)) {
       showWalletBackdrop(true);
@@ -365,6 +370,11 @@ function PoolTable({
                     <Accordion
                       className={classes.accordion}
                       key={_pool.pool.id}
+                      // onClick={() => {
+                      //   setToExpand(_pool.pool.id);
+                      // }}
+                      expanded={toExpand === _pool.pool.id}
+                      onChange={handleChange(_pool.pool.id)}
                     >
                       <AccordionSummary
                         expandIcon={

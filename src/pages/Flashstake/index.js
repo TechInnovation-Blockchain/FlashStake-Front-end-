@@ -120,7 +120,7 @@ let useStyles = makeStyles((theme) => ({
   xIcon: {
     color: theme.palette.xioRed.main,
     fontWeight: 900,
-    marginTop: 30,
+    marginTop: theme.spacing(4),
     // fontSize: 15,
     alignSelf: "center",
     margin: theme.spacing(0, 2),
@@ -137,6 +137,7 @@ let useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
@@ -162,6 +163,29 @@ let useStyles = makeStyles((theme) => ({
   maxIconButton: {
     position: "absolute",
     right: 0,
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: theme.palette.background.secondary2,
+    height: 35,
+    "&.Mui-disabled": {
+      display: "none",
+    },
+    "& svg": {
+      fill: "#9191A7",
+    },
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      background: theme.palette.background.secondary2,
+
+      "& svg": {
+        fill: theme.palette.xioRed.main,
+      },
+    },
+    transition: "none !important",
+  },
+  maxIconButtonTime: {
+    position: "absolute",
+    left: 0,
     top: "50%",
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
@@ -278,8 +302,16 @@ let useStyles = makeStyles((theme) => ({
   gridSpace: {
     margin: theme.spacing(1, 0),
   },
+  // xAligned: {
+  //   display: "flex",
+  //   justifyContent: "center",
+  // },
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
+  },
+  gridSpace3: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
   },
   select: {
     visibility: "hidden",
@@ -371,6 +403,7 @@ function Flashstake({
   getApprovalXIO,
   calculateReward,
   reward,
+  preciseReward,
   loading: loadingRedux,
   active,
   account,
@@ -426,6 +459,7 @@ function Flashstake({
   const ref = useRef(null);
   const [time, setTime] = useState("Select");
   const [open, setOpen] = useState(false);
+  const [_maxDays, _setMaxDays] = useState();
 
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
@@ -505,6 +539,7 @@ function Flashstake({
       setDays(value);
     }
   };
+
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
@@ -618,6 +653,23 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
+  const maxDuration = () => {
+    if (time === "Mins") {
+      setDays(maxDays / 60);
+      _setMaxDays(days);
+    } else if (time === "Hrs") {
+      setDays(maxDays / 3600);
+      _setMaxDays(days);
+    } else if (time === "Days") {
+      setDays(maxDays / 86400);
+      _setMaxDays(days);
+    }
+  };
+
+  const maxExceed = () => {};
+
+  console.log("HEREEEEEE", days, maxDays);
+
   // props.history.location.pathname === "/swap" ? true :
   const [isDisabled, setIsDisabled] = useState(false);
   const setDisable = () => {
@@ -663,7 +715,7 @@ function Flashstake({
                 style={{ paddingTop: "20px" }}
                 className={classes.accordionDetails}
               >
-                <Grid container spacing={2}>
+                <Grid container xs={12}>
                   <Grid item xs={12}>
                     <Typography
                       variant="body1"
@@ -679,8 +731,8 @@ function Flashstake({
                       heading="SELECT TOKEN"
                     />
                   </Grid>
-                  <Grid container className={classes.gridSpace} item xs={12}>
-                    <Box flex={1}>
+                  <Grid container className={classes.gridSpace} xs={12}>
+                    <Grid item xs={5} className={classes.gridSpace}>
                       <Typography
                         variant="body1"
                         className={classes.secondaryText}
@@ -722,12 +774,18 @@ function Flashstake({
                           <MaxBtn width={10} />
                         </IconButton>
                       </Box>
-                    </Box>
+                    </Grid>
 
-                    <Typography variant="h6" className={classes.xIcon}>
-                      x
-                    </Typography>
-                    <Box flex={1}>
+                    <Grid
+                      item
+                      className={`${classes.gridSpace}  ${classes.xAligned}`}
+                      xs={2}
+                    >
+                      <Typography variant="h6" className={classes.xIcon}>
+                        x
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5} className={classes.gridSpace}>
                       <Typography
                         variant="body1"
                         className={classes.secondaryText}
@@ -741,7 +799,7 @@ function Flashstake({
                           fullWidth
                           placeholder="0"
                           value={days}
-                          error={days > maxDays}
+                          error={days > _maxDays}
                           onChange={onChangeDays}
                           type="tel"
                           inputMode="numeric"
@@ -750,6 +808,16 @@ function Flashstake({
                           onFocus={(e) => (e.target.placeholder = "")}
                           onBlur={(e) => (e.target.placeholder = "0")}
                         />
+
+                        <IconButton
+                          className={classes.maxIconButtonTime}
+                          disabled={!(active || account) || maxDays === days}
+                          onClick={maxDuration}
+                          // onClick={maxDuration}
+                        >
+                          <MaxBtn width={10} />
+                        </IconButton>
+
                         <IconButton
                           className={classes.maxIconButton}
                           // disabled={
@@ -789,10 +857,10 @@ function Flashstake({
                           Days
                         </MenuItem>
                       </Select>
-                    </Box>
+                    </Grid>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       quantity && days > 0 ? (
                         time !== "Select" ? (
@@ -834,7 +902,7 @@ function Flashstake({
                             ) : quantity > 0 && days > 0 ? (
                               <Tooltip
                                 title={`${utils.formatUnits(
-                                  reward.toString(),
+                                  preciseReward.toString(),
                                   selectedRewardToken?.tokenB?.decimal
                                 )} ${
                                   selectedRewardToken?.tokenB?.symbol || ""
@@ -843,7 +911,7 @@ function Flashstake({
                                 <span className={classes.infoTextSpan}>
                                   {trunc(
                                     utils.formatUnits(
-                                      reward.toString(),
+                                      preciseReward.toString(),
                                       selectedRewardToken?.tokenB?.decimal
                                     )
                                   )}{" "}
@@ -911,7 +979,7 @@ function Flashstake({
                     ) : (
                       <Typography
                         variant="body1"
-                        className={`${classes.secondaryText} ${classes.gridSpace} `}
+                        className={`${classes.secondaryText} `}
                       >
                         Select a token to view rewards
                       </Typography>
@@ -1005,7 +1073,7 @@ function Flashstake({
                     </Grid>
                   ) : (
                     <Fragment>
-                      <Grid container item xs={12} onClick={showWalletHint}>
+                      <Grid item xs={12} onClick={showWalletHint}>
                         <Button
                           fullWidth
                           variant="retro"
@@ -1087,7 +1155,7 @@ function Flashstake({
                     </Grid>
                   ) : chainId !== 4 ||
                     web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         // variant="overline"
                         variant="body2"
@@ -1206,7 +1274,7 @@ function Flashstake({
                       you will{" "}
                       <span className={classes.infoTextSpan}>immediately</span>{" "}
                       get{" "}
-                      {loadingRedux.reward ? (
+                      {loadingRedux.preciseReward ? (
                         <CircularProgress
                           size={12}
                           className={classes.loaderStyle}
@@ -1221,7 +1289,7 @@ function Flashstake({
                           <span className={classes.infoTextSpan}>
                             {trunc(
                               utils.formatUnits(
-                                reward.toString(),
+                                preciseReward.toString(),
                                 selectedRewardToken?.tokenB?.decimal
                               )
                             )}{" "}
