@@ -110,6 +110,11 @@ export const calculateReward = (xioQuantity, days, time) => async (
         )
       );
 
+      dispatch({
+        type: "PRECISE_STAKE_REWARD",
+        payload: _reward.toString(),
+      });
+
       // await initializeFlashstakePoolContract(id);
       // const _apyStake = await getAPYStake(String(_mintAmount));
       _log("reward ==>", {
@@ -126,13 +131,8 @@ export const calculateReward = (xioQuantity, days, time) => async (
         )
       ).toString();
 
-      __reward = JSBI.subtract(
-        JSBI.BigInt(_reward),
-        JSBI.divide(JSBI.BigInt(_reward), JSBI.BigInt(100))
-      ).toString();
-
       console.log("reward", reward);
-      console.log("reward", __reward);
+      // console.log("reward", __reward);
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);
@@ -141,10 +141,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
     type: "STAKE_REWARD",
     payload: reward,
   });
-  dispatch({
-    type: "PRECISE_STAKE_REWARD",
-    payload: __reward,
-  });
+
   dispatch({
     type: "MAX_DAYS",
     payload: _maxDays,
@@ -791,16 +788,28 @@ export const addTokenLiquidityInPool = (
   });
   _log(
     "addTokenLiquidityInPool -> ",
-    utils.parseUnits(String(quantityXIO), selectedRewardToken?.tokenB?.decimal),
-    utils.parseUnits(String(quantityAlt), selectedRewardToken?.tokenB?.decimal),
+    utils.parseUnits(
+      quantityXIO.toString(),
+      selectedRewardToken?.tokenB?.decimal
+    ),
+    utils.parseUnits(
+      quantityAlt.toString(),
+      selectedRewardToken?.tokenB?.decimal
+    ),
     // Web3.utils.toWei(String(quantityXIO * 0.95)),
     // Web3.utils.toWei(String(quantityAlt * 0.95)),
     selectedRewardToken.tokenB.id
   );
   initializeFlashstakeProtocolContract();
   await addLiquidityInPool(
-    utils.parseUnits(String(quantityXIO), selectedRewardToken?.tokenB?.decimal),
-    utils.parseUnits(String(quantityAlt), selectedRewardToken?.tokenB?.decimal),
+    utils.parseUnits(
+      quantityXIO.toString(),
+      selectedRewardToken?.tokenB?.decimal
+    ),
+    utils.parseUnits(
+      quantityAlt.toString(),
+      selectedRewardToken?.tokenB?.decimal
+    ),
     utils.parseUnits(
       String((quantityXIO * 0).toFixed(selectedRewardToken?.tokenB?.decimal)),
       selectedRewardToken?.tokenB?.decimal
@@ -898,7 +907,7 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
       type: "WITHDRAW_LIQUIDITY_REQUEST",
       payload: {
         _liquidity: utils.formatUnits(
-          removeLiquidity.toStrig(),
+          removeLiquidity,
           selectedRewardToken?.tokenB?.decimal
         ),
         _token: _pool.pool.tokenB.symbol,
