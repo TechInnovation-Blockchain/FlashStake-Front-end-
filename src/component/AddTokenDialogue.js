@@ -176,8 +176,14 @@ function AddTokenDialogue({
   const [loader, setLoader] = useState(false);
 
   const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toLowerCase());
+    if (value.match(/^[0-9a-zA-Z]+$/)) setSearch(value.toLowerCase());
   };
+
+  const handleKeyDown = (evt) => {
+    ["+", "-", "="].includes(evt.key) && evt.preventDefault();
+  };
+
+  const regex = /^\d*(.(\d{1,18})?)?$/;
 
   const handleClick = () => {
     setTokenParent(token);
@@ -305,12 +311,24 @@ function AddTokenDialogue({
           </Box>
           <Box className={classes.closeBtnContainer}>
             <TextField
+              className={classes.textField}
+              fullWidth
+              placeholder="ENTER TOKEN ADDRESS"
+              value={search}
+              onChange={onChangeSearch}
+              // // type="number"
+              // // inputMode="numeric"
+              // pattern={/^[0-9a-zA-Z]+$/}
+              onKeyDown={handleKeyDown}
+            />
+
+            {/* <TextField
               placeholder="ENTER TOKEN ADDRESS"
               className={classes.textField}
               fullWidth
               value={search}
               onChange={onChangeSearch}
-            />
+            /> */}
             {search ? (
               <IconButton
                 size="small"

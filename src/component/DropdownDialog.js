@@ -19,6 +19,8 @@ import flash from "../assets/FLASH2.svg";
 import $Flash from "../assets/Tokens/$FLASH.png";
 import ManageListsDropDown from "./ManageListsDropDown";
 import axios from "axios";
+import { nativePoolPrice } from "../redux/actions/userActions";
+import { trunc } from "../utils/utilFunc";
 
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -112,7 +114,7 @@ const useStyles = makeStyles((theme, _theme) => ({
     },
   },
   list: {
-    maxHeight: 130,
+    maxHeight: 200,
     overflowY: "scroll",
     padding: 0,
   },
@@ -191,17 +193,27 @@ function DropdownDialog({
   poolsApy,
   type = "stake",
   tokensURI,
+  allPoolsData,
+  nativePoolPrice,
+  nativePrices,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [tokensList, setTokensList] = useState([]);
+  const [nativePrice, setNativePrice] = useState();
 
   const history = useHistory();
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
+
+  useEffect(() => {
+    setNativePrice(nativePoolPrice());
+  }, [items]);
+
+  console.log("allPoolsData --> ", nativePrice);
 
   useEffect(() => {
     getTokensList();
@@ -398,7 +410,7 @@ function DropdownDialog({
           {filteredData()?.length ? (
             tokensURI?.name === "Default" ? (
               <List className={classes.list}>
-                {filteredData()?.map((_pool) => (
+                {filteredData()?.map((_pool, index) => (
                   <ListItem
                     button
                     className={classes.listItem}
@@ -420,8 +432,8 @@ function DropdownDialog({
                         style={{ marginRight: 5 }}
                       />
                       {_pool.tokenB.symbol}{" "}
-                      {history.location.pathname === "/swap" && _pool.tokenPrice
-                        ? `($${_pool.tokenPrice})`
+                      {history.location.pathname === "/swap" && nativePrices
+                        ? `($${trunc(nativePrices[index])})`
                         : history.location.pathname === "/stake" &&
                           poolsApy[_pool.id]
                         ? `(${
@@ -478,7 +490,9 @@ function DropdownDialog({
               <img
                 src={
                   tokensURI?.name === "Default"
-                    ? flash
+                    ? localStorage.getItem("themeMode") === "retro"
+                      ? $Flash
+                      : flash
                     : tryRequireLogo(tokensURI?.logo)
                 }
                 // src={themeModeflash}
@@ -509,9 +523,16 @@ function DropdownDialog({
   );
 }
 
-const mapStateToProps = ({ user: { poolsApy }, ui: { tokensURI } }) => ({
+const mapStateToProps = ({
+  user: { poolsApy, pools, nativePrices },
+  ui: { tokensURI },
+  query: { allPoolsData },
+}) => ({
   poolsApy,
+  pools,
   tokensURI,
+  allPoolsData,
+  nativePrices,
 });
 
-export default connect(mapStateToProps, {})(DropdownDialog);
+export default connect(mapStateToProps, { nativePoolPrice })(DropdownDialog);

@@ -70,6 +70,7 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 import AddTokenDialogue from "../../component/AddTokenDialogue";
+import FlashDropDown from "../../component/FlashDropDown";
 import CreateTable from "../../component/CreateTable";
 
 let useStyles = makeStyles((theme) => ({
@@ -596,108 +597,106 @@ function Vote({
           duration={400}
           height={heightVal} // see props documentation below
         >
-          {account === "0xe7ef8e1402055eb4e89a57d1109eff3baa334f5f" ||
-          account === "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
-            <Box
-              ref={ref}
-              className={`${classes.contentContainer} contentContainer1`}
-            >
-              <Accordion square expanded={expanded2}>
-                <AccordionSummary
-                  aria-controls="panel1d-content"
-                  id="panel1d-header"
-                  style={{ display: "none" }}
-                >
-                  {/* <Typography>Collapsible Group Item #1</Typography> */}
-                </AccordionSummary>
+          <Box
+            ref={ref}
+            className={`${classes.contentContainer} contentContainer1`}
+          >
+            <Accordion square expanded={expanded2}>
+              <AccordionSummary
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                style={{ display: "none" }}
+              >
+                {/* <Typography>Collapsible Group Item #1</Typography> */}
+              </AccordionSummary>
 
-                <AccordionDetails
-                  style={{ paddingTop: "20px", paddingBottom: "20px" }}
-                  className={classes.accordionDetails}
-                >
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <TextField
-                        className={classes.textField}
-                        fullWidth
-                        placeholder="$FLASH"
-                        value={"$FLASH"}
-                        disabled={true}
-                      />
-                    </Grid>
+              <AccordionDetails
+                style={{ paddingTop: "20px", paddingBottom: "20px" }}
+                className={classes.accordionDetails}
+              >
+                <Grid container>
+                  <Grid item xs={12}>
+                    {/* <TextField
+                      className={classes.textField}
+                      fullWidth
+                      placeholder="$FLASH"
+                      value={"$FLASH"}
+                      disabled={true}
+                    /> */}
+                    <FlashDropDown />
+                  </Grid>
 
-                    <Grid item className={classes.gridSpace} xs={12}>
-                      <Typography
-                        variant="body1"
-                        className={classes.secondaryText}
-                      >
-                        What token do you want to enter
-                      </Typography>
-                      <AddTokenDialogue
-                        className={classes.dropDown}
-                        heading="ADD TOKEN"
-                        setToken={setToken}
-                      />
-                    </Grid>
+                  <Grid item className={classes.gridSpace} xs={12}>
+                    <Typography
+                      variant="body1"
+                      className={classes.secondaryText}
+                    >
+                      What token do you want to enter
+                    </Typography>
+                    <AddTokenDialogue
+                      className={classes.dropDown}
+                      heading="ADD TOKEN"
+                      setToken={setToken}
+                    />
+                  </Grid>
 
-                    <Grid item className={classes.gridSpace} xs={12}>
-                      <Typography
-                        variant="body1"
-                        className={`${classes.secondaryText1} `}
-                      >
-                        Enter token address to create
-                      </Typography>
-                    </Grid>
+                  <Grid item className={classes.gridSpace} xs={12}>
+                    <Typography
+                      variant="body1"
+                      className={`${classes.secondaryText1} `}
+                    >
+                      Enter token address to create
+                    </Typography>
+                  </Grid>
 
+                  <Grid
+                    item
+                    className={classes.gridSpace}
+                    xs={12}
+                    onClick={showWalletHint}
+                  >
+                    <Button
+                      fullWidth
+                      variant="retro"
+                      disabled={!token?.decimals}
+                      onClick={() => handleCreatePool(token)}
+                    >
+                      CREATE
+                    </Button>
+                  </Grid>
+
+                  {!(active && account) ? (
                     <Grid
                       item
-                      className={classes.gridSpace}
                       xs={12}
                       onClick={showWalletHint}
+                      className={classes.cursorPointer}
                     >
-                      <Button
-                        fullWidth
-                        variant="retro"
-                        disabled={!token?.decimals}
-                        onClick={() => handleCreatePool(token)}
+                      <Typography
+                        // variant="overline"
+                        variant="body2"
+                        className={classes.redText}
                       >
-                        CREATE
-                      </Button>
+                        Connect wallet to create pools
+                      </Typography>
                     </Grid>
-
-                    {!(active && account) ? (
-                      <Grid
-                        item
-                        xs={12}
-                        onClick={showWalletHint}
-                        className={classes.cursorPointer}
+                  ) : chainId !== 4 ||
+                    web3context.error instanceof UnsupportedChainIdError ? (
+                    <Grid item className={classes.gridSpace} xs={12}>
+                      <Typography
+                        // variant="overline"
+                        variant="body2"
+                        className={classes.redText}
                       >
-                        <Typography
-                          // variant="overline"
-                          variant="body2"
-                          className={classes.redText}
-                        >
-                          Connect wallet to create pools
-                        </Typography>
-                      </Grid>
-                    ) : chainId !== 4 ||
-                      web3context.error instanceof UnsupportedChainIdError ? (
-                      <Grid item className={classes.gridSpace} xs={12}>
-                        <Typography
-                          // variant="overline"
-                          variant="body2"
-                          className={classes.redText}
-                        >
-                          {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                          Change network to <b>rinkeby</b> to create{" "}
-                          <b>pools</b>
-                        </Typography>
-                      </Grid>
-                    ) : null}
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
-              {/* 
+                        {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
+                        Change network to <b>rinkeby</b> to create <b>pools</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* 
               <Accordion square expanded={!expanded2}>
                 <AccordionSummary
                   aria-controls="panel2d-content"
@@ -730,17 +729,7 @@ function Vote({
                 </AccordionDetails>
               </Accordion>
             */}
-            </Box>
-          ) : (
-            <Box
-              ref={ref}
-              className={`${classes.contentContainer} contentContainer1`}
-            >
-              <Typography variant="h6" className={classes.comingSoon}>
-                COMING SOON
-              </Typography>
-            </Box>
-          )}
+          </Box>
         </AnimateHeight>
 
         <Dialog
@@ -760,7 +749,7 @@ function Vote({
               pendingCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    PENDING CREATE POOL
+                    CREATE POOL PENDING
                     <br />
                   </Typography>
                   <Typography variant="body1" className={classes.textBold}>
@@ -795,7 +784,7 @@ function Vote({
               successCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    CREATE POOL SUCCESSFUL
+                    Create Pool
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
