@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import { connect } from "react-redux";
 import flash from "../assets/FLASH2.svg";
-import $Flash from "../assets/Tokens/$FLASH.png";
+import FLASH from "../assets/Tokens/FLASH.png";
 import Button from "./Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { CONSTANTS } from "../utils/constants";

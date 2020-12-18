@@ -288,8 +288,8 @@ function TableComponent({
             Wallet Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
-              <span>{trunc(walletBalance)} $FLASH</span>
+            <Tooltip title={`${walletBalance} FLASH`}>
+              <span>{trunc(walletBalance)} FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -299,8 +299,8 @@ function TableComponent({
             Dapp Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} $FLASH`}>
-              <span>{trunc(dappBalance)} $FLASH</span>
+            <Tooltip title={`${dappBalance} FLASH`}>
+              <span>{trunc(dappBalance)} FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -406,15 +406,15 @@ function TableComponent({
                                   _stake.amountAvailable > 0
                                     ? _stake.amountAvailable
                                     : _stake.stakeAmount - _stake.burnAmount
-                                }/${_stake.stakeAmount} $FLASH`}
+                                }/${_stake.stakeAmount} FLASH`}
                               >
                                 <span className={classes.flexCenter}>
                                   <img
                                     // src={tryRequire(
-                                    //   theme === "dark" ? "FlashPro5" : "$FLASH"
+                                    //   theme === "dark" ? "FlashPro5" : "FLASH"
                                     // )}
                                     src={tryRequire(
-                                      theme === "dark" ? "FlashPro5" : "$FLASH"
+                                      theme === "dark" ? "FlashPro5" : "FLASH"
                                     )}
                                     alt="Logo"
                                     srcSet=""
@@ -426,7 +426,7 @@ function TableComponent({
                                       ? _stake.amountAvailable
                                       : _stake.stakeAmount - _stake.burnAmount
                                   )}
-                                  /{trunc(_stake.stakeAmount)} $FLASH
+                                  /{trunc(_stake.stakeAmount)} FLASH
                                 </span>
                               </Tooltip>
                             </Grid>
@@ -525,7 +525,7 @@ function TableComponent({
                         fontSizeLocal="body2"
                         loading={loadingRedux.unstake}
                       >
-                        <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                        <Tooltip title={`${expiredDappBalance} FLASH`}>
                           <span>
                             {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
                           </span>

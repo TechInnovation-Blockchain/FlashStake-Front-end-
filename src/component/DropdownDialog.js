@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
 import { connect } from "react-redux";
 import flash from "../assets/FLASH2.svg";
-import $Flash from "../assets/Tokens/$FLASH.png";
+import Flash from "../assets/Tokens/FLASH.png";
 import ManageListsDropDown from "./ManageListsDropDown";
 import axios from "axios";
 import { nativePoolPrice } from "../redux/actions/userActions";
@@ -183,7 +183,7 @@ const useStyles = makeStyles((theme, _theme) => ({
 function DropdownDialog({
   children,
   closeTimeout,
-  items = [],
+  items,
   onSelect = () => {},
   selectedValue = {},
   heading = "SELECT TOKEN",
@@ -196,14 +196,24 @@ function DropdownDialog({
   allPoolsData,
   nativePoolPrice,
   nativePrices,
+  pools,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [tokensList, setTokensList] = useState([]);
   const [nativePrice, setNativePrice] = useState();
+  const [getTokensLoader, setTokensLoader] = useState(true);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (getTokensLoader) {
+      setTimeout(() => {
+        setTokensLoader(false);
+      }, 10000);
+    }
+  });
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
@@ -217,24 +227,41 @@ function DropdownDialog({
 
   useEffect(() => {
     getTokensList();
-  }, [tokensURI?.name]);
+  }, [tokensURI, pools]);
 
   const getTokensList = async () => {
     const data = await axios.get(tokensURI.uri);
-    if (data?.data?.tokens) {
-      setTokensList(data?.data?.tokens);
-      console.log(data?.data?.tokens);
+    if (data?.data?.tokens && pools) {
+      console.log("ITEMS", data?.data?.tokens);
+      console.log("ITEMS", pools);
+
+      console.log(
+        "ITEMS",
+        data?.data?.tokens.filter((element) =>
+          pools?.find((_item) => {
+            if (_item?.tokenB?.id === element?.address.toLowerCase()) {
+              setTokensList({ id: _item.id, tokenB: element });
+            }
+          })
+        )
+      );
+      // setTokensList(
+      //   data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
+      // );
+
+      console.log("LIST", data?.data?.tokens);
     }
   };
 
   const filteredData = useCallback(() => {
-    if (tokensURI.name === "Default") {
-      return items.filter((item) =>
-        item.tokenB?.symbol.toUpperCase().includes(search)
-      );
-    } else {
-      return tokensList;
-    }
+    // if (tokensURI.name === "Default") {
+    console.log("LIST", tokensList);
+    return tokensList.filter((item) =>
+      item.tokenB.symbol.toUpperCase().includes(search)
+    );
+    // } else {
+    // return tokensList;
+    // }
   }, [search, items, getTokensList]);
 
   // console.log(filteredData());
@@ -408,73 +435,43 @@ function DropdownDialog({
           </Box>
 
           {filteredData()?.length ? (
-            tokensURI?.name === "Default" ? (
-              <List className={classes.list}>
-                {filteredData()?.map((_pool, index) => (
-                  <ListItem
-                    button
-                    className={classes.listItem}
-                    onClick={() => onSelectLocal(_pool)}
-                    key={_pool.id}
-                  >
-                    <Typography
-                      variant="body1"
-                      className={classes.listItemText}
-                    >
-                      {/* <MonetizationOn /> */}
-                      {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
-                      <img
-                        src={tryRequire(_pool.tokenB.symbol)}
-                        alt={_pool.tokenB.symbol}
-                        srcSet=""
-                        width={20}
-                        className={classes.tokensLogo}
-                        style={{ marginRight: 5 }}
-                      />
-                      {_pool.tokenB.symbol}{" "}
-                      {history.location.pathname === "/swap" && nativePrices
-                        ? `($${trunc(nativePrices[index])})`
-                        : history.location.pathname === "/stake" &&
-                          poolsApy[_pool.id]
-                        ? `(${
-                            parseFloat(poolsApy[_pool.id]).toFixed(2) -
-                              parseInt(poolsApy[_pool.id]) >
-                            0
-                              ? parseFloat(poolsApy[_pool.id]).toFixed(2)
-                              : parseInt(poolsApy[_pool.id])
-                          }%)`
-                        : null}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            ) : (
-              <List className={classes.list}>
-                {filteredData()?.map((_pool) => (
-                  <ListItem
-                    button
-                    className={classes.listItem}
-                    // onClick={() => onSelectLocal(_pool)}
-                    key={_pool.address}
-                  >
-                    <Typography
-                      variant="body1"
-                      className={classes.listItemText}
-                    >
-                      <img
-                        src={_pool?.logoURI}
-                        alt="Logo"
-                        srcSet=""
-                        width={20}
-                        style={{ marginRight: 5 }}
-                      />
-                      {_pool.symbol}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            )
-          ) : (
+            <List className={classes.list}>
+              {filteredData()?.map((_pool, index) => (
+                <ListItem
+                  button
+                  className={classes.listItem}
+                  onClick={() => onSelectLocal(_pool)}
+                  key={_pool.id}
+                >
+                  <Typography variant="body1" className={classes.listItemText}>
+                    {/* <MonetizationOn /> */}
+                    {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                    <img
+                      src={_pool.tokenB.logoURI}
+                      alt={_pool.tokenB.symbol}
+                      srcSet=""
+                      width={20}
+                      className={classes.tokensLogo}
+                      style={{ marginRight: 5 }}
+                    />
+                    {_pool.tokenB.symbol}{" "}
+                    {history.location.pathname === "/swap" && nativePrices
+                      ? `($${trunc(nativePrices[index])})`
+                      : history.location.pathname === "/stake" &&
+                        poolsApy[_pool.id]
+                      ? `(${
+                          parseFloat(poolsApy[_pool.id]).toFixed(2) -
+                            parseInt(poolsApy[_pool.id]) >
+                          0
+                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                            : parseInt(poolsApy[_pool.id])
+                        }%)`
+                      : null}
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          ) : getTokensLoader ? (
             <Typography variant="body1" className={classes.secondaryText}>
               <CircularProgress
                 size={12}
@@ -483,18 +480,17 @@ function DropdownDialog({
               />{" "}
               GETTING TOKENS
             </Typography>
+          ) : (
+            <Typography variant="body1" className={classes.secondaryText}>
+              NO TOKENS AVAILABLE
+            </Typography>
           )}
 
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
+              {}
               <img
-                src={
-                  tokensURI?.name === "Default"
-                    ? localStorage.getItem("themeMode") === "retro"
-                      ? $Flash
-                      : flash
-                    : tryRequireLogo(tokensURI?.logo)
-                }
+                src={tokensURI?.logo}
                 // src={themeModeflash}
                 alt="logo"
                 width={

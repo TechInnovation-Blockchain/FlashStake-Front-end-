@@ -89,17 +89,17 @@ const ExpandableBox = ({
           <Box className={classes.expandableInner}>
             <Grid item xs={6}>
               <Tooltip
-                title={`${currentStaked.availableStakeAmount || 0} $FLASH`}
+                title={`${currentStaked.availableStakeAmount || 0} FLASH`}
               >
                 <Typography variant="body2" className={`${classes.textColor}`}>
-                  <b>{trunc(currentStaked.availableStakeAmount)} $FLASH</b>
+                  <b>{trunc(currentStaked.availableStakeAmount)} FLASH</b>
                 </Typography>
               </Tooltip>
             </Grid>
             <Grid item xs={6}>
-              <Tooltip title={`${balance} $FLASH`}>
+              <Tooltip title={`${balance} FLASH`}>
                 <Typography variant="body2" className={`${classes.textColor}`}>
-                  <b>{trunc(balance)} $FLASH</b>
+                  <b>{trunc(balance)} FLASH</b>
                 </Typography>
               </Tooltip>
             </Grid>

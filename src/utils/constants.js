@@ -31,24 +31,19 @@ export const CONSTANTS = {
 
   TOKENS_LIST: [
     {
-      name: "CMC DeFi",
+      name: "Defualt",
       uri:
-        "https://bafybeia2zujfb5qraeekvil62gxemmzumvigoe4lymtqxo2ey4jdlt3p7i.ipfs.dweb.link/",
-      logoURI: "ipfs://QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx",
-    },
-    {
-      name: "1inch",
-      uri:
-        "https://bafybeie3s4wjvyvqjvw53n2wt7olu566wib4vtisj3lcjryq6xtzompbji.ipfs.dweb.link/",
-      logoURI: "https://1inch.exchange/assets/images/logo.png",
-    },
-    {
-      name: "Zerion Explore",
-      uri:
-        "https://bafybeie7zq6yerhz4kjdifceszzqoxqakb3pftwjr422zvivkc4wp7evri.ipfs.dweb.link/",
+        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
       logoURI:
-        "https://token-icons.s3.amazonaws.com/brand/1_z-white_blue-rounded-square.png",
+        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
     },
-    { name: "Default" },
+
+    {
+      name: "Flash",
+      uri:
+        "https://gateway.pinata.cloud/ipfs/QmeEwJKNvMTSSZpSPM1UyVy5ktxdRtNvwQmkkM4rTtBJhh/flashtest.tokenlist.json",
+      logoURI:
+        "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
+    },
   ],
 };

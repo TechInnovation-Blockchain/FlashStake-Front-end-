@@ -256,9 +256,9 @@ function PoolTable({
             POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
+            <Tooltip title={`${walletBalance} FLASH`}>
               <span> {poolDashboard.length} </span>
-              {/* <span>{trunc(walletBalance)} $FLASH</span> */}
+              {/* <span>{trunc(walletBalance)} FLASH</span> */}
             </Tooltip>
           </Typography>
         </Grid>
@@ -268,9 +268,9 @@ function PoolTable({
             COMPLETED POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${dappBalance} $FLASH`}>
+            <Tooltip title={`${dappBalance} FLASH`}>
               <span> {poolDashboard.length} </span>
-              {/* <span>{trunc(dappBalance)} $FLASH</span>  
+              {/* <span>{trunc(dappBalance)} FLASH</span>  
             </Tooltip>
           </Typography>
         </Grid> */}
@@ -372,7 +372,7 @@ function PoolTable({
                             <Tooltip title={`${_pool.balance} Flash`}>
                               <span className={classes.flexCenter}>
                                 <img
-                                  src={tryRequire("$FLASH")}
+                                  src={tryRequire("FLASH")}
                                   alt="Logo"
                                   srcSet=""
                                   width={15}

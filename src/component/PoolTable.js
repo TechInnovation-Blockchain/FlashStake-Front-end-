@@ -336,7 +336,7 @@ function PoolTable({
             POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
+            <Tooltip title={`${walletBalance} FLASH`}>
               <span> {poolDashboard?.length || 0} </span>
             </Tooltip>
           </Typography>
@@ -389,7 +389,7 @@ function PoolTable({
                       >
                         {/* {Object.Keys(poolDataBalance).filter(id)=> } */}
                         <Typography className={classes.heading}>
-                          $FLASH / {_pool.pool.tokenB.symbol}
+                          FLASH / {_pool.pool.tokenB.symbol}
                         </Typography>
                       </AccordionSummary>
                       <AccordionDetails className={classes.accordionDetails}>
@@ -428,7 +428,7 @@ function PoolTable({
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              Pooled $FLASH:
+                              Pooled FLASH:
                             </Typography>
                           </Grid>
                           <Grid xs={6} style={{ textAlign: "right" }}>

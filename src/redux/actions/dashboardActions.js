@@ -181,7 +181,7 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
               amount.toString(),
               selectedRewardToken?.tokenB?.decimal
             ),
-        symbol: "$FLASH",
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
@@ -202,7 +202,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
             : type === "max"
             ? portal.totalStakeAmount - calculateBurn(portal)
             : amount - calculateBurn(portal, false, amount),
-        symbol: "$FLASH",
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();

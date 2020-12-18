@@ -12,7 +12,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import flash from "../assets/FLASH2.svg";
-import $Flash from "../assets/Tokens/$FLASH.png";
+import Flash from "../assets/Tokens/FLASH.png";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -177,7 +178,7 @@ const useStyles = makeStyles((theme, _theme) => ({
   // },
 }));
 
-export default function FlashDropDown({}) {
+function FlashDropDown({ theme }) {
   const classes = useStyles();
 
   return (
@@ -186,9 +187,7 @@ export default function FlashDropDown({}) {
         <Typography variant="body1" className={classes.primaryText}>
           <Fragment>
             <img
-              src={
-                localStorage.getItem("themeMode") === "retro" ? $Flash : flash
-              }
+              src={theme === "retro" ? Flash : flash}
               alt="Logo"
               srcSet=""
               width={15}
@@ -202,3 +201,9 @@ export default function FlashDropDown({}) {
     </Fragment>
   );
 }
+
+const mapStateToProps = ({ ui: { theme } }) => ({
+  theme,
+});
+
+export default connect(mapStateToProps, {})(FlashDropDown);

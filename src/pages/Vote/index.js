@@ -505,7 +505,7 @@ function Vote({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Create - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Create - FLASH | THE TIME TRAVEL OF MONEY";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -619,8 +619,8 @@ function Vote({
                     {/* <TextField
                       className={classes.textField}
                       fullWidth
-                      placeholder="$FLASH"
-                      value={"$FLASH"}
+                      placeholder="FLASH"
+                      value={"FLASH"}
                       disabled={true}
                     /> */}
                     <FlashDropDown />
@@ -631,7 +631,7 @@ function Vote({
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      What token do you want to enter
+                      What token do you want to pair with
                     </Typography>
                     <AddTokenDialogue
                       className={classes.dropDown}
@@ -640,14 +640,7 @@ function Vote({
                     />
                   </Grid>
 
-                  <Grid item className={classes.gridSpace} xs={12}>
-                    <Typography
-                      variant="body1"
-                      className={`${classes.secondaryText1} `}
-                    >
-                      Enter token address to create
-                    </Typography>
-                  </Grid>
+                  <Grid item className={classes.gridSpace} xs={12}></Grid>
 
                   <Grid
                     item
@@ -675,7 +668,7 @@ function Vote({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={classes.redText}
+                        className={`${classes.redText} ${classes.gridSpace}`}
                       >
                         Connect wallet to create pools
                       </Typography>
@@ -753,7 +746,7 @@ function Vote({
                     <br />
                   </Typography>
                   <Typography variant="body1" className={classes.textBold}>
-                    Creating $FLASH/{createPoolData?._token?.symbol} pool
+                    Creating FLASH/{createPoolData?._token?.symbol} pool
                   </Typography>
                 </Fragment>
               ),
@@ -784,7 +777,7 @@ function Vote({
               successCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    Create Pool
+                    CREATE POOL
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -792,7 +785,7 @@ function Vote({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    $FLASH/{createPoolData?._token?.symbol} pool created
+                    FLASH/{createPoolData?._token?.symbol} pool created
                     successfully
                   </Typography>
                   <Typography

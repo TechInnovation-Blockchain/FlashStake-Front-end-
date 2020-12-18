@@ -361,7 +361,7 @@ function AddDropDown({
               </Grid>
               <Grid xs={12} style={{ textAlign: "left" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  $FLASH/{selectedRewardToken?.tokenB?.symbol} Pool Tokens
+                  FLASH/{selectedRewardToken?.tokenB?.symbol} Pool Tokens
                 </Typography>
               </Grid>
             </Grid>
@@ -382,7 +382,7 @@ function AddDropDown({
                 className={classes.innerBox}
               >
                 <Typography className={classes.fontStyle} variant="caption">
-                  $FLASH Deposited:
+                  FLASH Deposited:
                 </Typography>
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
@@ -429,7 +429,7 @@ function AddDropDown({
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography className={classes.fontStyle} variant="body2">
-                  1 $FLASH ={" "}
+                  1 FLASH ={" "}
                   {trunc(
                     queryData.reserveAltAmount / queryData.reserveFlashAmount
                   ) || 0}{" "}
@@ -440,7 +440,7 @@ function AddDropDown({
                   {trunc(
                     queryData.reserveFlashAmount / queryData.reserveAltAmount
                   ) || 0}{" "}
-                  $FLASH
+                  FLASH
                 </Typography>
               </Grid>
             </Grid>

@@ -189,7 +189,7 @@ const CreateTable = ({
             ENTRIES
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            {/* <Tooltip title={`${walletBalance} $FLASH`}> */}
+            {/* <Tooltip title={`${walletBalance} FLASH`}> */}
             <span> 03</span>
             {/* </Tooltip> */}
           </Typography>
