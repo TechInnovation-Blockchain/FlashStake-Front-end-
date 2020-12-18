@@ -235,21 +235,21 @@ function DropdownDialog({
       console.log("ITEMS", data?.data?.tokens);
       console.log("ITEMS", pools);
 
-      console.log(
-        "ITEMS",
-        data?.data?.tokens.filter((element) =>
-          pools?.find((_item) => {
-            if (_item?.tokenB?.id === element?.address.toLowerCase()) {
-              setTokensList({ id: _item.id, tokenB: element });
-            }
-          })
-        )
-      );
-      // setTokensList(
-      //   data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
+      // console.log(
+      //   "ITEMS",
+      // data?.data?.tokens.filter((element) =>
+      //   pools?.find((_item) => {
+      //     if (_item?.tokenB?.id === element?.address.toLowerCase()) {
+      //       setTokensList({ id: _item.id, tokenB: element });
+      //     }
+      //   })
+      // )
       // );
+      setTokensList(
+        data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
+      );
 
-      console.log("LIST", data?.data?.tokens);
+      // console.log("LIST", data?.data?.tokens);
     }
   };
 
@@ -442,6 +442,15 @@ function DropdownDialog({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
+                  disabled={tokensList?.filter((element) =>
+                    pools?.find((_item) => {
+                      if (
+                        _item?.tokenB?.id !== element?.address?.toLowerCase()
+                      ) {
+                        return true;
+                      }
+                    })
+                  )}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
