@@ -31,7 +31,7 @@ export const CONSTANTS = {
 
   TOKENS_LIST: [
     {
-      name: "Defualt",
+      name: "Default",
       uri:
         "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
       logoURI:
