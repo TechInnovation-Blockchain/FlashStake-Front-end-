@@ -70,6 +70,7 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 import AddTokenDialogue from "../../component/AddTokenDialogue";
+import DropdownDialog2 from "../../component/DropdownDialog2";
 import FlashDropDown from "../../component/FlashDropDown";
 import CreateTable from "../../component/CreateTable";
 
@@ -292,7 +293,8 @@ let useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 0),
   },
   gridSpace2: {
-    marginTop: theme.spacing(1, 0),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
   select: {
     visibility: "hidden",
@@ -611,7 +613,7 @@ function Vote({
               </AccordionSummary>
 
               <AccordionDetails
-                style={{ paddingTop: "20px", paddingBottom: "20px" }}
+                style={{ paddingTop: "20px" }}
                 className={classes.accordionDetails}
               >
                 <Grid container>
@@ -633,10 +635,12 @@ function Vote({
                     >
                       What token do you want to pair with
                     </Typography>
-                    <AddTokenDialogue
+                    <DropdownDialog2
                       className={classes.dropDown}
-                      heading="ADD TOKEN"
-                      setToken={setToken}
+                      items={pools}
+                      // selectedValue={selectedRewardToken}
+                      // onSelect={setSelectedRewardToken}
+                      heading="SELECT TOKEN"
                     />
                   </Grid>
 
@@ -668,7 +672,7 @@ function Vote({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={`${classes.redText} ${classes.gridSpace}`}
+                        className={`${classes.redText} ${classes.gridSpace2}`}
                       >
                         Connect wallet to create pools
                       </Typography>

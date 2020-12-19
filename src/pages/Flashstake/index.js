@@ -309,6 +309,9 @@ let useStyles = makeStyles((theme) => ({
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
   },
+  connectText: {
+    marginTop: theme.spacing(2),
+  },
   gridSpace3: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
@@ -1148,7 +1151,7 @@ function Flashstake({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={`${classes.redText} ${classes.gridSpace2}`}
+                        className={`${classes.redText} ${classes.connectText}`}
                       >
                         Connect wallet to stake
                       </Typography>
