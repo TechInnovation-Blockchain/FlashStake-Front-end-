@@ -465,6 +465,10 @@ function Flashstake({
   const [_maxDays, _setMaxDays] = useState();
 
   useEffect(() => {
+    console.log("yada hola", maxDays);
+  }, [maxDays]);
+
+  useEffect(() => {
     // Stop if the preference variable is not set on the client device
     if (localStorage.getItem("prefs-stake-time") == null) return;
 
@@ -659,8 +663,9 @@ function Flashstake({
 
   const getMaxTime = () => {
     const __maxDays = Math.trunc(
-      maxDays / time === "Mins" ? 60 : time === "Hrs" ? 3600 : 86400
+      maxDays / (time === "Mins" ? 60 : time === "Hrs" ? 3600 : 86400)
     );
+
     _setMaxDays(__maxDays);
     return __maxDays;
   };
@@ -792,21 +797,6 @@ function Flashstake({
                           className={classes.maxIconButtonTime}
                           disabled={!(active || account) || _maxDays == days}
                           onClick={maxDuration}
-                          // onClick={maxDuration}
-                          // onClick={maxDuration}
-                          onClick={() =>
-                            onChangeDays({
-                              target: {
-                                value:
-                                  maxDays /
-                                  (time === "Hrs"
-                                    ? 3600
-                                    : time === "Min"
-                                    ? 60
-                                    : 86400),
-                              },
-                            })
-                          }
                         >
                           <MaxBtn width={10} />
                         </IconButton>
@@ -1058,7 +1048,9 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
+                              parseFloat(quantity) >
+                                parseFloat(walletBalance)) ||
+                            _maxDays < days
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1105,7 +1097,9 @@ function Flashstake({
                             reward <= 0 ||
                             (active &&
                               account &&
-                              parseFloat(quantity) > parseFloat(walletBalance))
+                              parseFloat(quantity) >
+                                parseFloat(walletBalance)) ||
+                            _maxDays < days
                           }
                           loading={loadingRedux.stake}
                         >
