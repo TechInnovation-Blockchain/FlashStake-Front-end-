@@ -408,7 +408,7 @@ function AddLiquidityDropDown({
   // }, [selectedPortal]);
 
   const quote = useCallback(
-    async (_amountA, _amountType = "alt") => {
+    async (_amountA, _decimals = 18, _amountType = "alt") => {
       try {
         const _queryData = await getQueryData(selectedPortal);
         const { reserveFlashAmount, reserveAltAmount } = _queryData;
@@ -420,17 +420,13 @@ function AddLiquidityDropDown({
           String(
             JSBI.divide(
               JSBI.multiply(
-                JSBI.BigInt(
-                  utils.parseUnits(
-                    _amountA?.toString(),
-                    selectedRewardToken?.tokenB?.decimal
-                  )
-                ),
+                JSBI.BigInt(utils.parseUnits(_amountA?.toString(), _decimals)),
                 JSBI.BigInt(_reserveB)
               ),
               JSBI.BigInt(_reserveA)
             )
-          )
+          ),
+          18
         );
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
@@ -444,7 +440,9 @@ function AddLiquidityDropDown({
     async ({ target: { value } }) => {
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityAlt(value);
-        const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
+        const _val = selectedRewardToken?.id
+          ? await quote(value, selectedRewardToken?.tokenB?.decimal, "alt")
+          : "0";
         setQuantityXIO(_val);
       }
     },
@@ -455,7 +453,9 @@ function AddLiquidityDropDown({
     async ({ target: { value } }) => {
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityXIO(value);
-        const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
+        const _val = selectedRewardToken?.id
+          ? await quote(value, 18, "xio")
+          : "0";
         setQuantityAlt(_val);
       }
     },
@@ -817,7 +817,7 @@ function AddLiquidityDropDown({
                           parseFloat(
                             utils.formatUnits(
                               queryData.reserveFlashAmount?.toString() || "0",
-                              selectedRewardToken?.tokenB?.decimal
+                              18
                             )
                           ))) *
                         100 || 0
@@ -833,7 +833,7 @@ function AddLiquidityDropDown({
                             parseFloat(
                               utils.formatUnits(
                                 queryData.reserveFlashAmount?.toString() || "0",
-                                selectedRewardToken?.tokenB?.decimal
+                                18
                               )
                             ))) *
                           100

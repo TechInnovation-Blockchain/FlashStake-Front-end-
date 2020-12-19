@@ -240,7 +240,15 @@ export const updateUserData = (data) => async (dispatch, getState) => {
     if (data) {
       stakes = await Promise.all(
         data.stakes.map(async (_tempData) => {
-          const { id, amountIn, expireAfter, rewardAmount } = _tempData;
+          const {
+            id,
+            amountIn,
+            expireAfter,
+            rewardAmount,
+            pool: {
+              tokenB: { decimal },
+            },
+          } = _tempData;
 
           let expired = parseFloat(expireAfter) < Date.now() / 1000;
           dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
@@ -260,26 +268,14 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           }
           return {
             ..._tempData,
-            stakeAmount: utils.formatUnits(
-              amountIn.toString(),
-              selectedRewardToken?.tokenB?.decimal
-            ),
-            rewardAmount: utils.formatUnits(
-              rewardAmount.toString(),
-              selectedRewardToken?.tokenB?.decimal
-            ),
+            stakeAmount: utils.formatUnits(amountIn.toString(), 18),
+            rewardAmount: utils.formatUnits(rewardAmount.toString(), decimal),
             expiryTime: parseFloat(expireAfter),
             expired,
             amountAvailable: expired
-              ? utils.formatUnits(
-                  amountIn.toString(),
-                  selectedRewardToken?.tokenB?.decimal
-                )
+              ? utils.formatUnits(amountIn.toString(), 18)
               : "0",
-            burnAmount: utils.formatUnits(
-              _burnAmount.toString(),
-              selectedRewardToken?.tokenB?.decimal
-            ),
+            burnAmount: utils.formatUnits(_burnAmount.toString(), 18),
           };
         })
       );
@@ -287,12 +283,9 @@ export const updateUserData = (data) => async (dispatch, getState) => {
         ..._swapHis,
         swapAmount: utils.formatUnits(
           _swapHis.swapAmount.toString(),
-          selectedRewardToken?.tokenB?.decimal
+          _swapHis.pool.tokenB.decimal
         ),
-        flashReceived: utils.formatUnits(
-          _swapHis.flashReceived.toString(),
-          selectedRewardToken?.tokenB?.decimal
-        ),
+        flashReceived: utils.formatUnits(_swapHis.flashReceived.toString(), 18),
       }));
       dispatch({
         type: "USER_DATA",
@@ -300,24 +293,16 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           ...data,
           expiredTimestamps,
           stakes,
-          dappBalance: utils.formatUnits(
-            dappBalance.toString(),
-            selectedRewardToken?.tokenB?.decimal
-          ),
+          dappBalance: utils.formatUnits(dappBalance.toString(), 18),
           swapHistory,
           expiredDappBalance: utils.formatUnits(
             expiredDappBalance.toString(),
-            selectedRewardToken?.tokenB?.decimal
+            18
           ),
-          totalBurnAmount: utils.formatUnits(
-            totalBurnAmount.toString(),
-            selectedRewardToken?.tokenB?.decimal
-          ),
+          totalBurnAmount: utils.formatUnits(totalBurnAmount.toString(), 18),
           totalBalanceWithBurn: utils.formatUnits(
-            String(
-              JSBI.subtract(dappBalance, totalBurnAmount),
-              selectedRewardToken?.tokenB?.decimal
-            )
+            String(JSBI.subtract(dappBalance, totalBurnAmount)),
+            18
           ),
         },
       });

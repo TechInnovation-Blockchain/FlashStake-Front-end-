@@ -40,7 +40,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
-  let __reward = "0";
   let _maxDays = 5e17 * 365 * 86400;
   try {
     const {
@@ -57,7 +56,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
       const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
       const _zero = JSBI.BigInt("0");
       const _quantity = JSBI.BigInt(
-        utils.parseUnits(xioQuantity.toString(), decimal)
+        utils.parseUnits(xioQuantity.toString(), 18)
       );
       const _multiplier =
         time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
@@ -120,7 +119,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
       _log("reward ==>", {
         xioQuantity,
         days,
-        _reward: utils.formatUnits(_reward.toString(), decimal),
+        _reward: utils.formatUnits(_reward.toString(), 18),
       });
 
       reward = JSBI.subtract(
@@ -130,9 +129,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
           JSBI.BigInt(slip)
         )
       ).toString();
-
-      console.log("reward", reward);
-      // console.log("reward", __reward);
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);
@@ -212,17 +208,17 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
   } catch (e) {
     _error("ERROR calculateSwap -> ", e);
   }
-  const {
-    flashstake: {
-      selectedRewardToken: {
-        tokenB: { decimal },
-      },
-    },
-  } = getState();
+  // const {
+  //   flashstake: {
+  //     selectedRewardToken: {
+  //       tokenB: { decimal },
+  //     },
+  //   },
+  // } = getState();
 
   dispatch({
     type: "SWAP_OUTPUT",
-    payload: utils.formatUnits(swapAmount.toString(), decimal),
+    payload: utils.formatUnits(swapAmount.toString(), 18),
   });
   dispatch(setLoading({ swapReward: false }));
 };
@@ -546,19 +542,14 @@ export const stakeXIO = (xioQuantity, days, time) => async (
     initializeFlashProtocolContract();
     _log(
       "stake params -> ",
-      utils.parseUnits(
-        xioQuantity.toString(),
-        selectedRewardToken.tokenB.decimal
-      ),
+      utils.parseUnits(xioQuantity.toString(), 18).toString(),
       _days,
       selectedRewardToken.tokenB.id,
       reward
     );
 
     await stake(
-      utils
-        .parseUnits(xioQuantity.toString(), selectedRewardToken.tokenB.decimal)
-        .toString(),
+      utils.parseUnits(xioQuantity.toString(), 18).toString(),
       _days,
       utils.defaultAbiCoder.encode(
         ["address", "uint256"],
@@ -737,10 +728,7 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
         "swap params -> ",
         _altQuantity,
         selectedRewardToken.tokenB.id,
-        utils.parseUnits(
-          swapOutput.toString(),
-          selectedRewardToken?.tokenB?.decimal
-        )
+        utils.parseUnits(swapOutput.toString(), 18).toString()
       );
 
       await swap(
@@ -774,55 +762,83 @@ export const addTokenLiquidityInPool = (
   quantityXIO,
   selectedPortal
 ) => async (dispatch, getState) => {
-  // try {
-  const {
-    flashstake: { selectedRewardToken },
-  } = await getState();
-  dispatch({
-    type: "LIQUIDITY_REQUEST",
-    payload: {
-      altSymbol: selectedRewardToken?.tokenB?.symbol,
-      quantityXIO,
-      quantityAlt,
-    },
-  });
-  _log(
-    "addTokenLiquidityInPool -> ",
-    utils.parseUnits(
-      quantityXIO.toString(),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    utils.parseUnits(
-      quantityAlt.toString(),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    // Web3.utils.toWei(String(quantityXIO * 0.95)),
-    // Web3.utils.toWei(String(quantityAlt * 0.95)),
-    selectedRewardToken.tokenB.id
-  );
-  initializeFlashstakeProtocolContract();
-  await addLiquidityInPool(
-    utils.parseUnits(
-      quantityXIO.toString(),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    utils.parseUnits(
-      quantityAlt.toString(),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    utils.parseUnits(
-      String((quantityXIO * 0).toFixed(selectedRewardToken?.tokenB?.decimal)),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    utils.parseUnits(
-      String((quantityAlt * 0).toFixed(selectedRewardToken?.tokenB?.decimal)),
-      selectedRewardToken?.tokenB?.decimal
-    ),
-    selectedRewardToken.tokenB.id
-  );
-  //   } catch (e) {
-  //     _error("ERROR addTokenLiquidityInPool -> ", e);
-  //   }
+  try {
+    const {
+      flashstake: { selectedRewardToken, slip },
+    } = await getState();
+    dispatch({
+      type: "LIQUIDITY_REQUEST",
+      payload: {
+        altSymbol: selectedRewardToken?.tokenB?.symbol,
+        quantityXIO,
+        quantityAlt,
+      },
+    });
+    _log(
+      "addTokenLiquidityInPool -> ",
+      utils.parseUnits(quantityXIO.toString(), 18).toString(),
+      utils
+        .parseUnits(
+          quantityAlt.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        )
+        .toString(),
+      utils
+        .parseUnits(
+          String(
+            (quantityXIO * (1 - slip / 100)).toFixed(
+              selectedRewardToken?.tokenB?.decimal
+            )
+          ),
+          18
+        )
+        .toString(),
+      utils
+        .parseUnits(
+          String(
+            (quantityAlt * (1 - slip / 100)).toFixed(
+              selectedRewardToken?.tokenB?.decimal
+            )
+          ),
+          selectedRewardToken?.tokenB?.decimal
+        )
+        .toString(),
+      selectedRewardToken.tokenB.id
+    );
+    initializeFlashstakeProtocolContract();
+    await addLiquidityInPool(
+      utils.parseUnits(quantityXIO.toString(), 18).toString(),
+      utils
+        .parseUnits(
+          quantityAlt.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        )
+        .toString(),
+      utils
+        .parseUnits(
+          String(
+            (quantityXIO * (1 - slip / 100)).toFixed(
+              selectedRewardToken?.tokenB?.decimal
+            )
+          ),
+          18
+        )
+        .toString(),
+      utils
+        .parseUnits(
+          String(
+            (quantityAlt * (1 - slip / 100)).toFixed(
+              selectedRewardToken?.tokenB?.decimal
+            )
+          ),
+          selectedRewardToken?.tokenB?.decimal
+        )
+        .toString(),
+      selectedRewardToken.tokenB.id
+    );
+  } catch (e) {
+    _error("ERROR addTokenLiquidityInPool -> ", e);
+  }
 };
 
 export const onSelectWithdrawPool = (_poolId) => {

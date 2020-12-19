@@ -666,30 +666,6 @@ function Flashstake({
     }
   };
 
-  const maxExceed = () => {};
-
-  console.log("HEREEEEEE", days, maxDays);
-
-  // props.history.location.pathname === "/swap" ? true :
-  const [isDisabled, setIsDisabled] = useState(false);
-  const setDisable = () => {
-    if (
-      !allowanceXIOProtocol ||
-      !active ||
-      !account ||
-      !selectedPortal ||
-      quantity <= 0 ||
-      days <= 0 ||
-      loadingRedux.reward ||
-      loadingRedux.stake ||
-      chainId !== 4 ||
-      reward <= 0 ||
-      (active && account && parseFloat(quantity) > parseFloat(walletBalance))
-    ) {
-      setIsDisabled(true);
-    }
-  };
-
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>

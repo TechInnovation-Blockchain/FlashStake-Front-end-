@@ -290,21 +290,15 @@ function PoolTable({
         if (poolQueryData) {
           _percentageShare =
             _pool.balance /
-            utils.formatUnits(
-              poolQueryData.poolTotalSupply.toString(),
-              selectedRewardToken?.tokenB?.decimal
-            );
+            utils.formatUnits(poolQueryData.poolTotalSupply.toString(), 18);
           pooledFlash =
             _percentageShare *
-            utils.formatUnits(
-              poolQueryData.reserveFlashAmount.toString(),
-              selectedRewardToken?.tokenB?.decimal
-            );
+            utils.formatUnits(poolQueryData.reserveFlashAmount.toString(), 18);
           pooledAlt =
             _percentageShare *
             utils.formatUnits(
               poolQueryData.reserveAltAmount.toString(),
-              selectedRewardToken?.tokenB?.decimal
+              _pool?.pool?.tokenB?.decimal || 18
             );
         }
         return {

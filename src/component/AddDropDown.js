@@ -279,11 +279,11 @@ function AddDropDown({
   const getMintAmount = useCallback(() => {
     const _poolTotalSupply = utils.formatUnits(
       queryData?.poolTotalSupply?.toString() || "0",
-      selectedRewardToken?.tokenB?.decimal
+      18
     );
     const _reserveFlashAmount = utils.formatUnits(
       queryData?.reserveFlashAmount?.toString() || "0",
-      selectedRewardToken?.tokenB?.decimal
+      18
     );
     const _reserveAltAmount = utils.formatUnits(
       queryData?.reserveAltAmount?.toString() || "0",
@@ -463,7 +463,7 @@ function AddDropDown({
                         parseFloat(
                           utils.formatUnits(
                             queryData?.reserveFlashAmount?.toString() || "0",
-                            selectedRewardToken?.tokenB?.decimal
+                            18
                           )
                         ))) *
                       100 || 0
@@ -476,7 +476,7 @@ function AddDropDown({
                           parseFloat(
                             utils.formatUnits(
                               queryData?.reserveFlashAmount?.toString() || "0",
-                              selectedRewardToken?.tokenB?.decimal
+                              18
                             )
                           ))) *
                         100
