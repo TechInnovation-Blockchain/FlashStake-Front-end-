@@ -638,8 +638,8 @@ function Vote({
                     <DropdownDialog2
                       className={classes.dropDown}
                       items={pools}
-                      // selectedValue={selectedRewardToken}
-                      // onSelect={setSelectedRewardToken}
+                      selectedValue={selectedRewardToken}
+                      onSelect={setSelectedRewardToken}
                       heading="SELECT TOKEN"
                     />
                   </Grid>

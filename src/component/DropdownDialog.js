@@ -442,16 +442,13 @@ function DropdownDialog({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
-                  disabled={tokensList?.filter(
-                    (element) =>
-                      !pools?.find((_item) => {
-                        if (
-                          _item?.tokenB?.id === element?.address?.toLowerCase()
-                        ) {
-                          return true;
-                        }
-                      })
-                  )}
+                  disabled={
+                    !pools?.find((_item) => {
+                      if (_item?.tokenB?.id === _pool.tokenB.id) {
+                        return true;
+                      }
+                    })
+                  }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
@@ -503,12 +500,7 @@ function DropdownDialog({
                 src={tokensURI?.logo}
                 // src={themeModeflash}
                 alt="logo"
-                width={
-                  localStorage.getItem("themeMode") === "dark" ||
-                  localStorage.getItem("themeMode") === "light"
-                    ? 15
-                    : 10
-                }
+                width={tokensURI?.name !== "Default" ? 20 : 10}
                 // width={animate ? 30 : 30}
                 // className={classes.logo}
                 // onClick={() => {

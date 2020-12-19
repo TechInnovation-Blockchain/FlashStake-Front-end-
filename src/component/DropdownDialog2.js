@@ -256,6 +256,7 @@ function DropdownDialog2({
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
     console.log("LIST", tokensList);
+
     return tokensList.filter((item) =>
       item.tokenB.symbol.toUpperCase().includes(search)
     );
@@ -363,10 +364,10 @@ function DropdownDialog2({
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue.id ? (
+            {selectedValue?.tokenB?.address ? (
               <Fragment>
                 <img
-                  src={tryRequire(selectedValue.tokenB.symbol)}
+                  src={selectedValue?.tokenB?.logoURI}
                   alt="Logo"
                   srcSet=""
                   width={15}
@@ -442,17 +443,11 @@ function DropdownDialog2({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
-                  disabled={tokensList?.filter((element) =>
-                    pools?.find((_item) => {
-                      if (
-                        _item?.tokenB?.id === element?.address?.toLowerCase()
-                      ) {
-                        return true;
-                      } else {
-                        return false;
-                      }
-                    })
-                  )}
+                  disabled={pools?.find((_item) => {
+                    if (_item?.tokenB?.id === _pool.tokenB.id) {
+                      return true;
+                    }
+                  })}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
@@ -504,12 +499,7 @@ function DropdownDialog2({
                 src={tokensURI?.logo}
                 // src={themeModeflash}
                 alt="logo"
-                width={
-                  localStorage.getItem("themeMode") === "dark" ||
-                  localStorage.getItem("themeMode") === "light"
-                    ? 15
-                    : 10
-                }
+                width={tokensURI?.name !== "Default" ? 20 : 10}
                 // width={animate ? 30 : 30}
                 // className={classes.logo}
                 // onClick={() => {
