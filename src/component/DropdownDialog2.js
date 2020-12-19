@@ -21,6 +21,14 @@ import ManageListsDropDown from "./ManageListsDropDown";
 import axios from "axios";
 import { nativePoolPrice } from "../redux/actions/userActions";
 import { trunc } from "../utils/utilFunc";
+import Web3 from "web3";
+import {
+  initializeErc20TokenContract,
+  name,
+  symbol,
+  decimals,
+} from "../utils/contractFunctions/erc20TokenContractFunctions";
+import { debounce } from "../utils/debounceFunc";
 
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -204,6 +212,9 @@ function DropdownDialog2({
   const [tokensList, setTokensList] = useState([]);
   const [nativePrice, setNativePrice] = useState();
   const [getTokensLoader, setTokensLoader] = useState(true);
+  const [token, setToken] = useState({});
+  const [exist, setExist] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const history = useHistory();
 
@@ -216,7 +227,7 @@ function DropdownDialog2({
   });
 
   const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
+    setSearch(value);
   };
 
   useEffect(() => {
@@ -229,22 +240,48 @@ function DropdownDialog2({
     getTokensList();
   }, [tokensURI, pools]);
 
+  const searchExistingToken = (id) => {
+    if (pools.find((_pool) => _pool?.tokenB?.id === id)) {
+      return true;
+    }
+  };
+
+  const searchToken = async (_address) => {
+    if (searchExistingToken(_address)) {
+      setExist(true);
+    } else {
+      setExist(false);
+      if (Web3.utils.isAddress(_address)) {
+        setLoader(true);
+        await initializeErc20TokenContract(_address);
+        const _decimals = await decimals();
+        if (_decimals) {
+          const _name = await name();
+          const _symbol = await symbol();
+
+          // setTokensList({ id: "", tokenB: _token });
+
+          setToken({
+            address: _address,
+            name: _name,
+            symbol: _symbol,
+            decimals: _decimals,
+          });
+          setLoader(false);
+        } else {
+          setToken({});
+        }
+      } else {
+        setToken({});
+      }
+    }
+  };
+
   const getTokensList = async () => {
     const data = await axios.get(tokensURI.uri);
     if (data?.data?.tokens && pools) {
       console.log("ITEMS", data?.data?.tokens);
       console.log("ITEMS", pools);
-
-      // console.log(
-      //   "ITEMS",
-      // data?.data?.tokens.filter((element) =>
-      //   pools?.find((_item) => {
-      //     if (_item?.tokenB?.id === element?.address.toLowerCase()) {
-      //       setTokensList({ id: _item.id, tokenB: element });
-      //     }
-      //   })
-      // )
-      // );
       setTokensList(
         data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
       );
@@ -253,13 +290,28 @@ function DropdownDialog2({
     }
   };
 
+  const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
+
+  useEffect(() => {
+    debouncedSearchToken(search);
+  }, [search]);
+
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
     console.log("LIST", tokensList);
 
-    return tokensList.filter((item) =>
-      item.tokenB.symbol.toUpperCase().includes(search)
-    );
+    if (Web3.utils.isAddress(search)) {
+      console.log("OPOP", search);
+      setTimeout(() => {
+        searchToken(search);
+      }, 5000);
+      // return tokensList.filter((item) =>
+      //   item?.tokenB?.address?.toLowerCase().includes(search.toLowerCase())
+      // );
+    } else
+      return tokensList.filter((item) =>
+        item.tokenB.symbol.toUpperCase().includes(search)
+      );
     // } else {
     // return tokensList;
     // }
