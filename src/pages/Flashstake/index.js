@@ -658,14 +658,18 @@ function Flashstake({
 
   const maxDuration = () => {
     if (time === "Mins") {
+      console.log(time);
       setDays(maxDays / 60);
-      _setMaxDays(days);
+      console.log(days);
+      // _setMaxDays(days);
     } else if (time === "Hrs") {
       setDays(maxDays / 3600);
-      _setMaxDays(days);
+      console.log(days);
+      // _setMaxDays(days);
     } else if (time === "Days") {
       setDays(maxDays / 86400);
-      _setMaxDays(days);
+      console.log(days);
+      // _setMaxDays(days);
     }
   };
 
@@ -791,8 +795,21 @@ function Flashstake({
                         <IconButton
                           className={classes.maxIconButtonTime}
                           disabled={!(active || account) || maxDays === days}
-                          onClick={maxDuration}
                           // onClick={maxDuration}
+                          // onClick={maxDuration}
+                          onClick={() =>
+                            onChangeDays({
+                              target: {
+                                value:
+                                  maxDays /
+                                  (time === "Hrs"
+                                    ? 3600
+                                    : time === "Min"
+                                    ? 60
+                                    : 86400),
+                              },
+                            })
+                          }
                         >
                           <MaxBtn width={10} />
                         </IconButton>

@@ -575,8 +575,13 @@ function DropdownDialog({
                       style={{ marginRight: 5 }}
                     />
                     {_pool.tokenB.symbol}{" "}
-                    {history.location.pathname === "/swap" && nativePrices
-                      ? `($${trunc(nativePrices[index])})`
+                    {history.location.pathname === "/swap" &&
+                    nativePrices.length
+                      ? Object.keys(nativePrices).find((_item) => {
+                          if (_item === _pool.tokenB.id) {
+                            return `$${trunc(nativePrices[_item])}`;
+                          }
+                        })
                       : history.location.pathname === "/stake" &&
                         poolsApy[_pool.id]
                       ? `(${

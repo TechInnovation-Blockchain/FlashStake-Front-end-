@@ -338,6 +338,7 @@ function Swap({
   calculateSwap,
   reward,
   swapOutput,
+  preciseSwap,
   loading: loadingRedux,
   active,
   account,
@@ -622,10 +623,10 @@ function Swap({
                               className={classes.loaderStyle}
                             />
                           ) : (
-                            <Tooltip title={`${swapOutput} FLASH`}>
+                            <Tooltip title={`${preciseSwap} FLASH`}>
                               <span className={classes.infoTextSpan}>
                                 {" "}
-                                {trunc(swapOutput)} FLASH
+                                {trunc(preciseSwap)} FLASH
                               </span>
                             </Tooltip>
                           )}
@@ -850,10 +851,10 @@ function Swap({
                                     className={classes.loaderStyle}
                                   />
                                 ) : (
-                                  <Tooltip title={`${swapOutput} FLASH`}>
+                                  <Tooltip title={`${preciseSwap} FLASH`}>
                                     <span className={classes.infoTextSpan}>
                                       {" "}
-                                      {trunc(swapOutput)} FLASH
+                                      {trunc(preciseSwap)} FLASH
                                     </span>
                                   </Tooltip>
                                 )}
@@ -958,7 +959,7 @@ function Swap({
                             >
                               Swapping {trunc(swapHist?.amount)}{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
-                              {trunc(swapOutput)} FLASH{" "}
+                              {trunc(preciseSwap)} FLASH{" "}
                               {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
@@ -1026,7 +1027,7 @@ function Swap({
                               className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                             >
                               You have successfully swapped {swapHist?.amount}{" "}
-                              {swapHist?.token || ""} for {trunc(swapOutput)}{" "}
+                              {swapHist?.token || ""} for {trunc(preciseSwap)}{" "}
                               FLASH
                             </Typography>
                             <Typography
