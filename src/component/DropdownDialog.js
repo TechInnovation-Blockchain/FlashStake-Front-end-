@@ -442,14 +442,15 @@ function DropdownDialog({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
-                  disabled={tokensList?.filter((element) =>
-                    pools?.find((_item) => {
-                      if (
-                        _item?.tokenB?.id !== element?.address?.toLowerCase()
-                      ) {
-                        return true;
-                      }
-                    })
+                  disabled={tokensList?.filter(
+                    (element) =>
+                      !pools?.find((_item) => {
+                        if (
+                          _item?.tokenB?.id === element?.address?.toLowerCase()
+                        ) {
+                          return true;
+                        }
+                      })
                   )}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
