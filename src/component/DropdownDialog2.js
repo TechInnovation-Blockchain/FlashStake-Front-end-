@@ -265,13 +265,10 @@ function DropdownDialog2({
           // setTokensList({ id: "", tokenB: _token });
 
           setToken({
-            id: "",
-            tokenB: {
-              address: _address,
-              name: _name,
-              symbol: _symbol,
-              decimals: _decimals,
-            },
+            address: _address,
+            name: _name,
+            symbol: _symbol,
+            decimals: _decimals,
           });
           setLoader(false);
         } else {
@@ -371,7 +368,7 @@ function DropdownDialog2({
           {token.address ? (
             <Fragment>
               <img
-                src={token?.logoURI}
+                src={token?.logoURI || tryRequire(token?.symbol)}
                 alt="Logo"
                 srcSet=""
                 width={15}
@@ -465,13 +462,13 @@ function DropdownDialog2({
               />{" "}
               GETTING TOKENS
             </Typography>
-          ) : token.tokenB?.decimals ? (
+          ) : token.decimals ? (
             <List className={classes.list}>
               <ListItem
                 button
                 className={classes.listItem}
                 onClick={() => onSelectLocal(token)}
-                key={token?.tokenB?.address}
+                key={token?.address}
                 // disabled={pools?.find((_item) => {
                 //   if (_item?.tokenB?.id === _pool.address) {
                 //     return true;
@@ -482,14 +479,14 @@ function DropdownDialog2({
                   {/* <MonetizationOn /> */}
                   {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                   <img
-                    src={tryRequire(token?.tokenB?.logoURI)}
-                    alt={token?.tokenB?.symbol}
+                    src={tryRequire(token?.symbol)}
+                    alt={token?.symbol}
                     srcSet=""
                     width={20}
                     className={classes.tokensLogo}
                     style={{ marginRight: 5 }}
                   />
-                  {token.tokenB.symbol}
+                  {token.symbol}
                 </Typography>
               </ListItem>
             </List>
