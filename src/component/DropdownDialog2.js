@@ -20,7 +20,7 @@ import Flash from "../assets/Tokens/FLASH.png";
 import ManageListsDropDown from "./ManageListsDropDown";
 import axios from "axios";
 import { nativePoolPrice } from "../redux/actions/userActions";
-import { trunc } from "../utils/utilFunc";
+import { fetchTokenList, trunc } from "../utils/utilFunc";
 import Web3 from "web3";
 import {
   initializeErc20TokenContract,
@@ -193,7 +193,7 @@ function DropdownDialog2({
   closeTimeout,
   items,
   onSelect = () => {},
-  selectedValue = {},
+  // selectedValue = {},
   heading = "SELECT TOKEN",
   disableDrop,
   link,
@@ -204,6 +204,7 @@ function DropdownDialog2({
   allPoolsData,
   nativePoolPrice,
   nativePrices,
+  setToken: setTokenParent,
   pools,
 }) {
   const classes = useStyles();
@@ -278,15 +279,9 @@ function DropdownDialog2({
   };
 
   const getTokensList = async () => {
-    const data = await axios.get(tokensURI.uri);
+    const data = await fetchTokenList(tokensURI.uri);
     if (data?.data?.tokens && pools) {
-      console.log("ITEMS", data?.data?.tokens);
-      console.log("ITEMS", pools);
-      setTokensList(
-        data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
-      );
-
-      // console.log("LIST", data?.data?.tokens);
+      setTokensList(data?.data?.tokens);
     }
   };
 
@@ -298,23 +293,16 @@ function DropdownDialog2({
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
-    console.log("LIST", tokensList);
 
     if (Web3.utils.isAddress(search)) {
-      console.log("OPOP", search);
-      setTimeout(() => {
-        searchToken(search);
-      }, 5000);
+      debouncedSearchToken(search);
       // return tokensList.filter((item) =>
       //   item?.tokenB?.address?.toLowerCase().includes(search.toLowerCase())
       // );
     } else
       return tokensList.filter((item) =>
-        item.tokenB.symbol.toUpperCase().includes(search)
+        item.symbol.toUpperCase().includes(search)
       );
-    // } else {
-    // return tokensList;
-    // }
   }, [search, items, getTokensList]);
 
   // console.log(filteredData());
@@ -324,7 +312,9 @@ function DropdownDialog2({
   }, []);
 
   const onSelectLocal = (_pool) => {
-    onSelect(_pool);
+    // onSelect(_pool);
+    setToken(_pool);
+    setTokenParent(_pool);
     onClose();
   };
 
@@ -334,20 +324,6 @@ function DropdownDialog2({
     }
   }, [closeTimeout, open, onClose]);
 
-  // {{
-  //   if(selectedValue) {
-  //     (
-  //       <img
-  //         src={require(`../assets/Tokens/${selectedValue}.png`)}
-  //         alt="Logo"
-  //         srcSet=""
-  //         width={20}
-  //         style={{ marginRight: 5 }}
-  //       />
-  //     ),
-  //       selectedValue;
-  //   },
-  // }() || <span className={classes.disabledText}>SELECT</span>}
   const tryRequire = (path) => {
     try {
       return require(`../assets/Tokens/${path}.png`);
@@ -370,85 +346,34 @@ function DropdownDialog2({
 
   return (
     <Fragment>
-      {link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.link}
-        >
-          <Box
-            className={
-              _theme === "retro" ? classes.retroDropdown : classes.dropdown
-            }
-            onClick={() => !disableDrop && !link && setOpen(true)}
-          >
-            <Typography variant="body1" className={classes.primaryText}>
-              {selectedValue.id ? (
-                <Fragment>
-                  <img
-                    src={tryRequire(selectedValue.tokenB.symbol)}
-                    alt="Logo"
-                    srcSet=""
-                    width={15}
-                    style={{ marginRight: 5 }}
-                  />
-                  {selectedValue.tokenB.symbol}
-                </Fragment>
-              ) : (
-                <span className={classes.disabledText}>ETH</span>
-              )}
-            </Typography>
-            {!disableDrop
-              ? {
-                  /* <IconButton className={classes.dropdownIcon} size="small">
-                <ExpandMore fontSize="large" />
-              </IconButton> */
-                }
-              : null}
-          </Box>
-        </a>
-      ) : (
-        <Box
-          className={
-            _theme === "retro" ? classes.retroDropdown : classes.dropdown
-          }
-          onClick={() => !disableDrop && !link && setOpen(true)}
-        >
-          <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue?.tokenB?.address ? (
-              <Fragment>
-                <img
-                  src={selectedValue?.tokenB?.logoURI}
-                  alt="Logo"
-                  srcSet=""
-                  width={15}
-                  style={{ marginRight: 5 }}
-                />
-                {selectedValue.tokenB.symbol}{" "}
-                {history.location.pathname === "/stake" &&
-                poolsApy[selectedValue.id]
-                  ? `(${
-                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
-                        parseInt(poolsApy[selectedValue.id]) >
-                      0
-                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
-                        : parseInt(poolsApy[selectedValue.id])
-                    }%)`
-                  : null}
-              </Fragment>
-            ) : (
-              <span className={classes.disabledText}>SELECT</span>
-            )}
-          </Typography>
-          {!disableDrop ? (
-            <IconButton className={classes.dropdownIcon} size="small">
-              {/* <ExpandMore fontSize="large" /> */}
-            </IconButton>
-          ) : null}
-        </Box>
-      )}
-
+      <Box
+        className={
+          _theme === "retro" ? classes.retroDropdown : classes.dropdown
+        }
+        onClick={() => !disableDrop && !link && setOpen(true)}
+      >
+        <Typography variant="body1" className={classes.primaryText}>
+          {token.address ? (
+            <Fragment>
+              <img
+                src={token?.logoURI}
+                alt="Logo"
+                srcSet=""
+                width={15}
+                style={{ marginRight: 5 }}
+              />
+              {token.symbol}
+            </Fragment>
+          ) : (
+            <span className={classes.disabledText}>SELECT</span>
+          )}
+        </Typography>
+        {!disableDrop ? (
+          <IconButton className={classes.dropdownIcon} size="small">
+            {/* <ExpandMore fontSize="large" /> */}
+          </IconButton>
+        ) : null}
+      </Box>
       <MuiDialog
         open={open}
         // open={true}
@@ -489,14 +414,14 @@ function DropdownDialog2({
 
           {filteredData()?.length ? (
             <List className={classes.list}>
-              {filteredData()?.map((_pool, index) => (
+              {filteredData()?.map((_pool) => (
                 <ListItem
                   button
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
-                  key={_pool.id}
+                  key={_pool.address}
                   disabled={pools?.find((_item) => {
-                    if (_item?.tokenB?.id === _pool.tokenB.id) {
+                    if (_item?.tokenB?.id === _pool.address) {
                       return true;
                     }
                   })}
@@ -505,26 +430,14 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={_pool.tokenB.logoURI}
-                      alt={_pool.tokenB.symbol}
+                      src={_pool?.logoURI}
+                      alt={_pool?.symbol}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {_pool.tokenB.symbol}{" "}
-                    {history.location.pathname === "/swap" && nativePrices
-                      ? `($${trunc(nativePrices[index])})`
-                      : history.location.pathname === "/stake" &&
-                        poolsApy[_pool.id]
-                      ? `(${
-                          parseFloat(poolsApy[_pool.id]).toFixed(2) -
-                            parseInt(poolsApy[_pool.id]) >
-                          0
-                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
-                            : parseInt(poolsApy[_pool.id])
-                        }%)`
-                      : null}
+                    {_pool.symbol}
                   </Typography>
                 </ListItem>
               ))}
