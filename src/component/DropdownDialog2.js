@@ -420,11 +420,10 @@ function DropdownDialog2({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
-                  disabled={pools?.find((_item) => {
-                    if (_item?.tokenB?.id === _pool.address) {
-                      return true;
-                    }
-                  })}
+                  disabled={pools?.find(
+                    (_item) =>
+                      _item?.tokenB?.id === String(_pool.address).toLowerCase()
+                  )}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}

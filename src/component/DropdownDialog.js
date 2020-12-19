@@ -246,7 +246,12 @@ function DropdownDialog({
       // )
       // );
       setTokensList(
-        data?.data?.tokens.map((_token) => ({ id: "", tokenB: _token }))
+        data?.data?.tokens.map((_token) => ({
+          id: pools.find(
+            (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
+          )?.id,
+          tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+        }))
       );
 
       // console.log("LIST", data?.data?.tokens);
@@ -444,7 +449,10 @@ function DropdownDialog({
                   key={_pool.id}
                   disabled={
                     !pools?.find((_item) => {
-                      if (_item?.tokenB?.id === _pool.tokenB.id) {
+                      if (
+                        _item?.tokenB?.id ===
+                        _pool?.tokenB?.address.toLowerCase()
+                      ) {
                         return true;
                       }
                     })
