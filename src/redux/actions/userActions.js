@@ -161,7 +161,7 @@ export const nativePoolPrice = () => async (dispatch, getState) => {
     user: { pools },
   } = getState();
   try {
-    let flashPrices = [];
+    let flashPrices = {};
 
     const poolData = await getAllQueryData();
     let flashPrice;
@@ -174,13 +174,17 @@ export const nativePoolPrice = () => async (dispatch, getState) => {
       }
     });
 
+    // flashPrices[_poolData] =
+    // (poolData[_poolData]?.reserveAltAmount /
+    //   poolData[_poolData]?.reserveFlashAmount) *
+    // flashPrice,
+
     Object.keys(poolData).map((_poolData) => {
       if (poolData) {
-        flashPrices.push(
+        flashPrices[_poolData] =
           (poolData[_poolData]?.reserveAltAmount /
             poolData[_poolData]?.reserveFlashAmount) *
-            flashPrice
-        );
+          flashPrice;
       }
       dispatch({
         type: "NATIVE_PRICE",

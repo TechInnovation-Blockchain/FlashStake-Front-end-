@@ -793,6 +793,20 @@ function Flashstake({
                           disabled={!(active || account) || _maxDays == days}
                           onClick={maxDuration}
                           // onClick={maxDuration}
+                          // onClick={maxDuration}
+                          onClick={() =>
+                            onChangeDays({
+                              target: {
+                                value:
+                                  maxDays /
+                                  (time === "Hrs"
+                                    ? 3600
+                                    : time === "Min"
+                                    ? 60
+                                    : 86400),
+                              },
+                            })
+                          }
                         >
                           <MaxBtn width={10} />
                         </IconButton>

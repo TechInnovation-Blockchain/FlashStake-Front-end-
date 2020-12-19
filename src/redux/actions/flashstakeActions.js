@@ -186,7 +186,7 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
         JSBI.BigInt(utils.parseUnits(altQuantity.toString(), decimal)),
         _lpFee
       );
-
+      // ///////////////////
       const _swapAmount = JSBI.divide(
         JSBI.multiply(_amountInWithFee, JSBI.BigInt(data.reserveFlashAmount)),
         JSBI.add(
@@ -197,6 +197,11 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
           _amountInWithFee
         )
       );
+
+      dispatch({
+        type: "PRECISE_SWAP_REWARD",
+        payload: utils.formatUnits(_swapAmount.toString(), 18),
+      });
 
       swapAmount = JSBI.subtract(
         _swapAmount,
