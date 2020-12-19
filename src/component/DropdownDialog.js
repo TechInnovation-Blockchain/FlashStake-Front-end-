@@ -223,7 +223,7 @@ function DropdownDialog({
     setNativePrice(nativePoolPrice());
   }, [items]);
 
-  console.log("allPoolsData --> ", nativePrice);
+  // console.log("allPoolsData --> ", nativePrice);
 
   useEffect(() => {
     getTokensList();
@@ -232,19 +232,6 @@ function DropdownDialog({
   const getTokensList = async () => {
     const data = await axios.get(tokensURI.uri);
     if (data?.data?.tokens && pools) {
-      console.log("ITEMS", data?.data?.tokens);
-      console.log("ITEMS", pools);
-
-      // console.log(
-      //   "ITEMS",
-      // data?.data?.tokens.filter((element) =>
-      //   pools?.find((_item) => {
-      //     if (_item?.tokenB?.id === element?.address.toLowerCase()) {
-      //       setTokensList({ id: _item.id, tokenB: element });
-      //     }
-      //   })
-      // )
-      // );
       setTokensList(
         data?.data?.tokens.map((_token) => ({
           id: pools.find(
@@ -260,7 +247,7 @@ function DropdownDialog({
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
-    console.log("LIST", tokensList);
+    // console.log("LIST", tokensList);
     return tokensList.filter((item) =>
       item.tokenB.symbol.toUpperCase().includes(search)
     );
@@ -309,11 +296,11 @@ function DropdownDialog({
   };
 
   const tryRequireLogo = (path) => {
-    console.log(path);
+    // console.log(path);
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
-      console.log(joined);
+      // console.log(joined);
       return joined;
     }
 

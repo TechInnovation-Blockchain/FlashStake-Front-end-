@@ -235,16 +235,12 @@ function DropdownDialog2({
     setNativePrice(nativePoolPrice());
   }, [items]);
 
-  console.log("allPoolsData --> ", nativePrice);
-
   useEffect(() => {
     getTokensList();
   }, [tokensURI, pools]);
 
   const searchExistingToken = (id) => {
-    console.log("here1");
     if (tokensList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
-      console.log("here2");
       return true;
     }
   };
@@ -287,8 +283,6 @@ function DropdownDialog2({
     }
   };
 
-  console.log(token);
-
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
   useEffect(() => {
@@ -304,7 +298,6 @@ function DropdownDialog2({
     // }
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
-        console.log("here");
         return tokensList?.filter((item) =>
           item.address.toLowerCase().includes(search)
         );
@@ -345,11 +338,9 @@ function DropdownDialog2({
   };
 
   const tryRequireLogo = (path) => {
-    console.log(path);
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
-      console.log(joined);
       return joined;
     }
 
@@ -469,11 +460,19 @@ function DropdownDialog2({
                 className={classes.listItem}
                 onClick={() => onSelectLocal(token)}
                 key={token?.address}
-                // disabled={pools?.find((_item) => {
-                //   if (_item?.tokenB?.id === _pool.address) {
-                //     return true;
-                //   }
-                // })}
+                disabled={
+                  pools?.find((_item) => {
+                    if (_item?.tokenB?.id === token.address) {
+                      return true;
+                    }
+                  }) || allPoolsData[token.address]
+
+                  // Object.keys(allPoolsData).find((_item) => {
+                  //   if (_item === token.address) {
+                  //     return true;
+                  //   }
+                  // })
+                }
               >
                 <Typography variant="body1" className={classes.listItemText}>
                   {/* <MonetizationOn /> */}
