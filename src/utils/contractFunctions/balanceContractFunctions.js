@@ -43,10 +43,7 @@ export const getBalances = async () => {
     let _balancesObj = {};
     let walletBalanceUSD = 0;
     _tokenList.map((_token, index) => {
-      _balancesObj[_token] = utils.formatUnits(
-        _balances[index].toString(),
-        selectedRewardToken?.tokenB?.decimal
-      );
+      _balancesObj[_token] = utils.formatUnits(_balances[index].toString(), 18);
       return null;
     });
     _pools.map((_pool) => {
@@ -63,7 +60,7 @@ export const getBalances = async () => {
     _pools.map((_pool, index) => {
       _poolBalanceObj[_pool.id] = utils.formatUnits(
         _poolBalances[index].toString(),
-        selectedRewardToken?.tokenB?.decimal
+        18
       );
       return null;
     });
