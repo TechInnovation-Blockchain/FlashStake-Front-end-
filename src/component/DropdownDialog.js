@@ -235,8 +235,6 @@ function DropdownDialog({
     setNativePrice(nativePoolPrice());
   }, [items]);
 
-  // console.log("allPoolsData --> ", nativePrice);
-
   useEffect(() => {
     getTokensList();
   }, [tokensURI, pools]);
@@ -287,18 +285,7 @@ function DropdownDialog({
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
       // setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
-      console.log(
-        "yadaaaaa",
-        [...(data?.data?.tokens || []), ...(userTokens || [])].map(
-          (_token) => ({
-            id: pools.find(
-              (_pool) =>
-                _pool.tokenB.id === String(_token.address).toLowerCase()
-            )?.id,
-            tokenB: { ..._token, id: String(_token.address).toLowerCase() },
-          })
-        )
-      );
+
       setTokensList(
         [...(data?.data?.tokens || []), ...(userTokens || [])].map(
           (_token) => ({
@@ -325,19 +312,16 @@ function DropdownDialog({
   //       }))
   //     );
 
-  //     // console.log("LIST", data?.data?.tokens);
   //   }
   // };
 
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
-  console.log("yada7", token, token?.tokenB?.decimals);
   useEffect(() => {
     debouncedSearchToken(search);
   }, [search]);
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
-    // console.log("LIST", tokensList);
 
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
@@ -348,7 +332,6 @@ function DropdownDialog({
 
       debouncedSearchToken(search);
     }
-    console.log("yada1", tokensList, search);
 
     return tokensList.filter((item) =>
       item?.tokenB?.symbol?.toUpperCase().includes(search.toUpperCase())
@@ -357,8 +340,6 @@ function DropdownDialog({
     // return tokensList;
     // }
   }, [search, items, getTokensList]);
-
-  // console.log(filteredData());
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -398,11 +379,9 @@ function DropdownDialog({
   };
 
   const tryRequireLogo = (path) => {
-    // console.log(path);
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
-      // console.log(joined);
       return joined;
     }
 
@@ -444,7 +423,10 @@ function DropdownDialog({
               {selectedValue.id ? (
                 <Fragment>
                   <img
-                    src={tryRequire(selectedValue.tokenB.symbol)}
+                    src={
+                      selectedValue?.tokenB?.logoURI ||
+                      tryRequire(selectedValue?.tokenB?.symbol)
+                    }
                     alt="Logo"
                     srcSet=""
                     width={15}
@@ -476,7 +458,10 @@ function DropdownDialog({
             {selectedValue.id ? (
               <Fragment>
                 <img
-                  src={tryRequire(selectedValue.tokenB.symbol)}
+                  src={
+                    selectedValue?.tokenB?.logoURI ||
+                    tryRequire(selectedValue?.tokenB?.symbol)
+                  }
                   alt="Logo"
                   srcSet=""
                   width={15}
@@ -527,7 +512,7 @@ function DropdownDialog({
           </Box>
           <Box className={classes.closeBtnContainer}>
             <TextField
-              placeholder="SEARCH"
+              placeholder="SEARCH TOKEN/ADDRESS"
               className={classes.textField}
               fullWidth
               value={search}
@@ -567,7 +552,10 @@ function DropdownDialog({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={_pool.tokenB.logoURI}
+                      src={
+                        _pool?.tokenB?.logoURI ||
+                        tryRequire(_pool?.tokenB?.symbol)
+                      }
                       alt={_pool.tokenB.symbol}
                       srcSet=""
                       width={20}
@@ -625,7 +613,10 @@ function DropdownDialog({
                   {/* <MonetizationOn /> */}
                   {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                   <img
-                    src={tryRequire(token.tokenB?.symbol)}
+                    src={
+                      token?.tokenB?.logoURI ||
+                      tryRequire(token?.tokenB?.symbol)
+                    }
                     alt={token.tokenB.symbol}
                     srcSet=""
                     width={20}

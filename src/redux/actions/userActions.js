@@ -165,15 +165,9 @@ export const nativePoolPrice = () => async (dispatch, getState) => {
 
     const poolData = await getAllQueryData();
     let flashPrice;
-    // console.log("allPoolsData", poolData);
 
     Object.keys(poolData).filter((_data) => {
       if (_data === "0xe0de5090961bfb0b251a3d84077bcb6147014976") {
-        // console.log(
-        //   "allPoolsData",
-        //   poolData[_data]?.reserveFlashAmount /
-        //     poolData[_data]?.reserveAltAmount
-        // );
         flashPrice =
           poolData[_data]?.reserveFlashAmount /
           poolData[_data]?.reserveAltAmount;

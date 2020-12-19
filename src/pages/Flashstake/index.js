@@ -575,6 +575,7 @@ function Flashstake({
 
   useEffect(() => {
     if (selectedPortal) {
+      getMaxTime();
       debouncedCalculateReward(quantity, days, time);
       const _rewardRefreshInterval = setInterval(() => {
         debouncedCalculateReward(quantity, days, time);
@@ -656,17 +657,16 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
+  const getMaxTime = () => {
+    const __maxDays = Math.trunc(
+      maxDays / time === "Mins" ? 60 : time === "Hrs" ? 3600 : 86400
+    );
+    _setMaxDays(__maxDays);
+    return __maxDays;
+  };
+
   const maxDuration = () => {
-    if (time === "Mins") {
-      setDays(maxDays / 60);
-      _setMaxDays(days);
-    } else if (time === "Hrs") {
-      setDays(maxDays / 3600);
-      _setMaxDays(days);
-    } else if (time === "Days") {
-      setDays(maxDays / 86400);
-      _setMaxDays(days);
-    }
+    setDays(getMaxTime());
   };
 
   return (
@@ -790,7 +790,7 @@ function Flashstake({
 
                         <IconButton
                           className={classes.maxIconButtonTime}
-                          disabled={!(active || account) || maxDays === days}
+                          disabled={!(active || account) || _maxDays == days}
                           onClick={maxDuration}
                           // onClick={maxDuration}
                         >
@@ -882,7 +882,8 @@ function Flashstake({
                               <Tooltip
                                 title={`${utils.formatUnits(
                                   preciseReward.toString(),
-                                  selectedRewardToken?.tokenB?.decimal
+                                  // selectedRewardToken?.tokenB?.decimals
+                                  18
                                 )} ${
                                   selectedRewardToken?.tokenB?.symbol || ""
                                 }`}
@@ -891,7 +892,8 @@ function Flashstake({
                                   {trunc(
                                     utils.formatUnits(
                                       preciseReward.toString(),
-                                      selectedRewardToken?.tokenB?.decimal
+                                      // selectedRewardToken?.tokenB?.decimals
+                                      18
                                     )
                                   )}{" "}
                                   {selectedRewardToken?.tokenB?.symbol || ""}

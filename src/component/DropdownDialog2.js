@@ -319,8 +319,6 @@ function DropdownDialog2({
       );
   }, [search, items, getTokensList]);
 
-  // console.log(filteredData());
-
   const onClose = useCallback(() => {
     setOpen(false);
   }, []);
@@ -421,7 +419,7 @@ function DropdownDialog2({
           </Box>
           <Box className={classes.closeBtnContainer}>
             <TextField
-              placeholder="SEARCH"
+              placeholder="SEARCH TOKEN/ADDRESS"
               className={classes.textField}
               fullWidth
               value={search}

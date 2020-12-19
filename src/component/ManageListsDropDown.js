@@ -238,7 +238,6 @@ function ManageListsDropDown({
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
-      // console.log(joined);
       return joined;
     }
 

@@ -60,7 +60,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
       );
       const _multiplier =
         time === "Mins" ? "60" : time === "Hrs" ? "3600" : "86400";
-      const _days = JSBI.BigInt(days);
+      const _days = JSBI.BigInt(Math.trunc(days));
       const _expiry = JSBI.multiply(_days, JSBI.BigInt(_multiplier));
       const _getPercentStaked = JSBI.divide(
         JSBI.multiply(
@@ -74,6 +74,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.BigInt("2")
       );
       _maxDays = _maxDays / String(_fpy);
+      console.log("yada max ------>", _maxDays);
       const _mintAmount = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
         JSBI.multiply(_precision, JSBI.BigInt("31536000"))
@@ -780,14 +781,14 @@ export const addTokenLiquidityInPool = (
       utils
         .parseUnits(
           quantityAlt.toString(),
-          selectedRewardToken?.tokenB?.decimal
+          selectedRewardToken?.tokenB?.decimals
         )
         .toString(),
       utils
         .parseUnits(
           String(
             (quantityXIO * (1 - slip / 100)).toFixed(
-              selectedRewardToken?.tokenB?.decimal
+              selectedRewardToken?.tokenB?.decimals
             )
           ),
           18
@@ -797,10 +798,10 @@ export const addTokenLiquidityInPool = (
         .parseUnits(
           String(
             (quantityAlt * (1 - slip / 100)).toFixed(
-              selectedRewardToken?.tokenB?.decimal
+              selectedRewardToken?.tokenB?.decimals
             )
           ),
-          selectedRewardToken?.tokenB?.decimal
+          selectedRewardToken?.tokenB?.decimals
         )
         .toString(),
       selectedRewardToken.tokenB.id
@@ -811,14 +812,14 @@ export const addTokenLiquidityInPool = (
       utils
         .parseUnits(
           quantityAlt.toString(),
-          selectedRewardToken?.tokenB?.decimal
+          selectedRewardToken?.tokenB?.decimals
         )
         .toString(),
       utils
         .parseUnits(
           String(
             (quantityXIO * (1 - slip / 100)).toFixed(
-              selectedRewardToken?.tokenB?.decimal
+              selectedRewardToken?.tokenB?.decimals
             )
           ),
           18
@@ -828,10 +829,10 @@ export const addTokenLiquidityInPool = (
         .parseUnits(
           String(
             (quantityAlt * (1 - slip / 100)).toFixed(
-              selectedRewardToken?.tokenB?.decimal
+              selectedRewardToken?.tokenB?.decimals
             )
           ),
-          selectedRewardToken?.tokenB?.decimal
+          selectedRewardToken?.tokenB?.decimals
         )
         .toString(),
       selectedRewardToken.tokenB.id

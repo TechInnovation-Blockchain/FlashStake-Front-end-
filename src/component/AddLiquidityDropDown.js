@@ -441,7 +441,7 @@ function AddLiquidityDropDown({
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityAlt(value);
         const _val = selectedRewardToken?.id
-          ? await quote(value, selectedRewardToken?.tokenB?.decimal, "alt")
+          ? await quote(value, selectedRewardToken?.tokenB?.decimals, "alt")
           : "0";
         setQuantityXIO(_val);
       }
