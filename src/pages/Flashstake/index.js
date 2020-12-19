@@ -465,10 +465,6 @@ function Flashstake({
   const [_maxDays, _setMaxDays] = useState();
 
   useEffect(() => {
-    console.log("yada hola", maxDays);
-  }, [maxDays]);
-
-  useEffect(() => {
     // Stop if the preference variable is not set on the client device
     if (localStorage.getItem("prefs-stake-time") == null) return;
 

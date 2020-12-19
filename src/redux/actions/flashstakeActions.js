@@ -74,7 +74,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.BigInt("2")
       );
       _maxDays = _maxDays / String(_fpy);
-      console.log("yada max ------>", _maxDays);
       const _mintAmount = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
         JSBI.multiply(_precision, JSBI.BigInt("31536000"))
@@ -157,7 +156,7 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
       flashstake: {
         selectedRewardToken: {
           id,
-          tokenB: { decimal },
+          tokenB: { decimals },
         },
         slip,
       },
@@ -183,7 +182,7 @@ export const calculateSwap = (altQuantity, forceRefetchQuery = false) => async (
       );
 
       const _amountInWithFee = JSBI.multiply(
-        JSBI.BigInt(utils.parseUnits(altQuantity.toString(), decimal)),
+        JSBI.BigInt(utils.parseUnits(altQuantity.toString(), decimals)),
         _lpFee
       );
       // ///////////////////
@@ -732,7 +731,12 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
       initializeFlashstakeProtocolContract();
       _log(
         "swap params -> ",
-        _altQuantity,
+        utils
+          .parseUnits(
+            _altQuantity?.toString(),
+            selectedRewardToken?.tokenB?.decimals
+          )
+          .toString(),
         selectedRewardToken.tokenB.id,
         utils.parseUnits(swapOutput.toString(), 18).toString()
       );
@@ -741,16 +745,11 @@ export const swapALT = (_altQuantity) => async (dispatch, getState) => {
         utils
           .parseUnits(
             _altQuantity?.toString(),
-            selectedRewardToken?.tokenB?.decimal
+            selectedRewardToken?.tokenB?.decimals
           )
           .toString(),
         selectedRewardToken.tokenB.id,
-        utils
-          .parseUnits(
-            swapOutput.toString(),
-            selectedRewardToken?.tokenB?.decimal
-          )
-          .toString()
+        utils.parseUnits(swapOutput.toString(), 18).toString()
       );
     }
   } catch (e) {
@@ -810,6 +809,16 @@ export const addTokenLiquidityInPool = (
         )
         .toString(),
       selectedRewardToken.tokenB.id
+    );
+    console.log(
+      "yada hola ",
+      utils
+        .parseUnits(
+          quantityAlt.toString(),
+          selectedRewardToken?.tokenB?.decimals
+        )
+        .toString(),
+      utils.parseUnits("1", 4).toString()
     );
     initializeFlashstakeProtocolContract();
     await addLiquidityInPool(

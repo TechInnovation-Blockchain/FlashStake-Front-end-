@@ -64,6 +64,14 @@ export const getExtendedFloatValue = (val) => {
   return 0;
 };
 
+export const toFixedDec4 = (val) => {
+  try {
+    return String(val).match(/^-?\d+(?:\.\d{0,4})?/)[0];
+  } catch (e) {
+    return "";
+  }
+};
+
 export const fetchTokenList = _.memoize(async (_tokenListUri) => {
   const response = await axios.get(_tokenListUri);
   return response;

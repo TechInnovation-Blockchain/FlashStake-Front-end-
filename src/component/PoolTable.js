@@ -296,7 +296,15 @@ function PoolTable({
             utils.formatUnits(poolQueryData.reserveFlashAmount.toString(), 18);
           pooledAlt =
             _percentageShare *
-            utils.formatUnits(poolQueryData.reserveAltAmount.toString(), 18);
+            utils.formatUnits(
+              poolQueryData.reserveAltAmount.toString(),
+              _pool?.pool?.tokenB?.decimal
+            );
+          console.log(
+            "yada hola ",
+            _pool?.pool?.tokenB?.decimal,
+            _pool?.pool?.tokenB?.symbol
+          );
         }
         return {
           ..._pool,

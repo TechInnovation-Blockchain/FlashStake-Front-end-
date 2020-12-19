@@ -468,7 +468,7 @@ function Pool({
 
   const fetchQueryData = async () => {
     const _queryData = await getQueryData(selectedPortal);
-    setQueryData(_queryData);
+    setQueryData(_queryData || {});
   };
 
   useEffect(() => {
