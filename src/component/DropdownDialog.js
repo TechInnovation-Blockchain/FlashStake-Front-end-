@@ -162,6 +162,10 @@ const useStyles = makeStyles((theme, _theme) => ({
   link: {
     textDecoration: "none",
   },
+  listItemAdd: {
+    padding: theme.spacing(1),
+    cursor: "pointer",
+  },
   loadingIcon: {
     marginRight: 5,
   },
@@ -259,6 +263,7 @@ function DropdownDialog({
 
           setToken({
             tokenB: {
+              id: _address,
               address: _address,
               name: _name,
               symbol: _symbol,
@@ -282,7 +287,18 @@ function DropdownDialog({
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
       // setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
-
+      console.log(
+        "yadaaaaa",
+        [...(data?.data?.tokens || []), ...(userTokens || [])].map(
+          (_token) => ({
+            id: pools.find(
+              (_pool) =>
+                _pool.tokenB.id === String(_token.address).toLowerCase()
+            )?.id,
+            tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+          })
+        )
+      );
       setTokensList(
         [...(data?.data?.tokens || []), ...(userTokens || [])].map(
           (_token) => ({
@@ -314,7 +330,7 @@ function DropdownDialog({
   // };
 
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
-
+  console.log("yada7", token, token?.tokenB?.decimals);
   useEffect(() => {
     debouncedSearchToken(search);
   }, [search]);
@@ -326,15 +342,16 @@ function DropdownDialog({
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokensList?.filter((item) =>
-          item.address.toLowerCase().includes(search)
+          item.tokenB.id.toLowerCase().includes(search)
         );
       }
 
       debouncedSearchToken(search);
     }
+    console.log("yada1", tokensList, search);
 
     return tokensList.filter((item) =>
-      item.tokenB.symbol.toUpperCase().includes(search.toUpperCase())
+      item?.tokenB?.symbol?.toUpperCase().includes(search.toUpperCase())
     );
     // } else {
     // return tokensList;
@@ -398,9 +415,11 @@ function DropdownDialog({
       tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
     } catch (e) {}
     if (
-      !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+      !tokenList?.find(
+        (_tokenItem) => _tokenItem.address === token?.tokenB?.address
+      )
     ) {
-      tokenList.push(token);
+      tokenList.push(token?.tokenB);
       localStorage.setItem("tokenList", JSON.stringify(tokenList));
       setTokensList((_tokenList) => [..._tokenList, token]);
     }
@@ -581,7 +600,7 @@ function DropdownDialog({
               />{" "}
               GETTING TOKENS
             </Typography>
-          ) : token.tokenB.decimals ? (
+          ) : token?.tokenB?.decimals ? (
             <List className={classes.list}>
               <ListItem
                 button
