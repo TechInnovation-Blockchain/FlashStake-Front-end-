@@ -692,39 +692,6 @@ function Vote({
                 </Grid>
               </AccordionDetails>
             </Accordion>
-            {/* 
-              <Accordion square expanded={!expanded2}>
-                <AccordionSummary
-                  aria-controls="panel2d-content"
-                  id="panel2d-header"
-                  onClick={() => setExpanded2(!expanded2)}
-                  className={`${classes.dashboardAccordian} ${
-                    expanded2 ? classes.btn3 : classes._btn3
-                  }`}
-                >
-                  {expanded2 ? (
-                    <ArrowDropUpIcon size="large" className={classes.icon} />
-                  ) : (
-                    <ArrowDropDownIcon size="large" className={classes.icon} />
-                  )}
-                  <Typography variant="body2" className={classes.stakeDashBtn}>
-                    POOL ENTRIES
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordion}>
-                  {heightToggle ? (
-                    <Table
-                    // onClickUnstake={onClickUnstake}
-                    // onClickUnstake2={onClickUnstake2}
-                    // toggle={toggle}
-                    // heightToggle={heightToggle}
-                    />
-                  ) : (
-                    <CreateTable />
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            */}
           </Box>
         </AnimateHeight>
 

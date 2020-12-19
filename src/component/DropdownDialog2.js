@@ -228,7 +228,7 @@ function DropdownDialog2({
   });
 
   const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value);
+    setSearch(value.toLowerCase());
   };
 
   useEffect(() => {
@@ -242,7 +242,9 @@ function DropdownDialog2({
   }, [tokensURI, pools]);
 
   const searchExistingToken = (id) => {
-    if (pools.find((_pool) => _pool?.tokenB?.id === id)) {
+    console.log("here1");
+    if (tokensList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
+      console.log("here2");
       return true;
     }
   };
@@ -263,10 +265,13 @@ function DropdownDialog2({
           // setTokensList({ id: "", tokenB: _token });
 
           setToken({
-            address: _address,
-            name: _name,
-            symbol: _symbol,
-            decimals: _decimals,
+            id: "",
+            tokenB: {
+              address: _address,
+              name: _name,
+              symbol: _symbol,
+              decimals: _decimals,
+            },
           });
           setLoader(false);
         } else {
@@ -285,6 +290,8 @@ function DropdownDialog2({
     }
   };
 
+  console.log(token);
+
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
   useEffect(() => {
@@ -293,15 +300,23 @@ function DropdownDialog2({
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
-
+    // if (searchExistingToken(search)) {
+    //   return tokensList.filter((item) =>
+    //     item.address.toLowerCase.includes(search)
+    //   );
+    // }
     if (Web3.utils.isAddress(search)) {
+      if (searchExistingToken(search)) {
+        console.log("here");
+        return tokensList?.filter((item) =>
+          item.address.toLowerCase().includes(search)
+        );
+      }
+
       debouncedSearchToken(search);
-      // return tokensList.filter((item) =>
-      //   item?.tokenB?.address?.toLowerCase().includes(search.toLowerCase())
-      // );
     } else
       return tokensList.filter((item) =>
-        item.symbol.toUpperCase().includes(search)
+        item.symbol.toUpperCase().includes(search.toUpperCase())
       );
   }, [search, items, getTokensList]);
 
@@ -451,6 +466,34 @@ function DropdownDialog2({
               />{" "}
               GETTING TOKENS
             </Typography>
+          ) : token.tokenB?.decimals ? (
+            <List className={classes.list}>
+              <ListItem
+                button
+                className={classes.listItem}
+                onClick={() => onSelectLocal(token)}
+                key={token?.tokenB?.address}
+                // disabled={pools?.find((_item) => {
+                //   if (_item?.tokenB?.id === _pool.address) {
+                //     return true;
+                //   }
+                // })}
+              >
+                <Typography variant="body1" className={classes.listItemText}>
+                  {/* <MonetizationOn /> */}
+                  {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                  <img
+                    src={tryRequire(token?.tokenB?.logoURI)}
+                    alt={token?.tokenB?.symbol}
+                    srcSet=""
+                    width={20}
+                    className={classes.tokensLogo}
+                    style={{ marginRight: 5 }}
+                  />
+                  {token.tokenB.symbol}
+                </Typography>
+              </ListItem>
+            </List>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
               NO TOKENS AVAILABLE
