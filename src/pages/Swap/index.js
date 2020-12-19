@@ -266,6 +266,10 @@ const useStyles = makeStyles((theme) => ({
   gridSpace: {
     // margin: theme.spacing(1, 0),
   },
+  msgContainer: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+  },
   boxSizing: {
     boxSizing: "border-box",
   },
@@ -412,7 +416,7 @@ function Swap({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Swap - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Swap - FLASH | THE TIME TRAVEL OF MONEY";
     setRefetch();
     // setLoading({ dapp: true });
   }, [setRefetch]);
@@ -537,7 +541,7 @@ function Swap({
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      What do you want to swap for $FLASH
+                      What do you want to swap for FLASH
                     </Typography>
                     <DropdownDialog
                       className={classes.dropDown}
@@ -618,10 +622,10 @@ function Swap({
                               className={classes.loaderStyle}
                             />
                           ) : (
-                            <Tooltip title={`${swapOutput} $FLASH`}>
+                            <Tooltip title={`${swapOutput} FLASH`}>
                               <span className={classes.infoTextSpan}>
                                 {" "}
-                                {trunc(swapOutput)} $FLASH
+                                {trunc(swapOutput)} FLASH
                               </span>
                             </Tooltip>
                           )}
@@ -846,10 +850,10 @@ function Swap({
                                     className={classes.loaderStyle}
                                   />
                                 ) : (
-                                  <Tooltip title={`${swapOutput} $FLASH`}>
+                                  <Tooltip title={`${swapOutput} FLASH`}>
                                     <span className={classes.infoTextSpan}>
                                       {" "}
-                                      {trunc(swapOutput)} $FLASH
+                                      {trunc(swapOutput)} FLASH
                                     </span>
                                   </Tooltip>
                                 )}
@@ -954,7 +958,7 @@ function Swap({
                             >
                               Swapping {trunc(swapHist?.amount)}{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
-                              {trunc(swapOutput)} $FLASH{" "}
+                              {trunc(swapOutput)} FLASH{" "}
                               {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
@@ -1023,7 +1027,7 @@ function Swap({
                             >
                               You have successfully swapped {swapHist?.amount}{" "}
                               {swapHist?.token || ""} for {trunc(swapOutput)}{" "}
-                              $FLASH
+                              FLASH
                             </Typography>
                             <Typography
                               variant="body1"

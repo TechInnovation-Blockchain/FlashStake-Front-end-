@@ -11,16 +11,9 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { ClearOutlined } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
-import { store } from "../config/reduxStore";
-import { connect } from "react-redux";
 import flash from "../assets/FLASH2.svg";
-import FLASH from "../assets/Tokens/FLASH.png";
-import Button from "./Button";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { CONSTANTS } from "../utils/constants";
-import { setTokensURI } from "../redux/actions/uiActions";
+import Flash from "../assets/Tokens/FLASH.png";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -185,139 +178,32 @@ const useStyles = makeStyles((theme, _theme) => ({
   // },
 }));
 
-function ManageListsDropDown({
-  children,
-  closeTimeout,
-  items = [],
-  onSelect = () => {},
-  selectedValue = {},
-  heading = "MANAGE TOKENS LIST",
-  disableDrop,
-  link,
-  _theme,
-  poolsApy,
-  _onClose,
-  tokensListApis,
-  setTokensURI,
-}) {
+function FlashDropDown({ theme }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
 
-  const history = useHistory();
-
-  const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
-  };
-
-  const filteredData = useCallback(() => {
-    return items.filter((item) =>
-      item.tokenB?.symbol.toUpperCase().includes(search)
-    );
-  }, [search, items]);
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-
-  // const onBack = () => {
-  //   setOpen(false);
-  // };
-
-  const onSelectLocal = (_pool) => {
-    onSelect(_pool);
-    onClose();
-  };
-
-  useEffect(() => {
-    if (open && closeTimeout) {
-      setTimeout(onClose, closeTimeout);
-    }
-  }, [closeTimeout, open, onClose]);
-
-  const tryRequire = (path) => {
-    if (path?.startsWith("ipfs")) {
-      const _val = path?.split("//");
-      const joined = "https://ipfs.io/ipfs/" + _val[1];
-      console.log(joined);
-      return joined;
-    }
-
-    return path;
-  };
   return (
     <Fragment>
-      <Button
-        fullWidth
-        variant="retro"
-        // disabled={disabled}
-        // loading={loadingRedux.pool}
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        CHANGE
-      </Button>
+      <Box className={classes.dropdown}>
+        <Typography variant="body1" className={classes.primaryText}>
+          <Fragment>
+            <img
+              src={theme === "retro" ? Flash : flash}
+              alt="Logo"
+              srcSet=""
+              width={15}
+              style={{ marginRight: 5 }}
+            />
+          </Fragment>
 
-      <MuiDialog
-        open={open}
-        // open={true}
-        onClose={onClose}
-        PaperProps={{ className: classes.dialogPaper }}
-      >
-        <Container maxWidth="xs" className={classes.dialog}>
-          <Box className={classes.closeBtnContainer}>
-            <Typography variant="body1" className={classes.dialogHeading}>
-              {heading}
-            </Typography>
-
-            <IconButton
-              size="small"
-              onClick={onClose}
-              className={classes.closeIcon}
-            >
-              <ClearOutlined />
-            </IconButton>
-          </Box>
-
-          <List className={classes.list}>
-            {CONSTANTS.TOKENS_LIST.map((item) => (
-              <ListItem
-                button
-                className={classes.listItem}
-                onClick={() => {
-                  setTokensURI({
-                    uri: item.uri,
-                    name: item.name,
-                    logo: item.logoURI,
-                  });
-                  setOpen(false);
-                  // onBack();
-                }}
-                key={item.name}
-              >
-                <Typography variant="body1" className={classes.listItemText}>
-                  <img
-                    src={tryRequire(item.logoURI)}
-                    // alt={"logo"}
-                    srcSet=""
-                    width={20}
-                    className={classes.tokensLogo}
-                    style={{ marginRight: 5 }}
-                  />
-                  {item.name}
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Container>
-      </MuiDialog>
+          <span className={classes.disabledText}>FLASH</span>
+        </Typography>
+      </Box>
     </Fragment>
   );
 }
 
-const mapStateToProps = ({ user: { poolsApy }, ui: { tokensListApis } }) => ({
-  poolsApy,
-  tokensListApis,
+const mapStateToProps = ({ ui: { theme } }) => ({
+  theme,
 });
 
-export default connect(mapStateToProps, { setTokensURI })(ManageListsDropDown);
+export default connect(mapStateToProps, {})(FlashDropDown);

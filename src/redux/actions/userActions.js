@@ -155,6 +155,50 @@ export const updateApyPools = (quantity, poolsParam) => async (
   });
 };
 
+export const nativePoolPrice = () => async (dispatch, getState) => {
+  const {
+    // query: { allPoolsData },
+    user: { pools },
+  } = getState();
+  try {
+    let flashPrices = [];
+
+    const poolData = await getAllQueryData();
+    let flashPrice;
+    // console.log("allPoolsData", poolData);
+
+    Object.keys(poolData).filter((_data) => {
+      if (_data === "0xe0de5090961bfb0b251a3d84077bcb6147014976") {
+        // console.log(
+        //   "allPoolsData",
+        //   poolData[_data]?.reserveFlashAmount /
+        //     poolData[_data]?.reserveAltAmount
+        // );
+        flashPrice =
+          poolData[_data]?.reserveFlashAmount /
+          poolData[_data]?.reserveAltAmount;
+      }
+    });
+
+    Object.keys(poolData).map((_poolData) => {
+      if (poolData) {
+        flashPrices.push(
+          (poolData[_poolData]?.reserveAltAmount /
+            poolData[_poolData]?.reserveFlashAmount) *
+            flashPrice
+        );
+      }
+      dispatch({
+        type: "NATIVE_PRICE",
+        payload: flashPrices,
+      });
+      // });
+    });
+  } catch (e) {
+    _error("ERROR Native Pool Prices -> ", e);
+  }
+};
+
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   let _tokenList = [];

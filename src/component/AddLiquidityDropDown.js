@@ -551,7 +551,7 @@ function AddLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="h5">
-                $FLASH / {pool?.pool?.tokenB?.symbol}
+                FLASH / {pool?.pool?.tokenB?.symbol}
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -570,7 +570,7 @@ function AddLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="body2">
-                Pooled $FLASH:
+                Pooled FLASH:
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -700,8 +700,8 @@ function AddLiquidityDropDown({
                   variant="body1"
                   className={classes.secondaryText2}
                 >
-                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                  Amount of $FLASH required to pool
+                  {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                  Amount of FLASH required to pool
                 </Typography>
                 <Box className={classes.textFieldContainer}>
                   {/* <Tooltip title="Hello world" open={true}> */}
@@ -749,8 +749,8 @@ function AddLiquidityDropDown({
                     variant="body2"
                     className={classes.secondaryText}
                   >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    $FLASH per {selectedRewardToken?.tokenB?.symbol}
+                    {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                    FLASH per {selectedRewardToken?.tokenB?.symbol}
                   </Typography>
                   <Tooltip
                     title={
@@ -778,7 +778,7 @@ function AddLiquidityDropDown({
                     variant="body2"
                     className={classes.secondaryText}
                   >
-                    {selectedRewardToken?.tokenB?.symbol} per $FLASH
+                    {selectedRewardToken?.tokenB?.symbol} per FLASH
                   </Typography>
 
                   <Tooltip

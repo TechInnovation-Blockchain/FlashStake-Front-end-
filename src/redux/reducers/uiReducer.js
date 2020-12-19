@@ -17,7 +17,10 @@ export const uiReducer = (
     btn: 5,
     tokensURI: {
       name: "Default",
-      uri: "",
+      uri:
+        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
+      logo:
+        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
     },
     // defaultTokenList:[{
     //   name: "Default List",

@@ -205,11 +205,11 @@ function SwapTable({
 
         <Grid item xs={6} className={classes.grid}>
           <Typography className={classes.mainHead} variant="body2">
-            $FLASH Balance
+            FLASH Balance
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
-              <span>{trunc(walletBalance)} $FLASH</span>
+            <Tooltip title={`${walletBalance} FLASH`}>
+              <span>{trunc(walletBalance)} FLASH</span>
             </Tooltip>
           </Typography>
         </Grid>
@@ -305,23 +305,19 @@ function SwapTable({
                             </Grid> */}
 
                               <Grid item xs={6} className={classes.gridItem}>
-                                <Tooltip
-                                  title={`${_swap.flashReceived} $FLASH`}
-                                >
+                                <Tooltip title={`${_swap.flashReceived} FLASH`}>
                                   <span className={classes.flexCenter}>
                                     <img
                                       // src={tryRequire("FlashPro5")}
                                       src={tryRequire(
-                                        theme === "dark"
-                                          ? "FlashPro5"
-                                          : "$FLASH"
+                                        theme === "dark" ? "FlashPro5" : "FLASH"
                                       )}
                                       alt="Logo"
                                       srcSet=""
                                       width={15}
                                       style={{ marginRight: 5 }}
                                     />{" "}
-                                    {trunc(_swap.flashReceived)} $FLASH
+                                    {trunc(_swap.flashReceived)} FLASH
                                   </span>
                                 </Tooltip>
                               </Grid>

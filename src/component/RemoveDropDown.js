@@ -376,7 +376,7 @@ function RemoveDropDown({
               </Grid>
               <Grid xs={6} style={{ textAlign: "right" }}>
                 <Typography variant="h6" className={classes.fontStyle}>
-                  $FLASH
+                  FLASH
                 </Typography>
               </Grid>
             </Grid>
@@ -435,7 +435,7 @@ function RemoveDropDown({
 
           <Box className={classes.info}>
             <Typography className={classes.fontWeight} variant="body2">
-              1 $FLASH ={" "}
+              1 FLASH ={" "}
               {trunc(
                 pool?.poolQueryData?.reserveAltAmount /
                   pool?.poolQueryData?.reserveFlashAmount
@@ -448,7 +448,7 @@ function RemoveDropDown({
                 pool?.poolQueryData?.reserveFlashAmount /
                   pool?.poolQueryData?.reserveAltAmount
               ) || 0}{" "}
-              $FLASH
+              FLASH
             </Typography>
           </Box>
 

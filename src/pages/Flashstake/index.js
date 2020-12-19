@@ -162,7 +162,7 @@ let useStyles = makeStyles((theme) => ({
   },
   maxIconButton: {
     position: "absolute",
-    right: 0,
+    right: "2px",
     top: "50%",
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
@@ -185,7 +185,7 @@ let useStyles = makeStyles((theme) => ({
   },
   maxIconButtonTime: {
     position: "absolute",
-    left: 0,
+    left: 2,
     top: "50%",
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
@@ -308,6 +308,9 @@ let useStyles = makeStyles((theme) => ({
   // },
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
+  },
+  connectText: {
+    marginTop: theme.spacing(2),
   },
   gridSpace3: {
     marginTop: theme.spacing(1),
@@ -553,7 +556,7 @@ function Flashstake({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Stake - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Stake - FLASH | THE TIME TRAVEL OF MONEY";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -713,7 +716,7 @@ function Flashstake({
                         variant="body1"
                         className={classes.secondaryText}
                       >
-                        Fuel ($FLASH)
+                        Fuel (FLASH)
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -847,7 +850,7 @@ function Flashstake({
                           >
                             If you stake{" "}
                             <span className={classes.infoTextSpan}>
-                              {trunc(quantity) || 0} $FLASH{" "}
+                              {trunc(quantity) || 0} FLASH{" "}
                             </span>{" "}
                             for{" "}
                             <span className={classes.infoTextSpan}>
@@ -942,7 +945,7 @@ function Flashstake({
                           className={classes.infoText}
                         >
                           <span className={classes.infoTextSpan}>
-                            Fuel ($FLASH){" "}
+                            Fuel (FLASH){" "}
                           </span>{" "}
                           and{" "}
                           <span className={classes.infoTextSpan}>
@@ -1108,9 +1111,9 @@ function Flashstake({
                         className={classes.redText}
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE $FLASH</b> */}
+                        <b>APPROVE FLASH</b> */}
                         Before you can <b>stake</b>, you must{" "}
-                        <b>approve $FLASH</b>
+                        <b>approve FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1124,7 +1127,7 @@ function Flashstake({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={classes.redText}
+                        className={`${classes.redText} ${classes.connectText}`}
                       >
                         Connect wallet to stake
                       </Typography>
@@ -1241,7 +1244,7 @@ function Flashstake({
                     >
                       If you stake{" "}
                       <span className={classes.infoTextSpan}>
-                        {quantity || 0} $FLASH{" "}
+                        {quantity || 0} FLASH{" "}
                       </span>{" "}
                       for{" "}
                       <span className={classes.infoTextSpan}>
@@ -1367,7 +1370,7 @@ function Flashstake({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
+                    {stakeRequest.quantity} FLASH for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
                     {time === "Hrs"
                       ? days > 1
@@ -1429,7 +1432,7 @@ function Flashstake({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You have successfully staked {stakeRequest.quantity} $FLASH
+                    You have successfully staked {stakeRequest.quantity} FLASH
                     for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}
                     {time === "Hrs"
@@ -1484,21 +1487,21 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     If you unstake{" "}
-                    <Tooltip title={`${dappBalance} $FLASH`}>
+                    <Tooltip title={`${dappBalance} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(dappBalance)} $FLASH
+                        {trunc(dappBalance)} FLASH
                       </span>
                     </Tooltip>{" "}
                     now, you will receive{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                    <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
+                        {trunc(totalBalanceWithBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     and burn{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                    <Tooltip title={`${totalBurnAmount} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
+                        {trunc(totalBurnAmount)} FLASH
                       </span>
                     </Tooltip>{" "}
                     in the process
@@ -1519,21 +1522,21 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
+                        {totalBurn.totalXIO} FLASH
                       </span>
                     </Tooltip>{" "}
                     {/* NOW, YOU WILL RECIEVE{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                    <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
+                        {trunc(totalBalanceWithBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     AND BURN{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                    <Tooltip title={`${totalBurnAmount} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
+                        {trunc(totalBurnAmount)} FLASH
                       </span>
                     </Tooltip>{" "}
                     IN THE PROCESS*/}
@@ -1555,25 +1558,25 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     Your are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
+                        {totalBurn.totalXIO} FLASH
                       </span>
                     </Tooltip>{" "}
                     now, you will receive{" "}
                     <Tooltip
                       title={`${
                         totalBurn.totalXIO - totalBurn.totalBurn
-                      } $FLASH`}
+                      } FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} $FLASH
+                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     and burn{" "}
-                    <Tooltip title={`${totalBurn.totalBurn} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurn.totalBurn)} $FLASH
+                        {trunc(totalBurn.totalBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     in the process
@@ -1598,21 +1601,21 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         You are about to unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
+                        <Tooltip title={`${dappBalance} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
+                            {trunc(dappBalance)} FLASH
                           </span>
                         </Tooltip>{" "}
                         now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                        <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
+                            {trunc(totalBalanceWithBurn)} FLASH
                           </span>
                         </Tooltip>{" "}
                         and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                        <Tooltip title={`${totalBurnAmount} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
+                            {trunc(totalBurnAmount)} FLASH
                           </span>
                         </Tooltip>{" "}
                         in the process
@@ -1636,7 +1639,7 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         You are about to unstake {trunc(expiredDappBalance)}{" "}
-                        $FLASH
+                        FLASH
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -1645,9 +1648,9 @@ function Flashstake({
                             fullWidth
                             onClick={unstakeXIO}
                           >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                            <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
-                                {/* COMPLETED({trunc(expiredDappBalance)} $FLASH) */}
+                                {/* COMPLETED({trunc(expiredDappBalance)} FLASH) */}
                                 CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
@@ -1667,15 +1670,15 @@ function Flashstake({
                       className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                     >
                       You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
+                        <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
                     <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           {/* COMPLETED
-                          <br />({trunc(expiredDappBalance)} $FLASH) */}
+                          <br />({trunc(expiredDappBalance)} FLASH) */}
                           CONFIRM UNSTAKE
                         </span>
                       </Tooltip>
@@ -1696,21 +1699,21 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         If you unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
+                        <Tooltip title={`${dappBalance} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
+                            {trunc(dappBalance)} FLASH
                           </span>
                         </Tooltip>{" "}
                         now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                        <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
+                            {trunc(totalBalanceWithBurn)} FLASH
                           </span>
                         </Tooltip>{" "}
                         and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                        <Tooltip title={`${totalBurnAmount} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
+                            {trunc(totalBurnAmount)} FLASH
                           </span>
                         </Tooltip>{" "}
                         in the process
@@ -1742,10 +1745,10 @@ function Flashstake({
                             fullWidth
                             onClick={unstakeXIO}
                           >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                            <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
                                 {/* COMPLETED
-                                <br />({trunc(expiredDappBalance)} $FLASH) */}
+                                <br />({trunc(expiredDappBalance)} FLASH) */}
                                 CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
@@ -1757,10 +1760,10 @@ function Flashstake({
                             fullWidth
                             onClick={() => setDialogStep("earlyUnstakeFull")}
                           >
-                            <Tooltip title={`${dappBalance} $FLASH`}>
+                            <Tooltip title={`${dappBalance} FLASH`}>
                               <span>
                                 ALL
-                                <br />({trunc(dappBalance)} $FLASH)
+                                <br />({trunc(dappBalance)} FLASH)
                               </span>
                             </Tooltip>
                           </Button>
@@ -1779,15 +1782,15 @@ function Flashstake({
                       className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                     >
                       You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
+                        <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
                     <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           CONFIRM UNSTAKE
-                          {/* <br />({trunc(expiredDappBalance)} $FLASH) */}
+                          {/* <br />({trunc(expiredDappBalance)} FLASH) */}
                         </span>
                       </Tooltip>
                     </Button>
@@ -1804,8 +1807,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                 </Fragment>
@@ -1847,8 +1850,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You successfully unstaked{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                   <Typography

@@ -12,6 +12,7 @@ export const userReducer = (
     poolDataBalance: {},
     poolItems: {},
     totalSupply: {},
+    nativePrices: [],
   },
   { type, payload }
 ) => {
@@ -40,6 +41,11 @@ export const userReducer = (
       return {
         ...state,
         pools: payload,
+      };
+    case "NATIVE_PRICE":
+      return {
+        ...state,
+        nativePrices: payload,
       };
 
     case "USER_DATA":
