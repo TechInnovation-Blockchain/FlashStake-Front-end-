@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme, _theme) => ({
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
+      padding: theme.spacing(0, 5),
       // fontSize: 16,
       lineHeight: 1.5,
       textAlign: "center",
@@ -472,11 +472,11 @@ function DropdownDialog2({
                 className={classes.listItem}
                 onClick={() => onSelectLocal(token)}
                 key={token?.tokenB?.address}
-                // disabled={pools?.find((_item) => {
-                //   if (_item?.tokenB?.id === _pool.address) {
-                //     return true;
-                //   }
-                // })}
+                disabled={pools?.find(
+                  (_item) =>
+                    _item?.tokenB?.id ===
+                    String(token.tokenB.address).toLowerCase()
+                )}
               >
                 <Typography variant="body1" className={classes.listItemText}>
                   {/* <MonetizationOn /> */}
@@ -501,7 +501,6 @@ function DropdownDialog2({
 
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
-              {}
               <img
                 src={tokensURI?.logo}
                 // src={themeModeflash}
