@@ -3,13 +3,17 @@ import { setLoading } from "./uiActions";
 import { JSBI } from "@uniswap/sdk";
 import Web3 from "web3";
 import React from "react";
+import { utils } from "ethers";
 
 import {
   initializeFlashstakeProtocolContract,
   unstakeALT,
 } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { _error } from "../../utils/log";
-// import { store } from "../../config/reduxStore";
+
+const {
+  flashstake: { selectedRewardToken },
+} = store.getState();
 
 export const getDashboardProps = (data) => async (dispatch) => {
   let stakedPortals = [];
@@ -51,9 +55,13 @@ export const getDashboardProps = (data) => async (dispatch) => {
 
         return {
           ..._portal,
-          totalStakeAmount: Web3.utils.fromWei(totalStakeAmount.toString()),
-          availableStakeAmount: Web3.utils.fromWei(
-            availableStakeAmount.toString()
+          totalStakeAmount: utils.formatUnits(
+            totalStakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
+          availableStakeAmount: utils.formatUnits(
+            availableStakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
           ),
           expiredTimestamps,
           timestamps,
@@ -82,7 +90,10 @@ export const calculateBurnStakes = (stakes) => {
   const {
     contract: { baseInterestRate, oneDay },
   } = store.getState();
-  const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
+  const _baseInterestRate = utils.formatUnits(
+    baseInterestRate.toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
 
   stakes
     .filter(
@@ -94,7 +105,10 @@ export const calculateBurnStakes = (stakes) => {
         (parseFloat(_stake.expireAfter) - Math.ceil(Date.now() / 1000)) /
         oneDay;
       burn += burnSingleStake(
-        Web3.utils.fromWei(_stake.stakeAmount),
+        utils.formatUnits(
+          _stake.stakeAmount.toString(),
+          selectedRewardToken?.tokenB?.decimal
+        ),
         _baseInterestRate,
         remainingDuration > 0 ? remainingDuration : 0
       );
@@ -108,7 +122,10 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
   const {
     contract: { baseInterestRate, oneDay },
   } = store.getState();
-  const _baseInterestRate = Web3.utils.fromWei(baseInterestRate);
+  const _baseInterestRate = utils.formatUnits(
+    baseInterestRate.toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
 
   let remainingAmount =
     amount > parseFloat(portal.availableStakeAmount)
@@ -135,7 +152,10 @@ export const calculateBurn = (portal, getTimestamps, amount = Infinity) => {
         }
         timestamps.push(_stake.id);
         burn += burnSingleStake(
-          Web3.utils.fromWei(_stake.stakeAmount),
+          utils.formatUnits(
+            _stake.stakeAmount.toString(),
+            selectedRewardToken?.tokenB?.decimal
+          ),
           _baseInterestRate,
           remainingDuration > 0 ? remainingDuration : 0
         );
@@ -155,8 +175,13 @@ export const withdrawSpecificStakes = (stakes, _amount) => async (dispatch) => {
     dispatch({
       type: "WITHDRAW_REQUEST",
       payload: {
-        quantity: _amount ? _amount : Web3.utils.fromWei(amount.toString()),
-        symbol: "$FLASH",
+        quantity: _amount
+          ? _amount
+          : utils.formatUnits(
+              amount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
@@ -177,7 +202,7 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
             : type === "max"
             ? portal.totalStakeAmount - calculateBurn(portal)
             : amount - calculateBurn(portal, false, amount),
-        symbol: "$FLASH",
+        symbol: "FLASH",
       },
     });
     await initializeFlashstakeProtocolContract();
@@ -186,16 +211,29 @@ export const withdraw = (portal, type, amount) => async (dispatch) => {
       ...(type === "available"
         ? [
             portal.expiredTimestamps,
-            Web3.utils.toWei(portal.availableStakeAmount),
+
+            utils.parseUnits(
+              portal.availableStakeAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
           ]
         : type === "max"
-        ? [portal.timestamps, Web3.utils.toWei(portal.totalStakeAmount)]
+        ? [
+            portal.timestamps,
+            utils.parseUnits(
+              portal.totalStakeAmount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
+          ]
         : [
             [
               ...portal.expiredTimestamps,
               ...calculateBurn(portal, true, amount),
             ],
-            Web3.utils.toWei(amount),
+            utils.parseUnits(
+              amount.toString(),
+              selectedRewardToken?.tokenB?.decimal
+            ),
           ])
     );
   } catch (e) {

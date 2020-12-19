@@ -70,6 +70,8 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 import AddTokenDialogue from "../../component/AddTokenDialogue";
+import DropdownDialog2 from "../../component/DropdownDialog2";
+import FlashDropDown from "../../component/FlashDropDown";
 import CreateTable from "../../component/CreateTable";
 
 let useStyles = makeStyles((theme) => ({
@@ -83,7 +85,7 @@ let useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontWeight: 700,
     // fontSize: 10,
-    marginBottom: theme.spacing(1),
+    margin: theme.spacing(1, 0),
     // [theme.breakpoints.down("xs")]: {
     //   fontSize: 8,
     // },
@@ -148,6 +150,7 @@ let useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
@@ -290,7 +293,8 @@ let useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 0),
   },
   gridSpace2: {
-    marginTop: theme.spacing(1, 0),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
   select: {
     visibility: "hidden",
@@ -503,7 +507,7 @@ function Vote({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Create - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Create - FLASH | THE TIME TRAVEL OF MONEY";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -595,146 +599,100 @@ function Vote({
           duration={400}
           height={heightVal} // see props documentation below
         >
-          {account === "0xe7ef8e1402055eb4e89a57d1109eff3baa334f5f" ||
-          account === "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
-            <Box
-              ref={ref}
-              className={`${classes.contentContainer} contentContainer1`}
-            >
-              <Accordion square expanded={expanded2}>
-                <AccordionSummary
-                  aria-controls="panel1d-content"
-                  id="panel1d-header"
-                  style={{ display: "none" }}
-                >
-                  {/* <Typography>Collapsible Group Item #1</Typography> */}
-                </AccordionSummary>
+          <Box
+            ref={ref}
+            className={`${classes.contentContainer} contentContainer1`}
+          >
+            <Accordion square expanded={expanded2}>
+              <AccordionSummary
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                style={{ display: "none" }}
+              >
+                {/* <Typography>Collapsible Group Item #1</Typography> */}
+              </AccordionSummary>
 
-                <AccordionDetails
-                  style={{ paddingTop: "20px", paddingBottom: "20px" }}
-                  className={classes.accordionDetails}
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <TextField
-                        className={classes.textField}
-                        fullWidth
-                        placeholder="$FLASH"
-                        value={"$FLASH"}
-                        disabled={true}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        className={classes.secondaryText}
-                      >
-                        What token do you want to enter
-                      </Typography>
-                      <AddTokenDialogue
-                        className={classes.dropDown}
-                        heading="ADD TOKEN"
-                        setToken={setToken}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="body1"
-                        className={`${classes.secondaryText1} `}
-                      >
-                        Enter token address to create
-                      </Typography>
-                    </Grid>
-
-                    <Grid container item xs={12} onClick={showWalletHint}>
-                      <Button
-                        fullWidth
-                        variant="retro"
-                        disabled={!token?.decimals}
-                        onClick={() => handleCreatePool(token)}
-                      >
-                        CREATE
-                      </Button>
-                    </Grid>
-
-                    {!(active && account) ? (
-                      <Grid
-                        item
-                        xs={12}
-                        onClick={showWalletHint}
-                        className={classes.cursorPointer}
-                      >
-                        <Typography
-                          // variant="overline"
-                          variant="body2"
-                          className={classes.redText}
-                        >
-                          Connect wallet to create pools
-                        </Typography>
-                      </Grid>
-                    ) : chainId !== 4 ||
-                      web3context.error instanceof UnsupportedChainIdError ? (
-                      <Grid item xs={12}>
-                        <Typography
-                          // variant="overline"
-                          variant="body2"
-                          className={classes.redText}
-                        >
-                          {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                          Change network to <b>rinkeby</b> to create{" "}
-                          <b>pools</b>
-                        </Typography>
-                      </Grid>
-                    ) : null}
+              <AccordionDetails
+                style={{ paddingTop: "20px" }}
+                className={classes.accordionDetails}
+              >
+                <Grid container>
+                  <Grid item xs={12}>
+                    {/* <TextField
+                      className={classes.textField}
+                      fullWidth
+                      placeholder="FLASH"
+                      value={"FLASH"}
+                      disabled={true}
+                    /> */}
+                    <FlashDropDown />
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              {/* 
-              <Accordion square expanded={!expanded2}>
-                <AccordionSummary
-                  aria-controls="panel2d-content"
-                  id="panel2d-header"
-                  onClick={() => setExpanded2(!expanded2)}
-                  className={`${classes.dashboardAccordian} ${
-                    expanded2 ? classes.btn3 : classes._btn3
-                  }`}
-                >
-                  {expanded2 ? (
-                    <ArrowDropUpIcon size="large" className={classes.icon} />
-                  ) : (
-                    <ArrowDropDownIcon size="large" className={classes.icon} />
-                  )}
-                  <Typography variant="body2" className={classes.stakeDashBtn}>
-                    POOL ENTRIES
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordion}>
-                  {heightToggle ? (
-                    <Table
-                    // onClickUnstake={onClickUnstake}
-                    // onClickUnstake2={onClickUnstake2}
-                    // toggle={toggle}
-                    // heightToggle={heightToggle}
+
+                  <Grid item className={classes.gridSpace} xs={12}>
+                    <Typography
+                      variant="body1"
+                      className={classes.secondaryText}
+                    >
+                      What token do you want to pair with
+                    </Typography>
+                    <DropdownDialog2
+                      className={classes.dropDown}
+                      items={pools}
+                      setToken={setToken}
+                      heading="SELECT TOKEN"
                     />
-                  ) : (
-                    <CreateTable />
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            */}
-            </Box>
-          ) : (
-            <Box
-              ref={ref}
-              className={`${classes.contentContainer} contentContainer1`}
-            >
-              <Typography variant="h6" className={classes.comingSoon}>
-                COMING SOON
-              </Typography>
-            </Box>
-          )}
+                  </Grid>
+
+                  <Grid item className={classes.gridSpace} xs={12}></Grid>
+
+                  <Grid
+                    item
+                    className={classes.gridSpace}
+                    xs={12}
+                    onClick={showWalletHint}
+                  >
+                    <Button
+                      fullWidth
+                      variant="retro"
+                      disabled={!token?.decimals}
+                      onClick={() => handleCreatePool(token)}
+                    >
+                      CREATE
+                    </Button>
+                  </Grid>
+
+                  {!(active && account) ? (
+                    <Grid
+                      item
+                      xs={12}
+                      onClick={showWalletHint}
+                      className={classes.cursorPointer}
+                    >
+                      <Typography
+                        // variant="overline"
+                        variant="body2"
+                        className={`${classes.redText} ${classes.gridSpace2}`}
+                      >
+                        Connect wallet to create pools
+                      </Typography>
+                    </Grid>
+                  ) : chainId !== 4 ||
+                    web3context.error instanceof UnsupportedChainIdError ? (
+                    <Grid item className={classes.gridSpace} xs={12}>
+                      <Typography
+                        // variant="overline"
+                        variant="body2"
+                        className={classes.redText}
+                      >
+                        {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
+                        Change network to <b>rinkeby</b> to create <b>pools</b>
+                      </Typography>
+                    </Grid>
+                  ) : null}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
         </AnimateHeight>
 
         <Dialog
@@ -754,11 +712,11 @@ function Vote({
               pendingCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    PENDING CREATE POOL
+                    CREATE POOL PENDING
                     <br />
                   </Typography>
                   <Typography variant="body1" className={classes.textBold}>
-                    Creating $FLASH/{createPoolData?._token?.symbol} pool
+                    Creating FLASH/{createPoolData?._token?.symbol} pool
                   </Typography>
                 </Fragment>
               ),
@@ -789,7 +747,7 @@ function Vote({
               successCreatePool: (
                 <Fragment>
                   <Typography variant="body1" className={classes.textBold}>
-                    CREATE POOL SUCCESSFUL
+                    CREATE POOL
                     <br />
                     <span className={classes.greenText}>SUCCESSFUL</span>
                   </Typography>
@@ -797,7 +755,7 @@ function Vote({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    $FLASH/{createPoolData?._token?.symbol} pool created
+                    FLASH/{createPoolData?._token?.symbol} pool created
                     successfully
                   </Typography>
                   <Typography

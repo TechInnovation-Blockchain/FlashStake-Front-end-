@@ -290,7 +290,7 @@ function RemoveLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="h5">
-                $FLASH / {pool?.pool?.tokenB?.symbol}
+                FLASH / {pool?.pool?.tokenB?.symbol}
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -309,7 +309,7 @@ function RemoveLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="body2">
-                Pooled $FLASH:
+                Pooled FLASH:
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -383,8 +383,8 @@ function RemoveLiquidityDropDown({
                   variant="body2"
                   className={classes.secondaryText}
                 >
-                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                  $FLASH
+                  {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                  FLASH
                 </Typography>
                 <Tooltip title={(percentageToRemove / 100) * pool.pooledFlash}>
                   <Typography variant="h6" className={classes.secondaryText}>
@@ -402,7 +402,7 @@ function RemoveLiquidityDropDown({
                   variant="body2"
                   className={classes.secondaryText}
                 >
-                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
+                  {/* AMOUNT OF FLASH REQUIRED TO POOL */}
                   {pool?.pool?.tokenB?.symbol}
                 </Typography>
                 <Tooltip title={(percentageToRemove / 100) * pool.pooledAlt}>
@@ -418,7 +418,7 @@ function RemoveLiquidityDropDown({
 
         <Box className={classes.info}>
           <Typography className={classes.fontWeight}>
-            1 $FLASH ={" "}
+            1 FLASH ={" "}
             {trunc(
               pool?.poolQueryData?.reserveAltAmount /
                 pool?.poolQueryData?.reserveFlashAmount
@@ -431,7 +431,7 @@ function RemoveLiquidityDropDown({
               pool?.poolQueryData?.reserveFlashAmount /
                 pool?.poolQueryData?.reserveAltAmount
             ) || 0}{" "}
-            $FLASH
+            FLASH
           </Typography>
         </Box>
 

@@ -52,6 +52,7 @@ import { updateAllBalances } from "../redux/actions/userActions";
 import Web3 from "web3";
 import { JSBI } from "@uniswap/sdk";
 import { _error } from "../utils/log";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   primaryText: {
@@ -407,7 +408,7 @@ function AddLiquidityDropDown({
   // }, [selectedPortal]);
 
   const quote = useCallback(
-    async (_amountA, _amountType = "alt") => {
+    async (_amountA, _decimals = 18, _amountType = "alt") => {
       try {
         const _queryData = await getQueryData(selectedPortal);
         const { reserveFlashAmount, reserveAltAmount } = _queryData;
@@ -415,16 +416,17 @@ function AddLiquidityDropDown({
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
             : [reserveFlashAmount, reserveAltAmount];
-        return Web3.utils.fromWei(
+        return utils.formatUnits(
           String(
             JSBI.divide(
               JSBI.multiply(
-                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(utils.parseUnits(_amountA?.toString(), _decimals)),
                 JSBI.BigInt(_reserveB)
               ),
               JSBI.BigInt(_reserveA)
             )
-          )
+          ),
+          18
         );
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
@@ -438,7 +440,9 @@ function AddLiquidityDropDown({
     async ({ target: { value } }) => {
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityAlt(value);
-        const _val = selectedRewardToken?.id ? await quote(value, "alt") : "0";
+        const _val = selectedRewardToken?.id
+          ? await quote(value, selectedRewardToken?.tokenB?.decimals, "alt")
+          : "0";
         setQuantityXIO(_val);
       }
     },
@@ -449,7 +453,9 @@ function AddLiquidityDropDown({
     async ({ target: { value } }) => {
       if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
         setQuantityXIO(value);
-        const _val = selectedRewardToken?.id ? await quote(value, "xio") : "0";
+        const _val = selectedRewardToken?.id
+          ? await quote(value, 18, "xio")
+          : "0";
         setQuantityAlt(_val);
       }
     },
@@ -545,7 +551,7 @@ function AddLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="h5">
-                $FLASH / {pool?.pool?.tokenB?.symbol}
+                FLASH / {pool?.pool?.tokenB?.symbol}
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -564,7 +570,7 @@ function AddLiquidityDropDown({
               className={classes.innerBox}
             >
               <Typography className={classes.fontStyle} variant="body2">
-                Pooled $FLASH:
+                Pooled FLASH:
               </Typography>
             </Grid>
             <Grid xs={6} style={{ textAlign: "right" }}>
@@ -694,8 +700,8 @@ function AddLiquidityDropDown({
                   variant="body1"
                   className={classes.secondaryText2}
                 >
-                  {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                  Amount of $FLASH required to pool
+                  {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                  Amount of FLASH required to pool
                 </Typography>
                 <Box className={classes.textFieldContainer}>
                   {/* <Tooltip title="Hello world" open={true}> */}
@@ -743,8 +749,8 @@ function AddLiquidityDropDown({
                     variant="body2"
                     className={classes.secondaryText}
                   >
-                    {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                    $FLASH per {selectedRewardToken?.tokenB?.symbol}
+                    {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                    FLASH per {selectedRewardToken?.tokenB?.symbol}
                   </Typography>
                   <Tooltip
                     title={
@@ -772,7 +778,7 @@ function AddLiquidityDropDown({
                     variant="body2"
                     className={classes.secondaryText}
                   >
-                    {selectedRewardToken?.tokenB?.symbol} per $FLASH
+                    {selectedRewardToken?.tokenB?.symbol} per FLASH
                   </Typography>
 
                   <Tooltip
@@ -809,8 +815,9 @@ function AddLiquidityDropDown({
                       (quantityXIO /
                         (parseFloat(quantityXIO) +
                           parseFloat(
-                            Web3.utils.fromWei(
-                              queryData.reserveFlashAmount || "0"
+                            utils.formatUnits(
+                              queryData.reserveFlashAmount?.toString() || "0",
+                              18
                             )
                           ))) *
                         100 || 0
@@ -824,8 +831,9 @@ function AddLiquidityDropDown({
                         (quantityXIO /
                           (parseFloat(quantityXIO) +
                             parseFloat(
-                              Web3.utils.fromWei(
-                                queryData.reserveFlashAmount || "0"
+                              utils.formatUnits(
+                                queryData.reserveFlashAmount?.toString() || "0",
+                                18
                               )
                             ))) *
                           100

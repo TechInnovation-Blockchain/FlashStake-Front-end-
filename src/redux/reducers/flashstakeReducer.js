@@ -5,7 +5,7 @@ export const flashstakeReducer = (
     portals: [],
     stakeTokens: [],
     rewardTokens: [],
-    selectedStakeToken: "$FLASH",
+    selectedStakeToken: "FLASH",
     selectedRewardToken: {},
     selectedPortal: "",
     allowanceXIO: true,
@@ -16,6 +16,8 @@ export const flashstakeReducer = (
     allowancePoolWithdraw: true,
     selectedWithdrawPool: "",
     reward: "0",
+    preciseReward: "0",
+    preciseSwap: "0",
     maxDays: 99999999,
     swapOutput: "0",
     balanceXIO: 0,
@@ -142,6 +144,16 @@ export const flashstakeReducer = (
       return {
         ...state,
         reward: payload,
+      };
+    case "PRECISE_STAKE_REWARD":
+      return {
+        ...state,
+        preciseReward: payload,
+      };
+    case "PRECISE_SWAP_REWARD":
+      return {
+        ...state,
+        preciseSwap: payload,
       };
     case "SWAP_OUTPUT":
       return {

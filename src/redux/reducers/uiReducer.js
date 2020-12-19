@@ -15,6 +15,18 @@ export const uiReducer = (
     falseSelected: true,
     close: false,
     btn: 5,
+    tokensURI: {
+      name: "Default",
+      uri:
+        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
+      logo:
+        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
+    },
+    // defaultTokenList:[{
+    //   name: "Default List",
+    //     uri: "tokens.1inch.eth",
+    //     logoURI: "https://1inch.exchange/assets/images/logo.png",
+    // }],
   },
   { type, payload }
 ) => {
@@ -98,6 +110,11 @@ export const uiReducer = (
       return {
         ...state,
         close: payload,
+      };
+    case "SELECT_TOKENS_LIST":
+      return {
+        ...state,
+        tokensURI: payload,
       };
 
     default:

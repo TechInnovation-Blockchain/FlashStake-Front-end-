@@ -17,6 +17,30 @@ const getReservesData = async () => {
   }
 };
 
+const getReservesDataForced = async () => {
+  try {
+    const { data } = await axios.get(`${CONSTANTS.CACHE_SERVER}F`);
+    return data;
+  } catch (e) {
+    _error("ERROR getReservesDataForced -> ", e);
+    return {};
+  }
+};
+
+export const getAllQueryDataForced = async () => {
+  try {
+    const _data = await getReservesDataForced();
+    await store.dispatch({
+      type: "ALL_POOLS_DATA",
+      payload: _data,
+    });
+    return _data;
+  } catch (e) {
+    _error("ERROR getAllQueryDataForced -> ", e);
+    return {};
+  }
+};
+
 export const getAllQueryData = async () => {
   try {
     const _data = await getReservesData();

@@ -66,6 +66,7 @@ import axios from "axios";
 import { setPoolData } from "../../redux/actions/userActions";
 import { JSBI } from "@uniswap/sdk";
 import { _error } from "../../utils/log";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -151,6 +152,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
@@ -175,7 +177,7 @@ const useStyles = makeStyles((theme) => ({
   },
   maxIconButton: {
     position: "absolute",
-    right: 0,
+    right: "5px",
     top: "50%",
     height: 35,
     transform: "translateY(-50%)",
@@ -433,7 +435,7 @@ function Pool({
     }
   }, [history.location.pathname]);
   useEffect(() => {
-    document.title = "Pool - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Pool - FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
@@ -487,16 +489,24 @@ function Pool({
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
             : [reserveFlashAmount, reserveAltAmount];
-        return Web3.utils.fromWei(
+
+        /////////////////////////////////////////
+        return utils.formatUnits(
           String(
             JSBI.divide(
               JSBI.multiply(
-                JSBI.BigInt(Web3.utils.toWei(_amountA)),
+                JSBI.BigInt(
+                  utils.parseUnits(
+                    _amountA?.toString(),
+                    selectedRewardToken?.tokenB?.decimal
+                  )
+                ),
                 JSBI.BigInt(_reserveB)
               ),
               JSBI.BigInt(_reserveA)
             )
-          )
+          ),
+          selectedRewardToken?.tokenB?.decimal
         );
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
@@ -749,8 +759,8 @@ function Pool({
                         variant="body1"
                         className={classes.secondaryText}
                       >
-                        {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                        Amount of $FLASH required to pool
+                        {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                        Amount of FLASH required to pool
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -799,8 +809,8 @@ function Pool({
                             variant="body2"
                             className={classes.secondaryText}
                           >
-                            {/* AMOUNT OF $FLASH REQUIRED TO POOL */}
-                            $FLASH per {selectedRewardToken?.tokenB?.symbol}
+                            {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                            FLASH per {selectedRewardToken?.tokenB?.symbol}
                           </Typography>
                           <Tooltip
                             title={
@@ -828,7 +838,7 @@ function Pool({
                             variant="body2"
                             className={classes.secondaryText}
                           >
-                            {selectedRewardToken?.tokenB?.symbol} per $FLASH
+                            {selectedRewardToken?.tokenB?.symbol} per FLASH
                           </Typography>
 
                           <Tooltip
@@ -865,8 +875,10 @@ function Pool({
                               (quantityXIO /
                                 (parseFloat(quantityXIO) +
                                   parseFloat(
-                                    Web3.utils.fromWei(
-                                      queryData.reserveFlashAmount || "0"
+                                    utils.formatUnits(
+                                      queryData?.reserveFlashAmount?.toString() ||
+                                        "0",
+                                      selectedRewardToken?.tokenB?.decimal
                                     )
                                   ))) *
                                 100 || 0
@@ -880,8 +892,10 @@ function Pool({
                                 (quantityXIO /
                                   (parseFloat(quantityXIO) +
                                     parseFloat(
-                                      Web3.utils.fromWei(
-                                        queryData.reserveFlashAmount || "0"
+                                      utils.formatUnits(
+                                        queryData?.reserveFlashAmount?.toString() ||
+                                          "0",
+                                        selectedRewardToken?.tokenB?.decimal
                                       )
                                     ))) *
                                   100
@@ -997,7 +1011,7 @@ function Pool({
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
                         Before you can <b>pool</b>, you must{" "}
-                        <b>approve $FLASH</b>
+                        <b>approve FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1058,7 +1072,7 @@ function Pool({
           open={showStakeDialog}
           // open={true}
           steps={[
-            "APPROVE $FLASH",
+            "APPROVE FLASH",
             `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
             "POOL",
           ]}
@@ -1146,9 +1160,9 @@ function Pool({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     Add{" "}
-                    <Tooltip title={`${quantityXIO} $FLASH`}>
+                    <Tooltip title={`${quantityXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(quantityXIO)} $FLASH
+                        {trunc(quantityXIO)} FLASH
                       </span>
                     </Tooltip>{" "}
                     and{" "}
@@ -1160,7 +1174,7 @@ function Pool({
                         {selectedRewardToken?.tokenB?.symbol}
                       </span>
                     </Tooltip>{" "}
-                    into $FLASH/{selectedRewardToken?.tokenB?.symbol} pool
+                    into FLASH/{selectedRewardToken?.tokenB?.symbol} pool
                   </Typography>
                   <AddDropDown
                     quantityAlt={quantityAlt}
@@ -1248,14 +1262,14 @@ function Pool({
                       </span>
                     </Tooltip>{" "}
                     and{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
+                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} $FLASH
+                        {trunc(liquidityRequest.quantityXIO)} FLASH
                       </span>
                     </Tooltip>{" "}
                     to{" "}
                     <span className={classes.redText}>
-                      $FLASH/{liquidityRequest.altSymbol} pool
+                      FLASH/{liquidityRequest.altSymbol} pool
                     </span>
                   </Typography>
                 </Fragment>
@@ -1305,9 +1319,9 @@ function Pool({
                       </span>
                     </Tooltip>{" "}
                     and{" "}
-                    <Tooltip title={`${liquidityRequest.quantityXIO} $FLASH`}>
+                    <Tooltip title={`${liquidityRequest.quantityXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(liquidityRequest.quantityXIO)} $FLASH
+                        {trunc(liquidityRequest.quantityXIO)} FLASH
                       </span>
                     </Tooltip>{" "}
                     to{" "}
@@ -1353,7 +1367,7 @@ function Pool({
                       </span>
                     </Tooltip>{" "}
                     <span className={classes.redText}>
-                      $FLASH/{withdrawLiquidityRequest._token} LP tokens
+                      FLASH/{withdrawLiquidityRequest._token} LP tokens
                     </span>
                   </Typography>
                 </Fragment>
@@ -1398,7 +1412,7 @@ function Pool({
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(withdrawLiquidityRequest._liquidity)} $FLASH/
+                        {trunc(withdrawLiquidityRequest._liquidity)} FLASH/
                         {withdrawLiquidityRequest._token} LP tokens
                       </span>
                     </Tooltip>{" "}

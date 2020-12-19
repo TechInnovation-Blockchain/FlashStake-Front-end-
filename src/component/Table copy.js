@@ -52,7 +52,7 @@ export default function TableComponent() {
   const headItems = ["TOKEN", "AVAILABLE", "WITHDRAW"];
   const bodyData = [
     {
-      token: "$FLASH",
+      token: "FLASH",
       available: 144,
       total: 444,
     },

@@ -29,6 +29,7 @@ import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import { analytics } from "../../config/App";
 import Web3 from "web3";
 import { _error, _log } from "../log";
+import { getAllQueryDataForced } from "../../redux/actions/queryActions";
 
 let contract;
 let isContractInitialized = false;
@@ -518,6 +519,7 @@ export const addLiquidityInPool = (
             })
             .then(function (receipt) {
               setPoolDialogStepIndep("successLiquidity");
+              getAllQueryDataForced();
               showSnackbarTxnIndep(
                 "Liquidity Deposit Transaction Successful.",
                 "success",

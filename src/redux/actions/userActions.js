@@ -25,6 +25,7 @@ import {
 import { getQueryData, getAllQueryData } from "./queryActions";
 import { store } from "../../config/reduxStore";
 import { trunc } from "../../utils/utilFunc";
+import { utils } from "ethers";
 
 export const _getTokenPrice = _.memoize(async () => {
   const response = await axios.get(
@@ -34,6 +35,10 @@ export const _getTokenPrice = _.memoize(async () => {
   );
   return response;
 });
+
+const {
+  flashstake: { selectedRewardToken },
+} = store.getState();
 
 export const _getFPY = _.memoize(async () => {
   // const {
@@ -49,7 +54,10 @@ export const _getFPY = _.memoize(async () => {
 
 export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
   await initializeFlashstakePoolContract(_pool);
-  const _apyStake = Web3.utils.fromWei(await getAPYStake(_xpy));
+  const _apyStake = utils.formatUnits(
+    await getAPYStake(_xpy).toString(),
+    selectedRewardToken?.tokenB?.decimal
+  );
   return _apyStake;
 });
 
@@ -62,7 +70,7 @@ export const updateApyPools = (quantity, poolsParam) => async (
   try {
     const {
       user: { pools },
-      flashstake: { stakeQty },
+      flashstake: { stakeQty, selectedRewardToken },
     } = await getState();
     if (!_pools) {
       _pools = pools;
@@ -72,12 +80,15 @@ export const updateApyPools = (quantity, poolsParam) => async (
     const queryData = await getAllQueryData();
 
     if (response?.data) {
-      const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+      const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
       const _zero = JSBI.BigInt("0");
       for (let i = 0; i < _pools.length; i++) {
         const data = queryData[_pools[i].id];
         const _quantity = JSBI.BigInt(
-          Web3.utils.toWei(String(stakeQty || "1"))
+          utils.parseUnits(
+            String(stakeQty?.toString() || "1"),
+            selectedRewardToken?.tokenB?.decimal
+          )
         );
         const _getPercentStaked = JSBI.divide(
           JSBI.multiply(
@@ -144,6 +155,48 @@ export const updateApyPools = (quantity, poolsParam) => async (
   });
 };
 
+export const nativePoolPrice = () => async (dispatch, getState) => {
+  const {
+    // query: { allPoolsData },
+    user: { pools },
+  } = getState();
+  try {
+    let flashPrices = {};
+
+    const poolData = await getAllQueryData();
+    let flashPrice;
+
+    Object.keys(poolData).filter((_data) => {
+      if (_data === "0xe0de5090961bfb0b251a3d84077bcb6147014976") {
+        flashPrice =
+          poolData[_data]?.reserveFlashAmount /
+          poolData[_data]?.reserveAltAmount;
+      }
+    });
+
+    // flashPrices[_poolData] =
+    // (poolData[_poolData]?.reserveAltAmount /
+    //   poolData[_poolData]?.reserveFlashAmount) *
+    // flashPrice,
+
+    Object.keys(poolData).map((_poolData) => {
+      if (poolData) {
+        flashPrices[_poolData] =
+          (poolData[_poolData]?.reserveAltAmount /
+            poolData[_poolData]?.reserveFlashAmount) *
+          flashPrice;
+      }
+      dispatch({
+        type: "NATIVE_PRICE",
+        payload: flashPrices,
+      });
+      // });
+    });
+  } catch (e) {
+    _error("ERROR Native Pool Prices -> ", e);
+  }
+};
+
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
   let _tokenList = [];
@@ -175,7 +228,7 @@ export const updatePools = (data) => async (dispatch) => {
 
 const getPercentageUnStaked = async (_stake) => {
   const _queryData = await getQueryData(_stake.pool.id);
-  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
   const _locked = JSBI.subtract(
     JSBI.BigInt(_queryData.flashBalance),
     JSBI.BigInt(_stake.amountIn)
@@ -188,7 +241,7 @@ const getPercentageUnStaked = async (_stake) => {
 };
 
 const getInvFPY = async (_stake) => {
-  const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+  const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
   const _getPercentageUnStaked = await getPercentageUnStaked(_stake);
   return JSBI.subtract(_precision, _getPercentageUnStaked);
 };
@@ -198,7 +251,7 @@ export const calculateBurnSingleStake = async (_stake) => {
   const _expiry = parseFloat(_stake.expireAfter);
   const _currentTime = parseFloat(Date.now() / 1000);
   if (_expiry > _currentTime) {
-    const _precision = JSBI.BigInt(Web3.utils.toWei("1"));
+    const _precision = JSBI.BigInt(utils.parseUnits("1", 18));
     let _remainingDays = _expiry - _currentTime;
     _remainingDays = _remainingDays > 0 ? _remainingDays : 0;
     const _getInvFpy = await getInvFPY(_stake);
@@ -229,7 +282,15 @@ export const updateUserData = (data) => async (dispatch, getState) => {
     if (data) {
       stakes = await Promise.all(
         data.stakes.map(async (_tempData) => {
-          const { id, amountIn, expireAfter, rewardAmount } = _tempData;
+          const {
+            id,
+            amountIn,
+            expireAfter,
+            rewardAmount,
+            pool: {
+              tokenB: { decimal },
+            },
+          } = _tempData;
 
           let expired = parseFloat(expireAfter) < Date.now() / 1000;
           dappBalance = JSBI.add(dappBalance, JSBI.BigInt(amountIn));
@@ -249,19 +310,24 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           }
           return {
             ..._tempData,
-            stakeAmount: Web3.utils.fromWei(amountIn),
-            rewardAmount: Web3.utils.fromWei(rewardAmount),
+            stakeAmount: utils.formatUnits(amountIn.toString(), 18),
+            rewardAmount: utils.formatUnits(rewardAmount.toString(), decimal),
             expiryTime: parseFloat(expireAfter),
             expired,
-            amountAvailable: expired ? Web3.utils.fromWei(amountIn) : "0",
-            burnAmount: Web3.utils.fromWei(_burnAmount),
+            amountAvailable: expired
+              ? utils.formatUnits(amountIn.toString(), 18)
+              : "0",
+            burnAmount: utils.formatUnits(_burnAmount.toString(), 18),
           };
         })
       );
       swapHistory = data.swapHistory.map((_swapHis) => ({
         ..._swapHis,
-        swapAmount: Web3.utils.fromWei(_swapHis.swapAmount),
-        flashReceived: Web3.utils.fromWei(_swapHis.flashReceived),
+        swapAmount: utils.formatUnits(
+          _swapHis.swapAmount.toString(),
+          _swapHis.pool.tokenB.decimal
+        ),
+        flashReceived: utils.formatUnits(_swapHis.flashReceived.toString(), 18),
       }));
       dispatch({
         type: "USER_DATA",
@@ -269,12 +335,16 @@ export const updateUserData = (data) => async (dispatch, getState) => {
           ...data,
           expiredTimestamps,
           stakes,
-          dappBalance: Web3.utils.fromWei(dappBalance.toString()),
+          dappBalance: utils.formatUnits(dappBalance.toString(), 18),
           swapHistory,
-          expiredDappBalance: Web3.utils.fromWei(expiredDappBalance.toString()),
-          totalBurnAmount: Web3.utils.fromWei(totalBurnAmount.toString()),
-          totalBalanceWithBurn: Web3.utils.fromWei(
-            String(JSBI.subtract(dappBalance, totalBurnAmount))
+          expiredDappBalance: utils.formatUnits(
+            expiredDappBalance.toString(),
+            18
+          ),
+          totalBurnAmount: utils.formatUnits(totalBurnAmount.toString(), 18),
+          totalBalanceWithBurn: utils.formatUnits(
+            String(JSBI.subtract(dappBalance, totalBurnAmount)),
+            18
           ),
         },
       });

@@ -78,3 +78,7 @@ a {
 .MuiAccordionSummary-root {
   transition: none !important;
 }
+
+.MuiAccordion-root.Mui-expanded{
+  margin-top: 0 !important
+}

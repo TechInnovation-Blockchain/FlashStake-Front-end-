@@ -68,6 +68,7 @@ import { setRefetch, selectStake } from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
+import { utils } from "ethers";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -119,7 +120,7 @@ let useStyles = makeStyles((theme) => ({
   xIcon: {
     color: theme.palette.xioRed.main,
     fontWeight: 900,
-    marginTop: 30,
+    marginTop: theme.spacing(4),
     // fontSize: 15,
     alignSelf: "center",
     margin: theme.spacing(0, 2),
@@ -136,6 +137,7 @@ let useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary2,
     border: `2px solid ${theme.palette.shadowColor.main}`,
     borderRadius: theme.palette.ButtonRadius.small,
+    boxSizing: "border-box",
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
@@ -160,7 +162,30 @@ let useStyles = makeStyles((theme) => ({
   },
   maxIconButton: {
     position: "absolute",
-    right: 0,
+    right: "2px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: theme.palette.background.secondary2,
+    height: 35,
+    "&.Mui-disabled": {
+      display: "none",
+    },
+    "& svg": {
+      fill: "#9191A7",
+    },
+    "&:hover": {
+      // background: theme.palette.background.primary,
+      background: theme.palette.background.secondary2,
+
+      "& svg": {
+        fill: theme.palette.xioRed.main,
+      },
+    },
+    transition: "none !important",
+  },
+  maxIconButtonTime: {
+    position: "absolute",
+    left: 2,
     top: "50%",
     transform: "translateY(-50%)",
     background: theme.palette.background.secondary2,
@@ -277,8 +302,19 @@ let useStyles = makeStyles((theme) => ({
   gridSpace: {
     margin: theme.spacing(1, 0),
   },
+  // xAligned: {
+  //   display: "flex",
+  //   justifyContent: "center",
+  // },
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
+  },
+  connectText: {
+    marginTop: theme.spacing(2),
+  },
+  gridSpace3: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
   },
   select: {
     visibility: "hidden",
@@ -370,6 +406,7 @@ function Flashstake({
   getApprovalXIO,
   calculateReward,
   reward,
+  preciseReward,
   loading: loadingRedux,
   active,
   account,
@@ -425,6 +462,7 @@ function Flashstake({
   const ref = useRef(null);
   const [time, setTime] = useState("Select");
   const [open, setOpen] = useState(false);
+  const [_maxDays, _setMaxDays] = useState();
 
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
@@ -504,6 +542,7 @@ function Flashstake({
       setDays(value);
     }
   };
+
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
@@ -517,7 +556,7 @@ function Flashstake({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Stake - $FLASH | THE TIME TRAVEL OF MONEY";
+    document.title = "Stake - FLASH | THE TIME TRAVEL OF MONEY";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
@@ -536,6 +575,7 @@ function Flashstake({
 
   useEffect(() => {
     if (selectedPortal) {
+      getMaxTime();
       debouncedCalculateReward(quantity, days, time);
       const _rewardRefreshInterval = setInterval(() => {
         debouncedCalculateReward(quantity, days, time);
@@ -617,24 +657,16 @@ function Flashstake({
     }
   }, [expanding, setExpandAccodion]);
 
-  // props.history.location.pathname === "/swap" ? true :
-  const [isDisabled, setIsDisabled] = useState(false);
-  const setDisable = () => {
-    if (
-      !allowanceXIOProtocol ||
-      !active ||
-      !account ||
-      !selectedPortal ||
-      quantity <= 0 ||
-      days <= 0 ||
-      loadingRedux.reward ||
-      loadingRedux.stake ||
-      chainId !== 4 ||
-      reward <= 0 ||
-      (active && account && parseFloat(quantity) > parseFloat(walletBalance))
-    ) {
-      setIsDisabled(true);
-    }
+  const getMaxTime = () => {
+    const __maxDays = Math.trunc(
+      maxDays / time === "Mins" ? 60 : time === "Hrs" ? 3600 : 86400
+    );
+    _setMaxDays(__maxDays);
+    return __maxDays;
+  };
+
+  const maxDuration = () => {
+    setDays(getMaxTime());
   };
 
   return (
@@ -662,7 +694,7 @@ function Flashstake({
                 style={{ paddingTop: "20px" }}
                 className={classes.accordionDetails}
               >
-                <Grid container spacing={2}>
+                <Grid container xs={12}>
                   <Grid item xs={12}>
                     <Typography
                       variant="body1"
@@ -678,13 +710,13 @@ function Flashstake({
                       heading="SELECT TOKEN"
                     />
                   </Grid>
-                  <Grid container className={classes.gridSpace} item xs={12}>
-                    <Box flex={1}>
+                  <Grid container className={classes.gridSpace} xs={12}>
+                    <Grid item xs={5} className={classes.gridSpace}>
                       <Typography
                         variant="body1"
                         className={classes.secondaryText}
                       >
-                        Fuel ($FLASH)
+                        Fuel (FLASH)
                       </Typography>
                       <Box className={classes.textFieldContainer}>
                         {/* <Tooltip title="Hello world" open={true}> */}
@@ -721,12 +753,18 @@ function Flashstake({
                           <MaxBtn width={10} />
                         </IconButton>
                       </Box>
-                    </Box>
+                    </Grid>
 
-                    <Typography variant="h6" className={classes.xIcon}>
-                      x
-                    </Typography>
-                    <Box flex={1}>
+                    <Grid
+                      item
+                      className={`${classes.gridSpace}  ${classes.xAligned}`}
+                      xs={2}
+                    >
+                      <Typography variant="h6" className={classes.xIcon}>
+                        x
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={5} className={classes.gridSpace}>
                       <Typography
                         variant="body1"
                         className={classes.secondaryText}
@@ -740,7 +778,7 @@ function Flashstake({
                           fullWidth
                           placeholder="0"
                           value={days}
-                          error={days > maxDays}
+                          error={days > _maxDays}
                           onChange={onChangeDays}
                           type="tel"
                           inputMode="numeric"
@@ -749,6 +787,30 @@ function Flashstake({
                           onFocus={(e) => (e.target.placeholder = "")}
                           onBlur={(e) => (e.target.placeholder = "0")}
                         />
+
+                        <IconButton
+                          className={classes.maxIconButtonTime}
+                          disabled={!(active || account) || _maxDays == days}
+                          onClick={maxDuration}
+                          // onClick={maxDuration}
+                          // onClick={maxDuration}
+                          onClick={() =>
+                            onChangeDays({
+                              target: {
+                                value:
+                                  maxDays /
+                                  (time === "Hrs"
+                                    ? 3600
+                                    : time === "Min"
+                                    ? 60
+                                    : 86400),
+                              },
+                            })
+                          }
+                        >
+                          <MaxBtn width={10} />
+                        </IconButton>
+
                         <IconButton
                           className={classes.maxIconButton}
                           // disabled={
@@ -788,10 +850,10 @@ function Flashstake({
                           Days
                         </MenuItem>
                       </Select>
-                    </Box>
+                    </Grid>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item className={classes.gridSpace} xs={12}>
                     {selectedRewardToken?.tokenB?.symbol ? (
                       quantity && days > 0 ? (
                         time !== "Select" ? (
@@ -802,7 +864,7 @@ function Flashstake({
                           >
                             If you stake{" "}
                             <span className={classes.infoTextSpan}>
-                              {trunc(quantity) || 0} $FLASH{" "}
+                              {trunc(quantity) || 0} FLASH{" "}
                             </span>{" "}
                             for{" "}
                             <span className={classes.infoTextSpan}>
@@ -832,12 +894,22 @@ function Flashstake({
                               />
                             ) : quantity > 0 && days > 0 ? (
                               <Tooltip
-                                title={`${Web3.utils.fromWei(reward)} ${
+                                title={`${utils.formatUnits(
+                                  preciseReward.toString(),
+                                  // selectedRewardToken?.tokenB?.decimals
+                                  18
+                                )} ${
                                   selectedRewardToken?.tokenB?.symbol || ""
                                 }`}
                               >
                                 <span className={classes.infoTextSpan}>
-                                  {trunc(Web3.utils.fromWei(reward))}{" "}
+                                  {trunc(
+                                    utils.formatUnits(
+                                      preciseReward.toString(),
+                                      // selectedRewardToken?.tokenB?.decimals
+                                      18
+                                    )
+                                  )}{" "}
                                   {selectedRewardToken?.tokenB?.symbol || ""}
                                 </span>
                               </Tooltip>
@@ -889,7 +961,7 @@ function Flashstake({
                           className={classes.infoText}
                         >
                           <span className={classes.infoTextSpan}>
-                            Fuel ($FLASH){" "}
+                            Fuel (FLASH){" "}
                           </span>{" "}
                           and{" "}
                           <span className={classes.infoTextSpan}>
@@ -902,7 +974,7 @@ function Flashstake({
                     ) : (
                       <Typography
                         variant="body1"
-                        className={`${classes.secondaryText} ${classes.gridSpace} `}
+                        className={`${classes.secondaryText} `}
                       >
                         Select a token to view rewards
                       </Typography>
@@ -996,7 +1068,7 @@ function Flashstake({
                     </Grid>
                   ) : (
                     <Fragment>
-                      <Grid container item xs={12} onClick={showWalletHint}>
+                      <Grid item xs={12} onClick={showWalletHint}>
                         <Button
                           fullWidth
                           variant="retro"
@@ -1055,9 +1127,9 @@ function Flashstake({
                         className={classes.redText}
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE $FLASH</b> */}
+                        <b>APPROVE FLASH</b> */}
                         Before you can <b>stake</b>, you must{" "}
-                        <b>approve $FLASH</b>
+                        <b>approve FLASH</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1071,14 +1143,14 @@ function Flashstake({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={classes.redText}
+                        className={`${classes.redText} ${classes.connectText}`}
                       >
                         Connect wallet to stake
                       </Typography>
                     </Grid>
                   ) : chainId !== 4 ||
                     web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         // variant="overline"
                         variant="body2"
@@ -1188,7 +1260,7 @@ function Flashstake({
                     >
                       If you stake{" "}
                       <span className={classes.infoTextSpan}>
-                        {quantity || 0} $FLASH{" "}
+                        {quantity || 0} FLASH{" "}
                       </span>{" "}
                       for{" "}
                       <span className={classes.infoTextSpan}>
@@ -1197,19 +1269,25 @@ function Flashstake({
                       you will{" "}
                       <span className={classes.infoTextSpan}>immediately</span>{" "}
                       get{" "}
-                      {loadingRedux.reward ? (
+                      {loadingRedux.preciseReward ? (
                         <CircularProgress
                           size={12}
                           className={classes.loaderStyle}
                         />
                       ) : (
                         <Tooltip
-                          title={`${Web3.utils.fromWei(reward)} ${
-                            selectedRewardToken?.tokenB?.symbol || ""
-                          }`}
+                          title={`${utils.formatUnits(
+                            reward.toString(),
+                            selectedRewardToken?.tokenB?.decimal
+                          )} ${selectedRewardToken?.tokenB?.symbol || ""}`}
                         >
                           <span className={classes.infoTextSpan}>
-                            {trunc(Web3.utils.fromWei(reward))}{" "}
+                            {trunc(
+                              utils.formatUnits(
+                                preciseReward.toString(),
+                                selectedRewardToken?.tokenB?.decimal
+                              )
+                            )}{" "}
                             {selectedRewardToken?.tokenB?.symbol || ""}
                           </span>
                         </Tooltip>
@@ -1308,7 +1386,7 @@ function Flashstake({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    {stakeRequest.quantity} $FLASH for {stakeRequest.days}{" "}
+                    {stakeRequest.quantity} FLASH for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}{" "}
                     {time === "Hrs"
                       ? days > 1
@@ -1370,7 +1448,7 @@ function Flashstake({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You have successfully staked {stakeRequest.quantity} $FLASH
+                    You have successfully staked {stakeRequest.quantity} FLASH
                     for {stakeRequest.days}{" "}
                     {/* {stakeRequest.days > 1 ? "hours" : "hour"}  */}
                     {time === "Hrs"
@@ -1425,21 +1503,21 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     If you unstake{" "}
-                    <Tooltip title={`${dappBalance} $FLASH`}>
+                    <Tooltip title={`${dappBalance} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(dappBalance)} $FLASH
+                        {trunc(dappBalance)} FLASH
                       </span>
                     </Tooltip>{" "}
                     now, you will receive{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                    <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
+                        {trunc(totalBalanceWithBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     and burn{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                    <Tooltip title={`${totalBurnAmount} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
+                        {trunc(totalBurnAmount)} FLASH
                       </span>
                     </Tooltip>{" "}
                     in the process
@@ -1460,21 +1538,21 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
+                        {totalBurn.totalXIO} FLASH
                       </span>
                     </Tooltip>{" "}
                     {/* NOW, YOU WILL RECIEVE{" "}
-                    <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                    <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBalanceWithBurn)} $FLASH
+                        {trunc(totalBalanceWithBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     AND BURN{" "}
-                    <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                    <Tooltip title={`${totalBurnAmount} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurnAmount)} $FLASH
+                        {trunc(totalBurnAmount)} FLASH
                       </span>
                     </Tooltip>{" "}
                     IN THE PROCESS*/}
@@ -1496,25 +1574,25 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     Your are about to unstake{" "}
-                    <Tooltip title={`${totalBurn.totalXIO} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalXIO} FLASH`}>
                       <span className={classes.redText}>
-                        {totalBurn.totalXIO} $FLASH
+                        {totalBurn.totalXIO} FLASH
                       </span>
                     </Tooltip>{" "}
                     now, you will receive{" "}
                     <Tooltip
                       title={`${
                         totalBurn.totalXIO - totalBurn.totalBurn
-                      } $FLASH`}
+                      } FLASH`}
                     >
                       <span className={classes.redText}>
-                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} $FLASH
+                        {trunc(totalBurn.totalXIO - totalBurn.totalBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     and burn{" "}
-                    <Tooltip title={`${totalBurn.totalBurn} $FLASH`}>
+                    <Tooltip title={`${totalBurn.totalBurn} FLASH`}>
                       <span className={classes.redText}>
-                        {trunc(totalBurn.totalBurn)} $FLASH
+                        {trunc(totalBurn.totalBurn)} FLASH
                       </span>
                     </Tooltip>{" "}
                     in the process
@@ -1539,21 +1617,21 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         You are about to unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
+                        <Tooltip title={`${dappBalance} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
+                            {trunc(dappBalance)} FLASH
                           </span>
                         </Tooltip>{" "}
                         now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                        <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
+                            {trunc(totalBalanceWithBurn)} FLASH
                           </span>
                         </Tooltip>{" "}
                         and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                        <Tooltip title={`${totalBurnAmount} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
+                            {trunc(totalBurnAmount)} FLASH
                           </span>
                         </Tooltip>{" "}
                         in the process
@@ -1577,7 +1655,7 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         You are about to unstake {trunc(expiredDappBalance)}{" "}
-                        $FLASH
+                        FLASH
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -1586,9 +1664,9 @@ function Flashstake({
                             fullWidth
                             onClick={unstakeXIO}
                           >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                            <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
-                                {/* COMPLETED({trunc(expiredDappBalance)} $FLASH) */}
+                                {/* COMPLETED({trunc(expiredDappBalance)} FLASH) */}
                                 CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
@@ -1608,15 +1686,15 @@ function Flashstake({
                       className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                     >
                       You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
+                        <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
                     <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           {/* COMPLETED
-                          <br />({trunc(expiredDappBalance)} $FLASH) */}
+                          <br />({trunc(expiredDappBalance)} FLASH) */}
                           CONFIRM UNSTAKE
                         </span>
                       </Tooltip>
@@ -1637,21 +1715,21 @@ function Flashstake({
                         className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                       >
                         If you unstake{" "}
-                        <Tooltip title={`${dappBalance} $FLASH`}>
+                        <Tooltip title={`${dappBalance} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(dappBalance)} $FLASH
+                            {trunc(dappBalance)} FLASH
                           </span>
                         </Tooltip>{" "}
                         now, you will receive{" "}
-                        <Tooltip title={`${totalBalanceWithBurn} $FLASH`}>
+                        <Tooltip title={`${totalBalanceWithBurn} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBalanceWithBurn)} $FLASH
+                            {trunc(totalBalanceWithBurn)} FLASH
                           </span>
                         </Tooltip>{" "}
                         and burn{" "}
-                        <Tooltip title={`${totalBurnAmount} $FLASH`}>
+                        <Tooltip title={`${totalBurnAmount} FLASH`}>
                           <span className={classes.redText}>
-                            {trunc(totalBurnAmount)} $FLASH
+                            {trunc(totalBurnAmount)} FLASH
                           </span>
                         </Tooltip>{" "}
                         in the process
@@ -1683,10 +1761,10 @@ function Flashstake({
                             fullWidth
                             onClick={unstakeXIO}
                           >
-                            <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                            <Tooltip title={`${expiredDappBalance} FLASH`}>
                               <span>
                                 {/* COMPLETED
-                                <br />({trunc(expiredDappBalance)} $FLASH) */}
+                                <br />({trunc(expiredDappBalance)} FLASH) */}
                                 CONFIRM UNSTAKE
                               </span>
                             </Tooltip>
@@ -1698,10 +1776,10 @@ function Flashstake({
                             fullWidth
                             onClick={() => setDialogStep("earlyUnstakeFull")}
                           >
-                            <Tooltip title={`${dappBalance} $FLASH`}>
+                            <Tooltip title={`${dappBalance} FLASH`}>
                               <span>
                                 ALL
-                                <br />({trunc(dappBalance)} $FLASH)
+                                <br />({trunc(dappBalance)} FLASH)
                               </span>
                             </Tooltip>
                           </Button>
@@ -1720,15 +1798,15 @@ function Flashstake({
                       className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                     >
                       You are about to unstake{" "}
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
-                        <span>{trunc(expiredDappBalance)} $FLASH</span>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
+                        <span>{trunc(expiredDappBalance)} FLASH</span>
                       </Tooltip>
                     </Typography>
                     <Button variant="retro" fullWidth onClick={unstakeXIO}>
-                      <Tooltip title={`${expiredDappBalance} $FLASH`}>
+                      <Tooltip title={`${expiredDappBalance} FLASH`}>
                         <span>
                           CONFIRM UNSTAKE
-                          {/* <br />({trunc(expiredDappBalance)} $FLASH) */}
+                          {/* <br />({trunc(expiredDappBalance)} FLASH) */}
                         </span>
                       </Tooltip>
                     </Button>
@@ -1745,8 +1823,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                 </Fragment>
@@ -1788,8 +1866,8 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     You successfully unstaked{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} $FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} $FLASH</span>
+                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
                     </Tooltip>
                   </Typography>
                   <Typography

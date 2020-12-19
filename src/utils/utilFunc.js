@@ -1,3 +1,6 @@
+import _ from "lodash";
+import axios from "axios";
+
 export const ogTrunc = (val, test) => {
   if (!Number(val)) {
     return 0;
@@ -60,3 +63,8 @@ export const getExtendedFloatValue = (val) => {
   }
   return 0;
 };
+
+export const fetchTokenList = _.memoize(async (_tokenListUri) => {
+  const response = await axios.get(_tokenListUri);
+  return response;
+});

@@ -28,4 +28,22 @@ export const CONSTANTS = {
   BALANCE_CONTRACT: "0x3cDA8420E25510765490201E1D054c517D085a7E",
   QUERY_CONTRACT: "0x6b3A75483ad3FDcB4ACC5a3139aAD37Cf2b0841A",
   CACHE_SERVER: "https://server.xio.app:3015/getReserves",
+
+  TOKENS_LIST: [
+    {
+      name: "Defualt",
+      uri:
+        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
+      logoURI:
+        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
+    },
+
+    {
+      name: "Flash",
+      uri:
+        "https://gateway.pinata.cloud/ipfs/QmeEwJKNvMTSSZpSPM1UyVy5ktxdRtNvwQmkkM4rTtBJhh/flashtest.tokenlist.json",
+      logoURI:
+        "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
+    },
+  ],
 };

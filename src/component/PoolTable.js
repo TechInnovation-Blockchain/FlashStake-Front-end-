@@ -35,6 +35,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddLiquidityDropDown from "./AddLiquidityDropDown";
 import Web3 from "web3";
+import { utils } from "ethers";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -237,6 +238,7 @@ function PoolTable({
   const [remLiqOpen, setRemLiqOpen] = useState(false);
   const [currentPool, setCurrentPool] = useState({});
   const [percentageToRemove, setPercentageToRemove] = useState(5);
+  const [toExpand, setToExpand] = useState("");
 
   const onClickOpen = (_pool, type = "add") => {
     setCurrentPool(_pool);
@@ -265,6 +267,10 @@ function PoolTable({
   //   }
   // }, [poolsLiquidityList]);
 
+  const handleChange = (_expanded) => (event, newExpanded) => {
+    setToExpand(newExpanded ? _expanded : false);
+  };
+
   useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
@@ -283,13 +289,14 @@ function PoolTable({
         let pooledAlt = 0;
         if (poolQueryData) {
           _percentageShare =
-            _pool.balance / Web3.utils.fromWei(poolQueryData.poolTotalSupply);
+            _pool.balance /
+            utils.formatUnits(poolQueryData.poolTotalSupply.toString(), 18);
           pooledFlash =
             _percentageShare *
-            Web3.utils.fromWei(poolQueryData.reserveFlashAmount);
+            utils.formatUnits(poolQueryData.reserveFlashAmount.toString(), 18);
           pooledAlt =
             _percentageShare *
-            Web3.utils.fromWei(poolQueryData.reserveAltAmount);
+            utils.formatUnits(poolQueryData.reserveAltAmount.toString(), 18);
         }
         return {
           ..._pool,
@@ -320,7 +327,7 @@ function PoolTable({
             POOLS
           </Typography>
           <Typography className={classes.secHead} variant="h6">
-            <Tooltip title={`${walletBalance} $FLASH`}>
+            <Tooltip title={`${walletBalance} FLASH`}>
               <span> {poolDashboard?.length || 0} </span>
             </Tooltip>
           </Typography>
@@ -354,6 +361,11 @@ function PoolTable({
                     <Accordion
                       className={classes.accordion}
                       key={_pool.pool.id}
+                      // onClick={() => {
+                      //   setToExpand(_pool.pool.id);
+                      // }}
+                      expanded={toExpand === _pool.pool.id}
+                      onChange={handleChange(_pool.pool.id)}
                     >
                       <AccordionSummary
                         expandIcon={
@@ -368,7 +380,7 @@ function PoolTable({
                       >
                         {/* {Object.Keys(poolDataBalance).filter(id)=> } */}
                         <Typography className={classes.heading}>
-                          $FLASH / {_pool.pool.tokenB.symbol}
+                          FLASH / {_pool.pool.tokenB.symbol}
                         </Typography>
                       </AccordionSummary>
                       <AccordionDetails className={classes.accordionDetails}>
@@ -407,7 +419,7 @@ function PoolTable({
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              Pooled $FLASH:
+                              Pooled FLASH:
                             </Typography>
                           </Grid>
                           <Grid xs={6} style={{ textAlign: "right" }}>
