@@ -29,6 +29,7 @@ import {
   decimals,
 } from "../utils/contractFunctions/erc20TokenContractFunctions";
 import { debounce } from "../utils/debounceFunc";
+import { fetchTokenList } from "../utils/utilFunc";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -237,7 +238,9 @@ function DropdownDialog({
   }, [tokensURI, pools]);
 
   const searchExistingToken = (id) => {
-    if (tokensList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
+    if (
+      tokensList.find((_pool) => _pool?.tokenB?.address?.toLowerCase() === id)
+    ) {
       return true;
     }
   };
@@ -272,20 +275,43 @@ function DropdownDialog({
   };
 
   const getTokensList = async () => {
-    const data = await axios.get(tokensURI.uri);
+    const data = await fetchTokenList(tokensURI.uri);
     if (data?.data?.tokens && pools) {
-      setTokensList(
-        data?.data?.tokens.map((_token) => ({
-          id: pools.find(
-            (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
-          )?.id,
-          tokenB: { ..._token, id: String(_token.address).toLowerCase() },
-        }))
-      );
+      let userTokens;
+      try {
+        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
+      } catch (e) {}
+      // setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
 
-      // console.log("LIST", data?.data?.tokens);
+      setTokensList(
+        [...(data?.data?.tokens || []), ...(userTokens || [])].map(
+          (_token) => ({
+            id: pools.find(
+              (_pool) =>
+                _pool.tokenB.id === String(_token.address).toLowerCase()
+            )?.id,
+            tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+          })
+        )
+      );
     }
   };
+
+  // const getTokensList = async () => {
+  //   const data = await axios.get(tokensURI.uri);
+  //   if (data?.data?.tokens && pools) {
+  //     setTokensList(
+  //       data?.data?.tokens.map((_token) => ({
+  //         id: pools.find(
+  //           (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
+  //         )?.id,
+  //         tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+  //       }))
+  //     );
+
+  //     // console.log("LIST", data?.data?.tokens);
+  //   }
+  // };
 
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
@@ -365,6 +391,20 @@ function DropdownDialog({
 
     return path;
   };
+
+  const addTokenToList = useCallback(async () => {
+    let tokenList = [];
+    try {
+      tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+    } catch (e) {}
+    if (
+      !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+    ) {
+      tokenList.push(token);
+      localStorage.setItem("tokenList", JSON.stringify(tokenList));
+      setTokensList((_tokenList) => [..._tokenList, token]);
+    }
+  }, [token]);
 
   return (
     <Fragment>
@@ -576,6 +616,13 @@ function DropdownDialog({
                   {token.tokenB.symbol}
                 </Typography>
               </ListItem>
+              <Typography
+                variant="body2"
+                className={`${classes.listItemText} ${classes.listItem} ${classes.listItemAdd}`}
+                onClick={addTokenToList}
+              >
+                Add Token To List
+              </Typography>
             </List>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
