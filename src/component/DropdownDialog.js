@@ -21,8 +21,14 @@ import ManageListsDropDown from "./ManageListsDropDown";
 import axios from "axios";
 import { nativePoolPrice } from "../redux/actions/userActions";
 import { trunc } from "../utils/utilFunc";
-
-// const _localStorage = localStorage.getItem("themeMode");
+import Web3 from "web3";
+import {
+  initializeErc20TokenContract,
+  name,
+  symbol,
+  decimals,
+} from "../utils/contractFunctions/erc20TokenContractFunctions";
+import { debounce } from "../utils/debounceFunc";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -204,6 +210,7 @@ function DropdownDialog({
   const [tokensList, setTokensList] = useState([]);
   const [nativePrice, setNativePrice] = useState();
   const [getTokensLoader, setTokensLoader] = useState(true);
+  const [token, setToken] = useState({});
 
   const history = useHistory();
 
@@ -216,7 +223,7 @@ function DropdownDialog({
   });
 
   const onChangeSearch = ({ target: { value } }) => {
-    setSearch(value.toUpperCase());
+    setSearch(value);
   };
 
   useEffect(() => {
@@ -228,6 +235,41 @@ function DropdownDialog({
   useEffect(() => {
     getTokensList();
   }, [tokensURI, pools]);
+
+  const searchExistingToken = (id) => {
+    if (tokensList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
+      return true;
+    }
+  };
+
+  const searchToken = async (_address) => {
+    if (searchExistingToken(_address)) {
+    } else {
+      if (Web3.utils.isAddress(_address)) {
+        await initializeErc20TokenContract(_address);
+        const _decimals = await decimals();
+        if (_decimals) {
+          const _name = await name();
+          const _symbol = await symbol();
+
+          // setTokensList({ id: "", tokenB: _token });
+
+          setToken({
+            tokenB: {
+              address: _address,
+              name: _name,
+              symbol: _symbol,
+              decimals: _decimals,
+            },
+          });
+        } else {
+          setToken({});
+        }
+      } else {
+        setToken({});
+      }
+    }
+  };
 
   const getTokensList = async () => {
     const data = await axios.get(tokensURI.uri);
@@ -245,11 +287,28 @@ function DropdownDialog({
     }
   };
 
+  const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
+
+  useEffect(() => {
+    debouncedSearchToken(search);
+  }, [search]);
+
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
     // console.log("LIST", tokensList);
+
+    if (Web3.utils.isAddress(search)) {
+      if (searchExistingToken(search)) {
+        return tokensList?.filter((item) =>
+          item.address.toLowerCase().includes(search)
+        );
+      }
+
+      debouncedSearchToken(search);
+    }
+
     return tokensList.filter((item) =>
-      item.tokenB.symbol.toUpperCase().includes(search)
+      item.tokenB.symbol.toUpperCase().includes(search.toUpperCase())
     );
     // } else {
     // return tokensList;
@@ -442,7 +501,7 @@ function DropdownDialog({
                       ) {
                         return true;
                       }
-                    })
+                    }) || allPoolsData[token.address]
                   }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
@@ -482,6 +541,42 @@ function DropdownDialog({
               />{" "}
               GETTING TOKENS
             </Typography>
+          ) : token.tokenB.decimals ? (
+            <List className={classes.list}>
+              <ListItem
+                button
+                className={classes.listItem}
+                onClick={() => onSelectLocal(token)}
+                key={token.tokenB.address}
+                disabled={
+                  pools?.find((_item) => {
+                    if (_item?.tokenB?.id === token.tokenB.address) {
+                      return true;
+                    }
+                  }) || allPoolsData[token.tokenB.address]
+
+                  // Object.keys(allPoolsData).find((_item) => {
+                  //   if (_item === token.address) {
+                  //     return true;
+                  //   }
+                  // })
+                }
+              >
+                <Typography variant="body1" className={classes.listItemText}>
+                  {/* <MonetizationOn /> */}
+                  {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                  <img
+                    src={tryRequire(token.tokenB?.symbol)}
+                    alt={token.tokenB.symbol}
+                    srcSet=""
+                    width={20}
+                    className={classes.tokensLogo}
+                    style={{ marginRight: 5 }}
+                  />
+                  {token.tokenB.symbol}
+                </Typography>
+              </ListItem>
+            </List>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
               NO TOKENS AVAILABLE
