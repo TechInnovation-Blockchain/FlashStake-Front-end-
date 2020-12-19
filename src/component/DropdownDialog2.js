@@ -138,6 +138,7 @@ const useStyles = makeStyles((theme, _theme) => ({
       color: theme.palette.text.primary,
       backgroundColor: theme.palette.background.secondary3,
     },
+    position: "relative",
 
     // "&:hover": {
     //   color: theme.palette.text.primary,
@@ -147,6 +148,10 @@ const useStyles = makeStyles((theme, _theme) => ({
     fontWeight: 700,
     display: "flex",
     alignItems: "center",
+  },
+  listItemAdd: {
+    padding: theme.spacing(1),
+    cursor: "pointer",
   },
   disabledText: {
     // color: theme.palette.xioRed.main,
@@ -283,7 +288,11 @@ function DropdownDialog2({
   const getTokensList = async () => {
     const data = await fetchTokenList(tokensURI.uri);
     if (data?.data?.tokens && pools) {
-      setTokensList(data?.data?.tokens);
+      let userTokens;
+      try {
+        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
+      } catch (e) {}
+      setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
     }
   };
 
@@ -343,6 +352,20 @@ function DropdownDialog2({
       return require(`../assets/Tokens/NOTFOUND.png`);
     }
   };
+
+  const addTokenToList = useCallback(async () => {
+    let tokenList = [];
+    try {
+      tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+    } catch (e) {}
+    if (
+      !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+    ) {
+      tokenList.push(token);
+      localStorage.setItem("tokenList", JSON.stringify(tokenList));
+      setTokensList((_tokenList) => [..._tokenList, token]);
+    }
+  }, [token]);
 
   const tryRequireLogo = (path) => {
     console.log(path);
@@ -441,7 +464,7 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={_pool?.logoURI}
+                      src={_pool?.logoURI || tryRequire(_pool?.symbol)}
                       alt={_pool?.symbol}
                       srcSet=""
                       width={20}
@@ -463,33 +486,42 @@ function DropdownDialog2({
               GETTING TOKENS
             </Typography>
           ) : token.decimals ? (
-            <List className={classes.list}>
-              <ListItem
-                button
-                className={classes.listItem}
-                onClick={() => onSelectLocal(token)}
-                key={token?.address}
-                // disabled={pools?.find((_item) => {
-                //   if (_item?.tokenB?.id === _pool.address) {
-                //     return true;
-                //   }
-                // })}
-              >
-                <Typography variant="body1" className={classes.listItemText}>
-                  {/* <MonetizationOn /> */}
-                  {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
-                  <img
-                    src={tryRequire(token?.symbol)}
-                    alt={token?.symbol}
-                    srcSet=""
-                    width={20}
-                    className={classes.tokensLogo}
-                    style={{ marginRight: 5 }}
-                  />
-                  {token.symbol}
+            <Fragment>
+              <List className={classes.list}>
+                <ListItem
+                  button
+                  className={classes.listItem}
+                  onClick={() => onSelectLocal(token)}
+                  key={token?.address}
+                  // disabled={pools?.find((_item) => {
+                  //   if (_item?.tokenB?.id === _pool.address) {
+                  //     return true;
+                  //   }
+                  // })}
+                >
+                  <Typography variant="body1" className={classes.listItemText}>
+                    {/* <MonetizationOn /> */}
+                    {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                    <img
+                      src={tryRequire(token?.symbol)}
+                      alt={token?.symbol}
+                      srcSet=""
+                      width={20}
+                      className={classes.tokensLogo}
+                      style={{ marginRight: 5 }}
+                    />
+                    {token.symbol}
+                  </Typography>
+                </ListItem>
+                <Typography
+                  variant="body2"
+                  className={`${classes.listItemText} ${classes.listItem} ${classes.listItemAdd}`}
+                  onClick={addTokenToList}
+                >
+                  Add Token To List
                 </Typography>
-              </ListItem>
-            </List>
+              </List>
+            </Fragment>
           ) : (
             <Typography variant="body1" className={classes.secondaryText}>
               NO TOKENS AVAILABLE
