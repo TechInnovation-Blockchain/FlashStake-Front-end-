@@ -300,11 +300,6 @@ function PoolTable({
               poolQueryData.reserveAltAmount.toString(),
               _pool?.pool?.tokenB?.decimal
             );
-          console.log(
-            "yada hola ",
-            _pool?.pool?.tokenB?.decimal,
-            _pool?.pool?.tokenB?.symbol
-          );
         }
         return {
           ..._pool,

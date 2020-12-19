@@ -810,16 +810,7 @@ export const addTokenLiquidityInPool = (
         .toString(),
       selectedRewardToken.tokenB.id
     );
-    console.log(
-      "yada hola ",
-      utils
-        .parseUnits(
-          quantityAlt.toString(),
-          selectedRewardToken?.tokenB?.decimals
-        )
-        .toString(),
-      utils.parseUnits("1", 4).toString()
-    );
+
     initializeFlashstakeProtocolContract();
     await addLiquidityInPool(
       utils.parseUnits(quantityXIO.toString(), 18).toString(),
