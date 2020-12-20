@@ -3,7 +3,7 @@ import { CONSTANTS } from "../../utils/constants";
 export const contractReducer = (
   state = {
     contractState: false,
-    tokenList: [CONSTANTS.ADDRESS_XIO_RINKEBY],
+    tokenList: [{ id: CONSTANTS.ADDRESS_XIO_RINKEBY, decimal: 18 }],
     oneDay: 60,
   },
   { type, payload }

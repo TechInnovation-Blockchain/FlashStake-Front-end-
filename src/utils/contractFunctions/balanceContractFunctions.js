@@ -38,12 +38,18 @@ export const getBalances = async () => {
     const _tokenList = getTokenList();
     const _pools = getPools();
     const _balances = await contract.methods
-      .getBalances(walletAddress, _tokenList)
+      .getBalances(
+        walletAddress,
+        _tokenList.map((_token) => _token.id)
+      )
       .call();
     let _balancesObj = {};
     let walletBalanceUSD = 0;
-    _tokenList.map((_token, index) => {
-      _balancesObj[_token] = utils.formatUnits(_balances[index].toString(), 18);
+    _tokenList.map(({ id, decimal }, index) => {
+      _balancesObj[id] = utils.formatUnits(
+        _balances[index].toString(),
+        decimal || 18
+      );
       return null;
     });
     _pools.map((_pool) => {

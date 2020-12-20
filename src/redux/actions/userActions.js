@@ -207,7 +207,7 @@ export const updatePools = (data) => async (dispatch) => {
         type: "POOL",
         payload: _pools,
       });
-      _tokenList = _pools.map((_pool) => _pool.tokenB.id);
+      _tokenList = _pools.map((_pool) => _pool.tokenB);
       dispatch(updateApyPools("1", _pools));
     }
   } catch (e) {
@@ -220,7 +220,10 @@ export const updatePools = (data) => async (dispatch) => {
     });
     dispatch({
       type: "TOKEN_LIST",
-      payload: [CONSTANTS.ADDRESS_XIO_RINKEBY, ..._tokenList],
+      payload: [
+        { id: CONSTANTS.ADDRESS_XIO_RINKEBY, decimal: 18 },
+        ..._tokenList,
+      ],
     });
     dispatch(updateAllBalances());
   }
