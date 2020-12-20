@@ -882,8 +882,7 @@ function Flashstake({
                               <Tooltip
                                 title={`${utils.formatUnits(
                                   preciseReward.toString(),
-                                  // selectedRewardToken?.tokenB?.decimals
-                                  18
+                                  selectedRewardToken?.tokenB?.decimals || 18
                                 )} ${
                                   selectedRewardToken?.tokenB?.symbol || ""
                                 }`}
@@ -892,8 +891,8 @@ function Flashstake({
                                   {trunc(
                                     utils.formatUnits(
                                       preciseReward.toString(),
-                                      // selectedRewardToken?.tokenB?.decimals
-                                      18
+                                      selectedRewardToken?.tokenB?.decimals ||
+                                        18
                                     )
                                   )}{" "}
                                   {selectedRewardToken?.tokenB?.symbol || ""}
@@ -1267,15 +1266,15 @@ function Flashstake({
                       ) : (
                         <Tooltip
                           title={`${utils.formatUnits(
-                            reward.toString(),
-                            selectedRewardToken?.tokenB?.decimal
+                            preciseReward.toString(),
+                            selectedRewardToken?.tokenB?.decimals || 18
                           )} ${selectedRewardToken?.tokenB?.symbol || ""}`}
                         >
                           <span className={classes.infoTextSpan}>
                             {trunc(
                               utils.formatUnits(
                                 preciseReward.toString(),
-                                selectedRewardToken?.tokenB?.decimal
+                                selectedRewardToken?.tokenB?.decimals || 18
                               )
                             )}{" "}
                             {selectedRewardToken?.tokenB?.symbol || ""}
