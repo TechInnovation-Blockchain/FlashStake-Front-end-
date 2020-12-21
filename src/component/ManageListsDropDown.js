@@ -207,6 +207,7 @@ function ManageListsDropDown({
   const [customList, setCustomList] = useState("");
   const [customTokenList, setCustomTokenList] = useState([]);
   const [tokensList, setTokensList] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const history = useHistory();
 
@@ -270,6 +271,7 @@ function ManageListsDropDown({
   const addListToStorage = async (_list) => {
     let tokensListCutoms = [];
     try {
+      setLoader(true);
       const res = await axios.get(_list);
       console.log("RESPONSE", res);
       if (res?.data?.name) {
@@ -284,9 +286,11 @@ function ManageListsDropDown({
       }
       console.log("RESPONSE", tokensListCutoms);
       localStorage.setItem("CustomTokenList", JSON.stringify(tokensListCutoms));
-      setCustomList("");
       getTokensList();
+      setLoader(false);
+      setCustomList("");
     } catch (e) {
+      setLoader(false);
       setCustomTokenList({});
     }
     // console.log("RESPONSE", customTokenList);
@@ -358,9 +362,9 @@ function ManageListsDropDown({
               !(
                 customList?.startsWith("https") ||
                 customList?.startsWith("ipfs")
-              )
+              ) || loader
             }
-            // loading={loadingRedux.pool}
+            loading={loader}
             onClick={() => {
               addListToStorage(customList);
             }}
