@@ -21,6 +21,7 @@ import Button from "./Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { CONSTANTS } from "../utils/constants";
 import { setTokensURI } from "../redux/actions/uiActions";
+import axios from "axios";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -203,12 +204,22 @@ function ManageListsDropDown({
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [customList, setCustomList] = useState("");
+  const [customTokenList, setCustomTokenList] = useState([]);
+  const [tokensList, setTokensList] = useState([]);
 
   const history = useHistory();
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toUpperCase());
   };
+  const onChangeCustomList = ({ target: { value } }) => {
+    setCustomList(value);
+  };
+
+  // useEffect(()=>{
+
+  // })
 
   const filteredData = useCallback(() => {
     return items.filter((item) =>
@@ -243,6 +254,58 @@ function ManageListsDropDown({
 
     return path;
   };
+
+  // let tokenList = [];
+  // try {
+  //   tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+  // } catch (e) {}
+  // if (
+  //   !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+  // ) {
+  //   tokenList.push(token);
+  //   localStorage.setItem("tokenList", JSON.stringify(tokenList));
+  //   setTokensList((_tokenList) => [..._tokenList, token]);
+  // }
+
+  const addListToStorage = async (_list) => {
+    let tokensListCutoms = [];
+    try {
+      const res = await axios.get(_list);
+      console.log("RESPONSE", res);
+      if (res?.data?.name) {
+        tokensListCutoms =
+          JSON.parse(await localStorage.getItem("CustomTokenList")) || [];
+
+        tokensListCutoms.push({
+          name: res?.data?.name,
+          uri: _list,
+          logoURI: res?.data?.logoURI,
+        });
+      }
+      console.log("RESPONSE", tokensListCutoms);
+      localStorage.setItem("CustomTokenList", JSON.stringify(tokensListCutoms));
+      setCustomList("");
+      getTokensList();
+    } catch (e) {
+      setCustomTokenList({});
+    }
+    // console.log("RESPONSE", customTokenList);
+
+    // localStorage.setItem("TokensURL", customTokenList);
+  };
+
+  useEffect(() => {
+    getTokensList();
+  }, [customTokenList]);
+
+  const getTokensList = async () => {
+    let userTokens;
+    try {
+      userTokens = JSON.parse(await localStorage.getItem("CustomTokenList"));
+    } catch (e) {}
+    setTokensList([...(CONSTANTS.TOKENS_LIST || []), ...(userTokens || [])]);
+  };
+
   return (
     <Fragment>
       <Button
@@ -278,8 +341,35 @@ function ManageListsDropDown({
             </IconButton>
           </Box>
 
+          <Box className={classes.closeBtnContainer}>
+            <TextField
+              placeholder="ADD TOKENS LIST"
+              className={classes.textField}
+              fullWidth
+              value={customList}
+              onChange={onChangeCustomList}
+            />
+          </Box>
+
+          <Button
+            fullWidth
+            variant="retro"
+            disabled={
+              !(
+                customList?.startsWith("https") ||
+                customList?.startsWith("ipfs")
+              )
+            }
+            // loading={loadingRedux.pool}
+            onClick={() => {
+              addListToStorage(customList);
+            }}
+          >
+            ADD
+          </Button>
+
           <List className={classes.list}>
-            {CONSTANTS.TOKENS_LIST.map((item) => (
+            {tokensList.map((item) => (
               <ListItem
                 button
                 className={classes.listItem}
