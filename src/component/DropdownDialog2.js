@@ -364,6 +364,9 @@ function DropdownDialog2({
       const joined = "https://ipfs.io/ipfs/" + _val[1];
       return joined;
     }
+    // if (path?.startsWith("raw")) {
+    //   return require(`../assets/Tokens/NOTFOUND.png`);
+    // }
 
     return path;
   };
