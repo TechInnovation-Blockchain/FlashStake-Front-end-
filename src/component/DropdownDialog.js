@@ -423,7 +423,7 @@ function DropdownDialog({
             onClick={() => !disableDrop && !link && setOpen(true)}
           >
             <Typography variant="body1" className={classes.primaryText}>
-              {selectedValue.id ? (
+              {selectedValue.tokenB?.symbol ? (
                 <Fragment>
                   <img
                     src={
@@ -458,7 +458,7 @@ function DropdownDialog({
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue.id ? (
+            {selectedValue.tokenB?.symbol ? (
               <Fragment>
                 <img
                   src={
@@ -542,13 +542,19 @@ function DropdownDialog({
                   key={_pool.id}
                   disabled={
                     !pools?.find((_item) => {
+                      console.log(
+                        "HEREEE",
+                        _item?.tokenB?.id,
+                        _pool?.tokenB?.address,
+                        _item?.tokenB?.symbol
+                      );
                       if (
                         _item?.tokenB?.id ===
                         _pool?.tokenB?.address.toLowerCase()
                       ) {
                         return true;
                       }
-                    }) || allPoolsData[token.address]
+                    })
                   }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
@@ -560,6 +566,10 @@ function DropdownDialog({
                         tryRequire(_pool?.tokenB?.symbol)
                       }
                       alt={_pool.tokenB.symbol}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = tryRequire(_pool?.tokenB?.symbol);
+                      }}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
@@ -601,16 +611,17 @@ function DropdownDialog({
               <ListItem
                 button
                 className={classes.listItem}
-                onClick={() => onSelectLocal(token)}
+                onClick={() => {
+                  // console.log("HEEEERE", token);
+                  onSelectLocal(token);
+                }}
                 key={token.tokenB.address}
                 disabled={
-                  pools?.find((_item) => {
+                  !pools?.find((_item) => {
                     if (_item?.tokenB?.id === token.tokenB.address) {
                       return true;
                     }
-                  }) ||
-                  allPoolsData[token.tokenB.address] ||
-                  token?.tokenB?.chainId === CONSTANTS.CHAIN_ID
+                  }) || token?.tokenB?.chainId === CONSTANTS.CHAIN_ID
 
                   // Object.keys(allPoolsData).find((_item) => {
                   //   if (_item === token.address) {

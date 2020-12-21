@@ -380,6 +380,7 @@ function DropdownDialog2({
       tokenList.push(token);
       localStorage.setItem("tokenList", JSON.stringify(tokenList));
       setTokensList((_tokenList) => [..._tokenList, token]);
+      setSearch("");
     }
   }, [token]);
 
