@@ -73,6 +73,7 @@ import AddTokenDialogue from "../../component/AddTokenDialogue";
 import DropdownDialog2 from "../../component/DropdownDialog2";
 import FlashDropDown from "../../component/FlashDropDown";
 import CreateTable from "../../component/CreateTable";
+import { CONSTANTS } from "../../utils/constants";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -583,7 +584,7 @@ function Vote({
       days <= 0 ||
       loadingRedux.reward ||
       loadingRedux.stake ||
-      chainId !== 4 ||
+      chainId !== CONSTANTS.CHAIN_ID ||
       reward <= 0 ||
       (active && account && parseFloat(quantity) > parseFloat(walletBalance))
     ) {
@@ -676,7 +677,7 @@ function Vote({
                         Connect wallet to create pools
                       </Typography>
                     </Grid>
-                  ) : chainId !== 4 ||
+                  ) : chainId !== CONSTANTS.CHAIN_ID ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item className={classes.gridSpace} xs={12}>
                       <Typography

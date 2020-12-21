@@ -36,6 +36,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddLiquidityDropDown from "./AddLiquidityDropDown";
 import Web3 from "web3";
 import { utils } from "ethers";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -353,7 +354,7 @@ function PoolTable({
           <PageAnimation in={true} key={page} reverse={false}>
             <Grid container className={classes.gridSpacing} item>
               {poolsLiquidityList.length > 0 ? (
-                chainId !== 4 ? (
+                chainId !== CONSTANTS.CHAIN_ID ? (
                   <Grid item xs={12} className={classes.msgContainer}>
                     <Typography variant="body2" className={classes.redText}>
                       Change network to rinkeby to see pools

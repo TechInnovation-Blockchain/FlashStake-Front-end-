@@ -69,6 +69,7 @@ import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 import { utils } from "ethers";
+import { CONSTANTS } from "../../utils/constants";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -142,7 +143,7 @@ let useStyles = makeStyles((theme) => ({
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
+      padding: theme.spacing(0, 4),
       lineHeight: 1.5,
       textAlign: "center",
     },
@@ -989,7 +990,7 @@ function Flashstake({
                             !account ||
                             loadingRedux.reward ||
                             loadingRedux.approval ||
-                            chainId !== 4
+                            chainId !== CONSTANTS.CHAIN_ID
                           }
                           loading={
                             loadingRedux.approval && loadingRedux.approvalXIO
@@ -1017,7 +1018,7 @@ function Flashstake({
                             days <= 0 ||
                             loadingRedux.reward ||
                             loadingRedux.stake ||
-                            chainId !== 4 ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
                             reward <= 0 ||
                             (active &&
                               account &&
@@ -1039,7 +1040,7 @@ function Flashstake({
                             days <= 0 ||
                             loadingRedux.reward ||
                             loadingRedux.stake ||
-                            chainId !== 4 ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
                             reward <= 0 ||
                             (active &&
                               account &&
@@ -1067,7 +1068,7 @@ function Flashstake({
                           //   days <= 0 ||
                           //   loadingRedux.reward ||
                           //   loadingRedux.stake ||
-                          //   chainId !== 4 ||
+                          //   chainId !== CONSTANTS.CHAIN_ID ||
                           //   reward <= 0 ||
                           //   (active &&
                           //     account &&
@@ -1088,7 +1089,7 @@ function Flashstake({
                             days <= 0 ||
                             loadingRedux.reward ||
                             loadingRedux.stake ||
-                            chainId !== 4 ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
                             reward <= 0 ||
                             (active &&
                               account &&
@@ -1137,7 +1138,7 @@ function Flashstake({
                         Connect wallet to stake
                       </Typography>
                     </Grid>
-                  ) : chainId !== 4 ||
+                  ) : chainId !== CONSTANTS.CHAIN_ID ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
@@ -1311,7 +1312,7 @@ function Flashstake({
                         days <= 0 ||
                         loadingRedux.reward ||
                         loadingRedux.stake ||
-                        chainId !== 4 ||
+                        chainId !== CONSTANTS.CHAIN_ID ||
                         reward <= 0 ||
                         (active &&
                           account &&

@@ -23,6 +23,7 @@ import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import withDimensions from "react-with-dimensions";
+import { CONSTANTS } from "../../utils/constants";
 
 import {
   Button,
@@ -664,7 +665,7 @@ function Swap({
                               onClick={onClickApprove}
                               disabled={
                                 !selectedPortal ||
-                                chainId !== 4 ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
                                 allowanceALT ||
                                 loadingRedux.approval
                               }
@@ -687,7 +688,7 @@ function Swap({
                                 !(quantity > 0) ||
                                 parseFloat(balanceALT) < parseFloat(quantity) ||
                                 !allowanceALT ||
-                                chainId !== 4 ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
                                 loadingRedux.swap
                               }
                               loading={loadingRedux.swap}
@@ -707,7 +708,7 @@ function Swap({
                               !(quantity > 0) ||
                               parseFloat(balanceALT) < parseFloat(quantity) ||
                               !allowanceALT ||
-                              chainId !== 4 ||
+                              chainId !== CONSTANTS.CHAIN_ID ||
                               loadingRedux.swap
                             }
                             loading={loadingRedux.swap}
@@ -732,7 +733,7 @@ function Swap({
                             Connect wallet to swap
                           </Typography>
                         </Grid>
-                      ) : chainId !== 4 ? (
+                      ) : chainId !== CONSTANTS.CHAIN_ID ? (
                         <Grid item xs={12} className={classes.msgContainer}>
                           <Typography
                             variant="body2"
@@ -874,7 +875,7 @@ function Swap({
                                   parseFloat(balanceALT) <
                                     parseFloat(quantity) ||
                                   !allowanceALT ||
-                                  chainId !== 4 ||
+                                  chainId !== CONSTANTS.CHAIN_ID ||
                                   loadingRedux.swap
                                 }
                                 loading={loadingRedux.swap}

@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
+      padding: theme.spacing(0, 4),
       lineHeight: 1.5,
       textAlign: "center",
     },
