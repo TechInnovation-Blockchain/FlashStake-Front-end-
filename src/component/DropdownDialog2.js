@@ -453,7 +453,10 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={_pool?.logoURI || tryRequire(_pool?.symbol)}
+                      src={
+                        tryRequireLogo(_pool?.logoURI) ||
+                        tryRequire(_pool?.symbol)
+                      }
                       alt={_pool?.symbol}
                       srcSet=""
                       width={20}
@@ -528,7 +531,7 @@ function DropdownDialog2({
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
               <img
-                src={tokensURI?.logo}
+                src={tryRequireLogo(tokensURI?.logo)}
                 // src={themeModeflash}
                 alt="logo"
                 width={tokensURI?.name !== "Default" ? 20 : 10}
