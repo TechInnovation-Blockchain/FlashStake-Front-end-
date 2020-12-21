@@ -1046,7 +1046,8 @@ function Flashstake({
                               account &&
                               parseFloat(quantity) >
                                 parseFloat(walletBalance)) ||
-                            _maxDays < days
+                            _maxDays < days ||
+                            time === "Select"
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1095,7 +1096,8 @@ function Flashstake({
                               account &&
                               parseFloat(quantity) >
                                 parseFloat(walletBalance)) ||
-                            _maxDays < days
+                            _maxDays < days ||
+                            time === "Select"
                           }
                           loading={loadingRedux.stake}
                         >
@@ -1316,7 +1318,8 @@ function Flashstake({
                         reward <= 0 ||
                         (active &&
                           account &&
-                          parseFloat(quantity) > parseFloat(walletBalance))
+                          parseFloat(quantity) > parseFloat(walletBalance)) ||
+                        time === "Select"
                       }
                       loading={loadingRedux.approval}
                     >
