@@ -67,6 +67,7 @@ import { setPoolData } from "../../redux/actions/userActions";
 import { JSBI } from "@uniswap/sdk";
 import { _error } from "../../utils/log";
 import { utils } from "ethers";
+import { CONSTANTS } from "../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -597,7 +598,7 @@ function Pool({
   //       quantityXIO <= 0 ||
   //       quantityAlt <= 0 ||
   //       loadingRedux.pool ||
-  //       chainId !== 4 ||
+  //       chainId !== CONSTANTS.CHAIN_ID ||
   //       parseFloat(quantityAlt) > parseFloat(balanceALT) ||
   //       parseFloat(quantityXIO) > parseFloat(walletBalance)
   //     }
@@ -937,7 +938,7 @@ function Pool({
                             !account ||
                             loadingRedux.pool ||
                             loadingRedux.approval ||
-                            chainId !== 4
+                            chainId !== CONSTANTS.CHAIN_ID
                           }
                           loading={
                             loadingRedux.approval && loadingRedux.approvalXIO
@@ -966,7 +967,7 @@ function Pool({
                             quantityXIO <= 0 ||
                             quantityAlt <= 0 ||
                             loadingRedux.pool ||
-                            chainId !== 4 ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
                             parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
@@ -993,7 +994,7 @@ function Pool({
                             quantityXIO <= 0 ||
                             quantityAlt <= 0 ||
                             loadingRedux.pool ||
-                            chainId !== 4 ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
                             parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                             parseFloat(quantityXIO) > parseFloat(walletBalance)
                           }
@@ -1026,7 +1027,7 @@ function Pool({
                         Connect wallet to pool
                       </Typography>
                     </Grid>
-                  ) : chainId !== 4 ||
+                  ) : chainId !== CONSTANTS.CHAIN_ID ||
                     web3context.error instanceof UnsupportedChainIdError ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
@@ -1137,7 +1138,7 @@ function Pool({
                       !account ||
                       loadingRedux.pool ||
                       loadingRedux.approval ||
-                      chainId !== 4
+                      chainId !== CONSTANTS.CHAIN_ID
                     }
                     loading={loadingRedux.approval && loadingRedux.approvalXIO}
                   >
@@ -1190,7 +1191,7 @@ function Pool({
                       quantityXIO <= 0 ||
                       quantityAlt <= 0 ||
                       loadingRedux.pool ||
-                      chainId !== 4 ||
+                      chainId !== CONSTANTS.CHAIN_ID ||
                       parseFloat(quantityAlt) > parseFloat(balanceALT) ||
                       parseFloat(quantityXIO) > parseFloat(walletBalance)
                     }

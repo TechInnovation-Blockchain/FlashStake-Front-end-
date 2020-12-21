@@ -29,6 +29,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -309,7 +310,7 @@ function PoolTable({
               Connect wallet to view your pools
             </Typography>
           </Grid>
-        ) : chainId !== 4 ? (
+        ) : chainId !== CONSTANTS.CHAIN_ID ? (
           <Grid item xs={12} className={classes.msgContainer}>
             <Typography variant="body2" className={classes.redText}>
               Change network to rinkeby to add/remove liquidity

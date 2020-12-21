@@ -30,6 +30,7 @@ import {
 } from "../utils/contractFunctions/erc20TokenContractFunctions";
 import { debounce } from "../utils/debounceFunc";
 import { fetchTokenList } from "../utils/utilFunc";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -114,7 +115,7 @@ const useStyles = makeStyles((theme, _theme) => ({
     "& .MuiInputBase-input": {
       height: 36,
       fontWeight: "700 !important",
-      padding: theme.spacing(0, 1),
+      padding: theme.spacing(0, 5),
       // fontSize: 16,
       lineHeight: 1.5,
       textAlign: "center",
@@ -287,15 +288,17 @@ function DropdownDialog({
       // setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
 
       setTokensList(
-        [...(data?.data?.tokens || []), ...(userTokens || [])].map(
-          (_token) => ({
+        [...(data?.data?.tokens || []), ...(userTokens || [])]
+          .filter(
+            (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+          )
+          .map((_token) => ({
             id: pools.find(
               (_pool) =>
                 _pool.tokenB.id === String(_token.address).toLowerCase()
             )?.id,
             tokenB: { ..._token, id: String(_token.address).toLowerCase() },
-          })
-        )
+          }))
       );
     }
   };
@@ -420,7 +423,7 @@ function DropdownDialog({
             onClick={() => !disableDrop && !link && setOpen(true)}
           >
             <Typography variant="body1" className={classes.primaryText}>
-              {selectedValue.id ? (
+              {selectedValue.tokenB?.symbol ? (
                 <Fragment>
                   <img
                     src={
@@ -455,7 +458,7 @@ function DropdownDialog({
           onClick={() => !disableDrop && !link && setOpen(true)}
         >
           <Typography variant="body1" className={classes.primaryText}>
-            {selectedValue.id ? (
+            {selectedValue.tokenB?.symbol ? (
               <Fragment>
                 <img
                   src={
@@ -539,13 +542,19 @@ function DropdownDialog({
                   key={_pool.id}
                   disabled={
                     !pools?.find((_item) => {
+                      console.log(
+                        "HEREEE",
+                        _item?.tokenB?.id,
+                        _pool?.tokenB?.address,
+                        _item?.tokenB?.symbol
+                      );
                       if (
                         _item?.tokenB?.id ===
                         _pool?.tokenB?.address.toLowerCase()
                       ) {
                         return true;
                       }
-                    }) || allPoolsData[token.address]
+                    })
                   }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
@@ -557,6 +566,10 @@ function DropdownDialog({
                         tryRequire(_pool?.tokenB?.symbol)
                       }
                       alt={_pool.tokenB.symbol}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = tryRequire(_pool?.tokenB?.symbol);
+                      }}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
@@ -598,14 +611,17 @@ function DropdownDialog({
               <ListItem
                 button
                 className={classes.listItem}
-                onClick={() => onSelectLocal(token)}
+                onClick={() => {
+                  // console.log("HEEEERE", token);
+                  onSelectLocal(token);
+                }}
                 key={token.tokenB.address}
                 disabled={
-                  pools?.find((_item) => {
+                  !pools?.find((_item) => {
                     if (_item?.tokenB?.id === token.tokenB.address) {
                       return true;
                     }
-                  }) || allPoolsData[token.tokenB.address]
+                  }) || token?.tokenB?.chainId === CONSTANTS.CHAIN_ID
 
                   // Object.keys(allPoolsData).find((_item) => {
                   //   if (_item === token.address) {
@@ -649,7 +665,7 @@ function DropdownDialog({
             <Box className={classes.DefaultListBox}>
               {}
               <img
-                src={tokensURI?.logo}
+                src={tryRequireLogo(tokensURI?.logo)}
                 // src={themeModeflash}
                 alt="logo"
                 width={tokensURI?.name !== "Default" ? 20 : 10}

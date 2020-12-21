@@ -29,6 +29,7 @@ import {
   decimals,
 } from "../utils/contractFunctions/erc20TokenContractFunctions";
 import { debounce } from "../utils/debounceFunc";
+import { CONSTANTS } from "../utils/constants";
 
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -126,6 +127,26 @@ const useStyles = makeStyles((theme, _theme) => ({
     overflowY: "scroll",
     padding: 0,
   },
+
+  hiddenlistItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: theme.palette.text.secondary,
+    // filter: "grayscale(1)",
+    display: "none",
+    // "&:hover": {
+    //   filter: "none",
+    //   color: theme.palette.text.primary,
+    //   backgroundColor: theme.palette.background.secondary3,
+    // },
+    // position: "relative",
+
+    // "&:hover": {
+    //   color: theme.palette.text.primary,
+    // },
+  },
+
   listItem: {
     display: "flex",
     alignItems: "center",
@@ -288,7 +309,11 @@ function DropdownDialog2({
       try {
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
-      setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
+      setTokensList(
+        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
+          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+        )
+      );
     }
   };
 
@@ -355,6 +380,7 @@ function DropdownDialog2({
       tokenList.push(token);
       localStorage.setItem("tokenList", JSON.stringify(tokenList));
       setTokensList((_tokenList) => [..._tokenList, token]);
+      setSearch("");
     }
   }, [token]);
 
@@ -362,8 +388,15 @@ function DropdownDialog2({
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
+      console.log(typeof path);
       return joined;
     }
+
+    console.log(typeof path);
+    // if (path?.includes("raw.githubusercontent.com/")) {
+    //   return path?.replace(path?.substring(0, 29), "https://github");
+    //   // return require(`../assets/Tokens/NOTFOUND.png`);
+    // }
 
     return path;
   };
@@ -441,26 +474,45 @@ function DropdownDialog2({
               {filteredData()?.map((_pool) => (
                 <ListItem
                   button
-                  className={classes.listItem}
+                  className={
+                    // _pool?.chainId === CONSTANTS.CHAIN_ID
+                    // ?
+                    classes.listItem
+                    // : classes.hiddenlistItem
+                  }
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
-                  disabled={pools?.find(
-                    (_item) =>
-                      _item?.tokenB?.id === String(_pool.address).toLowerCase()
-                  )}
+                  // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
+                  disabled={
+                    pools?.find(
+                      (_item) =>
+                        _item?.tokenB?.id ===
+                        String(_pool.address).toLowerCase()
+                    ) || _pool?.chainId !== CONSTANTS.CHAIN_ID
+                  }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={_pool?.logoURI || tryRequire(_pool?.symbol)}
-                      alt={_pool?.symbol}
+                      src={
+                        tryRequireLogo(_pool?.logoURI) ||
+                        tryRequire(_pool?.symbol)
+                      }
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = tryRequire(_pool?.symbol);
+                      }}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
                     {_pool.symbol}
+                    {/* {""}
+                    {_pool?.chainId === 1 ? (
+                      <span className={classes.redText}> Mainnet Token</span>
+                    ) : null} */}
                   </Typography>
                 </ListItem>
               ))}
@@ -501,7 +553,7 @@ function DropdownDialog2({
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
                       src={tryRequire(token?.symbol)}
-                      alt={token?.symbol}
+                      alt={require(`../assets/Tokens/NOTFOUND.png`)}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
@@ -528,7 +580,7 @@ function DropdownDialog2({
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
               <img
-                src={tokensURI?.logo}
+                src={tryRequireLogo(tokensURI?.logo)}
                 // src={themeModeflash}
                 alt="logo"
                 width={tokensURI?.name !== "Default" ? 20 : 10}

@@ -14,6 +14,7 @@ import { UnfoldMore } from "@material-ui/icons";
 import { showWalletBackdrop } from "../redux/actions/uiActions";
 import { trunc } from "../utils/utilFunc";
 import PageAnimation from "./PageAnimation";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -243,7 +244,7 @@ function SwapTable({
           </Grid>
         ) : !loading ? (
           swapHistory?.length ? (
-            chainId !== 4 ? (
+            chainId !== CONSTANTS.CHAIN_ID ? (
               <Grid item xs={12} className={classes.msgContainer}>
                 <Typography variant="body2" className={classes.redText}>
                   Change network to rinkeby to see swap history

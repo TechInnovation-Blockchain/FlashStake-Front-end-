@@ -32,6 +32,7 @@ import {
 } from "../redux/actions/dashboardActions";
 import { store } from "../config/reduxStore";
 import { useHistory } from "react-router-dom";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -335,7 +336,7 @@ function TableComponent({
           </Grid>
         ) : !loading ? (
           stakes?.length ? (
-            chainId !== 4 ? (
+            chainId !== CONSTANTS.CHAIN_ID ? (
               <Grid item xs={12} className={classes.msgContainer}>
                 <Typography variant="body2" className={classes.redText}>
                   Change network to rinkeby to unstake tokens
