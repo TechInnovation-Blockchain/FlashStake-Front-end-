@@ -1323,6 +1323,7 @@ function Flashstake({
                       }
                       loading={loadingRedux.approval}
                     >
+                     
                       STAKE
                     </Button>
                   </Fragment>

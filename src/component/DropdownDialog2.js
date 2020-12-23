@@ -30,6 +30,7 @@ import {
 } from "../utils/contractFunctions/erc20TokenContractFunctions";
 import { debounce } from "../utils/debounceFunc";
 import { CONSTANTS } from "../utils/constants";
+import { addToTokenList } from "../redux/actions/contractActions";
 
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -232,11 +233,12 @@ function DropdownDialog2({
   nativePrices,
   setToken: setTokenParent,
   pools,
+  tokenList,
+  addToTokenList,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [tokensList, setTokensList] = useState([]);
   const [nativePrice, setNativePrice] = useState();
   const [getTokensLoader, setTokensLoader] = useState(true);
   const [token, setToken] = useState({});
@@ -261,12 +263,8 @@ function DropdownDialog2({
     setNativePrice(nativePoolPrice());
   }, [items]);
 
-  useEffect(() => {
-    getTokensList();
-  }, [tokensURI, pools]);
-
   const searchExistingToken = (id) => {
-    if (tokensList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
+    if (tokenList.find((_pool) => _pool?.address?.toLowerCase() === id)) {
       return true;
     }
   };
@@ -302,21 +300,6 @@ function DropdownDialog2({
     }
   };
 
-  const getTokensList = async () => {
-    const data = await fetchTokenList(tokensURI.uri);
-    if (data?.data?.tokens && pools) {
-      let userTokens;
-      try {
-        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
-      } catch (e) {}
-      setTokensList(
-        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
-          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
-        )
-      );
-    }
-  };
-
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
   useEffect(() => {
@@ -332,17 +315,17 @@ function DropdownDialog2({
     // }
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
-        return tokensList?.filter((item) =>
+        return tokenList?.filter((item) =>
           item.address.toLowerCase().includes(search)
         );
       }
 
       debouncedSearchToken(search);
     } else
-      return tokensList.filter((item) =>
+      return tokenList.filter((item) =>
         item.symbol.toUpperCase().includes(search.toUpperCase())
       );
-  }, [search, items, getTokensList]);
+  }, [search, items, tokenList]);
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -379,7 +362,7 @@ function DropdownDialog2({
     ) {
       tokenList.push(token);
       localStorage.setItem("tokenList", JSON.stringify(tokenList));
-      setTokensList((_tokenList) => [..._tokenList, token]);
+      addToTokenList(token);
       setSearch("");
     }
   }, [token]);
@@ -388,15 +371,8 @@ function DropdownDialog2({
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
-      console.log(typeof path);
       return joined;
     }
-
-    console.log(typeof path);
-    // if (path?.includes("raw.githubusercontent.com/")) {
-    //   return path?.replace(path?.substring(0, 29), "https://github");
-    //   // return require(`../assets/Tokens/NOTFOUND.png`);
-    // }
 
     return path;
   };
@@ -608,12 +584,16 @@ const mapStateToProps = ({
   user: { poolsApy, pools, nativePrices },
   ui: { tokensURI },
   query: { allPoolsData },
+  contract: { tokenList },
 }) => ({
   poolsApy,
   pools,
   tokensURI,
   allPoolsData,
   nativePrices,
+  tokenList,
 });
 
-export default connect(mapStateToProps, { nativePoolPrice })(DropdownDialog2);
+export default connect(mapStateToProps, { nativePoolPrice, addToTokenList })(
+  DropdownDialog2
+);

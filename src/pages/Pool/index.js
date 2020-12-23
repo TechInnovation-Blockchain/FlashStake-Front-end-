@@ -425,6 +425,12 @@ function Pool({
   const web3context = useWeb3React();
   const [height, setHeight] = useState(heightVal);
   const [queryData, setQueryData] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const importTokenFunc = () => {
+    setExpanded2(true);
+    setOpenDialog(true);
+  };
 
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");
@@ -750,6 +756,9 @@ function Pool({
                       onSelect={setSelectedRewardToken}
                       heading="SELECT TOKEN"
                       _theme={theme}
+                      overrideOpen={true}
+                      openProp={openDialog}
+                      setOpenProp={setOpenDialog}
                     />
                   </Grid>
 
@@ -1063,6 +1072,7 @@ function Pool({
                   selectedQueryData={queryData}
                   onClickPool={onClickPool}
                   setShowStakeDialog={setShowStakeDialog}
+                  importToken={importTokenFunc}
                 />
               </AccordionDetails>
             </Accordion>

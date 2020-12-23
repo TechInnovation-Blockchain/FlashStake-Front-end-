@@ -34,3 +34,17 @@ export const updateOneDay = () => async (dispatch) => {
     _error("ERROR updateOneDay -> ", e);
   }
 };
+
+export const updateTokenList = (data) => {
+  return {
+    type: "TOKEN_LIST",
+    payload: data,
+  };
+};
+
+export const addToTokenList = (data) => {
+  return {
+    type: "ADD_TO_TOKEN_LIST",
+    payload: data,
+  };
+};
