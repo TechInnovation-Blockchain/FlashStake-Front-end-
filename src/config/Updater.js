@@ -9,6 +9,7 @@ import {
   setRefetch,
   setReCalculateExpired,
   setStakeStatus,
+  setRefetchProtocols,
 } from "../redux/actions/dashboardActions";
 import {
   updatePools,
@@ -18,7 +19,10 @@ import {
   setPoolData,
   setPoolDataBalance,
 } from "../redux/actions/userActions";
-import { userStakesQuery } from "../graphql/queries/userStakesQuery";
+import {
+  userStakesQuery,
+  protocolsQuery,
+} from "../graphql/queries/userStakesQuery";
 import {
   getBalanceXIO,
   getBalanceALT,
@@ -38,7 +42,9 @@ function Updater({
   updatePools,
   updateUserData,
   refetchData,
+  refetchPools,
   setRefetch,
+  setRefetchProtocols,
   setLoading,
   currentStaked,
   reCalculateExpired,
@@ -61,6 +67,14 @@ function Updater({
     variables: {
       account: account ? account.toString().toLowerCase() : "",
     },
+    fetchPolicy: "network-only",
+  });
+
+  const {
+    loading: loadingProtocol,
+    data: dataProtocols,
+    refetch: refetchProtocols,
+  } = useQuery(protocolsQuery, {
     fetchPolicy: "network-only",
   });
 
@@ -155,14 +169,24 @@ function Updater({
   }, [refetchData]);
 
   useEffect(() => {
-    updatePools(data?.protocols[0]?.pools);
+    if (refetchPools) {
+      refetchProtocols();
+      setRefetchProtocols(false);
+    }
+  }, [refetchPools]);
+
+  useEffect(() => {
+    updatePools(dataProtocols?.protocols[0]?.pools);
+  }, [dataProtocols]);
+
+  useEffect(() => {
     updateUserData(data?.user);
 
     let reCalculateInterval = setInterval(() => {
       updateUserData(data?.user);
     }, 60000);
     return () => clearInterval(reCalculateInterval);
-  }, [data, updatePools, updateUserData, oneDay]);
+  }, [data, updateUserData, oneDay]);
 
   return null;
 }
@@ -171,6 +195,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   dashboard: {
     refetch,
+    refetchProtocols,
     reCalculateExpired,
     stakeStatus,
     isStakesSelected,
@@ -192,6 +217,7 @@ const mapStateToProps = ({
   account,
   chainId,
   refetchData: refetch,
+  refetchPools: refetchProtocols,
   currentStaked,
   reCalculateExpired,
   selectedPortal,
@@ -224,6 +250,7 @@ export default connect(mapStateToProps, {
   setPoolDataBalance,
   getQueryData,
   setStakeStatus,
+  setRefetchProtocols,
   // getPoolBalances,
   updateTokenList,
 })(Updater);

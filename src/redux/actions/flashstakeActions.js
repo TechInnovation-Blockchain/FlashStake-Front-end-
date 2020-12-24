@@ -25,6 +25,7 @@ import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
 import { utils } from "ethers";
 import { updateApyPools } from "./userActions";
+import { setRefetchProtocols } from "./dashboardActions";
 
 export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch({

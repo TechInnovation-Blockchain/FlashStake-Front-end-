@@ -3,6 +3,7 @@ export const dashboardReducer = (
     stakedPortals: [],
     dialogStep: "",
     refetch: false,
+    refetchProtocols: false,
     withdrawRequest: {
       quantity: 0,
       symbol: "",
@@ -34,6 +35,11 @@ export const dashboardReducer = (
         refetch: payload,
         selectedStakes: {},
         isStakesSelected: false,
+      };
+    case "REFETCH_PROTOCOLS":
+      return {
+        ...state,
+        refetchProtocols: payload,
       };
     case "WITHDRAW_REQUEST":
       return {

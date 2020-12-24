@@ -65,7 +65,11 @@ import {
 } from "../../redux/actions/uiActions";
 import { Link, CheckCircleOutline } from "@material-ui/icons";
 // import maxbtn from "../../assets/maxbtn.svg";
-import { setRefetch, selectStake } from "../../redux/actions/dashboardActions";
+import {
+  setRefetch,
+  selectStake,
+  setRefetchProtocols,
+} from "../../redux/actions/dashboardActions";
 import { useHistory } from "react-router-dom";
 import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
@@ -435,6 +439,7 @@ function Vote({
   dialogStep4,
   createPoolData,
   withdrawLiquidityTxnHash,
+  setRefetchProtocols,
   ...props
 }) {
   let classes = useStyles();
@@ -848,4 +853,5 @@ export default connect(mapStateToProps, {
   selectStake,
   createPool,
   setCreateDialogStep,
+  setRefetchProtocols,
 })(Vote);

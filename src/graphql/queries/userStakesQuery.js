@@ -3,17 +3,6 @@ import { isAddress } from "../../utils/UniswapSdkFunctions/index";
 
 export const userStakesQuery = gql`
   query UserStakes($account: String!) {
-    protocols {
-      id
-      pools {
-        id
-        tokenB {
-          id
-          symbol
-          decimal
-        }
-      }
-    }
     user(id: $account) {
       id
       swapHistory {
@@ -71,6 +60,22 @@ export const userStakesQuery = gql`
         liquidity
         sender
         transactionHash
+      }
+    }
+  }
+`;
+
+export const protocolsQuery = gql`
+  {
+    protocols {
+      id
+      pools {
+        id
+        tokenB {
+          id
+          symbol
+          decimal
+        }
       }
     }
   }

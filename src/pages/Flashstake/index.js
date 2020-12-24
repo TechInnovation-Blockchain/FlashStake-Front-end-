@@ -87,6 +87,10 @@ let useStyles = makeStyles((theme) => ({
     //   fontSize: 8,
     // },
   },
+  selectTokenText: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+  },
   primaryText: {
     color: theme.palette.text.primary,
     fontWeight: 700,
@@ -303,14 +307,14 @@ let useStyles = makeStyles((theme) => ({
   gridSpace: {
     margin: theme.spacing(1, 0),
   },
-  // xAligned: {
+  // gridSpace4: {
   //   display: "flex",
   //   justifyContent: "center",
   // },
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
   },
-  connectText: {
+  warningText: {
     marginTop: theme.spacing(1),
   },
   gridSpace3: {
@@ -935,7 +939,7 @@ function Flashstake({
                         ) : (
                           <Typography
                             variant="body1"
-                            className={`${classes.secondaryText} ${classes.gridSpace} `}
+                            className={`${classes.secondaryText} `}
                           >
                             Select time unit to view rewards
                           </Typography>
@@ -960,7 +964,7 @@ function Flashstake({
                     ) : (
                       <Typography
                         variant="body1"
-                        className={`${classes.secondaryText} `}
+                        className={`${classes.selectTokenText}  `}
                       >
                         Select a token to view rewards
                       </Typography>
@@ -1112,11 +1116,11 @@ function Flashstake({
                   account &&
                   selectedRewardToken &&
                   !loadingRedux.allowance ? (
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         // variant="overline"
-                        variant="body1"
-                        className={classes.redText}
+                        variant="body2"
+                        className={`${classes.redText}`}
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
                         <b>APPROVE FLASH</b> */}
@@ -1135,18 +1139,18 @@ function Flashstake({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={`${classes.redText} ${classes.connectText}`}
+                        className={`${classes.redText} ${classes.warningText}`}
                       >
                         Connect wallet to stake
                       </Typography>
                     </Grid>
                   ) : chainId !== CONSTANTS.CHAIN_ID ||
                     web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item className={classes.gridSpace} xs={12}>
+                    <Grid item xs={12}>
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={classes.redText}
+                        className={`${classes.redText} ${classes.warningText}`}
                       >
                         {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
                         Change network to <b>rinkeby</b> to start <b>staking</b>
@@ -1323,7 +1327,6 @@ function Flashstake({
                       }
                       loading={loadingRedux.approval}
                     >
-                     
                       STAKE
                     </Button>
                   </Fragment>
