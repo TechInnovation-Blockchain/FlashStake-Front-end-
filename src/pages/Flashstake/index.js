@@ -311,7 +311,7 @@ let useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1, 0),
   },
   connectText: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   gridSpace3: {
     marginTop: theme.spacing(1),
