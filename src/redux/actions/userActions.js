@@ -167,17 +167,12 @@ export const nativePoolPrice = () => async (dispatch, getState) => {
     let flashPrice;
 
     Object.keys(poolData).filter((_data) => {
-      if (_data === "0xe0de5090961bfb0b251a3d84077bcb6147014976") {
+      if (_data === "0x064ca6451fa51f527cbfc0c134cfde971484440c") {
         flashPrice =
           poolData[_data]?.reserveFlashAmount /
           poolData[_data]?.reserveAltAmount;
       }
     });
-
-    // flashPrices[_poolData] =
-    // (poolData[_poolData]?.reserveAltAmount /
-    //   poolData[_poolData]?.reserveFlashAmount) *
-    // flashPrice,
 
     Object.keys(poolData).map((_poolData) => {
       if (poolData) {
@@ -199,7 +194,7 @@ export const nativePoolPrice = () => async (dispatch, getState) => {
 
 export const updatePools = (data) => async (dispatch) => {
   let _pools = [];
-  let _tokenList = [];
+  // let _tokenList = [];
   try {
     if (data?.length) {
       _pools = JSON.parse(JSON.stringify(data));
@@ -207,7 +202,7 @@ export const updatePools = (data) => async (dispatch) => {
         type: "POOL",
         payload: _pools,
       });
-      _tokenList = _pools.map((_pool) => _pool.tokenB);
+      // _tokenList = _pools.map((_pool) => _pool.tokenB);
       dispatch(updateApyPools("1", _pools));
     }
   } catch (e) {
@@ -218,13 +213,13 @@ export const updatePools = (data) => async (dispatch) => {
       type: "POOL",
       payload: _pools,
     });
-    dispatch({
-      type: "TOKEN_LIST",
-      payload: [
-        { id: CONSTANTS.ADDRESS_XIO_RINKEBY, decimal: 18 },
-        ..._tokenList,
-      ],
-    });
+    // dispatch({
+    //   type: "TOKEN_LIST",
+    //   payload: [
+    //     { id: CONSTANTS.ADDRESS_XIO_RINKEBY, decimal: 18 },
+    //     // ..._tokenList,
+    //   ],
+    // });
     dispatch(updateAllBalances());
   }
 };
@@ -436,7 +431,8 @@ export const updateAllBalances = () => async (dispatch, getState) => {
     ] = await getBalancesIntervaled(account, pools.length);
     dispatch({
       type: "WALLET_BALANCE",
-      payload: _balances[CONSTANTS.ADDRESS_XIO_RINKEBY] || "0",
+      payload:
+        _balances[String(CONSTANTS.ADDRESS_XIO_RINKEBY).toLowerCase()] || "0",
     });
     dispatch({
       type: "WALLET_BALANCES",

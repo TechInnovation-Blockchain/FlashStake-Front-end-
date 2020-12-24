@@ -31,6 +31,7 @@ import {
 import { debounce } from "../utils/debounceFunc";
 import { fetchTokenList } from "../utils/utilFunc";
 import { CONSTANTS } from "../utils/constants";
+import { addToTokenList } from "../redux/actions/contractActions";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -209,6 +210,11 @@ function DropdownDialog({
   nativePoolPrice,
   nativePrices,
   pools,
+  tokenList,
+  addToTokenList,
+  overrideOpen,
+  openProp,
+  setOpenProp,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -228,6 +234,19 @@ function DropdownDialog({
     }
   });
 
+  const updateTokensList = () => {
+    setTokensList(
+      tokenList.map((_token) => ({
+        id: pools.find(
+          (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
+        )?.id,
+        tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+      }))
+    );
+  };
+
+  useEffect(updateTokensList, [tokenList]);
+
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value);
   };
@@ -235,10 +254,6 @@ function DropdownDialog({
   useEffect(() => {
     setNativePrice(nativePoolPrice());
   }, [items]);
-
-  useEffect(() => {
-    getTokensList();
-  }, [tokensURI, pools]);
 
   const searchExistingToken = (id) => {
     if (
@@ -278,46 +293,6 @@ function DropdownDialog({
     }
   };
 
-  const getTokensList = async () => {
-    const data = await fetchTokenList(tokensURI.uri);
-    if (data?.data?.tokens && pools) {
-      let userTokens;
-      try {
-        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
-      } catch (e) {}
-      // setTokensList([...(data?.data?.tokens || []), ...(userTokens || [])]);
-
-      setTokensList(
-        [...(data?.data?.tokens || []), ...(userTokens || [])]
-          .filter(
-            (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
-          )
-          .map((_token) => ({
-            id: pools.find(
-              (_pool) =>
-                _pool.tokenB.id === String(_token.address).toLowerCase()
-            )?.id,
-            tokenB: { ..._token, id: String(_token.address).toLowerCase() },
-          }))
-      );
-    }
-  };
-
-  // const getTokensList = async () => {
-  //   const data = await axios.get(tokensURI.uri);
-  //   if (data?.data?.tokens && pools) {
-  //     setTokensList(
-  //       data?.data?.tokens.map((_token) => ({
-  //         id: pools.find(
-  //           (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
-  //         )?.id,
-  //         tokenB: { ..._token, id: String(_token.address).toLowerCase() },
-  //       }))
-  //     );
-
-  //   }
-  // };
-
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
   useEffect(() => {
     debouncedSearchToken(search);
@@ -325,7 +300,6 @@ function DropdownDialog({
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
-
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokensList?.filter((item) =>
@@ -342,10 +316,14 @@ function DropdownDialog({
     // } else {
     // return tokensList;
     // }
-  }, [search, items, getTokensList]);
+  }, [search, items, tokensList]);
 
   const onClose = useCallback(() => {
-    setOpen(false);
+    if (overrideOpen) {
+      setOpenProp(false);
+    } else {
+      setOpen(false);
+    }
   }, []);
 
   const onSelectLocal = (_pool) => {
@@ -354,10 +332,10 @@ function DropdownDialog({
   };
 
   useEffect(() => {
-    if (open && closeTimeout) {
+    if ((overrideOpen ? openProp : open) && closeTimeout) {
       setTimeout(onClose, closeTimeout);
     }
-  }, [closeTimeout, open, onClose]);
+  }, [closeTimeout, open, openProp, overrideOpen, onClose]);
 
   // {{
   //   if(selectedValue) {
@@ -392,18 +370,18 @@ function DropdownDialog({
   };
 
   const addTokenToList = useCallback(async () => {
-    let tokenList = [];
+    let _tokenList = [];
     try {
-      tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+      _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
     } catch (e) {}
     if (
-      !tokenList?.find(
+      !_tokenList?.find(
         (_tokenItem) => _tokenItem.address === token?.tokenB?.address
       )
     ) {
-      tokenList.push(token?.tokenB);
-      localStorage.setItem("tokenList", JSON.stringify(tokenList));
-      setTokensList((_tokenList) => [..._tokenList, token]);
+      _tokenList.push(token?.tokenB);
+      localStorage.setItem("tokenList", JSON.stringify(_tokenList));
+      addToTokenList(token);
     }
   }, [token]);
 
@@ -420,7 +398,11 @@ function DropdownDialog({
             className={
               _theme === "retro" ? classes.retroDropdown : classes.dropdown
             }
-            onClick={() => !disableDrop && !link && setOpen(true)}
+            onClick={() =>
+              !disableDrop && !link && overrideOpen
+                ? setOpenProp(true)
+                : setOpen(true)
+            }
           >
             <Typography variant="body1" className={classes.primaryText}>
               {selectedValue.tokenB?.symbol ? (
@@ -455,7 +437,11 @@ function DropdownDialog({
           className={
             _theme === "retro" ? classes.retroDropdown : classes.dropdown
           }
-          onClick={() => !disableDrop && !link && setOpen(true)}
+          onClick={() =>
+            !disableDrop && !link && overrideOpen
+              ? setOpenProp(true)
+              : setOpen(true)
+          }
         >
           <Typography variant="body1" className={classes.primaryText}>
             {selectedValue.tokenB?.symbol ? (
@@ -495,7 +481,7 @@ function DropdownDialog({
       )}
 
       <MuiDialog
-        open={open}
+        open={overrideOpen ? openProp : open}
         // open={true}
         onClose={onClose}
         PaperProps={{ className: classes.dialogPaper }}
@@ -542,12 +528,6 @@ function DropdownDialog({
                   key={_pool.id}
                   disabled={
                     !pools?.find((_item) => {
-                      console.log(
-                        "HEREEE",
-                        _item?.tokenB?.id,
-                        _pool?.tokenB?.address,
-                        _item?.tokenB?.symbol
-                      );
                       if (
                         _item?.tokenB?.id ===
                         _pool?.tokenB?.address.toLowerCase()
@@ -612,7 +592,6 @@ function DropdownDialog({
                 button
                 className={classes.listItem}
                 onClick={() => {
-                  // console.log("HEEEERE", token);
                   onSelectLocal(token);
                 }}
                 key={token.tokenB.address}
@@ -693,12 +672,16 @@ const mapStateToProps = ({
   user: { poolsApy, pools, nativePrices },
   ui: { tokensURI },
   query: { allPoolsData },
+  contract: { tokenList },
 }) => ({
   poolsApy,
   pools,
   tokensURI,
   allPoolsData,
   nativePrices,
+  tokenList,
 });
 
-export default connect(mapStateToProps, { nativePoolPrice })(DropdownDialog);
+export default connect(mapStateToProps, { nativePoolPrice, addToTokenList })(
+  DropdownDialog
+);

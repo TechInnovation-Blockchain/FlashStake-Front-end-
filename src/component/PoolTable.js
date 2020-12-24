@@ -79,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     padding: theme.spacing(2, 0),
   },
+  linkText: {
+    cursor: "pointer",
+  },
   msg: {
     marginBottom: theme.spacing(1),
     fontWeight: 700,
@@ -231,6 +234,7 @@ function PoolTable({
   theme,
   setExpandAccodion,
   setSelectedRewardToken,
+  importToken,
 }) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
@@ -530,6 +534,15 @@ function PoolTable({
                   <Typography variant="overline">NO POOLS AVAILABLE</Typography>
                 </Grid>
               )}
+              <Grid item xs={12} className={classes.msgContainer}>
+                <Typography variant="overline">
+                  DON'T SEE A POOL YOU JOINED?
+                  <br />
+                  <b onClick={importToken} className={classes.linkText}>
+                    ADD TOKEN TO SEE LP BALANCE
+                  </b>
+                </Typography>
+              </Grid>
             </Grid>
           </PageAnimation>
           <AddLiquidityDropDown
