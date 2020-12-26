@@ -7,6 +7,7 @@ import { getWalletAddressReduxState } from "../../redux/state";
 import {
   showSnackbarIndep,
   setLoadingIndep,
+  setCloseApprovel,
 } from "../../redux/actions/uiActions";
 import {
   setDialogStepIndep,
@@ -84,12 +85,14 @@ export const approve = async (address, tab, step, success = false, amount) => {
       //
       gasAmount = await contract.methods
         .approve(address, amount ? amount : MaxUint256._hex)
+        // .approve(address, "0")
         .estimateGas({ gas: 10000000, from: walletAddress });
     } catch (e) {
       _error("ERROR Approve gasAmount -> ", e);
     }
     //amount ? amount : MaxUint256._hex.
     const _approve = await contract.methods
+      // .approve(address, "0")
       .approve(address, amount ? amount : MaxUint256._hex)
       .send({
         from: walletAddress,
@@ -107,7 +110,11 @@ export const approve = async (address, tab, step, success = false, amount) => {
         }
         if (tab === "pool") {
           if (success) {
-            setPoolDialogStepIndep("successApproval");
+            // setPoolDialogStepIndep("successApproval");
+            // setLoadingIndep({ approval: false });
+            store.dispatch(setCloseApprovel(true));
+            // setLoadingIndep({ approvalWithdrawPool: false });
+            // return _approve;
           } else {
             if (step) {
               setPoolDialogStepIndep("approvalTokenProposal");

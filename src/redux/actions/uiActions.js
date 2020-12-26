@@ -64,6 +64,13 @@ export const showWalletBackdrop = (data) => {
   };
 };
 
+export const setCloseApprovel = (data) => {
+  return {
+    type: "CLOSE_APPROVAL",
+    payload: data,
+  };
+};
+
 export const showExpandBox = () => {
   walletBtnRef.current.scrollIntoView({ behavior: "smooth" });
 };

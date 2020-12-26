@@ -602,7 +602,7 @@ function Flashstake({
 
   useEffect(() => {
     if (active && account) {
-      // checkAllowance();
+      checkAllowance();
       // getBalanceXIO();
       // updateAllBalances();
       showWalletBackdrop(false);
@@ -847,7 +847,9 @@ function Flashstake({
                   </Grid>
 
                   {parseFloat(quantity) >
-                  allPoolsData[selectedRewardToken?.id]?.reserveAltAmount ? (
+                  parseFloat(
+                    allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
+                  ) ? (
                     <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         variant="body1"
@@ -1245,22 +1247,6 @@ function Flashstake({
                 dialogStep === "flashstakeProposal"
               : null
           }
-          // stepperShown={true}
-
-          // status="success"
-
-          //successApproval: (
-          //  <Fragment>
-          //    <Typography variant="body1" className={classes.textBold}>
-          //      APPROVAL
-          //      <br />
-          //      <span className={classes.greenText}>SUCCESSFUL</span>
-          //    </Typography>
-          //    <Button variant="retro" fullWidth onClick={onClickClose}>
-          //      CLOSE
-          //    </Button>
-          //  </Fragment>
-          //),
         >
           {
             {

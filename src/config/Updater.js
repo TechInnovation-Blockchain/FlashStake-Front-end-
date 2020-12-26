@@ -89,9 +89,21 @@ function Updater({
       try {
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
+
+      // console.log(
+      //   "HERE----->",
+      //   [...(data?.data?.tokens || []), ...(userTokens || [])].filter((_item) =>
+      //     // !_item.chainId ||
+      //     // _item.chainId === CONSTANTS.CHAIN_ID ||
+      //     pools.map((_pool) => _pool.tokenB.id !== _item.address)
+      //   )
+      // );
+
       updateTokenList(
-        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
-          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+        [...(data?.data?.tokens || []), ...(userTokens || [])].filter((_item) =>
+          // !_item.chainId ||
+          // _item.chainId === CONSTANTS.CHAIN_ID ||
+          pools.filter((_pool) => _pool.tokenB.id !== _item.address)
         )
       );
     }
