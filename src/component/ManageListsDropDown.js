@@ -273,7 +273,6 @@ function ManageListsDropDown({
     try {
       setLoader(true);
       const res = await axios.get(_list);
-      console.log("RESPONSE", res);
       if (res?.data?.name) {
         tokensListCutoms =
           JSON.parse(await localStorage.getItem("CustomTokenList")) || [];
@@ -284,7 +283,6 @@ function ManageListsDropDown({
           logoURI: res?.data?.logoURI,
         });
       }
-      console.log("RESPONSE", tokensListCutoms);
       localStorage.setItem("CustomTokenList", JSON.stringify(tokensListCutoms));
       getTokensList();
       setLoader(false);
@@ -293,7 +291,6 @@ function ManageListsDropDown({
       setLoader(false);
       setCustomTokenList({});
     }
-    // console.log("RESPONSE", customTokenList);
 
     // localStorage.setItem("TokensURL", customTokenList);
   };

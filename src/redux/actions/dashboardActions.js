@@ -261,6 +261,12 @@ export const setRefetch = (val) => {
     payload: val,
   };
 };
+export const setRefetchProtocols = (val) => {
+  return {
+    type: "REFETCH_PROTOCOLS",
+    payload: val,
+  };
+};
 
 export const setReCalculateExpired = (val) => {
   return {

@@ -25,6 +25,7 @@ import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
 import { utils } from "ethers";
 import { updateApyPools } from "./userActions";
+import { setRefetchProtocols } from "./dashboardActions";
 
 export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch({
@@ -484,7 +485,9 @@ export const getBalanceALT = () => async (dispatch, getState) => {
       return null;
     }
     if (active && account) {
-      balance = walletBalances[selectedRewardToken.tokenB.id] || 0;
+      balance =
+        walletBalances[String(selectedRewardToken.tokenB.id).toLowerCase()] ||
+        0;
     }
   } catch (e) {
     balance = 0;
@@ -505,11 +508,13 @@ export const getBalanceXIO = () => async (dispatch, getState) => {
       user: { walletBalances },
     } = getState();
     if (active && account) {
-      balance = walletBalances[CONSTANTS.ADDRESS_XIO_RINKEBY] || 0;
+      balance =
+        walletBalances[String(CONSTANTS.ADDRESS_XIO_RINKEBY).toLowerCase()] ||
+        0;
     }
   } catch (e) {
     balance = 0;
-    _error("ERROR getBalance -> ", e);
+    _error("ERROR getBalanceXIO -> ", e);
   } finally {
     dispatch({
       type: "BALANCE_XIO",
@@ -540,7 +545,7 @@ export const stakeXIO = (xioQuantity, days, time) => async (
         days,
         reward: utils.formatUnits(
           reward.toString(),
-          selectedRewardToken?.tokenB?.decimal
+          selectedRewardToken?.tokenB?.decimals
         ),
       },
     });

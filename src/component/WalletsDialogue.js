@@ -249,7 +249,7 @@ function WalletsDialogue({
           </IconButton>
         </Box>
 
-        <Box className={classes.closeBtnContainer}>
+        {/* <Box className={classes.closeBtnContainer}>
           <TextField
             placeholder="SEARCH"
             className={classes.textField}
@@ -266,7 +266,7 @@ function WalletsDialogue({
               <ClearOutlined />
             </IconButton>
           ) : null}
-        </Box>
+        </Box> */}
 
         {filteredData().length ? (
           <List className={classes.list}>

@@ -12,6 +12,7 @@ import {
   setDialogStepIndep,
   setRefetchIndep,
   setWithdrawTxnHashIndep,
+  setRefetchProtocols,
 } from "../../redux/actions/dashboardActions";
 import {
   setDialogStepIndep as setStakeDialogStepIndep,
@@ -30,6 +31,7 @@ import { analytics } from "../../config/App";
 import Web3 from "web3";
 import { _error, _log } from "../log";
 import { getAllQueryDataForced } from "../../redux/actions/queryActions";
+import { store } from "../../config/reduxStore";
 
 let contract;
 let isContractInitialized = false;
@@ -695,6 +697,8 @@ export const createPool = (_token) => {
             })
             .then(function (receipt) {
               setCreateDialogStepIndep("successCreatePool");
+
+              store.dispatch(setRefetchProtocols(true));
               showSnackbarTxnIndep(
                 "Create Pool Transaction Successful.",
                 "success",
@@ -702,7 +706,7 @@ export const createPool = (_token) => {
                 receipt.transactionHash,
                 false
               );
-              setRefetchIndep(true);
+              // setRefetchIndep(true);
               setLoadingIndep({ withdrawPool: false });
               _log(receipt);
               return receipt;

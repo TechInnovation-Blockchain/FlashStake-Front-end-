@@ -11,6 +11,7 @@ import Web3 from "web3";
 import { _error } from "../log";
 import { utils } from "ethers";
 import { store } from "../../config/reduxStore";
+import { CONSTANTS } from "../constants";
 
 let contract;
 let isContractInitialized = false;
@@ -35,20 +36,33 @@ export const getBalances = async () => {
       // throw new _error("Wallet not activated.");
       return [{}, 0, {}];
     }
-    const _tokenList = getTokenList();
-    const _pools = getPools();
+    const _tokenList = [
+      { address: CONSTANTS.ADDRESS_XIO_RINKEBY, decimals: 18 },
+      ...getTokenList(),
+    ].filter(
+      (_token) => !_token?.chainId || _token.chainId === CONSTANTS.CHAIN_ID
+    );
+    const _pools = getPools().filter((_pool) =>
+      _tokenList.find(
+        (_token) =>
+          String(_token.address).toLowerCase() ===
+          String(_pool.tokenB.id).toLowerCase()
+      )
+    );
+
     const _balances = await contract.methods
       .getBalances(
         walletAddress,
-        _tokenList.map((_token) => _token.id)
+        _tokenList.map((_token) => _token.address)
       )
       .call();
+
     let _balancesObj = {};
     let walletBalanceUSD = 0;
-    _tokenList.map(({ id, decimal }, index) => {
-      _balancesObj[id] = utils.formatUnits(
+    _tokenList.map(({ address, decimals }, index) => {
+      _balancesObj[String(address).toLowerCase()] = utils.formatUnits(
         _balances[index].toString(),
-        decimal || 18
+        decimals || 18
       );
       return null;
     });

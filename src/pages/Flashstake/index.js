@@ -87,6 +87,11 @@ let useStyles = makeStyles((theme) => ({
     //   fontSize: 8,
     // },
   },
+  selectTokenText: {
+    color: theme.palette.text.secondary,
+    fontWeight: 700,
+    textAlign: "center",
+  },
   primaryText: {
     color: theme.palette.text.primary,
     fontWeight: 700,
@@ -303,15 +308,15 @@ let useStyles = makeStyles((theme) => ({
   gridSpace: {
     margin: theme.spacing(1, 0),
   },
-  // xAligned: {
+  // gridSpace4: {
   //   display: "flex",
   //   justifyContent: "center",
   // },
   gridSpace2: {
     marginTop: theme.spacing(1, 0),
   },
-  connectText: {
-    marginTop: theme.spacing(2),
+  warningText: {
+    marginTop: theme.spacing(1),
   },
   gridSpace3: {
     marginTop: theme.spacing(1),
@@ -453,6 +458,7 @@ function Flashstake({
   maxDays,
   changeQuantityRedux,
   poolsApy,
+  allPoolsData,
   ...props
 }) {
   let classes = useStyles();
@@ -840,73 +846,84 @@ function Flashstake({
                     </Grid>
                   </Grid>
 
-                  <Grid item className={classes.gridSpace} xs={12}>
-                    {selectedRewardToken?.tokenB?.symbol ? (
-                      quantity && days > 0 ? (
-                        time !== "Select" ? (
-                          <Typography
-                            // variant="overline"
-                            variant="body1"
-                            className={classes.infoText}
-                          >
-                            If you stake{" "}
-                            <span className={classes.infoTextSpan}>
-                              {trunc(quantity) || 0} FLASH{" "}
-                            </span>{" "}
-                            for{" "}
-                            <span className={classes.infoTextSpan}>
-                              {trunc(days) || 0}{" "}
-                              {time === "Hrs"
-                                ? days > 1
-                                  ? "hours"
-                                  : "hour"
-                                : time === "Mins"
-                                ? days > 1
-                                  ? "Mins"
-                                  : "Min"
-                                : time === "Days"
-                                ? days > 1
-                                  ? "Days"
-                                  : "Day"
-                                : time}
-                              {/* {days > 1 ? "hours" : "hour"} */}
-                            </span>{" "}
-                            {/* YOU WILL IMMEDIATELY{" "} */}
-                            you will immediately {/* GET{" "} */}
-                            get{" "}
-                            {loadingRedux.reward ? (
-                              <CircularProgress
-                                size={12}
-                                className={classes.loaderStyle}
-                              />
-                            ) : quantity > 0 && days > 0 ? (
-                              <Tooltip
-                                title={`${utils.formatUnits(
-                                  preciseReward.toString(),
-                                  selectedRewardToken?.tokenB?.decimals || 18
-                                )} ${
-                                  selectedRewardToken?.tokenB?.symbol || ""
-                                }`}
-                              >
-                                <span className={classes.infoTextSpan}>
-                                  {trunc(
-                                    utils.formatUnits(
-                                      preciseReward.toString(),
-                                      selectedRewardToken?.tokenB?.decimals ||
-                                        18
-                                    )
-                                  )}{" "}
-                                  {selectedRewardToken?.tokenB?.symbol || ""}
-                                </span>
-                              </Tooltip>
-                            ) : (
-                              <Fragment>
-                                <span className={classes.infoTextSpan}>
-                                  {`0 ${
+                  {parseFloat(quantity) >
+                  allPoolsData[selectedRewardToken?.id]?.reserveAltAmount ? (
+                    <Grid item className={classes.gridSpace} xs={12}>
+                      <Typography
+                        variant="body1"
+                        className={`${classes.redText}  `}
+                      >
+                        Insufficient Liquidity
+                      </Typography>
+                    </Grid>
+                  ) : (
+                    <Grid item className={classes.gridSpace} xs={12}>
+                      {selectedRewardToken?.tokenB?.symbol ? (
+                        quantity && days > 0 ? (
+                          time !== "Select" ? (
+                            <Typography
+                              // variant="overline"
+                              variant="body1"
+                              className={classes.infoText}
+                            >
+                              If you stake{" "}
+                              <span className={classes.infoTextSpan}>
+                                {trunc(quantity) || 0} FLASH{" "}
+                              </span>{" "}
+                              for{" "}
+                              <span className={classes.infoTextSpan}>
+                                {trunc(days) || 0}{" "}
+                                {time === "Hrs"
+                                  ? days > 1
+                                    ? "hours"
+                                    : "hour"
+                                  : time === "Mins"
+                                  ? days > 1
+                                    ? "Mins"
+                                    : "Min"
+                                  : time === "Days"
+                                  ? days > 1
+                                    ? "Days"
+                                    : "Day"
+                                  : time}
+                                {/* {days > 1 ? "hours" : "hour"} */}
+                              </span>{" "}
+                              {/* YOU WILL IMMEDIATELY{" "} */}
+                              you will immediately {/* GET{" "} */}
+                              get{" "}
+                              {loadingRedux.reward ? (
+                                <CircularProgress
+                                  size={12}
+                                  className={classes.loaderStyle}
+                                />
+                              ) : quantity > 0 && days > 0 ? (
+                                <Tooltip
+                                  title={`${utils.formatUnits(
+                                    preciseReward.toString(),
+                                    selectedRewardToken?.tokenB?.decimals || 18
+                                  )} ${
                                     selectedRewardToken?.tokenB?.symbol || ""
                                   }`}
-                                </span>
-                                {/* with
+                                >
+                                  <span className={classes.infoTextSpan}>
+                                    {trunc(
+                                      utils.formatUnits(
+                                        preciseReward.toString(),
+                                        selectedRewardToken?.tokenB?.decimals ||
+                                          18
+                                      )
+                                    )}{" "}
+                                    {selectedRewardToken?.tokenB?.symbol || ""}
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <Fragment>
+                                  <span className={classes.infoTextSpan}>
+                                    {`0 ${
+                                      selectedRewardToken?.tokenB?.symbol || ""
+                                    }`}
+                                  </span>
+                                  {/* with
                                 <span className={classes.infoTextSpan}>
                                   `($
                                   {parseFloat(pools.apy).toFixed(2) -
@@ -916,56 +933,67 @@ function Flashstake({
                                     : parseInt(pools.apy)}
                                   %)`
                                 </span> */}
-                              </Fragment>
-                            )}{" "}
-                            {poolsApy[selectedRewardToken.id]
-                              ? `at ${
-                                  parseFloat(
-                                    poolsApy[selectedRewardToken.id]
-                                  ).toFixed(2) -
-                                    parseInt(poolsApy[selectedRewardToken.id]) >
-                                  0
-                                    ? parseFloat(
+                                </Fragment>
+                              )}{" "}
+                              {poolsApy[selectedRewardToken.id]
+                                ? `at ${
+                                    parseFloat(
+                                      poolsApy[selectedRewardToken.id]
+                                    ).toFixed(2) -
+                                      parseInt(
                                         poolsApy[selectedRewardToken.id]
-                                      ).toFixed(2)
-                                    : parseInt(poolsApy[selectedRewardToken.id])
-                                }% APY`
-                              : null}
-                          </Typography>
+                                      ) >
+                                    0
+                                      ? parseFloat(
+                                          poolsApy[selectedRewardToken.id]
+                                        ).toFixed(2)
+                                      : parseInt(
+                                          poolsApy[selectedRewardToken.id]
+                                        )
+                                  }% APY`
+                                : null}
+                            </Typography>
+                          ) : (
+                            <Typography
+                              variant="body1"
+                              className={`${classes.secondaryText} `}
+                            >
+                              Select time unit to view rewards
+                            </Typography>
+                          )
                         ) : (
                           <Typography
+                            // variant="overline"
                             variant="body1"
-                            className={`${classes.secondaryText} ${classes.gridSpace} `}
+                            className={classes.infoText}
                           >
-                            Select time unit to view rewards
+                            <span className={classes.infoTextSpan}>
+                              Fuel (FLASH){" "}
+                            </span>{" "}
+                            and{" "}
+                            <span className={classes.infoTextSpan}>
+                              Time ({time})
+                            </span>{" "}
+                            {/* YOU WILL IMMEDIATELY{" "} */}
+                            are needed for time travel
                           </Typography>
                         )
                       ) : (
-                        <Typography
-                          // variant="overline"
-                          variant="body1"
-                          className={classes.infoText}
-                        >
-                          <span className={classes.infoTextSpan}>
-                            Fuel (FLASH){" "}
-                          </span>{" "}
-                          and{" "}
-                          <span className={classes.infoTextSpan}>
-                            Time ({time})
-                          </span>{" "}
-                          {/* YOU WILL IMMEDIATELY{" "} */}
-                          are needed for time travel
+                        <Typography variant="body2" className={classes.redText}>
+                          Select a token to view rewards
                         </Typography>
-                      )
-                    ) : (
-                      <Typography
-                        variant="body1"
-                        className={`${classes.secondaryText} `}
-                      >
-                        Select a token to view rewards
+                      )}
+                    </Grid>
+                  )}
+                  {/* {||
+                  allPoolsData[selectedRewardToken?.id]?.reserveFlashAmount <
+                    quantityXIO ? (
+                    <Grid item xs={12}>
+                      <Typography variant="body2" className={classes.redText}>
+                        Insufficient Liquidity
                       </Typography>
-                    )}
-                  </Grid>
+                    </Grid>
+                  ) : null} */}
 
                   {!allowanceXIOProtocol ? (
                     <Grid
@@ -1057,7 +1085,12 @@ function Flashstake({
                     </Grid>
                   ) : (
                     <Fragment>
-                      <Grid item xs={12} onClick={showWalletHint}>
+                      <Grid
+                        item
+                        className={classes.gridSpace}
+                        xs={12}
+                        onClick={showWalletHint}
+                      >
                         <Button
                           fullWidth
                           variant="retro"
@@ -1112,11 +1145,11 @@ function Flashstake({
                   account &&
                   selectedRewardToken &&
                   !loadingRedux.allowance ? (
-                    <Grid item xs={12}>
+                    <Grid item className={classes.gridSpace} xs={12}>
                       <Typography
                         // variant="overline"
-                        variant="body1"
-                        className={classes.redText}
+                        variant="body2"
+                        className={`${classes.redText}`}
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
                         <b>APPROVE FLASH</b> */}
@@ -1135,18 +1168,18 @@ function Flashstake({
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={`${classes.redText} ${classes.connectText}`}
+                        className={`${classes.redText} ${classes.warningText}`}
                       >
                         Connect wallet to stake
                       </Typography>
                     </Grid>
                   ) : chainId !== CONSTANTS.CHAIN_ID ||
                     web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item className={classes.gridSpace} xs={12}>
+                    <Grid item xs={12}>
                       <Typography
                         // variant="overline"
                         variant="body2"
-                        className={classes.redText}
+                        className={`${classes.redText} ${classes.warningText}`}
                       >
                         {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
                         Change network to <b>rinkeby</b> to start <b>staking</b>
@@ -1907,6 +1940,7 @@ const mapStateToProps = ({
     expired,
     poolsApy,
   },
+  query: { allPoolsData },
   contract,
 }) => ({
   ...flashstake,
@@ -1929,6 +1963,7 @@ const mapStateToProps = ({
   totalBurn,
   changeApp,
   poolsApy,
+  allPoolsData,
   ...contract,
 });
 

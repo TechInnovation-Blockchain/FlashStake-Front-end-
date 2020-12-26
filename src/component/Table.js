@@ -377,7 +377,6 @@ function TableComponent({
                             item
                             xs={12}
                             key={_stake.id}
-                            // ////////////////////////////// LOGIC ERROR HERE
                             onClick={() => selectStake(_stake.id)}
                             className={`${classes.cursorPointer} ${
                               selectedStakes[_stake.id]
@@ -463,6 +462,7 @@ function TableComponent({
                               ) : (
                                 "Completed"
                               )}
+                              {/* && _stake.burnAmount > 0  */}
                               {isStakesSelected ? (
                                 <Checkbox
                                   size="small"

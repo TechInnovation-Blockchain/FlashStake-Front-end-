@@ -174,7 +174,8 @@ function WalletConnect({
 
   useEffect(() => {
     activateWallet();
-  }, []);
+    //
+  }, [window.ethereum._state.isUnlocked === true]);
 
   return (
     <Fragment>

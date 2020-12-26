@@ -3,10 +3,13 @@ import { connect } from "react-redux";
 import { useQuery } from "@apollo/client";
 
 import { setLoading } from "../redux/actions/uiActions";
+import { updateTokenList } from "../redux/actions/contractActions";
+
 import {
   setRefetch,
   setReCalculateExpired,
   setStakeStatus,
+  setRefetchProtocols,
 } from "../redux/actions/dashboardActions";
 import {
   updatePools,
@@ -16,7 +19,10 @@ import {
   setPoolData,
   setPoolDataBalance,
 } from "../redux/actions/userActions";
-import { userStakesQuery } from "../graphql/queries/userStakesQuery";
+import {
+  userStakesQuery,
+  protocolsQuery,
+} from "../graphql/queries/userStakesQuery";
 import {
   getBalanceXIO,
   getBalanceALT,
@@ -25,6 +31,8 @@ import {
 import { analytics } from "./App";
 import { updateOneDay } from "../redux/actions/contractActions";
 import { getQueryData, getAllQueryData } from "../redux/actions/queryActions";
+import { fetchTokenList } from "../utils/utilFunc";
+import { CONSTANTS } from "../utils/constants";
 // import { getPoolBalances } from "../utils/contractFunctions/balanceContractFunctions";
 
 function Updater({
@@ -34,7 +42,9 @@ function Updater({
   updatePools,
   updateUserData,
   refetchData,
+  refetchPools,
   setRefetch,
+  setRefetchProtocols,
   setLoading,
   currentStaked,
   reCalculateExpired,
@@ -48,6 +58,10 @@ function Updater({
   updateOneDay,
   oneDay,
   walletBalancesPool,
+  tokensURI,
+  pools,
+  updateTokenList,
+  tokenList,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -56,9 +70,40 @@ function Updater({
     fetchPolicy: "network-only",
   });
 
+  const {
+    loading: loadingProtocol,
+    data: dataProtocols,
+    refetch: refetchProtocols,
+  } = useQuery(protocolsQuery, {
+    fetchPolicy: "network-only",
+  });
+
   useEffect(() => {
     updateOneDay();
   }, []);
+
+  const getTokensList = async () => {
+    const data = await fetchTokenList(tokensURI.uri);
+    if (data?.data?.tokens && pools) {
+      let userTokens;
+      try {
+        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
+      } catch (e) {}
+      updateTokenList(
+        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
+          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+        )
+      );
+    }
+  };
+
+  useEffect(() => {
+    getTokensList();
+  }, [tokensURI, pools]);
+
+  useEffect(() => {
+    updateAllBalances();
+  }, [tokenList]);
 
   useEffect(() => {
     if (active && account) {
@@ -124,14 +169,24 @@ function Updater({
   }, [refetchData]);
 
   useEffect(() => {
-    updatePools(data?.protocols[0]?.pools);
+    if (refetchPools) {
+      refetchProtocols();
+      setRefetchProtocols(false);
+    }
+  }, [refetchPools]);
+
+  useEffect(() => {
+    updatePools(dataProtocols?.protocols[0]?.pools);
+  }, [dataProtocols]);
+
+  useEffect(() => {
     updateUserData(data?.user);
 
     let reCalculateInterval = setInterval(() => {
       updateUserData(data?.user);
     }, 60000);
     return () => clearInterval(reCalculateInterval);
-  }, [data, updatePools, updateUserData, oneDay]);
+  }, [data, updateUserData, oneDay]);
 
   return null;
 }
@@ -140,6 +195,7 @@ const mapStateToProps = ({
   web3: { active, account, chainId },
   dashboard: {
     refetch,
+    refetchProtocols,
     reCalculateExpired,
     stakeStatus,
     isStakesSelected,
@@ -153,13 +209,15 @@ const mapStateToProps = ({
     poolItems,
     walletBalancesPool,
   },
+  ui: { tokensURI },
   flashstake: { selectedPortal },
-  contract: { oneDay },
+  contract: { oneDay, tokenList },
 }) => ({
   active,
   account,
   chainId,
   refetchData: refetch,
+  refetchPools: refetchProtocols,
   currentStaked,
   reCalculateExpired,
   selectedPortal,
@@ -172,6 +230,8 @@ const mapStateToProps = ({
   pools,
   poolItems,
   walletBalancesPool,
+  tokensURI,
+  tokenList,
 });
 
 export default connect(mapStateToProps, {
@@ -190,5 +250,7 @@ export default connect(mapStateToProps, {
   setPoolDataBalance,
   getQueryData,
   setStakeStatus,
+  setRefetchProtocols,
   // getPoolBalances,
+  updateTokenList,
 })(Updater);
