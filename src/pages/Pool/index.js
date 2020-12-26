@@ -412,6 +412,7 @@ function Pool({
   setPoolData,
   poolData,
   theme,
+  allPoolsData,
   ...props
 }) {
   const classes = useStyles();
@@ -1013,6 +1014,8 @@ function Pool({
                       </Grid>
                     </Fragment>
                   )}
+
+                 
                   {!allowanceXIOPool &&
                   active &&
                   account &&
@@ -1460,7 +1463,7 @@ const mapStateToProps = ({
   ui: { loading, expanding, animation, heightVal, theme },
   web3: { active, account, chainId },
   user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
-  query: { reserveFlashAmount, reserveAltAmount },
+  query: { reserveFlashAmount, reserveAltAmount, allPoolsData },
   contract,
 }) => ({
   ...flashstake,
@@ -1479,6 +1482,7 @@ const mapStateToProps = ({
   walletBalancesPool,
   poolData,
   theme,
+  allPoolsData,
   ...contract,
 });
 

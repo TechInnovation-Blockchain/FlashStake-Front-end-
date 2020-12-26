@@ -462,6 +462,7 @@ function TableComponent({
                               ) : (
                                 "Completed"
                               )}
+                              {/* && _stake.burnAmount > 0  */}
                               {isStakesSelected ? (
                                 <Checkbox
                                   size="small"
