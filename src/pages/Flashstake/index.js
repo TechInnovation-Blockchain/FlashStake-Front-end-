@@ -80,7 +80,7 @@ let useStyles = makeStyles((theme) => ({
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     marginBottom: theme.spacing(1),
     // [theme.breakpoints.down("xs")]: {
@@ -89,43 +89,43 @@ let useStyles = makeStyles((theme) => ({
   },
   selectTokenText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     textAlign: "center",
   },
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   redText: {
     // fontSize: 10,
-    fontWeight: 700,
+    fontWeight: 600,
     color: theme.palette.xioRed.main,
   },
   infoText: {
     // fontSize: 10,
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   infoTextSpan: {
     // fontSize: 10,
-    fontWeight: 900,
+    fontWeight: 500,
     color: theme.palette.xioRed.main,
     position: "relative",
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary2,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textBold: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   xIcon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 900,
+    fontWeight: 500,
     marginTop: theme.spacing(4),
     // fontSize: 15,
     alignSelf: "center",
@@ -147,7 +147,7 @@ let useStyles = makeStyles((theme) => ({
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 4),
       lineHeight: 1.5,
       textAlign: "center",
@@ -235,7 +235,7 @@ let useStyles = makeStyles((theme) => ({
   },
   restakeText: {
     color: "#555555",
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 11,
     cursor: "pointer",
   },
@@ -280,7 +280,7 @@ let useStyles = makeStyles((theme) => ({
   },
   stakeDashBtn: {
     color: "inherit",
-    fontWeight: 700,
+    fontWeight: 500,
   },
   icon: {
     color: theme.palette.xioRed.main,
@@ -303,7 +303,7 @@ let useStyles = makeStyles((theme) => ({
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   gridSpace: {
     margin: theme.spacing(1, 0),
@@ -338,7 +338,7 @@ let useStyles = makeStyles((theme) => ({
     },
   },
   timeText: {
-    fontWeight: 700,
+    fontWeight: 500,
     color: "#9191A7",
     "&:hover": {
       // background: theme.palette.background.primary,
@@ -1155,8 +1155,7 @@ function Flashstake({
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
                         <b>APPROVE FLASH</b> */}
-                        Before you can <b>stake</b>, you must{" "}
-                        <b>approve FLASH</b>
+                        Approve <b>FLASH</b>, before <b>staking</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1176,18 +1175,8 @@ function Flashstake({
                       </Typography>
                     </Grid>
                   ) : chainId !== CONSTANTS.CHAIN_ID ||
-                    web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item xs={12}>
-                      <Typography
-                        // variant="overline"
-                        variant="body2"
-                        className={`${classes.redText} ${classes.warningText}`}
-                      >
-                        {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                        Change network to <b>rinkeby</b> to start <b>staking</b>
-                      </Typography>
-                    </Grid>
-                  ) : null}
+                    web3context.error instanceof
+                      UnsupportedChainIdError ? null : null}
                 </Grid>
               </AccordionDetails>
             </Accordion>

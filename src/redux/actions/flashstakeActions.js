@@ -962,6 +962,7 @@ export const createPool = (_token) => async (dispatch, getState) => {
     });
     initializeFlashstakeProtocolContract();
     await createPoolContract(_token.address);
+   
   } catch (e) {
     _error("ERROR createPool -> ", e);
   }

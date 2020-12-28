@@ -14,8 +14,9 @@ import {
   TablePagination,
   Box,
   Checkbox,
-  Radio,
 } from "@material-ui/core";
+
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
@@ -33,17 +34,26 @@ import {
 import { store } from "../config/reduxStore";
 import { useHistory } from "react-router-dom";
 import { CONSTANTS } from "../utils/constants";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
     borderBottom: `1px solid ${theme.palette.border.gray}`,
   },
+  // root: {
+  //   color: theme.palette.xioRed.main,
+  //   "&$checked": {
+  //     color: theme.palette.xioRed.main,
+  //   },
+  // },
+  // checked: {},
   gridItem: {
     ...theme.typography.body2,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontWeight: 700,
+    fontWeight: 500,
 
     margin: theme.spacing(1, 0),
   },
@@ -54,30 +64,30 @@ const useStyles = makeStyles((theme) => ({
   },
   redText: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   sortIcon: {
     color: theme.palette.xioRed.main,
   },
   tableHeadItemBtn: {
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     color: theme.palette.text.secondary,
     display: "flex",
   },
   msgContainer: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     padding: theme.spacing(2, 0),
   },
   msg: {
     marginBottom: theme.spacing(1),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   cursorPointer: {
     cursor: "pointer",
@@ -91,9 +101,21 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.xioRed.main,
     },
   },
+  gridSp: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+  },
+  radioBtn: {
+    padding: 0,
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
   mainHead: {
     // fontSize: 9,
-    fontWeight: 700,
+    fontWeight: 600,
     color: theme.palette.text.grey,
     margin: theme.spacing(2, 0),
     textAlign: "center",
@@ -126,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 1, 0),
   },
   disabledText: {
-    fontWeight: 700,
+    fontWeight: 500,
     color: theme.palette.text.disabled,
     textAlign: "center",
   },
@@ -336,13 +358,7 @@ function TableComponent({
           </Grid>
         ) : !loading ? (
           stakes?.length ? (
-            chainId !== CONSTANTS.CHAIN_ID ? (
-              <Grid item xs={12} className={classes.msgContainer}>
-                <Typography variant="body2" className={classes.redText}>
-                  Change network to rinkeby to unstake tokens
-                </Typography>
-              </Grid>
-            ) : (
+            chainId !== CONSTANTS.CHAIN_ID ? null : (
               <Fragment>
                 <PageAnimation in={true} key={page} reverse={reverse}>
                   <Grid container>
@@ -431,7 +447,11 @@ function TableComponent({
                               </Tooltip>
                             </Grid>
 
-                            <Grid item xs={4} className={classes.gridItem}>
+                            <Grid
+                              item
+                              xs={4}
+                              className={`${classes.gridItem} ${classes.gridSp}`}
+                            >
                               {!_stake.expired &&
                               _stake.expiryTime > Date.now() / 1000 ? (
                                 <Fragment>
@@ -464,18 +484,32 @@ function TableComponent({
                               )}
                               {/* && _stake.burnAmount > 0  */}
                               {isStakesSelected ? (
-                                <Checkbox
-                                  size="small"
-                                  checked={
-                                    selectedStakes[_stake.id] ? true : false
-                                  }
-                                  // checked={false}
-                                  // disabled
-                                  // inputProps={{
-                                  // //   "aria-label": "disabled checkbox",
-                                  // }}
-                                  className={classes.checkbox}
-                                />
+                                _stake.burnAmount > 0 ? (
+                                  <Radio
+                                    checked={
+                                      selectedStakes[_stake.id] ? true : false
+                                    }
+                                    // onChange={handleChange}
+                                    color="inherit"
+                                    // value=
+                                    className={classes.radioBtn}
+                                    name="radio-button-demo"
+                                    inputProps={{ "aria-label": "A" }}
+                                  />
+                                ) : (
+                                  <Checkbox
+                                    size="small"
+                                    checked={
+                                      selectedStakes[_stake.id] ? true : false
+                                    }
+                                    // checked={false}
+                                    // disabled
+                                    // inputProps={{
+                                    // //   "aria-label": "disabled checkbox",
+                                    // }}
+                                    className={classes.checkbox}
+                                  />
+                                )
                               ) : null}
                             </Grid>
                           </Grid>

@@ -105,11 +105,9 @@ function Updater({
 
       updateTokenList(
         [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
-          (_item) =>
-            // !_item.chainId ||
-            // _item.chainId === CONSTANTS.CHAIN_ID ||
-            // pools.filter((_pool) => _pool.tokenB.id !== _item.address)
-            !allPoolsData[_item.address]
+          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+          // pools.filter((_pool) => _pool.tokenB.id !== _item.address)
+          // !allPoolsData[_item.address]
         )
       );
     }

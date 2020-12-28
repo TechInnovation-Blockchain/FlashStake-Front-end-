@@ -247,13 +247,13 @@ function DropdownDialog2({
 
   const history = useHistory();
 
-  useEffect(() => {
-    if (getTokensLoader) {
-      setTimeout(() => {
-        setTokensLoader(false);
-      }, 10000);
-    }
-  });
+  // useEffect(() => {
+  //   if (getTokensLoader) {
+  //     setTimeout(() => {
+  //       setTokensLoader(false);
+  //     }, 10000);
+  //   }
+  // });
 
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toLowerCase());
@@ -322,8 +322,13 @@ function DropdownDialog2({
 
       debouncedSearchToken(search);
     } else
-      return tokenList.filter((item) =>
-        item.symbol.toUpperCase().includes(search.toUpperCase())
+      return tokenList.filter(
+        (item) =>
+          item.symbol.toUpperCase().includes(search.toUpperCase()) &&
+          !pools?.find(
+            (__item) => __item?.tokenB?.id == String(item.address).toLowerCase()
+          ) &&
+          pools
       );
   }, [search, items, tokenList]);
 
@@ -389,7 +394,9 @@ function DropdownDialog2({
           {token.address ? (
             <Fragment>
               <img
-                src={token?.logoURI || tryRequire(token?.symbol)}
+                src={
+                  tryRequireLogo(token?.logoURI) || tryRequire(token?.symbol)
+                }
                 alt="Logo"
                 srcSet=""
                 width={15}
@@ -445,7 +452,7 @@ function DropdownDialog2({
             ) : null}
           </Box>
 
-          {filteredData()?.length ? (
+          {filteredData().length && pools.length ? (
             <List className={classes.list}>
               {filteredData()?.map((_pool) => (
                 <ListItem
@@ -459,13 +466,13 @@ function DropdownDialog2({
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
                   // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
-                  disabled={
-                    pools?.find(
-                      (_item) =>
-                        _item?.tokenB?.id ===
-                        String(_pool.address).toLowerCase()
-                    ) || _pool?.chainId !== CONSTANTS.CHAIN_ID
-                  }
+                  // disabled={
+                  //   pools?.find(
+                  //     (_item) =>
+                  //       _item?.tokenB?.id ===
+                  //       String(_pool.address).toLowerCase()
+                  //   ) || _pool?.chainId !== CONSTANTS.CHAIN_ID
+                  // }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}

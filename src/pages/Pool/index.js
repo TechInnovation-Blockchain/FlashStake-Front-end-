@@ -86,11 +86,11 @@ const useStyles = makeStyles((theme) => ({
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     marginBottom: theme.spacing(1),
     // [theme.breakpoints.down("xs")]: {
@@ -99,45 +99,45 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryText2: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     textAlign: "center",
     width: "100%",
     padding: theme.spacing(1, 0),
   },
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   redText: {
     // fontSize: 10,
-    fontWeight: 700,
+    fontWeight: 500,
     color: theme.palette.xioRed.main,
   },
   infoText: {
     // fontSize: 10,
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   infoTextSpan: {
     // fontSize: 10,
-    fontWeight: 900,
+    fontWeight: 500,
     color: theme.palette.xioRed.main,
     position: "relative",
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary2,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textBold: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   xIcon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 900,
+    fontWeight: 500,
     marginTop: 30,
     // fontSize: 15,
     alignSelf: "center",
@@ -157,7 +157,7 @@ const useStyles = makeStyles((theme) => ({
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 1),
       lineHeight: 1.5,
       textAlign: "center",
@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.border.secondary}`,
   },
   mainHeading: {
-    fontWeight: 900,
+    fontWeight: 500,
   },
   link: {
     color: "inherit",
@@ -230,7 +230,7 @@ const useStyles = makeStyles((theme) => ({
   },
   restakeText: {
     color: "#555555",
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 11,
     cursor: "pointer",
   },
@@ -275,7 +275,7 @@ const useStyles = makeStyles((theme) => ({
   },
   stakeDashBtn: {
     color: "inherit",
-    fontWeight: 700,
+    fontWeight: 500,
   },
 
   icon: {
@@ -325,7 +325,7 @@ const useStyles = makeStyles((theme) => ({
   innerBox2: {
     width: "100%",
     margin: theme.spacing(0.5, 0),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   innerText2: {
     textAlign: "left",
@@ -505,7 +505,7 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-
+  console.log("loooo", poolsLiquidityList);
   useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
@@ -998,7 +998,9 @@ function Pool({
                     </Fragment>
                   ) : null}
 
-                  {selectedRewardToken?.tokenB?.symbol ? (
+                  {poolsLiquidityList.find(
+                    (__pool) => __pool.pool.id === selectedRewardToken.id
+                  ) ? (
                     <Fragment>
                       <Grid container className={classes.outerBG}>
                         <Grid xs={12} item className={classes.outerBoxHeading}>
@@ -1214,8 +1216,7 @@ function Pool({
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
-                        Before you can <b>pool</b>, you must{" "}
-                        <b>approve FLASH</b>
+                        Approve <b>FLASH</b>, before <b>pool</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1231,13 +1232,8 @@ function Pool({
                       </Typography>
                     </Grid>
                   ) : chainId !== CONSTANTS.CHAIN_ID ||
-                    web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item xs={12}>
-                      <Typography variant="body2" className={classes.redText}>
-                        Change network to <b>rinkeby</b> to add liquidity
-                      </Typography>
-                    </Grid>
-                  ) : null}
+                    web3context.error instanceof
+                      UnsupportedChainIdError ? null : null}
                 </Grid>
               </AccordionDetails>
             </Accordion>

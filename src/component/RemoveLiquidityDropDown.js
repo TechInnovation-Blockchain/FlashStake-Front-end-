@@ -31,7 +31,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
     cursor: "Pointer",
     display: "flex",
     alignItems: "center",
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 0,
     // margin: theme.spacing(1),
-    fontWeight: 900,
+    fontWeight: 700,
   },
   closeBtnContainer: {
     display: "flex",
@@ -97,13 +97,13 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogHeading: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textField: {
     background: theme.palette.background.secondary3,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 1),
       // fontSize: 16,
       lineHeight: 1.5,
@@ -133,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
     // },
   },
   listItemText: {
-    fontWeight: 700,
+    fontWeight: 500,
     display: "flex",
     alignItems: "center",
   },
@@ -144,7 +144,7 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -163,14 +163,14 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 2,
     lineHeight: 1.2,
     borderRadius: theme.palette.ButtonRadius.small,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   headingBox: {
     paddingBottom: theme.spacing(1),
     borderBottom: `1px solid ${theme.palette.border.secondary}`,
   },
   mainHeading: {
-    fontWeight: 900,
+    fontWeight: 700,
   },
   firstBox: {
     backgroundColor: theme.palette.background.liquidity,
@@ -196,14 +196,14 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   fontStyle: {
-    fontWeight: 900,
+    fontWeight: 700,
     padding: theme.spacing(0.5, 0),
   },
   removeText: {
-    fontWeight: 900,
+    fontWeight: 700,
   },
   fontWeight: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   info: {
     textAlign: "center",

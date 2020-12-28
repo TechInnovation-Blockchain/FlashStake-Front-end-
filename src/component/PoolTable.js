@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontWeight: 700,
+    fontWeight: 500,
 
     margin: theme.spacing(1, 0),
   },
@@ -58,34 +58,35 @@ const useStyles = makeStyles((theme) => ({
   },
   redText: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   sortIcon: {
     color: theme.palette.xioRed.main,
   },
   tableHeadItemBtn: {
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     color: theme.palette.text.secondary,
     display: "flex",
   },
   msgContainer: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     padding: theme.spacing(2, 0),
   },
   linkText: {
     cursor: "pointer",
     color: theme.palette.xioRed.main,
+    fontWeight: 600,
   },
   msg: {
     marginBottom: theme.spacing(1),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   cursorPointer: {
     cursor: "pointer",
@@ -101,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainHead: {
     // fontSize: 9,
-    fontWeight: 700,
+    fontWeight: 600,
     color: theme.palette.text.grey,
     margin: theme.spacing(2, 0),
     textAlign: "center",
@@ -157,7 +158,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   heading: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   accordionSummary: {
     margin: 0,
@@ -179,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
   innerBox: {
     width: "100%",
     margin: theme.spacing(0.5, 0),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   innerText: {
     textAlign: "left",
@@ -189,7 +190,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 !important",
   },
   fontWeight: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   liqBtn: {
     background: theme.palette.button.retro,
@@ -214,7 +215,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 2,
     lineHeight: 1.2,
     borderRadius: theme.palette.ButtonRadius.small,
-    fontWeight: 700,
+    fontWeight: 500,
   },
 }));
 
@@ -359,13 +360,7 @@ function PoolTable({
           <PageAnimation in={true} key={page} reverse={false}>
             <Grid container className={classes.gridSpacing} item>
               {poolsLiquidityList.length > 0 ? (
-                chainId !== CONSTANTS.CHAIN_ID ? (
-                  <Grid item xs={12} className={classes.msgContainer}>
-                    <Typography variant="body2" className={classes.redText}>
-                      Change network to rinkeby to see pools
-                    </Typography>
-                  </Grid>
-                ) : (
+                chainId !== CONSTANTS.CHAIN_ID ? null : (
                   poolsLiquidityList.map((_pool) => (
                     <Accordion
                       className={classes.accordion}

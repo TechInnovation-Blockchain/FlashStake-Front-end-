@@ -31,7 +31,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
     cursor: "Pointer",
     display: "flex",
     alignItems: "center",
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 0,
     // margin: theme.spacing(1),
-    fontWeight: 900,
+    fontWeight: 500,
   },
   closeBtnContainer: {
     display: "flex",
@@ -105,13 +105,13 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogHeading: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textField: {
     background: theme.palette.background.secondary3,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 1),
       // fontSize: 16,
       lineHeight: 1.5,
@@ -141,7 +141,7 @@ const useStyles = makeStyles((theme) => ({
     // },
   },
   listItemText: {
-    fontWeight: 700,
+    fontWeight: 500,
     display: "flex",
     alignItems: "center",
   },
@@ -152,7 +152,7 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -170,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.buttonText.dark,
     letterSpacing: 2,
     lineHeight: 1.2,
-    fontWeight: 700,
+    fontWeight: 500,
     borderRadius: theme.palette.ButtonRadius.small,
   },
   headingBox: {
@@ -178,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.border.secondary}`,
   },
   mainHeading: {
-    fontWeight: 900,
+    fontWeight: 500,
   },
   firstBox: {
     backgroundColor: theme.palette.background.liquidity,
@@ -204,10 +204,10 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   fontStyle: {
-    fontWeight: 900,
+    fontWeight: 500,
   },
   removeText: {
-    fontWeight: 900,
+    fontWeight: 500,
     textTransform: "uppercase",
   },
   info: {
@@ -223,7 +223,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   fontWeight: {
-    fontweight: 700,
+    fontweight: 500,
   },
 }));
 

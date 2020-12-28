@@ -88,7 +88,7 @@ let useStyles = makeStyles((theme) => ({
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     margin: theme.spacing(1, 0),
     // [theme.breakpoints.down("xs")]: {
@@ -97,42 +97,42 @@ let useStyles = makeStyles((theme) => ({
   },
   secondaryText1: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   redText: {
     // fontSize: 10,
-    fontWeight: 700,
+    fontWeight: 500,
     color: theme.palette.xioRed.main,
   },
   infoText: {
     // fontSize: 10,
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   infoTextSpan: {
     // fontSize: 10,
-    fontWeight: 900,
+    fontWeight: 500,
     color: theme.palette.xioRed.main,
     position: "relative",
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary2,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textBold: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   xIcon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 900,
+    fontWeight: 500,
     marginTop: 30,
     // fontSize: 15,
     alignSelf: "center",
@@ -148,7 +148,7 @@ let useStyles = makeStyles((theme) => ({
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
     margin: theme.spacing(4, 0),
   },
   textField: {
@@ -159,7 +159,7 @@ let useStyles = makeStyles((theme) => ({
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 1),
       lineHeight: 1.5,
       textAlign: "center",
@@ -224,7 +224,7 @@ let useStyles = makeStyles((theme) => ({
   },
   restakeText: {
     color: "#555555",
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 11,
     cursor: "pointer",
   },
@@ -269,7 +269,7 @@ let useStyles = makeStyles((theme) => ({
   },
   stakeDashBtn: {
     color: "inherit",
-    fontWeight: 700,
+    fontWeight: 500,
   },
   icon: {
     color: theme.palette.xioRed.main,
@@ -292,7 +292,7 @@ let useStyles = makeStyles((theme) => ({
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   gridSpace: {
     margin: theme.spacing(1, 0),
@@ -317,7 +317,7 @@ let useStyles = makeStyles((theme) => ({
     },
   },
   timeText: {
-    fontWeight: 700,
+    fontWeight: 500,
     color: "#9191A7",
     "&:hover": {
       // background: theme.palette.background.primary,
@@ -451,6 +451,7 @@ function Vote({
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
   const [token, setToken] = useState({});
+  const [loadingcreate, setLoadingcreate] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -467,10 +468,12 @@ function Vote({
   //   }, 100);
   // });
 
-  const handleCreatePool = (token) => {
+  const handleCreatePool = async (token) => {
+    // setLoadingcreate(true);
     setCreateDialogStep("pendingCreatePool");
     setShowStakeDialog(true);
     createPool(token);
+    // setLoadingcreate(false);
   };
 
   const toggle = () => {
@@ -660,7 +663,8 @@ function Vote({
                     <Button
                       fullWidth
                       variant="retro"
-                      disabled={!token?.decimals}
+                      disabled={!token?.decimals || loadingRedux.createPool}
+                      loading={loadingRedux.createPool}
                       onClick={() => handleCreatePool(token)}
                     >
                       CREATE
@@ -683,18 +687,8 @@ function Vote({
                       </Typography>
                     </Grid>
                   ) : chainId !== CONSTANTS.CHAIN_ID ||
-                    web3context.error instanceof UnsupportedChainIdError ? (
-                    <Grid item className={classes.gridSpace} xs={12}>
-                      <Typography
-                        // variant="overline"
-                        variant="body2"
-                        className={classes.redText}
-                      >
-                        {/* CHANGE NETWORK TO <b>RINKEBY</b> TO START <b>STAKING</b> */}
-                        Change network to <b>rinkeby</b> to create <b>pools</b>
-                      </Typography>
-                    </Grid>
-                  ) : null}
+                    web3context.error instanceof
+                      UnsupportedChainIdError ? null : null}
                 </Grid>
               </AccordionDetails>
             </Accordion>

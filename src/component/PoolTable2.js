@@ -310,13 +310,7 @@ function PoolTable({
               Connect wallet to view your pools
             </Typography>
           </Grid>
-        ) : chainId !== CONSTANTS.CHAIN_ID ? (
-          <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="body2" className={classes.redText}>
-              Change network to rinkeby to add/remove liquidity
-            </Typography>
-          </Grid>
-        ) : !loading ? (
+        ) : chainId !== CONSTANTS.CHAIN_ID ? null : !loading ? (
           poolDashboard?.length ? (
             <Fragment>
               <PageAnimation in={true} key={page} reverse={reverse}>
