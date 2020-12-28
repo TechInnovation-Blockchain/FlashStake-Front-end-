@@ -166,6 +166,13 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.xioRed.main,
     },
   },
+  headingBox: {
+    paddingBottom: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.border.secondary}`,
+  },
+  mainHeading: {
+    fontWeight: 900,
+  },
   link: {
     color: "inherit",
     textDecoration: "none",
@@ -270,6 +277,7 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     fontWeight: 700,
   },
+
   icon: {
     color: theme.palette.xioRed.main,
   },
@@ -302,6 +310,31 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  outerBox2: {
+    display: "flex",
+    width: "100%",
+  },
+
+  outerBoxHeading: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+  },
+  innerBox2: {
+    width: "100%",
+    margin: theme.spacing(0.5, 0),
+    fontWeight: 700,
+  },
+  innerText2: {
+    textAlign: "left",
+  },
+  outerBG: {
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.liquidity,
+    borderRadius: 10,
+    margin: theme.spacing(1),
   },
 }));
 
@@ -413,13 +446,16 @@ function Pool({
   poolData,
   theme,
   allPoolsData,
+  poolDashboard,
   ...props
 }) {
   const classes = useStyles();
   const history = useHistory();
   const [showStakeDialog, setShowStakeDialog] = useState(false);
+  const [showStakeDialog2, setShowStakeDialog2] = useState(false);
   const [expanded2, setExpanded2] = useState(true);
-  // const [quantityAlt, setQuantityAlt] = useState("");
+
+  const [poolsLiquidityList, setPoolsLiquidityList] = useState([]);
   const [quantityAlt, setQuantityAlt] = useState("");
   const [quantityXIO, setQuantityXIO] = useState("");
   const ref = useRef(null);
@@ -427,15 +463,57 @@ function Pool({
   const [height, setHeight] = useState(heightVal);
   const [queryData, setQueryData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
+  const [currentPool, setCurrentPool] = useState({});
 
   const importTokenFunc = () => {
-    setExpanded2(true);
+    // setExpanded2(true);
     setOpenDialog(true);
   };
 
   const toggle = () => {
     setHeight(height < 300 ? heightVal : "100%");
   };
+
+  useEffect(() => {
+    setPoolsLiquidityList(
+      poolDashboard.map((_pool) => {
+        const poolQueryData = allPoolsData[_pool.pool.id];
+        let _percentageShare = 0;
+        let pooledFlash = 0;
+        let pooledAlt = 0;
+        if (poolQueryData) {
+          _percentageShare =
+            _pool.balance /
+            utils.formatUnits(poolQueryData.poolTotalSupply.toString(), 18);
+          pooledFlash =
+            _percentageShare *
+            utils.formatUnits(poolQueryData.reserveFlashAmount.toString(), 18);
+          pooledAlt =
+            _percentageShare *
+            utils.formatUnits(
+              poolQueryData.reserveAltAmount.toString(),
+              _pool?.pool?.tokenB?.decimal
+            );
+        }
+        return {
+          ..._pool,
+          poolQueryData,
+          pooledFlash,
+          pooledAlt,
+          poolShare: _percentageShare * 100,
+        };
+      })
+    );
+  }, [poolDashboard, allPoolsData]);
+
+  useEffect(() => {
+    if (selectedRewardToken?.id) {
+      const _pool = poolsLiquidityList.find(
+        (__pool) => __pool.pool.id === selectedRewardToken.id
+      );
+      setCurrentPool(_pool || { currentPool: selectedRewardToken });
+    }
+  }, [selectedRewardToken]);
 
   useEffect(() => {
     if (history.location.pathname === "/pool") {
@@ -920,6 +998,120 @@ function Pool({
                     </Fragment>
                   ) : null}
 
+                  {selectedRewardToken?.tokenB?.symbol ? (
+                    <Fragment>
+                      <Grid container className={classes.outerBG}>
+                        <Grid xs={12} item className={classes.outerBoxHeading}>
+                          <Box className={classes.headingBox}>
+                            <Typography className={classes.mainHeading}>
+                              YOUR POSITION
+                            </Typography>
+                          </Box>
+                        </Grid>
+
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Your total pool tokens:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool?.balance || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool?.balance || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Pooled FLASH:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool.pooledFlash || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.pooledFlash || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Pooled {currentPool?.pool?.tokenB?.symbol}:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool.pooledAlt || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.pooledAlt || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
+                          >
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              Your pool share:
+                            </Typography>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={`${currentPool.poolShare || 0}%`}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.poolShare || 0)}%
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Fragment>
+                  ) : null}
+
                   {!selectedRewardToken?.tokenB?.symbol ? (
                     <Typography
                       variant="body1"
@@ -1015,7 +1207,6 @@ function Pool({
                     </Fragment>
                   )}
 
-                 
                   {!allowanceXIOPool &&
                   active &&
                   account &&
@@ -1449,6 +1640,83 @@ function Pool({
                   <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
                   </Button>
+                </Fragment>
+              ),
+            }[dialogStep3]
+          }
+        </Dialog>
+
+        <Dialog
+          open={showStakeDialog2}
+          // open={true}
+          steps={[
+            "APPROVE FLASH",
+            `APPROVE ${selectedRewardToken?.tokenB?.symbol}`,
+            "POOL",
+          ]}
+          title="POOL"
+          onClose={() => setShowStakeDialog2(false)}
+          status={["pending", "success", "failed", "rejected"].find((item) =>
+            dialogStep3.includes(item)
+          )}
+          step={dialogStep3}
+          stepperShown={
+            quantityXIO > 0 && quantityAlt > 0
+              ? // ? dialogStep3 === "pendingApproval" ||
+                dialogStep3 === "approvalTokenProposal" ||
+                dialogStep3 === "poolProposal"
+              : null
+          }
+        >
+          {
+            {
+              poolProposal: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    LIQUIDITY DEPOSIT
+                    <br />
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                  >
+                    Add{" "}
+                    <Tooltip title={`${quantityXIO} FLASH`}>
+                      <span className={classes.redText}>
+                        {trunc(quantityXIO)} FLASH
+                      </span>
+                    </Tooltip>{" "}
+                    and{" "}
+                    <Tooltip
+                      title={`${quantityAlt} ${selectedRewardToken?.tokenB?.symbol}`}
+                    >
+                      <span className={classes.redText}>
+                        {trunc(quantityAlt)}{" "}
+                        {selectedRewardToken?.tokenB?.symbol}
+                      </span>
+                    </Tooltip>{" "}
+                    into FLASH/{selectedRewardToken?.tokenB?.symbol} pool
+                  </Typography>
+                  <AddDropDown
+                    quantityAlt={quantityAlt}
+                    quantityXIO={quantityXIO}
+                    selectedRewardToken={selectedRewardToken}
+                    queryData={queryData}
+                    disabled={
+                      !active ||
+                      !account ||
+                      !selectedPortal ||
+                      !allowanceXIOPool ||
+                      !allowanceALTPool ||
+                      quantityXIO <= 0 ||
+                      quantityAlt <= 0 ||
+                      loadingRedux.pool ||
+                      chainId !== CONSTANTS.CHAIN_ID ||
+                      parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                      parseFloat(quantityXIO) > parseFloat(walletBalance)
+                    }
+                    onClickPool={onClickPool}
+                  />
                 </Fragment>
               ),
             }[dialogStep3]

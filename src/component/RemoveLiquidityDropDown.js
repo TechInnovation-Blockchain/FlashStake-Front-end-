@@ -235,8 +235,15 @@ function RemoveLiquidityDropDown({
   setRemLiqOpen,
   percentageToRemove,
   setPercentageToRemove,
+  closeApproval,
 }) {
   const classes = useStyles();
+
+  useEffect(() => {
+    if (closeApproval) {
+      setShowStakeDialog(false);
+    }
+  }, [closeApproval]);
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -508,12 +515,13 @@ function RemoveLiquidityDropDown({
 
 const mapStateToProps = ({
   flashstake: { slip, removeLiquidity, allowancePoolWithdraw },
-  ui: { close, loading },
+  ui: { close, loading, closeApproval },
 }) => ({
   slip,
   close,
   removeLiquidity,
   loading,
+  closeApproval,
   allowancePoolWithdraw,
 });
 

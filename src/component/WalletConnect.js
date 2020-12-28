@@ -173,9 +173,12 @@ function WalletConnect({
   }, [web3context, storeWeb3Context]);
 
   useEffect(() => {
-    activateWallet();
-    //
-  }, [window.ethereum._state.isUnlocked === true]);
+    setTimeout(() => {
+      if (window.ethereum._state?.accounts?.length) {
+        activateWallet();
+      }
+    }, 400);
+  });
 
   return (
     <Fragment>

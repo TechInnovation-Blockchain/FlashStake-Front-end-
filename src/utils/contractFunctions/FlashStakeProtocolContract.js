@@ -536,14 +536,14 @@ export const addLiquidityInPool = (
             })
             .catch((e) => {
               if (e.code === 4001) {
-                setCloseLiquidityTxnHashIndep(true);
+                // setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("rejectedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Rejected.",
                   "error"
                 );
               } else {
-                setCloseLiquidityTxnHashIndep(true);
+                // setCloseLiquidityTxnHashIndep(true);
                 setPoolDialogStepIndep("failedLiquidity");
                 showSnackbarIndep(
                   "Liquidity Deposit Transaction Failed.",
@@ -551,7 +551,7 @@ export const addLiquidityInPool = (
                 );
               }
               setLoadingIndep({ pool: false });
-              setCloseLiquidityTxnHashIndep(false);
+              // setCloseLiquidityTxnHashIndep(false);
               _error("ERROR addLiquidityInPool -> ", e);
             });
         }
@@ -559,14 +559,14 @@ export const addLiquidityInPool = (
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedLiquidity");
-      setCloseLiquidityTxnHashIndep(true);
+      // setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposit Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedLiquidity");
-      setCloseLiquidityTxnHashIndep(true);
+      // setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Liquidity Deposits Transaction Failed.", "error");
     }
-    setCloseLiquidityTxnHashIndep(false);
+    // setCloseLiquidityTxnHashIndep(false);
     _error("ERROR addLiquidityInPool -> ", e);
   }
 };
@@ -626,7 +626,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
             .catch((e) => {
               if (e.code === 4001) {
                 setPoolDialogStepIndep("rejectedWithdrawLiquidity");
-                setCloseLiquidityTxnHashIndep(true);
+                // setCloseLiquidityTxnHashIndep(true);
                 showSnackbarIndep(
                   "Withdraw Liquidity Transaction Rejected.",
                   "error"
@@ -639,7 +639,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
                 );
               }
               setLoadingIndep({ withdrawPool: false });
-              setCloseLiquidityTxnHashIndep(false);
+              // setCloseLiquidityTxnHashIndep(false);
 
               _error("ERROR removeLiquidityInPool -> ", e);
             });
@@ -648,13 +648,13 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedWithdrawLiquidity");
-      setCloseLiquidityTxnHashIndep(true);
+      // setCloseLiquidityTxnHashIndep(true);
       showSnackbarIndep("Withdraw Liquidity Transaction Rejected.", "error");
     } else {
       setDialogStepIndep("failedWithdrawLiquidity");
       showSnackbarIndep("Withdraw Liquidity Transaction Failed.", "error");
     }
-    setCloseLiquidityTxnHashIndep(false);
+    // setCloseLiquidityTxnHashIndep(false);
 
     _error("ERROR removeLiquidityInPool -> ", e);
   }

@@ -15,6 +15,7 @@ export const uiReducer = (
     falseSelected: true,
     close: false,
     btn: 5,
+    closeApproval: false,
     tokensURI: {
       name: "Default",
       uri:
@@ -64,6 +65,11 @@ export const uiReducer = (
           ...state.loading,
           ...payload,
         },
+      };
+    case "CLOSE_APPROVAL":
+      return {
+        ...state,
+        closeApproval: payload,
       };
 
     case "HIDE_BACKDROP":

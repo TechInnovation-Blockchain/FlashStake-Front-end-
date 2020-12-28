@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   linkText: {
     cursor: "pointer",
+    color: theme.palette.xioRed.main,
   },
   msg: {
     marginBottom: theme.spacing(1),

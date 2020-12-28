@@ -513,9 +513,9 @@ function Swap({
     }
   }, [expanding, setExpandAccodion]);
 
-  useEffect(() => {
-    console.log("Alll pools Data", allPoolsData[selectedRewardToken?.id]);
-  }, [selectedRewardToken]);
+  // useEffect(() => {
+  //   console.log("Alll pools Data", allPoolsData[selectedRewardToken?.id]);
+  // }, [selectedRewardToken]);
   //#endregion
   return (
     <PageAnimation in={true} reverse={animation > 0}>
@@ -604,7 +604,9 @@ function Swap({
                   </Grid>
 
                   {parseFloat(quantity) >
-                  allPoolsData[selectedRewardToken?.id]?.reserveAltAmount ? (
+                  parseFloat(
+                    allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
+                  ) ? (
                     <Grid item className={classes.gridSpaceP} xs={12}>
                       <Typography
                         variant="body1"

@@ -62,6 +62,7 @@ function Updater({
   pools,
   updateTokenList,
   tokenList,
+  allPoolsData,
 }) {
   const { loading, data, refetch } = useQuery(userStakesQuery, {
     variables: {
@@ -89,9 +90,26 @@ function Updater({
       try {
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
+
+      console.log(
+        "HERE----->",
+        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
+          (_item) =>
+            // !_item.chainId ||
+            // _item.chainId === CONSTANTS.CHAIN_ID ||
+
+            allPoolsData[_item.address]
+        )
+        // allPoolsData[]
+      );
+
       updateTokenList(
         [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
-          (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
+          (_item) =>
+            // !_item.chainId ||
+            // _item.chainId === CONSTANTS.CHAIN_ID ||
+            // pools.filter((_pool) => _pool.tokenB.id !== _item.address)
+            !allPoolsData[_item.address]
         )
       );
     }
@@ -209,6 +227,7 @@ const mapStateToProps = ({
     poolItems,
     walletBalancesPool,
   },
+  query: { allPoolsData },
   ui: { tokensURI },
   flashstake: { selectedPortal },
   contract: { oneDay, tokenList },
@@ -230,6 +249,7 @@ const mapStateToProps = ({
   pools,
   poolItems,
   walletBalancesPool,
+  allPoolsData,
   tokensURI,
   tokenList,
 });
