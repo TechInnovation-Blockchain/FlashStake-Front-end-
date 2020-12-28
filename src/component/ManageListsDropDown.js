@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme, _theme) => ({
     },
   },
   list: {
-    maxHeight: "100%",
+    maxHeight: 200,
     overflowY: "scroll",
     padding: 0,
   },
@@ -222,6 +222,23 @@ function ManageListsDropDown({
 
   // })
 
+  const sortedData = useCallback(() => {
+    let data = [];
+
+    data = tokensList?.sort(({ name: a }, { name: b }) => {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    });
+    data = tokensList?.sort((a, b) => b.name - a.name);
+
+    return data;
+  }, [tokensList]);
+
   const filteredData = useCallback(() => {
     return items.filter((item) =>
       item.tokenB?.symbol.toUpperCase().includes(search)
@@ -267,7 +284,7 @@ function ManageListsDropDown({
   //   localStorage.setItem("tokenList", JSON.stringify(tokenList));
   //   setTokensList((_tokenList) => [..._tokenList, token]);
   // }
-
+  console.log(sortedData());
   const addListToStorage = async (_list) => {
     let tokensListCutoms = [];
     try {
@@ -370,34 +387,45 @@ function ManageListsDropDown({
           </Button>
 
           <List className={classes.list}>
-            {tokensList.map((item) => (
-              <ListItem
-                button
-                className={classes.listItem}
-                onClick={() => {
-                  setTokensURI({
-                    uri: item.uri,
-                    name: item.name,
-                    logo: item.logoURI,
-                  });
-                  setOpen(false);
-                  // onBack();
-                }}
-                key={item.name}
-              >
-                <Typography variant="body1" className={classes.listItemText}>
-                  <img
-                    src={tryRequire(item.logoURI)}
-                    // alt={"logo"}
-                    srcSet=""
-                    width={20}
-                    className={classes.tokensLogo}
-                    style={{ marginRight: 5 }}
-                  />
-                  {item.name}
-                </Typography>
-              </ListItem>
-            ))}
+            {tokensList.length ? (
+              sortedData().map((item) => (
+                <ListItem
+                  button
+                  className={classes.listItem}
+                  onClick={() => {
+                    setTokensURI({
+                      uri: item.uri,
+                      name: item.name,
+                      logo: item.logoURI,
+                    });
+                    setOpen(false);
+                    // onBack();
+                  }}
+                  key={item.name}
+                >
+                  <Typography variant="body1" className={classes.listItemText}>
+                    <img
+                      src={tryRequire(item?.logoURI)}
+                      // alt={"logo"}
+                      srcSet=""
+                      width={20}
+                      className={classes.tokensLogo}
+                      style={{ marginRight: 5 }}
+                    />
+                    {item?.name}
+                  </Typography>
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="body1" className={classes.secondaryText}>
+                <CircularProgress
+                  size={12}
+                  color="inherit"
+                  className={classes.loadingIcon}
+                />{" "}
+                GETTING TOKENS
+              </Typography>
+            )}
           </List>
         </Container>
       </MuiDialog>

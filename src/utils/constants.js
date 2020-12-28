@@ -46,5 +46,77 @@ export const CONSTANTS = {
       logoURI:
         "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
     },
+    {
+      name: "1inch",
+      uri:
+        "https://bafybeib6dbxeadfyxk6vcqhyhtxlw4zpy5bqjpseg6fc33wks7oyx77n7e.ipfs.dweb.link/",
+      logoURI: "https://1inch.exchange/assets/images/logo.png",
+    },
+    {
+      name: "Aave Token List",
+      uri:
+        "https://bafybeick5mozllkwessstgvebwvqcallrkoiiakrl3agh2lghwapg53dmy.ipfs.dweb.link/",
+      logoURI: "ipfs://QmWzL3TSmkMhbqGBEwyeFyWVvLmEo3F44HBMFnmTUiTfp1",
+    },
+    {
+      name: "CMC DeFi",
+      uri:
+        "https://bafybeia2zujfb5qraeekvil62gxemmzumvigoe4lymtqxo2ey4jdlt3p7i.ipfs.dweb.link/",
+      logoURI: "ipfs://QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx",
+    },
+    {
+      name: "CMC Stablecoin",
+      uri:
+        "https://bafybeihuwebylwuzllrnbes5gkgh3axscj4qadiqwtonrvajycu66ddmye.ipfs.dweb.link/",
+      logoURI: "ipfs://QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx",
+    },
+    {
+      name: "CMC200 ERC20",
+      uri:
+        "https://bafybeiemddci7gzlpxkcjjqy2bpox6qhew4m4wxjvp74alfzxxd6utajoq.ipfs.dweb.link/",
+      logoURI: "ipfs://QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx",
+    },
+    {
+      name: "Dharma Token List",
+      uri:
+        "https://bafybeieuyombtcyzdvjcdfmr5ci4rd77jg3mme5sbwermttgaro4zjoqvu.ipfs.dweb.link/",
+      logoURI: "ipfs://QmVSnomsK2wLaFpgDMrLQgvhJ66YR4jrcvW5HjDEc8VVwA",
+    },
+    {
+      name: "Messari Verified",
+      uri: "https://messari.io/tokenlist/messari-verified",
+      logoURI: "https://messari.io/images/logo_tcr-check.svg",
+    },
+    {
+      name: "MyCrypto Token List",
+      uri: "https://uniswap.mycryptoapi.com/",
+      logoURI:
+        "https://raw.githubusercontent.com/MyCryptoHQ/MyCrypto/master/src/assets/images/favicon.png",
+    },
+    {
+      name: "Synthetix",
+      uri:
+        "https://bafybeih6fx3z3devax2s3gocepqvogzspqh5w32q4tyn46mp7xolyvdiuy.ipfs.dweb.link/",
+      logoURI:
+        "https://raw.githubusercontent.com/Synthetixio/synthetix-assets/v2.0.5/snx/SNX.svg",
+    },
+    {
+      name: "UMA",
+      uri: "https://umaproject.org/uma.tokenlist.json",
+      logoURI:
+        "https://umaproject.org/assets/images/UMA_square_red_logo_circle.png",
+    },
+    {
+      name: "Zerion Explore",
+      uri:
+        "https://bafybeie7zq6yerhz4kjdifceszzqoxqakb3pftwjr422zvivkc4wp7evri.ipfs.dweb.link/",
+      logoURI:
+        "https://token-icons.s3.amazonaws.com/brand/1_z-white_blue-rounded-square.png",
+    },
+    {
+      name: "Uniswap Default List",
+      uri: "https://gateway.ipfs.io/ipns/tokens.uniswap.org",
+      logoURI: "ipfs://QmNa8mQkrNKp1WEEeGjFezDmDeodkWRevGFN8JCV7b4Xir",
+    },
   ],
 };
