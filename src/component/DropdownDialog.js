@@ -227,10 +227,10 @@ function DropdownDialog({
   const history = useHistory();
 
   useEffect(() => {
-    if (getTokensLoader) {
-      setTimeout(() => {
-        setTokensLoader(false);
-      }, 10000);
+    if (pools.length) {
+      // setTimeout(() => {
+      setTokensLoader(false);
+      // }, 10000);
     }
   });
 
@@ -310,13 +310,18 @@ function DropdownDialog({
       debouncedSearchToken(search);
     }
 
-    return tokensList.filter((item) =>
-      item?.tokenB?.symbol?.toUpperCase().includes(search.toUpperCase())
+    return tokensList.filter(
+      (item) =>
+        item?.tokenB?.symbol?.toUpperCase().includes(search.toUpperCase()) &&
+        pools?.find(
+          (__item) =>
+            __item?.tokenB?.id === String(item.tokenB.address).toLowerCase()
+        )
     );
     // } else {
     // return tokensList;
     // }
-  }, [search, items, tokensList]);
+  }, [search, items, tokensList, pools]);
 
   const onClose = useCallback(() => {
     if (overrideOpen) {
@@ -409,8 +414,8 @@ function DropdownDialog({
                 <Fragment>
                   <img
                     src={
-                      selectedValue?.tokenB?.logoURI ||
-                      tryRequire(selectedValue?.tokenB?.symbol)
+                      // selectedValue?.tokenB?.logoURI ||
+                      tryRequireLogo(selectedValue?.tokenB?.symbol.toString())
                     }
                     alt="Logo"
                     srcSet=""
@@ -447,10 +452,7 @@ function DropdownDialog({
             {selectedValue.tokenB?.symbol ? (
               <Fragment>
                 <img
-                  src={
-                    selectedValue?.tokenB?.logoURI ||
-                    tryRequire(selectedValue?.tokenB?.symbol)
-                  }
+                  src={tryRequireLogo(selectedValue?.tokenB?.logoURI)}
                   alt="Logo"
                   srcSet=""
                   width={15}
@@ -518,32 +520,32 @@ function DropdownDialog({
             ) : null}
           </Box>
 
-          {filteredData()?.length ? (
+          {filteredData().length && pools.length ? (
             <List className={classes.list}>
-              {filteredData()?.map((_pool, index) => (
+              {filteredData().map((_pool) => (
                 <ListItem
                   button
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
-                  disabled={
-                    !pools?.find((_item) => {
-                      if (
-                        _item?.tokenB?.id ===
-                        _pool?.tokenB?.address.toLowerCase()
-                      ) {
-                        return true;
-                      }
-                    })
-                  }
+                  // disabled={
+                  //   !pools?.find((_item) => {
+                  //     if (
+                  //       _item?.tokenB?.id ===
+                  //       _pool?.tokenB?.address.toLowerCase()
+                  //     ) {
+                  //       return true;
+                  //     }
+                  //   })
+                  // }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
                       src={
-                        _pool?.tokenB?.logoURI ||
-                        tryRequire(_pool?.tokenB?.symbol)
+                        // _pool?.tokenB?.logoURI ||
+                        tryRequireLogo(_pool?.tokenB?.logoURI)
                       }
                       alt={_pool.tokenB.symbol}
                       onError={(e) => {

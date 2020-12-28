@@ -451,6 +451,7 @@ function Vote({
   const [time, setTime] = useState("Hrs");
   const [open, setOpen] = useState(false);
   const [token, setToken] = useState({});
+  const [loadingcreate, setLoadingcreate] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -467,10 +468,12 @@ function Vote({
   //   }, 100);
   // });
 
-  const handleCreatePool = (token) => {
+  const handleCreatePool = async (token) => {
+    // setLoadingcreate(true);
     setCreateDialogStep("pendingCreatePool");
     setShowStakeDialog(true);
     createPool(token);
+    // setLoadingcreate(false);
   };
 
   const toggle = () => {
@@ -660,7 +663,8 @@ function Vote({
                     <Button
                       fullWidth
                       variant="retro"
-                      disabled={!token?.decimals}
+                      disabled={!token?.decimals || loadingRedux.createPool}
+                      loading={loadingRedux.createPool}
                       onClick={() => handleCreatePool(token)}
                     >
                       CREATE

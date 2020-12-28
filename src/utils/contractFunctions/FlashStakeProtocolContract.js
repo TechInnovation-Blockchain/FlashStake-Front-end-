@@ -25,6 +25,7 @@ import {
   setWithdrawLiquidityTxnHash,
   setWithdrawLiquidityTxnHashIndep,
   setCloseLiquidityTxnHashIndep,
+  setSelectedRewardToken,
 } from "../../redux/actions/flashstakeActions";
 import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
 import { analytics } from "../../config/App";
@@ -661,7 +662,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
 };
 
 export const createPool = (_token) => {
-  setLoadingIndep({ withdrawPool: true });
+  setLoadingIndep({ createPool: true });
 
   try {
     showSnackbarIndep("Transaction Pending.", "info");
@@ -697,7 +698,7 @@ export const createPool = (_token) => {
             })
             .then(function (receipt) {
               setCreateDialogStepIndep("successCreatePool");
-
+              setSelectedRewardToken({});
               store.dispatch(setRefetchProtocols(true));
               showSnackbarTxnIndep(
                 "Create Pool Transaction Successful.",
@@ -706,8 +707,9 @@ export const createPool = (_token) => {
                 receipt.transactionHash,
                 false
               );
+
               // setRefetchIndep(true);
-              setLoadingIndep({ withdrawPool: false });
+              setLoadingIndep({ createPool: false });
               _log(receipt);
               return receipt;
             })
@@ -719,7 +721,7 @@ export const createPool = (_token) => {
                 setCreateDialogStepIndep("failedCreatePool");
                 showSnackbarIndep("Create Pool Transaction Failed.", "error");
               }
-              setLoadingIndep({ withdrawPool: false });
+              setLoadingIndep({ createPool: false });
 
               _error("ERROR CreatePool  -> ", e);
             });
