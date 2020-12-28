@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 10,
     marginBottom: theme.spacing(1),
     // [theme.breakpoints.down("xs")]: {
@@ -82,37 +82,37 @@ const useStyles = makeStyles((theme) => ({
   },
   primaryText: {
     color: theme.palette.text.primary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   redText: {
     // fontSize: 10,
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   infoText: {
     // fontSize: 10,
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   infoTextSpan: {
     // fontSize: 10,
     color: theme.palette.xioRed.main,
-    fontWeight: 900,
+    fontWeight: 500,
   },
   secondaryTextWOMargin: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   textBold: {
-    fontWeight: 700,
+    fontWeight: 500,
   },
   xIcon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 900,
+    fontWeight: 500,
     marginTop: 28,
     // fontSize: 15,
     alignSelf: "center",
@@ -133,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
     "& .MuiInputBase-input": {
       height: 36,
-      fontWeight: "700 !important",
+      fontWeight: "500 !important",
       padding: theme.spacing(0, 1),
       lineHeight: 1.5,
       textAlign: "center",
@@ -197,7 +197,7 @@ const useStyles = makeStyles((theme) => ({
   },
   restakeText: {
     color: "#555555",
-    fontWeight: 700,
+    fontWeight: 500,
     // fontSize: 11,
     cursor: "pointer",
   },
@@ -245,7 +245,7 @@ const useStyles = makeStyles((theme) => ({
   },
   stakeDashBtn: {
     color: "inherit",
-    fontWeight: 700,
+    fontWeight: 500,
   },
   icon: {
     color: theme.palette.xioRed.main,
@@ -262,7 +262,7 @@ const useStyles = makeStyles((theme) => ({
   },
   greenText: {
     color: theme.palette.text.green,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   gridSpaceP: {
     marginBottom: theme.spacing(2),
@@ -761,23 +761,14 @@ function Swap({
                               Connect wallet to swap
                             </Typography>
                           </Grid>
-                        ) : chainId !== CONSTANTS.CHAIN_ID ? (
+                        ) : chainId !==
+                          CONSTANTS.CHAIN_ID ? null : !allowanceALT ? (
                           <Grid item xs={12} className={classes.msgContainer}>
                             <Typography
                               variant="body2"
                               className={classes.redText}
                             >
-                              {/* CHANGE NETWORK TO RINKEBY TO SWAP TOKENS */}
-                              Change network to rinkeby to swap
-                            </Typography>
-                          </Grid>
-                        ) : !allowanceALT ? (
-                          <Grid item xs={12} className={classes.msgContainer}>
-                            <Typography
-                              variant="body1"
-                              className={classes.redText}
-                            >
-                              Before you can swap, you must approve{" "}
+                              Approve <b>FLASH</b>, before <b>swapping</b>{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""}
                             </Typography>
                           </Grid>

@@ -123,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     color: theme.palette.text.primary,
+    fontWeight: 700,
 
     "&:hover": {
       // color: theme.palette.text.primary,
@@ -130,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   listItemText: {
-    fontWeight: 700,
+    fontWeight: 600,
     display: "flex",
     alignItems: "center",
   },

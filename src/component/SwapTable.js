@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontWeight: 700,
+    fontWeight: 500,
 
     margin: theme.spacing(1, 0),
   },
@@ -36,29 +36,29 @@ const useStyles = makeStyles((theme) => ({
   },
   redText: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   secondaryText: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   sortIcon: {
     color: theme.palette.xioRed.main,
-    fontWeight: 700,
+    fontWeight: 500,
   },
   tableHeadItemBtn: {
-    fontWeight: 700,
+    fontWeight: 500,
     color: theme.palette.text.secondary,
     display: "flex",
   },
   msgContainer: {
     color: theme.palette.text.secondary,
-    fontWeight: 700,
+    fontWeight: 500,
     padding: theme.spacing(2, 0),
   },
   msg: {
     marginBottom: theme.spacing(1),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   cursorPointer: {
     cursor: "pointer",
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   mainHead: {
-    fontWeight: 700,
+    fontWeight: 600,
     color: theme.palette.text.grey,
     margin: theme.spacing(2, 0),
     textAlign: "center",
@@ -244,13 +244,7 @@ function SwapTable({
           </Grid>
         ) : !loading ? (
           swapHistory?.length ? (
-            chainId !== CONSTANTS.CHAIN_ID ? (
-              <Grid item xs={12} className={classes.msgContainer}>
-                <Typography variant="body2" className={classes.redText}>
-                  Change network to rinkeby to see swap history
-                </Typography>
-              </Grid>
-            ) : (
+            chainId !== CONSTANTS.CHAIN_ID ? null : (
               <Fragment>
                 <PageAnimation in={true} key={page} reverse={reverse}>
                   <Grid container>

@@ -6,7 +6,7 @@ import logo from "../assets/xio-logo.svg";
 import { connect } from "react-redux";
 import logoLight from "../assets/FlashPro5.svg";
 import flashDark from "../assets/flash-dark.svg";
-import flash from "../assets/FLASH2.svg";
+import flash from "../assets/FlashLogo.png";
 import Flash from "../assets/Tokens/FLASH.png";
 import {
   setExpandAccodion,
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
   navlink: {
     textDecoration: "none",
-    fontWeight: 900,
+    fontWeight: 800,
     color: theme.palette.text.secondary4,
     [theme.breakpoints.down("sm")]: {
       margin: theme.spacing(1, 1),
@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
   },
   navLinkText: {
     // fontFamily: "Quota Bold",
-    fontWeight: 900,
+    fontWeight: 800,
   },
   activeNavlink: {
     color: theme.palette.navLink.active,
-    fontWeight: 900,
+    fontWeight: 800,
     // borderBottom: `1px solid ${theme.palette.shadowColor.main}`,
   },
   navlinkFlash: {
@@ -127,6 +127,7 @@ function Navbar({
           activeClassName={classes.activeNavlink}
           // onClick={handleClick2}
           onClick={() => {
+            handleClick2();
             index = routes.indexOf(history.location.pathname) - 0;
             setAnimationDirection(index);
             history.push("/stake");
@@ -146,6 +147,7 @@ function Navbar({
           className={classes.navlink}
           activeClassName={classes.activeNavlink}
           onClick={() => {
+            handleClick2();
             index = routes.indexOf(history.location.pathname) - 1;
             setAnimationDirection(index);
             history.push("/swap");
@@ -164,7 +166,7 @@ function Navbar({
           src={themeMode === "retro" ? Flash : flash}
           // src={themeModeflash}
           alt="logo"
-          width={themeMode === "dark" || themeMode === "light" ? 40 : 30}
+          width={themeMode === "dark" || themeMode === "light" ? 30 : 30}
           // width={animate ? 30 : 30}
           className={classes.logo}
           onClick={() => {
@@ -180,6 +182,7 @@ function Navbar({
           activeClassName={classes.activeNavlink}
           exact
           onClick={() => {
+            handleClick2();
             index = routes.indexOf(history.location.pathname) - 2;
             setAnimationDirection(index);
             history.push("/pool");
@@ -198,9 +201,9 @@ function Navbar({
           activeClassName={classes.activeNavlink}
           exact
           onClick={() => {
+            handleClick2();
             index = routes.indexOf(history.location.pathname) - 3;
             setAnimationDirection(index);
-
             history.push("/create");
             handleClick2();
           }}

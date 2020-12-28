@@ -20,6 +20,7 @@ import { walletList } from "../utils/connectors";
 import { _error } from "../utils/log";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SlippageDialogue from "./SlippageDialogue";
+import { CONSTANTS } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -29,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,
+  },
+  redText: {
+    color: theme.palette.xioRed.main,
+    fontWeight: 600,
+    padding: theme.spacing(0, 0, 2, 0),
   },
   BtnsContainer: {
     // "&:hover": {
@@ -93,6 +99,7 @@ function WalletConnect({
   setLoading,
   changeApp,
   toggleThemeMode,
+  chainId,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -213,6 +220,16 @@ function WalletConnect({
         />
 
         <Box className={classes.BtnsContainer}>
+          {chainId !== CONSTANTS.CHAIN_ID ? (
+            <Typography
+              // variant="overline"
+              variant="body2"
+              className={classes.redText}
+            >
+              Change network to <b>rinkeby</b>
+            </Typography>
+          ) : null}
+
           <Button
             variant={!changeApp ? "retro" : "red"}
             className={classes.connectWalletButton}
@@ -248,8 +265,8 @@ function WalletConnect({
 
 const mapStateToProps = ({
   ui: { walletBackdrop, changeApp },
-  web3: { active, account },
-}) => ({ walletBackdrop, active, account, changeApp });
+  web3: { active, account, chainId },
+}) => ({ walletBackdrop, active, account, changeApp, chainId });
 
 export default connect(mapStateToProps, { storeWeb3Context, setLoading })(
   WalletConnect
