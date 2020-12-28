@@ -14,8 +14,9 @@ import {
   TablePagination,
   Box,
   Checkbox,
-  Radio,
 } from "@material-ui/core";
+
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
@@ -33,11 +34,20 @@ import {
 import { store } from "../config/reduxStore";
 import { useHistory } from "react-router-dom";
 import { CONSTANTS } from "../utils/constants";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
     borderBottom: `1px solid ${theme.palette.border.gray}`,
   },
+  // root: {
+  //   color: theme.palette.xioRed.main,
+  //   "&$checked": {
+  //     color: theme.palette.xioRed.main,
+  //   },
+  // },
+  // checked: {},
   gridItem: {
     ...theme.typography.body2,
     display: "flex",
@@ -86,6 +96,18 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.selected,
   },
   checkbox: {
+    padding: 0,
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  gridSp: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+  },
+  radioBtn: {
     padding: 0,
     "&.Mui-checked": {
       color: theme.palette.xioRed.main,
@@ -425,7 +447,11 @@ function TableComponent({
                               </Tooltip>
                             </Grid>
 
-                            <Grid item xs={4} className={classes.gridItem}>
+                            <Grid
+                              item
+                              xs={4}
+                              className={`${classes.gridItem} ${classes.gridSp}`}
+                            >
                               {!_stake.expired &&
                               _stake.expiryTime > Date.now() / 1000 ? (
                                 <Fragment>
@@ -458,18 +484,32 @@ function TableComponent({
                               )}
                               {/* && _stake.burnAmount > 0  */}
                               {isStakesSelected ? (
-                                <Checkbox
-                                  size="small"
-                                  checked={
-                                    selectedStakes[_stake.id] ? true : false
-                                  }
-                                  // checked={false}
-                                  // disabled
-                                  // inputProps={{
-                                  // //   "aria-label": "disabled checkbox",
-                                  // }}
-                                  className={classes.checkbox}
-                                />
+                                _stake.burnAmount > 0 ? (
+                                  <Radio
+                                    checked={
+                                      selectedStakes[_stake.id] ? true : false
+                                    }
+                                    // onChange={handleChange}
+                                    color="inherit"
+                                    // value=
+                                    className={classes.radioBtn}
+                                    name="radio-button-demo"
+                                    inputProps={{ "aria-label": "A" }}
+                                  />
+                                ) : (
+                                  <Checkbox
+                                    size="small"
+                                    checked={
+                                      selectedStakes[_stake.id] ? true : false
+                                    }
+                                    // checked={false}
+                                    // disabled
+                                    // inputProps={{
+                                    // //   "aria-label": "disabled checkbox",
+                                    // }}
+                                    className={classes.checkbox}
+                                  />
+                                )
                               ) : null}
                             </Grid>
                           </Grid>
