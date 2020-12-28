@@ -284,7 +284,6 @@ function ManageListsDropDown({
   //   localStorage.setItem("tokenList", JSON.stringify(tokenList));
   //   setTokensList((_tokenList) => [..._tokenList, token]);
   // }
-  console.log(sortedData());
   const addListToStorage = async (_list) => {
     let tokensListCutoms = [];
     try {
