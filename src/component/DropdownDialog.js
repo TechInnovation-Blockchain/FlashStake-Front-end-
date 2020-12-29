@@ -282,7 +282,8 @@ function DropdownDialog({
               name: _name,
               symbol: _symbol,
               decimals: _decimals,
-              logoURI: "../assets/Tokens/NOTFOUND.png",
+              logoURI:
+                "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
             },
           });
         } else {
@@ -368,6 +369,8 @@ function DropdownDialog({
   };
 
   const tryRequireLogo = (path, add) => {
+    // if(pools.find(add))
+
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
@@ -490,15 +493,16 @@ function DropdownDialog({
                 <img
                   src={
                     // selectedValue?.tokenB?.logoURI ||
-                    pools.find(
-                      (item) =>
-                        item?.tokenB?.address === selectedValue?.tokenB?.address
+                    // pools.find(
+                    //   (item) =>
+                    //     item?.tokenB?.address === selectedValue?.tokenB?.address
+                    // )
+                    //   ?
+                    tryRequireLogo(
+                      selectedValue?.tokenB?.logoURI,
+                      selectedValue?.tokenB?.address?.toLowerCase()
                     )
-                      ? tryRequireLogo(
-                          selectedValue?.tokenB?.logoURI,
-                          selectedValue?.tokenB?.address?.toLowerCase()
-                        )
-                      : require(`../assets/Tokens/NOTFOUND.png`)
+                    // : require(`../assets/Tokens/NOTFOUND.png`)
                   }
                   alt="Logo"
                   srcSet=""

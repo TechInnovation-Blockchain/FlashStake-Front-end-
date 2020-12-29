@@ -288,7 +288,8 @@ function DropdownDialog2({
             name: _name,
             symbol: _symbol,
             decimals: _decimals,
-            logoURI: "../assets/Tokens/NOTFOUND.png",
+            logoURI:
+              "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
           });
           setLoader(false);
         } else {

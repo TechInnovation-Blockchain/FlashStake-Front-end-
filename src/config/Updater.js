@@ -84,7 +84,7 @@ function Updater({
   }, []);
 
   const getTokensList = async () => {
-    const data = await fetchTokenList(tokensURI.uri);
+    const data = await fetchTokenList(tokensURI?.uri);
     if (data?.data?.tokens && pools) {
       let userTokens;
       try {
