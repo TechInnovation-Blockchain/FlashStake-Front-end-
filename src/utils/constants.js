@@ -1,13 +1,13 @@
 export const CONSTANTS = {
-  GRAPHQL_ENDPOINT_URI: "https://server.xio.app:4010/graphql",
+  GRAPHQL_ENDPOINT_URI: "https://server.flashstake.io/graphql",
   // GRAPHQL_ENDPOINT_URI:
   // "https://api.thegraph.com/subgraphs/name/asadnaeem1/flashstake-protocol-v2",
   WETH_ERC20_ADDRESS: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
-  ADDRESS_XIO_RINKEBY: "0x33e93B04517008F68DDE689a0cEf164F95466aD3",
+  ADDRESS_XIO_RINKEBY: "0xB4467E8D621105312a914F1D42f10770C0Ffe3c8",
   // ADDRESS_XIO_RINKEBY: "0x6bdC644E0dA75E59da0587e13fC806BFB61764Cb",
   FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS:
-    "0xddf0ca955171f845d8c947bbe0b302eacff5c840",
-  FLASH_PROTOCOL_CONTRACT: "0xd92fbf867320942b7257d9168c1d919e5eef0d85",
+    "0xa91902085405ce0f648a7eb82045aefc1b7bac01",
+  FLASH_PROTOCOL_CONTRACT: "0xEc02f813404656E2A2AEd5BaeEd41D785324E8D0",
   // FLASHSTAKE_PROTOCOL_CONTRACT_ADDRESS:
   // "0x0084f276c585a3cFD1F48a850A8A723dE54274Fd",
   TXN_SERVER: "https://stakexserver.xio.app:3000/addtxnhash",
@@ -25,10 +25,11 @@ export const CONSTANTS = {
     XIO: "0x0f7f961648ae6db43c75663ac7e5414eb79b5704",
     FLASH: "0x0f7f961648ae6db43c75663ac7e5414eb79b5704",
   },
-  BALANCE_CONTRACT: "0x3cDA8420E25510765490201E1D054c517D085a7E",
+  BALANCE_CONTRACT: "0x8558f19bd70b31c8693397e4df67c8127f8a2b7b",
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
-  CACHE_SERVER: "https://server.xio.app:3015/getReserves",
-  CHAIN_ID: 4,
+  CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
+  CHAIN_ID: 3,
+  NETWORK: "ROPSTEN",
 
   TOKENS_LIST: [
     {
@@ -117,6 +118,13 @@ export const CONSTANTS = {
       name: "Uniswap Default List",
       uri: "https://gateway.ipfs.io/ipns/tokens.uniswap.org",
       logoURI: "ipfs://QmNa8mQkrNKp1WEEeGjFezDmDeodkWRevGFN8JCV7b4Xir",
+    },
+    {
+      name: "Compound",
+      uri:
+        "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json",
+      logoURI:
+        "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/compound-interface.svg",
     },
   ],
 };

@@ -505,7 +505,6 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-  console.log("loooo", poolsLiquidityList);
   useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
@@ -1216,7 +1215,7 @@ function Pool({
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
-                        Approve <b>FLASH</b>, before <b>pool</b>
+                        Approve <b>FLASH</b> before <b>pool</b>
                       </Typography>
                     </Grid>
                   ) : null}
@@ -1535,7 +1534,7 @@ function Pool({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${liquidityTxnHash}`}
+                      href={`https://ropsten.etherscan.io/tx/${liquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1623,8 +1622,8 @@ function Pool({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
-                      // href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      href={`https://ropsten.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      // href={`https://ropsten.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}

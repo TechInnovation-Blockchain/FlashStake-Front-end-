@@ -282,6 +282,7 @@ function DropdownDialog({
               name: _name,
               symbol: _symbol,
               decimals: _decimals,
+              logoURI: "../assets/Tokens/NOTFOUND.png",
             },
           });
         } else {
@@ -332,6 +333,8 @@ function DropdownDialog({
   }, []);
 
   const onSelectLocal = (_pool) => {
+    console.log("POOL", _pool);
+    // setToken(_pool);
     onSelect(_pool);
     onClose();
   };
@@ -356,7 +359,7 @@ function DropdownDialog({
   //       selectedValue;
   //   },
   // }() || <span className={classes.disabledText}>SELECT</span>}
-  const tryRequire = (path) => {
+  const tryRequire = (path, add) => {
     try {
       return require(`../assets/Tokens/${path}.png`);
     } catch (err) {
@@ -364,13 +367,42 @@ function DropdownDialog({
     }
   };
 
-  const tryRequireLogo = (path) => {
+  const tryRequireLogo = (path, add) => {
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
       return joined;
     }
+    // if (path?.includes("raw.githubusercontent.com/")) {
+    //   // console.log("ADD", Web3.utils.toChecksumAddress(add));
+    //   try {
+    //     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+    //       add
+    //     )}/logo.png`;
+    //   } catch (e) {
+    //     // console.log(e);
+    //     return require(`../assets/Tokens/NOTFOUND.png`);
+    //   }
 
+    //   // return require(`../assets/Tokens/NOTFOUND.png`);
+    // }
+    // return path;
+
+    if (path?.includes("raw.githubusercontent.com/")) {
+      // try {
+      // if (add) {
+      //   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+      //     add
+      //   )}/logo.png`;
+      // }
+      // } catch (e) {
+      // console.log(e);
+      // return require(`../assets/Tokens/NOTFOUND.png`);
+      // }
+
+      // return require(`../assets/Tokens/NOTFOUND.png`);
+      return path;
+    }
     return path;
   };
 
@@ -387,6 +419,7 @@ function DropdownDialog({
       _tokenList.push(token?.tokenB);
       localStorage.setItem("tokenList", JSON.stringify(_tokenList));
       addToTokenList(token);
+      setToken("");
     }
   }, [token]);
 
@@ -415,7 +448,10 @@ function DropdownDialog({
                   <img
                     src={
                       // selectedValue?.tokenB?.logoURI ||
-                      tryRequireLogo(selectedValue?.tokenB?.symbol.toString())
+                      tryRequireLogo(
+                        selectedValue?.tokenB?.logoURI,
+                        selectedValue?.tokenB?.address?.toLowerCase()
+                      )
                     }
                     alt="Logo"
                     srcSet=""
@@ -452,7 +488,18 @@ function DropdownDialog({
             {selectedValue.tokenB?.symbol ? (
               <Fragment>
                 <img
-                  src={tryRequireLogo(selectedValue?.tokenB?.logoURI)}
+                  src={
+                    // selectedValue?.tokenB?.logoURI ||
+                    pools.find(
+                      (item) =>
+                        item?.tokenB?.address === selectedValue?.tokenB?.address
+                    )
+                      ? tryRequireLogo(
+                          selectedValue?.tokenB?.logoURI,
+                          selectedValue?.tokenB?.address?.toLowerCase()
+                        )
+                      : require(`../assets/Tokens/NOTFOUND.png`)
+                  }
                   alt="Logo"
                   srcSet=""
                   width={15}
@@ -613,12 +660,9 @@ function DropdownDialog({
               >
                 <Typography variant="body1" className={classes.listItemText}>
                   {/* <MonetizationOn /> */}
-                  {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                  {/* require() */}
                   <img
-                    src={
-                      token?.tokenB?.logoURI ||
-                      tryRequire(token?.tokenB?.symbol)
-                    }
+                    src={require(`../assets/Tokens/NOTFOUND.png`)}
                     alt={token.tokenB.symbol}
                     srcSet=""
                     width={20}

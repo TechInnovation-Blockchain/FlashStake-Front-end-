@@ -763,7 +763,7 @@ function Vote({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      href={`https://ropsten.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}

@@ -288,6 +288,7 @@ function DropdownDialog2({
             name: _name,
             symbol: _symbol,
             decimals: _decimals,
+            logoURI: "../assets/Tokens/NOTFOUND.png",
           });
           setLoader(false);
         } else {
@@ -323,7 +324,7 @@ function DropdownDialog2({
     } else
       return tokenList.filter(
         (item) =>
-          item.symbol.toUpperCase().includes(search.toUpperCase()) &&
+          item?.symbol?.toUpperCase().includes(search.toUpperCase()) &&
           !pools?.find(
             (__item) => __item?.tokenB?.id == String(item.address).toLowerCase()
           ) &&
@@ -371,13 +372,28 @@ function DropdownDialog2({
     }
   }, [token]);
 
-  const tryRequireLogo = (path) => {
+  const tryRequireLogo = (path, add) => {
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
       return joined;
     }
 
+    if (path?.includes("raw.githubusercontent.com/")) {
+      // try {
+      // if (add) {
+      //   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+      //     add
+      //   )}/logo.png`;
+      // }
+      // } catch (e) {
+      // console.log(e);
+      // return require(`../assets/Tokens/NOTFOUND.png`);
+      // }
+
+      // return require(`../assets/Tokens/NOTFOUND.png`);
+      return path;
+    }
     return path;
   };
 
@@ -394,7 +410,13 @@ function DropdownDialog2({
             <Fragment>
               <img
                 src={
-                  tryRequireLogo(token?.logoURI) || tryRequire(token?.symbol)
+                  // selectedValue?.tokenB?.logoURI ||
+                  pools.find((item) => item?.tokenB?.address === token?.address)
+                    ? tryRequireLogo(
+                        token?.logoURI,
+                        token?.address?.toLowerCase()
+                      )
+                    : require(`../assets/Tokens/NOTFOUND.png`)
                 }
                 alt="Logo"
                 srcSet=""
@@ -451,7 +473,7 @@ function DropdownDialog2({
             ) : null}
           </Box>
 
-          {filteredData().length && pools.length ? (
+          {filteredData()?.length && pools.length ? (
             <List className={classes.list}>
               {filteredData()?.map((_pool) => (
                 <ListItem
@@ -477,14 +499,14 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={
-                        tryRequireLogo(_pool?.logoURI) ||
-                        tryRequire(_pool?.symbol)
-                      }
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = tryRequire(_pool?.symbol);
-                      }}
+                      src={tryRequireLogo(
+                        _pool?.logoURI,
+                        _pool?.address?.toLowerCase()
+                      )}
+                      // onError={(e) => {
+                      //   e.target.onerror = null;
+                      //   e.target.src = tryRequire(_pool?.symbol);
+                      // }}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
@@ -534,8 +556,8 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={tryRequire(token?.symbol)}
-                      alt={require(`../assets/Tokens/NOTFOUND.png`)}
+                      src={require(`../assets/Tokens/NOTFOUND.png`)}
+                      // alt={require(`../assets/Tokens/NOTFOUND.png`)}
                       srcSet=""
                       width={20}
                       className={classes.tokensLogo}
@@ -562,7 +584,10 @@ function DropdownDialog2({
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
               <img
-                src={tryRequireLogo(tokensURI?.logo)}
+                src={tryRequireLogo(
+                  tokensURI?.logo,
+                  tokensURI?.address?.toLowerCase()
+                )}
                 // src={themeModeflash}
                 alt="logo"
                 width={tokensURI?.name !== "Default" ? 20 : 10}

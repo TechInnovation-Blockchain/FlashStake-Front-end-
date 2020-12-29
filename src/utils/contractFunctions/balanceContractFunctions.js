@@ -84,6 +84,7 @@ export const getBalances = async () => {
       );
       return null;
     });
+    console.log("yadaaaa", [_balancesObj, walletBalanceUSD, _poolBalanceObj]);
     return [_balancesObj, walletBalanceUSD, _poolBalanceObj];
   } catch (e) {
     _error("ERROR getBalances -> ", e);
