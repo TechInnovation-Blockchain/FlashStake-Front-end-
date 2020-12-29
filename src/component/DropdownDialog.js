@@ -282,6 +282,7 @@ function DropdownDialog({
               name: _name,
               symbol: _symbol,
               decimals: _decimals,
+              logoURI: "../assets/Tokens/NOTFOUND.png",
             },
           });
         } else {
@@ -417,6 +418,7 @@ function DropdownDialog({
       _tokenList.push(token?.tokenB);
       localStorage.setItem("tokenList", JSON.stringify(_tokenList));
       addToTokenList(token);
+      setToken("");
     }
   }, [token]);
 
@@ -487,10 +489,15 @@ function DropdownDialog({
                 <img
                   src={
                     // selectedValue?.tokenB?.logoURI ||
-                    tryRequireLogo(
-                      selectedValue?.tokenB?.logoURI,
-                      selectedValue?.tokenB?.address?.toLowerCase()
+                    pools.find(
+                      (item) =>
+                        item?.tokenB?.address === selectedValue?.tokenB?.address
                     )
+                      ? tryRequireLogo(
+                          selectedValue?.tokenB?.logoURI,
+                          selectedValue?.tokenB?.address?.toLowerCase()
+                        )
+                      : require(`../assets/Tokens/NOTFOUND.png`)
                   }
                   alt="Logo"
                   srcSet=""
@@ -652,12 +659,9 @@ function DropdownDialog({
               >
                 <Typography variant="body1" className={classes.listItemText}>
                   {/* <MonetizationOn /> */}
-                  {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                  {/* require() */}
                   <img
-                    src={
-                      token?.tokenB?.logoURI ||
-                      tryRequire(token?.tokenB?.symbol)
-                    }
+                    src={require(`../assets/Tokens/NOTFOUND.png`)}
                     alt={token.tokenB.symbol}
                     srcSet=""
                     width={20}

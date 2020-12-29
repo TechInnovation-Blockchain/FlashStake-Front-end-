@@ -288,6 +288,7 @@ function DropdownDialog2({
             name: _name,
             symbol: _symbol,
             decimals: _decimals,
+            logoURI: "../assets/Tokens/NOTFOUND.png",
           });
           setLoader(false);
         } else {
@@ -323,7 +324,7 @@ function DropdownDialog2({
     } else
       return tokenList.filter(
         (item) =>
-          item.symbol.toUpperCase().includes(search.toUpperCase()) &&
+          item?.symbol?.toUpperCase().includes(search.toUpperCase()) &&
           !pools?.find(
             (__item) => __item?.tokenB?.id == String(item.address).toLowerCase()
           ) &&
@@ -408,10 +409,15 @@ function DropdownDialog2({
           {token.address ? (
             <Fragment>
               <img
-                src={tryRequireLogo(
-                  token?.logoURI,
-                  token?.address?.toLowerCase()
-                )}
+                src={
+                  // selectedValue?.tokenB?.logoURI ||
+                  pools.find((item) => item?.tokenB?.address === token?.address)
+                    ? tryRequireLogo(
+                        token?.logoURI,
+                        token?.address?.toLowerCase()
+                      )
+                    : require(`../assets/Tokens/NOTFOUND.png`)
+                }
                 alt="Logo"
                 srcSet=""
                 width={15}
@@ -467,7 +473,7 @@ function DropdownDialog2({
             ) : null}
           </Box>
 
-          {filteredData().length && pools.length ? (
+          {filteredData()?.length && pools.length ? (
             <List className={classes.list}>
               {filteredData()?.map((_pool) => (
                 <ListItem
@@ -550,10 +556,7 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={tryRequireLogo(
-                        token?.logoURI,
-                        token?.address?.toLowerCase()
-                      )}
+                      src={require(`../assets/Tokens/NOTFOUND.png`)}
                       // alt={require(`../assets/Tokens/NOTFOUND.png`)}
                       srcSet=""
                       width={20}
