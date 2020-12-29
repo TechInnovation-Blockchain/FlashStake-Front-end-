@@ -247,14 +247,13 @@ function DropdownDialog2({
 
   const history = useHistory();
 
-  // useEffect(() => {
-  //   if (getTokensLoader) {
-  //     setTimeout(() => {
-  //       setTokensLoader(false);
-  //     }, 10000);
-  //   }
-  // });
-
+  useEffect(() => {
+    if (pools.length) {
+      // setTimeout(() => {
+      setTokensLoader(false);
+      // }, 10000);
+    }
+  });
   const onChangeSearch = ({ target: { value } }) => {
     setSearch(value.toLowerCase());
   };

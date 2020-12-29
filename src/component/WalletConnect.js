@@ -220,7 +220,7 @@ function WalletConnect({
         />
 
         <Box className={classes.BtnsContainer}>
-          {chainId !== CONSTANTS.CHAIN_ID ? (
+          {(account || active) && chainId !== CONSTANTS.CHAIN_ID ? (
             <Typography
               // variant="overline"
               variant="body2"
