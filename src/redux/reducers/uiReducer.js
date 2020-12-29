@@ -16,7 +16,14 @@ export const uiReducer = (
     close: false,
     btn: 5,
     closeApproval: false,
-    tokensURI: {
+    // tokensURI: {
+    //   name: "Default",
+    //   uri:
+    //     "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
+    //   logo:
+    //     "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
+    // },
+    tokensURI: JSON.parse(localStorage.getItem("tokensURI")) || {
       name: "Default",
       uri:
         "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",

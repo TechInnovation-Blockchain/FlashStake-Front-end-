@@ -506,13 +506,14 @@ function Pool({
     );
   }, [poolDashboard, allPoolsData]);
   useEffect(() => {
+    console.log("SHARE", selectedRewardToken);
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
         (__pool) => __pool.pool.id === selectedRewardToken.id
       );
       setCurrentPool(_pool || { currentPool: selectedRewardToken });
     }
-  }, [selectedRewardToken]);
+  }, [selectedRewardToken, poolsLiquidityList]);
 
   useEffect(() => {
     if (history.location.pathname === "/pool") {
