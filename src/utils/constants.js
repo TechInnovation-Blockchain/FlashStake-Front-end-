@@ -1,5 +1,5 @@
 export const CONSTANTS = {
-  GRAPHQL_ENDPOINT_URI: "https://server.xio.app:4010/graphql",
+  GRAPHQL_ENDPOINT_URI: "https://server.flashstake.io/graphql",
   // GRAPHQL_ENDPOINT_URI:
   // "https://api.thegraph.com/subgraphs/name/asadnaeem1/flashstake-protocol-v2",
   WETH_ERC20_ADDRESS: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
@@ -27,7 +27,7 @@ export const CONSTANTS = {
   },
   BALANCE_CONTRACT: "0x3cDA8420E25510765490201E1D054c517D085a7E",
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
-  CACHE_SERVER: "https://server.xio.app:3015/getReserves",
+  CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
   CHAIN_ID: 3,
   NETWORK: "ROPSTEN",
 
