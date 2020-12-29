@@ -505,7 +505,6 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-  console.log("loooo", poolsLiquidityList);
   useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
@@ -1216,7 +1215,7 @@ function Pool({
                   !loadingRedux.allowance ? (
                     <Grid item xs={12}>
                       <Typography variant="body2" className={classes.redText}>
-                        Approve <b>FLASH</b>, before <b>pool</b>
+                        Approve <b>FLASH</b> before <b>pool</b>
                       </Typography>
                     </Grid>
                   ) : null}

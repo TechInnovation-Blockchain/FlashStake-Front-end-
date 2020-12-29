@@ -226,7 +226,7 @@ function WalletConnect({
               variant="body2"
               className={classes.redText}
             >
-              Change network to <b>rinkeby</b>
+              Change network to <b>{CONSTANTS.NETWORK}</b>
             </Typography>
           ) : null}
 

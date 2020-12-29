@@ -1155,7 +1155,7 @@ function Flashstake({
                       >
                         {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
                         <b>APPROVE FLASH</b> */}
-                        Approve <b>FLASH</b>, before <b>staking</b>
+                        Approve <b>FLASH</b> before <b>staking</b>
                       </Typography>
                     </Grid>
                   ) : null}

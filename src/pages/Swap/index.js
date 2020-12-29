@@ -768,7 +768,7 @@ function Swap({
                               variant="body2"
                               className={classes.redText}
                             >
-                              Approve <b>FLASH</b>, before <b>swapping</b>{" "}
+                              Approve <b>FLASH</b> before <b>swapping</b>{" "}
                               {selectedRewardToken?.tokenB?.symbol || ""}
                             </Typography>
                           </Grid>
