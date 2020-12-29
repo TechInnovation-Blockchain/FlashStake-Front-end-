@@ -379,7 +379,7 @@ function TableComponent({
                         );
                         return (
                           // <a
-                          //   href={`https://rinkeby.etherscan.io/tx/${_stake.transactionHash}`}
+                          //   href={`https://ropsten.etherscan.io/tx/${_stake.transactionHash}`}
                           //   className={classes.link}
                           //   target="_blank"
                           // >

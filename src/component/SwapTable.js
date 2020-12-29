@@ -253,7 +253,7 @@ function SwapTable({
                       .map((_swap, index) => {
                         return (
                           <a
-                            href={`https://rinkeby.etherscan.io/tx/${_swap.transactionHash}`}
+                            href={`https://ropsten.etherscan.io/tx/${_swap.transactionHash}`}
                             className={classes.link}
                             target="_blank"
                             rel="noopener noreferrer"
