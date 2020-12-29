@@ -29,7 +29,7 @@ export const CONSTANTS = {
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
   CACHE_SERVER: "https://server.xio.app:3015/getReserves",
   CHAIN_ID: 3,
-  NETWORK: "Ropsten",
+  NETWORK: "ROPSTEN",
 
   TOKENS_LIST: [
     {
