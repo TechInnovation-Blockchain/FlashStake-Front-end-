@@ -23,7 +23,7 @@ try {
   web3jsInfura = new Web3(
     new Web3.providers.HttpProvider(
       // `https://rinkeby.infura.io/v3/`
-      `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
+      `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
       // "http://localhost:3001"
       // "https://ethereum.xio.app:3000"
     )

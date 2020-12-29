@@ -371,18 +371,35 @@ function DropdownDialog({
       const joined = "https://ipfs.io/ipfs/" + _val[1];
       return joined;
     }
+    // if (path?.includes("raw.githubusercontent.com/")) {
+    //   // console.log("ADD", Web3.utils.toChecksumAddress(add));
+    //   try {
+    //     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+    //       add
+    //     )}/logo.png`;
+    //   } catch (e) {
+    //     // console.log(e);
+    //     return require(`../assets/Tokens/NOTFOUND.png`);
+    //   }
+
+    //   // return require(`../assets/Tokens/NOTFOUND.png`);
+    // }
+    // return path;
+
     if (path?.includes("raw.githubusercontent.com/")) {
-      // console.log("ADD", Web3.utils.toChecksumAddress(add));
-      try {
-        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
-          add
-        )}/logo.png`;
-      } catch (e) {
-        // console.log(e);
-        return require(`../assets/Tokens/NOTFOUND.png`);
-      }
+      // try {
+      // if (add) {
+      //   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+      //     add
+      //   )}/logo.png`;
+      // }
+      // } catch (e) {
+      // console.log(e);
+      // return require(`../assets/Tokens/NOTFOUND.png`);
+      // }
 
       // return require(`../assets/Tokens/NOTFOUND.png`);
+      return path;
     }
     return path;
   };

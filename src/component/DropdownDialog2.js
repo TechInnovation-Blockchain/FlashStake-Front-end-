@@ -380,17 +380,18 @@ function DropdownDialog2({
 
     if (path?.includes("raw.githubusercontent.com/")) {
       // try {
-      if (add) {
-        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
-          add
-        )}/logo.png`;
-      }
+      // if (add) {
+      //   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
+      //     add
+      //   )}/logo.png`;
+      // }
       // } catch (e) {
       // console.log(e);
       // return require(`../assets/Tokens/NOTFOUND.png`);
       // }
 
       // return require(`../assets/Tokens/NOTFOUND.png`);
+      return path;
     }
     return path;
   };
