@@ -1479,7 +1479,7 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1876,7 +1876,7 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://rinkeby.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
