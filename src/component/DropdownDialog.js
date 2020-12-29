@@ -334,6 +334,7 @@ function DropdownDialog({
 
   const onSelectLocal = (_pool) => {
     console.log("POOL", _pool);
+    // setToken(_pool);
     onSelect(_pool);
     onClose();
   };
