@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://beta2.xio.app/" target="blank"><img src="https://i.imgur.com/6F6VMwz.png" width="100" alt="XIO Logo" /></a>
-</p>
+</p> 
 
 # XIO Flashstake Dapp - V2
 Earn instant upfront token rewards for staking the next generation of up-and-coming blockchain projects.
