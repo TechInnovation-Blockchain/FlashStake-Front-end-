@@ -317,7 +317,7 @@ function DropdownDialog2({
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokenList?.filter((item) =>
-          item.address.toLowerCase().includes(search)
+          item?.address?.toLowerCase().includes(search)
         );
       }
 
