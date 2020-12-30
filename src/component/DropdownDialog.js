@@ -234,13 +234,17 @@ function DropdownDialog({
     }
   });
 
+  useEffect(() => {
+    console.log("HEREEE", tokensList);
+  }, [tokensList]);
+
   const updateTokensList = () => {
     setTokensList(
       tokenList.map((_token) => ({
         id: pools.find(
           (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
         )?.id,
-        tokenB: { ..._token, id: String(_token.address).toLowerCase() },
+        tokenB: { ..._token?.tokenB, id: String(_token.address).toLowerCase() },
       }))
     );
   };
@@ -409,10 +413,27 @@ function DropdownDialog({
     return path;
   };
 
+  // const addTokenToList = useCallback(async () => {
+  //   let _tokenList = [];
+  //   try {
+  //     _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+  //   } catch (e) {}
+  //   if (
+  //     !_tokenList?.find(
+  //       (_tokenItem) => _tokenItem.address === token?.tokenB?.address
+  //     )
+  //   ) {
+  //     _tokenList.push(token?.tokenB);
+  //     localStorage.setItem("tokenList", JSON.stringify(_tokenList));
+  //     addToTokenList(token);
+  //     setSearch("");
+  //   }
+  // }, [token]);
+
   const addTokenToList = useCallback(async () => {
     let _tokenList = [];
     try {
-      _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+      tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
     } catch (e) {}
     if (
       !_tokenList?.find(
@@ -422,7 +443,7 @@ function DropdownDialog({
       _tokenList.push(token?.tokenB);
       localStorage.setItem("tokenList", JSON.stringify(_tokenList));
       addToTokenList(token);
-      setToken("");
+      setSearch("");
     }
   }, [token]);
 
@@ -579,16 +600,18 @@ function DropdownDialog({
                   className={classes.listItem}
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.id}
-                  // disabled={
-                  //   !pools?.find((_item) => {
-                  //     if (
-                  //       _item?.tokenB?.id ===
-                  //       _pool?.tokenB?.address.toLowerCase()
-                  //     ) {
-                  //       return true;
-                  //     }
-                  //   })
-                  // }
+                  disabled={
+                    !pools?.find((_item) => {
+                      if (
+                        _item?.tokenB?.id ===
+                        _pool?.tokenB?.address.toLowerCase()
+                      ) {
+                        return true;
+                      }
+                    }) ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      _pool.address
+                  }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
@@ -653,7 +676,9 @@ function DropdownDialog({
                     if (_item?.tokenB?.id === token.tokenB.address) {
                       return true;
                     }
-                  }) || token?.tokenB?.chainId === CONSTANTS.CHAIN_ID
+                  }) ||
+                  token?.tokenB?.chainId === CONSTANTS.CHAIN_ID ||
+                  "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" === token.address
 
                   // Object.keys(allPoolsData).find((_item) => {
                   //   if (_item === token.address) {

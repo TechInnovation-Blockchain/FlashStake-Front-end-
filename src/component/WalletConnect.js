@@ -181,7 +181,7 @@ function WalletConnect({
 
   useEffect(() => {
     setTimeout(() => {
-      if (window.ethereum._state?.accounts?.length) {
+      if (window?.ethereum?._state?.accounts?.length) {
         activateWallet();
       }
     }, 400);
