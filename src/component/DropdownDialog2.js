@@ -317,7 +317,7 @@ function DropdownDialog2({
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokenList?.filter((item) =>
-          item.address.toLowerCase().includes(search)
+          item?.address?.toLowerCase().includes(search)
         );
       }
 
@@ -334,6 +334,7 @@ function DropdownDialog2({
   }, [search, items, tokenList]);
 
   const onClose = useCallback(() => {
+    setSearch("");
     setOpen(false);
   }, []);
 
@@ -488,13 +489,16 @@ function DropdownDialog2({
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
                   // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
-                  // disabled={
-                  //   pools?.find(
-                  //     (_item) =>
-                  //       _item?.tokenB?.id ===
-                  //       String(_pool.address).toLowerCase()
-                  //   ) || _pool?.chainId !== CONSTANTS.CHAIN_ID
-                  // }
+
+                  disabled={
+                    pools?.find(
+                      (_item) =>
+                        _item?.tokenB?.id ===
+                        String(_pool.address).toLowerCase()
+                    ) ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      _pool.address
+                  }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
@@ -544,7 +548,10 @@ function DropdownDialog2({
                       if (_item?.tokenB?.id === token.address) {
                         return true;
                       }
-                    }) || allPoolsData[token.address]
+                    }) ||
+                    allPoolsData[token.address] ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      token.address
 
                     // Object.keys(allPoolsData).find((_item) => {
                     //   if (_item === token.address) {
