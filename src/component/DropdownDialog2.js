@@ -488,13 +488,10 @@ function DropdownDialog2({
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
                   // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
-                  // disabled={
-                  //   pools?.find(
-                  //     (_item) =>
-                  //       _item?.tokenB?.id ===
-                  //       String(_pool.address).toLowerCase()
-                  //   ) || _pool?.chainId !== CONSTANTS.CHAIN_ID
-                  // }
+                  disabled={pools?.find(
+                    (_item) =>
+                      _item?.tokenB?.id === String(_pool.address).toLowerCase()
+                  )}
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
