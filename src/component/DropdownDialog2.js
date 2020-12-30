@@ -488,10 +488,15 @@ function DropdownDialog2({
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
                   // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
-                  disabled={pools?.find(
-                    (_item) =>
-                      _item?.tokenB?.id === String(_pool.address).toLowerCase()
-                  )}
+                  disabled={
+                    pools?.find(
+                      (_item) =>
+                        _item?.tokenB?.id ===
+                        String(_pool.address).toLowerCase()
+                    ) ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      _pool.address
+                  }
                 >
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
@@ -541,7 +546,10 @@ function DropdownDialog2({
                       if (_item?.tokenB?.id === token.address) {
                         return true;
                       }
-                    }) || allPoolsData[token.address]
+                    }) ||
+                    allPoolsData[token.address] ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      token.address
 
                     // Object.keys(allPoolsData).find((_item) => {
                     //   if (_item === token.address) {
