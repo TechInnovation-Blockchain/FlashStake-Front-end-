@@ -360,7 +360,7 @@ function ManageListsDropDown({
 
           <Box className={classes.closeBtnContainer}>
             <TextField
-              placeholder="ADD TOKENS LIST"
+              placeholder="ADD TOKENS LIST LINK"
               className={classes.textField}
               fullWidth
               value={customList}

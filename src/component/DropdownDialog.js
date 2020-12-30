@@ -328,8 +328,10 @@ function DropdownDialog({
   const onClose = useCallback(() => {
     if (overrideOpen) {
       setOpenProp(false);
+      setSearch("");
     } else {
       setOpen(false);
+      setSearch("");
     }
   }, []);
 

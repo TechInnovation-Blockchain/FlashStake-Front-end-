@@ -156,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
   },
   maxIconButton: {
     position: "absolute",
-    right: 0,
+    right: "2px",
     top: "50%",
     height: 35,
     transform: "translateY(-50%)",
