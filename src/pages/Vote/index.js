@@ -79,6 +79,8 @@ import FlashDropDown from "../../component/FlashDropDown";
 import CreateTable from "../../component/CreateTable";
 import { CONSTANTS } from "../../utils/constants";
 
+import { SlideDown } from "react-slidedown";
+
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
     textAlign: "center",
@@ -603,97 +605,90 @@ function Vote({
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <AnimateHeight
-          id="example-panel"
-          duration={400}
-          height={heightVal} // see props documentation below
+        {/* <SlideDown className={"my-dropdown-slidedown"}> */}
+        <Box
+          ref={ref}
+          className={`${classes.contentContainer} contentContainer1`}
         >
-          <Box
-            ref={ref}
-            className={`${classes.contentContainer} contentContainer1`}
-          >
-            <Accordion square expanded={expanded2}>
-              <AccordionSummary
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-                style={{ display: "none" }}
-              >
-                {/* <Typography>Collapsible Group Item #1</Typography> */}
-              </AccordionSummary>
+          <Accordion square expanded={expanded2}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              style={{ display: "none" }}
+            >
+              {/* <Typography>Collapsible Group Item #1</Typography> */}
+            </AccordionSummary>
 
-              <AccordionDetails
-                style={{ paddingTop: "20px" }}
-                className={classes.accordionDetails}
-              >
-                <Grid container>
-                  <Grid item xs={12}>
-                    {/* <TextField
+            <AccordionDetails
+              style={{ paddingTop: "20px" }}
+              className={classes.accordionDetails}
+            >
+              <Grid container>
+                <Grid item xs={12}>
+                  {/* <TextField
                       className={classes.textField}
                       fullWidth
                       placeholder="FLASH"
                       value={"FLASH"}
                       disabled={true}
                     /> */}
-                    <FlashDropDown />
-                  </Grid>
+                  <FlashDropDown />
+                </Grid>
 
-                  <Grid item className={classes.gridSpace} xs={12}>
-                    <Typography
-                      variant="body1"
-                      className={classes.secondaryText}
-                    >
-                      What token do you want to pair with
-                    </Typography>
-                    <DropdownDialog2
-                      className={classes.dropDown}
-                      items={pools}
-                      setToken={setToken}
-                      heading="SELECT TOKEN"
-                    />
-                  </Grid>
+                <Grid item className={classes.gridSpace} xs={12}>
+                  <Typography variant="body1" className={classes.secondaryText}>
+                    What token do you want to pair with
+                  </Typography>
+                  <DropdownDialog2
+                    className={classes.dropDown}
+                    items={pools}
+                    setToken={setToken}
+                    heading="SELECT TOKEN"
+                  />
+                </Grid>
 
-                  <Grid item className={classes.gridSpace} xs={12}></Grid>
+                <Grid item className={classes.gridSpace} xs={12}></Grid>
 
+                <Grid
+                  item
+                  className={classes.gridSpace}
+                  xs={12}
+                  onClick={showWalletHint}
+                >
+                  <Button
+                    fullWidth
+                    variant="retro"
+                    disabled={!token?.decimals || loadingRedux.createPool}
+                    loading={loadingRedux.createPool}
+                    onClick={() => handleCreatePool(token)}
+                  >
+                    CREATE
+                  </Button>
+                </Grid>
+
+                {!(active && account) ? (
                   <Grid
                     item
-                    className={classes.gridSpace}
                     xs={12}
                     onClick={showWalletHint}
+                    className={classes.cursorPointer}
                   >
-                    <Button
-                      fullWidth
-                      variant="retro"
-                      disabled={!token?.decimals || loadingRedux.createPool}
-                      loading={loadingRedux.createPool}
-                      onClick={() => handleCreatePool(token)}
+                    <Typography
+                      // variant="overline"
+                      variant="body2"
+                      className={`${classes.redText} ${classes.gridSpace2}`}
                     >
-                      CREATE
-                    </Button>
+                      Connect wallet to create pools
+                    </Typography>
                   </Grid>
-
-                  {!(active && account) ? (
-                    <Grid
-                      item
-                      xs={12}
-                      onClick={showWalletHint}
-                      className={classes.cursorPointer}
-                    >
-                      <Typography
-                        // variant="overline"
-                        variant="body2"
-                        className={`${classes.redText} ${classes.gridSpace2}`}
-                      >
-                        Connect wallet to create pools
-                      </Typography>
-                    </Grid>
-                  ) : chainId !== CONSTANTS.CHAIN_ID ||
-                    web3context.error instanceof
-                      UnsupportedChainIdError ? null : null}
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        </AnimateHeight>
+                ) : chainId !== CONSTANTS.CHAIN_ID ||
+                  web3context.error instanceof
+                    UnsupportedChainIdError ? null : null}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+        {/* </SlideDown> */}
 
         <Dialog
           open={showStakeDialog}

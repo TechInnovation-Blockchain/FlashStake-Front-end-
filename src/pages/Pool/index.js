@@ -69,6 +69,8 @@ import { _error } from "../../utils/log";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
 
+import { SlideDown } from "react-slidedown";
+
 const useStyles = makeStyles((theme) => ({
   contentContainer: {
     textAlign: "center",
@@ -743,224 +745,237 @@ function Pool({
     // account !== "0xe7Ef8E1402055EB4E89a57d1109EfF3bAA334F5F" ? (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <AnimateHeight
-          id="example-panel"
-          duration={400}
-          height={heightVal} // see props documentation below
+        {/* <SlideDown className={"my-dropdown-slidedown"}> */}
+        <Box
+          ref={ref}
+          className={`${classes.contentContainer} contentContainer1`}
         >
-          <Box
-            ref={ref}
-            className={`${classes.contentContainer} contentContainer1`}
-          >
-            <Accordion square expanded={expanded2}>
-              <AccordionSummary
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-                style={{ display: "none" }}
-              >
-                {/* <Typography>Collapsible Group Item #1</Typography> */}
-              </AccordionSummary>
+          <Accordion square expanded={expanded2}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              style={{ display: "none" }}
+            >
+              {/* <Typography>Collapsible Group Item #1</Typography> */}
+            </AccordionSummary>
 
-              <AccordionDetails
-                style={{ paddingTop: "20px" }}
-                className={classes.accordionDetails}
-              >
-                <Grid container spacing={2}>
-                  <Grid container className={classes.gridSpace2} item xs={6}>
-                    <Box flex={1}>
-                      <Typography
-                        // variant="body2"
-                        variant="body1"
-                        className={classes.secondaryText}
-                      >
-                        {/* QUANTITY */}
-                        Quantity
-                      </Typography>
-                      <Box className={classes.textFieldContainer}>
-                        {/* <Tooltip title="Hello world" open={true}> */}
-                        <TextField
-                          className={classes.textField}
-                          fullWidth
-                          placeholder="0.0"
-                          type="number"
-                          inputMode="numeric"
-                          pattern={regex}
-                          onKeyDown={handleKeyDown}
-                          onFocus={(e) => (e.target.placeholder = "")}
-                          onBlur={(e) => (e.target.placeholder = "0.0")}
-                          value={quantityAlt}
-                          onChange={onChangeQuantityAlt}
-                          error={
-                            active &&
-                            account &&
-                            selectedPortal &&
-                            parseFloat(quantityAlt) > parseFloat(balanceALT)
-                          }
-                        />
-                        {/* </Tooltip> */}
-                        <IconButton
-                          className={classes.maxIconButton}
-                          disabled={
-                            !(active || account) ||
-                            !selectedPortal ||
-                            // !walletBalancesPool[selectedPortal] ||
-                            balanceALT == quantityAlt
-                          }
-                          onClick={() =>
-                            onChangeQuantityAlt({
-                              target: {
-                                value: balanceALT,
-                              },
-                            })
-                          }
-                        >
-                          <MaxBtn width={10} />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  </Grid>
-
-                  <Grid item className={classes.gridSpace2} xs={6}>
+            <AccordionDetails
+              style={{ paddingTop: "20px" }}
+              className={classes.accordionDetails}
+            >
+              <Grid container spacing={2}>
+                <Grid container className={classes.gridSpace2} item xs={6}>
+                  <Box flex={1}>
                     <Typography
                       // variant="body2"
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      Pool
+                      {/* QUANTITY */}
+                      Quantity
                     </Typography>
-                    <DropdownDialog
-                      className={classes.dropDown}
-                      items={pools}
-                      selectedValue={selectedRewardToken}
-                      onSelect={setSelectedRewardToken}
-                      heading="SELECT TOKEN"
-                      _theme={theme}
-                      overrideOpen={true}
-                      openProp={openDialog}
-                      setOpenProp={setOpenDialog}
-                    />
-                  </Grid>
-
-                  <Grid container item xs={12}>
-                    <Box flex={1}>
-                      <Typography
-                        // variant="body2"
-                        variant="body1"
-                        className={classes.secondaryText}
+                    <Box className={classes.textFieldContainer}>
+                      {/* <Tooltip title="Hello world" open={true}> */}
+                      <TextField
+                        className={classes.textField}
+                        fullWidth
+                        placeholder="0.0"
+                        type="number"
+                        inputMode="numeric"
+                        pattern={regex}
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0.0")}
+                        value={quantityAlt}
+                        onChange={onChangeQuantityAlt}
+                        error={
+                          active &&
+                          account &&
+                          selectedPortal &&
+                          parseFloat(quantityAlt) > parseFloat(balanceALT)
+                        }
+                      />
+                      {/* </Tooltip> */}
+                      <IconButton
+                        className={classes.maxIconButton}
+                        disabled={
+                          !(active || account) ||
+                          !selectedPortal ||
+                          // !walletBalancesPool[selectedPortal] ||
+                          balanceALT == quantityAlt
+                        }
+                        onClick={() =>
+                          onChangeQuantityAlt({
+                            target: {
+                              value: balanceALT,
+                            },
+                          })
+                        }
                       >
-                        {/* AMOUNT OF FLASH REQUIRED TO POOL */}
-                        Amount of FLASH required to pool
-                      </Typography>
-                      <Box className={classes.textFieldContainer}>
-                        {/* <Tooltip title="Hello world" open={true}> */}
-                        <TextField
-                          className={classes.textField}
-                          fullWidth
-                          placeholder="0.0"
-                          type="number"
-                          inputMode="numeric"
-                          pattern={regex}
-                          onKeyDown={handleKeyDown}
-                          onFocus={(e) => (e.target.placeholder = "")}
-                          onBlur={(e) => (e.target.placeholder = "0.0")}
-                          value={quantityXIO}
-                          onChange={onChangeQuantityXIO}
-                          error={
-                            active &&
-                            account &&
-                            parseFloat(quantityXIO) > parseFloat(walletBalance)
-                          }
-                        />
-                        {/* </Tooltip> */}
-                        <IconButton
-                          className={classes.maxIconButton}
-                          disabled={
-                            !(active || account) || walletBalance == quantityXIO
-                          }
-                          onClick={() =>
-                            onChangeQuantityXIO({
-                              target: { value: walletBalance },
-                            })
+                        <MaxBtn width={10} />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid item className={classes.gridSpace2} xs={6}>
+                  <Typography
+                    // variant="body2"
+                    variant="body1"
+                    className={classes.secondaryText}
+                  >
+                    Pool
+                  </Typography>
+                  <DropdownDialog
+                    className={classes.dropDown}
+                    items={pools}
+                    selectedValue={selectedRewardToken}
+                    onSelect={setSelectedRewardToken}
+                    heading="SELECT TOKEN"
+                    _theme={theme}
+                    overrideOpen={true}
+                    openProp={openDialog}
+                    setOpenProp={setOpenDialog}
+                  />
+                </Grid>
+
+                <Grid container item xs={12}>
+                  <Box flex={1}>
+                    <Typography
+                      // variant="body2"
+                      variant="body1"
+                      className={classes.secondaryText}
+                    >
+                      {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                      Amount of FLASH required to pool
+                    </Typography>
+                    <Box className={classes.textFieldContainer}>
+                      {/* <Tooltip title="Hello world" open={true}> */}
+                      <TextField
+                        className={classes.textField}
+                        fullWidth
+                        placeholder="0.0"
+                        type="number"
+                        inputMode="numeric"
+                        pattern={regex}
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0.0")}
+                        value={quantityXIO}
+                        onChange={onChangeQuantityXIO}
+                        error={
+                          active &&
+                          account &&
+                          parseFloat(quantityXIO) > parseFloat(walletBalance)
+                        }
+                      />
+                      {/* </Tooltip> */}
+                      <IconButton
+                        className={classes.maxIconButton}
+                        disabled={
+                          !(active || account) || walletBalance == quantityXIO
+                        }
+                        onClick={() =>
+                          onChangeQuantityXIO({
+                            target: { value: walletBalance },
+                          })
+                        }
+                      >
+                        <MaxBtn width={10} />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                {selectedRewardToken?.tokenB?.symbol ? (
+                  <Fragment>
+                    <Grid item xs={4}>
+                      <Box flex={1} className={classes.outerBox}>
+                        <Typography
+                          // variant="body2"
+                          variant="body2"
+                          className={classes.secondaryText}
+                        >
+                          {/* AMOUNT OF FLASH REQUIRED TO POOL */}
+                          FLASH per {selectedRewardToken?.tokenB?.symbol}
+                        </Typography>
+                        <Tooltip
+                          title={
+                            queryData.reserveFlashAmount /
+                              queryData.reserveAltAmount || 0
                           }
                         >
-                          <MaxBtn width={10} />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  </Grid>
-
-                  {selectedRewardToken?.tokenB?.symbol ? (
-                    <Fragment>
-                      <Grid item xs={4}>
-                        <Box flex={1} className={classes.outerBox}>
                           <Typography
-                            // variant="body2"
-                            variant="body2"
+                            variant="body1"
                             className={classes.secondaryText}
                           >
-                            {/* AMOUNT OF FLASH REQUIRED TO POOL */}
-                            FLASH per {selectedRewardToken?.tokenB?.symbol}
-                          </Typography>
-                          <Tooltip
-                            title={
+                            {trunc(
                               queryData.reserveFlashAmount /
-                                queryData.reserveAltAmount || 0
-                            }
-                          >
-                            <Typography
-                              variant="body1"
-                              className={classes.secondaryText}
-                            >
-                              {trunc(
-                                queryData.reserveFlashAmount /
-                                  queryData.reserveAltAmount
-                              ) || 0}
-                            </Typography>
-                          </Tooltip>
-                        </Box>
-                      </Grid>
+                                queryData.reserveAltAmount
+                            ) || 0}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                    </Grid>
 
-                      <Grid item xs={4}>
-                        <Box flex={1} className={classes.outerBox}>
+                    <Grid item xs={4}>
+                      <Box flex={1} className={classes.outerBox}>
+                        <Typography
+                          // variant="body2"
+                          variant="body2"
+                          className={classes.secondaryText}
+                        >
+                          {selectedRewardToken?.tokenB?.symbol} per FLASH
+                        </Typography>
+
+                        <Tooltip
+                          title={
+                            queryData.reserveAltAmount /
+                              queryData.reserveFlashAmount || 0
+                          }
+                        >
                           <Typography
-                            // variant="body2"
-                            variant="body2"
+                            variant="body1"
                             className={classes.secondaryText}
                           >
-                            {selectedRewardToken?.tokenB?.symbol} per FLASH
-                          </Typography>
-
-                          <Tooltip
-                            title={
+                            {trunc(
                               queryData.reserveAltAmount /
-                                queryData.reserveFlashAmount || 0
-                            }
-                          >
-                            <Typography
-                              variant="body1"
-                              className={classes.secondaryText}
-                            >
-                              {trunc(
-                                queryData.reserveAltAmount /
-                                  queryData.reserveFlashAmount
-                              ) || 0}
-                            </Typography>
-                          </Tooltip>
-                          {/* <Box className={classes.textFieldContainer}></Box> */}
-                        </Box>
-                      </Grid>
+                                queryData.reserveFlashAmount
+                            ) || 0}
+                          </Typography>
+                        </Tooltip>
+                        {/* <Box className={classes.textFieldContainer}></Box> */}
+                      </Box>
+                    </Grid>
 
-                      <Grid item xs={4}>
-                        <Box flex={1} className={classes.outerBox}>
+                    <Grid item xs={4}>
+                      <Box flex={1} className={classes.outerBox}>
+                        <Typography
+                          // variant="body2"
+                          variant="body2"
+                          className={classes.secondaryText}
+                        >
+                          Share of Pool
+                        </Typography>
+                        <Tooltip
+                          title={`${
+                            (quantityXIO /
+                              (parseFloat(quantityXIO) +
+                                parseFloat(
+                                  utils.formatUnits(
+                                    queryData?.reserveFlashAmount?.toString() ||
+                                      "0",
+                                    selectedRewardToken?.tokenB?.decimal
+                                  )
+                                ))) *
+                              100 || 0
+                          }%`}
+                        >
                           <Typography
-                            // variant="body2"
-                            variant="body2"
+                            variant="body1"
                             className={classes.secondaryText}
                           >
-                            Share of Pool
-                          </Typography>
-                          <Tooltip
-                            title={`${
+                            {trunc(
                               (quantityXIO /
                                 (parseFloat(quantityXIO) +
                                   parseFloat(
@@ -970,305 +985,287 @@ function Pool({
                                       selectedRewardToken?.tokenB?.decimal
                                     )
                                   ))) *
-                                100 || 0
-                            }%`}
-                          >
-                            <Typography
-                              variant="body1"
-                              className={classes.secondaryText}
-                            >
-                              {trunc(
-                                (quantityXIO /
-                                  (parseFloat(quantityXIO) +
-                                    parseFloat(
-                                      utils.formatUnits(
-                                        queryData?.reserveFlashAmount?.toString() ||
-                                          "0",
-                                        selectedRewardToken?.tokenB?.decimal
-                                      )
-                                    ))) *
-                                  100
-                              ) || 0}
-                              %
-                            </Typography>
-                          </Tooltip>
-                          {/* <Box className={classes.textFieldContainer}></Box> */}
+                                100
+                            ) || 0}
+                            %
+                          </Typography>
+                        </Tooltip>
+                        {/* <Box className={classes.textFieldContainer}></Box> */}
+                      </Box>
+                    </Grid>
+                  </Fragment>
+                ) : null}
+
+                {poolsLiquidityList.find(
+                  (__pool) => __pool.pool.id === selectedRewardToken.id
+                ) ? (
+                  <Fragment>
+                    <Grid container className={classes.outerBG}>
+                      <Grid xs={12} item className={classes.outerBoxHeading}>
+                        <Box className={classes.headingBox}>
+                          <Typography className={classes.mainHeading}>
+                            YOUR POSITION
+                          </Typography>
                         </Box>
                       </Grid>
-                    </Fragment>
-                  ) : null}
 
-                  {poolsLiquidityList.find(
-                    (__pool) => __pool.pool.id === selectedRewardToken.id
-                  ) ? (
-                    <Fragment>
-                      <Grid container className={classes.outerBG}>
-                        <Grid xs={12} item className={classes.outerBoxHeading}>
-                          <Box className={classes.headingBox}>
-                            <Typography className={classes.mainHeading}>
-                              YOUR POSITION
-                            </Typography>
-                          </Box>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Your total pool tokens:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool?.balance || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool?.balance || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Pooled FLASH:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool.pooledFlash || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.pooledFlash || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Pooled {currentPool?.pool?.tokenB?.symbol}:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool.pooledAlt || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.pooledAlt || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Your pool share:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={`${currentPool.poolShare || 0}%`}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.poolShare || 0)}%
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Fragment>
-                  ) : null}
-
-                  {!selectedRewardToken?.tokenB?.symbol ? (
-                    <Typography
-                      variant="body1"
-                      // variant="body2"
-                      className={classes.secondaryText2}
-                    >
-                      Select a pool to add liquidity
-                    </Typography>
-                  ) : null}
-
-                  {!allowanceXIOPool || !allowanceALTPool ? (
-                    <Grid container item xs={12} onClick={showWalletHint}>
-                      <Grid item xs={6} className={classes.btnPaddingRight}>
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          onClick={
-                            (!allowanceXIOPool || !allowanceALTPool) &&
-                            !loadingRedux.approval
-                              ? onClickApprove
-                              : () => {}
-                          }
-                          disabled={
-                            !selectedPortal ||
-                            !active ||
-                            !account ||
-                            loadingRedux.pool ||
-                            loadingRedux.approval ||
-                            chainId !== CONSTANTS.CHAIN_ID
-                          }
-                          loading={
-                            loadingRedux.approval && loadingRedux.approvalXIO
-                          }
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
                         >
-                          {loadingRedux.approval && loadingRedux.approvalXIO
-                            ? "APPROVING"
-                            : !allowanceXIOPool
-                            ? `APPROVE ${selectedStakeToken}`
-                            : `APPROVE ${
-                                selectedRewardToken?.tokenB?.symbol || ""
-                              }`}
-                        </Button>
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Your total pool tokens:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool?.balance || 0}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool?.balance || 0)}
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={6} className={classes.btnPaddingLeft}>
-                        <Button
-                          fullWidth
-                          variant="retro"
-                          onClick={onClickPool}
-                          disabled={
-                            !active ||
-                            !account ||
-                            !selectedPortal ||
-                            !allowanceXIOPool ||
-                            !allowanceALTPool ||
-                            quantityXIO <= 0 ||
-                            quantityAlt <= 0 ||
-                            loadingRedux.pool ||
-                            chainId !== CONSTANTS.CHAIN_ID ||
-                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                            parseFloat(quantityXIO) > parseFloat(walletBalance)
-                          }
-                          loading={loadingRedux.pool}
-                        >
-                          POOL
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <Fragment>
-                      <Grid container item xs={12} onClick={showWalletHint}>
-                        <AddDropDown
-                          quantityAlt={quantityAlt}
-                          quantityXIO={quantityXIO}
-                          selectedRewardToken={selectedRewardToken}
-                          queryData={queryData}
-                          disabled={
-                            !active ||
-                            !account ||
-                            !selectedPortal ||
-                            !allowanceXIOPool ||
-                            !allowanceALTPool ||
-                            quantityXIO <= 0 ||
-                            quantityAlt <= 0 ||
-                            loadingRedux.pool ||
-                            chainId !== CONSTANTS.CHAIN_ID ||
-                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                            parseFloat(quantityXIO) > parseFloat(walletBalance)
-                          }
-                          onClickPool={onClickPool}
-                          showBack={false}
-                        />
-                      </Grid>
-                    </Fragment>
-                  )}
 
-                  {!allowanceXIOPool &&
-                  active &&
-                  account &&
-                  selectedRewardToken &&
-                  !loadingRedux.allowance ? (
-                    <Grid item xs={12}>
-                      <Typography variant="body2" className={classes.redText}>
-                        Approve <b>FLASH</b> before <b>pool</b>
-                      </Typography>
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled FLASH:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool.pooledFlash || 0}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.pooledFlash || 0)}
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled {currentPool?.pool?.tokenB?.symbol}:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool.pooledAlt || 0}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.pooledAlt || 0)}
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Your pool share:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={`${currentPool.poolShare || 0}%`}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.poolShare || 0)}%
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
                     </Grid>
-                  ) : null}
-                  {!(active && account) ? (
-                    <Grid
-                      item
-                      xs={12}
-                      onClick={showWalletHint}
-                      className={classes.cursorPointer}
-                    >
-                      <Typography variant="body2" className={classes.redText}>
-                        Connect wallet to pool
-                      </Typography>
+                  </Fragment>
+                ) : null}
+
+                {!selectedRewardToken?.tokenB?.symbol ? (
+                  <Typography
+                    variant="body1"
+                    // variant="body2"
+                    className={classes.secondaryText2}
+                  >
+                    Select a pool to add liquidity
+                  </Typography>
+                ) : null}
+
+                {!allowanceXIOPool || !allowanceALTPool ? (
+                  <Grid container item xs={12} onClick={showWalletHint}>
+                    <Grid item xs={6} className={classes.btnPaddingRight}>
+                      <Button
+                        fullWidth
+                        variant="retro"
+                        onClick={
+                          (!allowanceXIOPool || !allowanceALTPool) &&
+                          !loadingRedux.approval
+                            ? onClickApprove
+                            : () => {}
+                        }
+                        disabled={
+                          !selectedPortal ||
+                          !active ||
+                          !account ||
+                          loadingRedux.pool ||
+                          loadingRedux.approval ||
+                          chainId !== CONSTANTS.CHAIN_ID
+                        }
+                        loading={
+                          loadingRedux.approval && loadingRedux.approvalXIO
+                        }
+                      >
+                        {loadingRedux.approval && loadingRedux.approvalXIO
+                          ? "APPROVING"
+                          : !allowanceXIOPool
+                          ? `APPROVE ${selectedStakeToken}`
+                          : `APPROVE ${
+                              selectedRewardToken?.tokenB?.symbol || ""
+                            }`}
+                      </Button>
                     </Grid>
-                  ) : chainId !== CONSTANTS.CHAIN_ID ||
-                    web3context.error instanceof
-                      UnsupportedChainIdError ? null : null}
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion square expanded={!expanded2}>
-              <AccordionSummary
-                aria-controls="panel2d-content"
-                id="panel2d-header"
-                onClick={() => setExpanded2(!expanded2)}
-                className={`${classes.dashboardAccordian} ${
-                  expanded2 ? classes.btn3 : classes._btn3
-                }`}
-              >
-                {expanded2 ? (
-                  <ArrowDropUpIcon size="large" className={classes.icon} />
+                    <Grid item xs={6} className={classes.btnPaddingLeft}>
+                      <Button
+                        fullWidth
+                        variant="retro"
+                        onClick={onClickPool}
+                        disabled={
+                          !active ||
+                          !account ||
+                          !selectedPortal ||
+                          !allowanceXIOPool ||
+                          !allowanceALTPool ||
+                          quantityXIO <= 0 ||
+                          quantityAlt <= 0 ||
+                          loadingRedux.pool ||
+                          chainId !== CONSTANTS.CHAIN_ID ||
+                          parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                          parseFloat(quantityXIO) > parseFloat(walletBalance)
+                        }
+                        loading={loadingRedux.pool}
+                      >
+                        POOL
+                      </Button>
+                    </Grid>
+                  </Grid>
                 ) : (
-                  <ArrowDropDownIcon size="large" className={classes.icon} />
+                  <Fragment>
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <AddDropDown
+                        quantityAlt={quantityAlt}
+                        quantityXIO={quantityXIO}
+                        selectedRewardToken={selectedRewardToken}
+                        queryData={queryData}
+                        disabled={
+                          !active ||
+                          !account ||
+                          !selectedPortal ||
+                          !allowanceXIOPool ||
+                          !allowanceALTPool ||
+                          quantityXIO <= 0 ||
+                          quantityAlt <= 0 ||
+                          loadingRedux.pool ||
+                          chainId !== CONSTANTS.CHAIN_ID ||
+                          parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                          parseFloat(quantityXIO) > parseFloat(walletBalance)
+                        }
+                        onClickPool={onClickPool}
+                        showBack={false}
+                      />
+                    </Grid>
+                  </Fragment>
                 )}
-                <Typography variant="body2" className={classes.stakeDashBtn}>
-                  POOL DASHBOARD
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordion}>
-                <PoolTable
-                  onClickUnstake={onClickUnstake}
-                  onClickApprovePool={onClickApprovePool}
-                  selectedQueryData={queryData}
-                  onClickPool={onClickPool}
-                  setShowStakeDialog={setShowStakeDialog}
-                  importToken={importTokenFunc}
-                />
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        </AnimateHeight>
 
+                {!allowanceXIOPool &&
+                active &&
+                account &&
+                selectedRewardToken &&
+                !loadingRedux.allowance ? (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" className={classes.redText}>
+                      Approve <b>FLASH</b> before <b>pool</b>
+                    </Typography>
+                  </Grid>
+                ) : null}
+                {!(active && account) ? (
+                  <Grid
+                    item
+                    xs={12}
+                    onClick={showWalletHint}
+                    className={classes.cursorPointer}
+                  >
+                    <Typography variant="body2" className={classes.redText}>
+                      Connect wallet to pool
+                    </Typography>
+                  </Grid>
+                ) : chainId !== CONSTANTS.CHAIN_ID ||
+                  web3context.error instanceof
+                    UnsupportedChainIdError ? null : null}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion square expanded={!expanded2}>
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+              onClick={() => setExpanded2(!expanded2)}
+              className={`${classes.dashboardAccordian} ${
+                expanded2 ? classes.btn3 : classes._btn3
+              }`}
+            >
+              {expanded2 ? (
+                <ArrowDropUpIcon size="large" className={classes.icon} />
+              ) : (
+                <ArrowDropDownIcon size="large" className={classes.icon} />
+              )}
+              <Typography variant="body2" className={classes.stakeDashBtn}>
+                POOL DASHBOARD
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordion}>
+              <PoolTable
+                onClickUnstake={onClickUnstake}
+                onClickApprovePool={onClickApprovePool}
+                selectedQueryData={queryData}
+                onClickPool={onClickPool}
+                setShowStakeDialog={setShowStakeDialog}
+                importToken={importTokenFunc}
+              />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+        {/* </SlideDown> */}
         <Dialog
           open={showStakeDialog}
           // open={true}

@@ -60,6 +60,8 @@ import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { useHistory } from "react-router-dom";
 import { store } from "../../config/reduxStore";
 
+import { SlideDown } from "react-slidedown";
+
 const {
   ui: { changeApp },
 } = store.getState();
@@ -520,213 +522,177 @@ function Swap({
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <AnimateHeight
-          id="example-panel"
-          duration={400}
-          height={heightVal} // see props documentation below
+        {/* <SlideDown className={"my-dropdown-slidedown"}> */}
+        <Box
+          ref={ref}
+          className={`${classes.contentContainer} contentContainer1`}
         >
-          <Box
-            ref={ref}
-            className={`${classes.contentContainer} contentContainer1`}
-          >
-            <Accordion square expanded={expanded2}>
-              <AccordionSummary
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-                style={{ display: "none" }}
-              >
-                {/* <Typography>Collapsible Group Item #1</Typography> */}
-              </AccordionSummary>
+          <Accordion square expanded={expanded2}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+              style={{ display: "none" }}
+            >
+              {/* <Typography>Collapsible Group Item #1</Typography> */}
+            </AccordionSummary>
 
-              <AccordionDetails
-                style={{ paddingTop: "20px", paddingBottom: "0px" }}
-                className={classes.accordionDetails}
-              >
-                <Grid container spacing={2}>
-                  <Grid item className={classes.gridSpace} xs={12}>
+            <AccordionDetails
+              style={{ paddingTop: "20px", paddingBottom: "0px" }}
+              className={classes.accordionDetails}
+            >
+              <Grid container spacing={2}>
+                <Grid item className={classes.gridSpace} xs={12}>
+                  <Typography variant="body1" className={classes.secondaryText}>
+                    What do you want to swap for FLASH
+                  </Typography>
+                  <DropdownDialog
+                    className={classes.dropDown}
+                    items={pools}
+                    selectedValue={selectedRewardToken}
+                    onSelect={setSelectedRewardToken}
+                    heading="SELECT TOKEN"
+                    type="swap"
+                  />
+                </Grid>
+                <Grid item className={classes.gridSpace} xs={12}>
+                  <Box flex={1}>
                     <Typography
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      What do you want to swap for FLASH
+                      Swap Quantity
                     </Typography>
-                    <DropdownDialog
-                      className={classes.dropDown}
-                      items={pools}
-                      selectedValue={selectedRewardToken}
-                      onSelect={setSelectedRewardToken}
-                      heading="SELECT TOKEN"
-                      type="swap"
-                    />
-                  </Grid>
-                  <Grid item className={classes.gridSpace} xs={12}>
-                    <Box flex={1}>
-                      <Typography
-                        variant="body1"
-                        className={classes.secondaryText}
+                    <Box className={classes.textFieldContainer}>
+                      <TextField
+                        className={classes.textField}
+                        error={
+                          active &&
+                          account &&
+                          parseFloat(quantity) > parseFloat(balanceALT)
+                        }
+                        fullWidth
+                        placeholder="0.0"
+                        value={quantity}
+                        onChange={onChangeQuantity}
+                        // type="number"
+                        // inputMode="numeric"
+                        // pattern={regex}
+                        onKeyDown={handleKeyDown}
+                        onFocus={(e) => (e.target.placeholder = "")}
+                        onBlur={(e) => (e.target.placeholder = "0.0")}
+                      />
+                      <IconButton
+                        className={classes.maxIconButton}
+                        disabled={
+                          !(active || account) ||
+                          !selectedPortal ||
+                          balanceALT == quantity
+                        }
+                        onClick={() =>
+                          onChangeQuantity({ target: { value: balanceALT } })
+                        }
                       >
-                        Swap Quantity
-                      </Typography>
-                      <Box className={classes.textFieldContainer}>
-                        <TextField
-                          className={classes.textField}
-                          error={
-                            active &&
-                            account &&
-                            parseFloat(quantity) > parseFloat(balanceALT)
-                          }
-                          fullWidth
-                          placeholder="0.0"
-                          value={quantity}
-                          onChange={onChangeQuantity}
-                          // type="number"
-                          // inputMode="numeric"
-                          // pattern={regex}
-                          onKeyDown={handleKeyDown}
-                          onFocus={(e) => (e.target.placeholder = "")}
-                          onBlur={(e) => (e.target.placeholder = "0.0")}
-                        />
-                        <IconButton
-                          className={classes.maxIconButton}
-                          disabled={
-                            !(active || account) ||
-                            !selectedPortal ||
-                            balanceALT == quantity
-                          }
-                          onClick={() =>
-                            onChangeQuantity({ target: { value: balanceALT } })
-                          }
-                        >
-                          <MaxBtn width={10} />
-                        </IconButton>
-                      </Box>
+                        <MaxBtn width={10} />
+                      </IconButton>
                     </Box>
-                  </Grid>
+                  </Box>
+                </Grid>
 
-                  {parseFloat(quantity) >
-                  parseFloat(
-                    allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
-                  ) ? (
-                    <Grid item className={classes.gridSpaceP} xs={12}>
-                      <Typography
-                        variant="body1"
-                        className={`${classes.redText}  `}
-                      >
-                        Insufficient Liquidity
-                      </Typography>
-                    </Grid>
-                  ) : (
-                    <Grid item className={classes.gridSpace} xs={12}>
-                      {selectedRewardToken?.tokenB?.symbol ? (
-                        quantity > 0 ? (
-                          <Typography
-                            variant="body1"
-                            className={classes.infoText}
+                {parseFloat(quantity) >
+                parseFloat(
+                  allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
+                ) ? (
+                  <Grid item className={classes.gridSpaceP} xs={12}>
+                    <Typography
+                      variant="body1"
+                      className={`${classes.redText}  `}
+                    >
+                      Insufficient Liquidity
+                    </Typography>
+                  </Grid>
+                ) : (
+                  <Grid item className={classes.gridSpace} xs={12}>
+                    {selectedRewardToken?.tokenB?.symbol ? (
+                      quantity > 0 ? (
+                        <Typography
+                          variant="body1"
+                          className={classes.infoText}
+                        >
+                          If you swap{" "}
+                          <Tooltip
+                            title={`${quantity} ${
+                              selectedRewardToken?.tokenB?.symbol || ""
+                            }`}
                           >
-                            If you swap{" "}
-                            <Tooltip
-                              title={`${quantity} ${
-                                selectedRewardToken?.tokenB?.symbol || ""
-                              }`}
-                            >
+                            <span className={classes.infoTextSpan}>
+                              {trunc(quantity)}{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""}
+                            </span>
+                          </Tooltip>{" "}
+                          you will immediately{" "}
+                          {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
+                          get{" "}
+                          {loadingRedux.swapReward ? (
+                            <CircularProgress
+                              size={12}
+                              className={classes.loaderStyle}
+                            />
+                          ) : (
+                            <Tooltip title={`${preciseSwap} FLASH`}>
                               <span className={classes.infoTextSpan}>
-                                {trunc(quantity)}{" "}
-                                {selectedRewardToken?.tokenB?.symbol || ""}
+                                {" "}
+                                {trunc(preciseSwap)} FLASH
                               </span>
-                            </Tooltip>{" "}
-                            you will immediately{" "}
-                            {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
-                            get{" "}
-                            {loadingRedux.swapReward ? (
-                              <CircularProgress
-                                size={12}
-                                className={classes.loaderStyle}
-                              />
-                            ) : (
-                              <Tooltip title={`${preciseSwap} FLASH`}>
-                                <span className={classes.infoTextSpan}>
-                                  {" "}
-                                  {trunc(preciseSwap)} FLASH
-                                </span>
-                              </Tooltip>
-                            )}
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant="body1"
-                            className={classes.infoText}
-                          >
-                            Enter swap quantity above
-                          </Typography>
-                        )
+                            </Tooltip>
+                          )}
+                        </Typography>
                       ) : (
                         <Typography
                           variant="body1"
-                          className={`${classes.secondaryText} ${classes.gridSpace} `}
+                          className={classes.infoText}
                         >
-                          Select a token to view swap output amount
+                          Enter swap quantity above
                         </Typography>
-                      )}
+                      )
+                    ) : (
+                      <Typography
+                        variant="body1"
+                        className={`${classes.secondaryText} ${classes.gridSpace} `}
+                      >
+                        Select a token to view swap output amount
+                      </Typography>
+                    )}
 
-                      <Box className={classes.btn}>
-                        {!allowanceALT ? (
-                          <Grid
-                            container
-                            item
-                            xs={12}
-                            className={classes.gridSpace}
-                            // className={classes.msgContainer}
-                          >
-                            <Grid
-                              item
-                              xs={6}
-                              className={classes.btnPaddingRight}
+                    <Box className={classes.btn}>
+                      {!allowanceALT ? (
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          className={classes.gridSpace}
+                          // className={classes.msgContainer}
+                        >
+                          <Grid item xs={6} className={classes.btnPaddingRight}>
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={onClickApprove}
+                              disabled={
+                                !selectedPortal ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
+                                allowanceALT ||
+                                loadingRedux.approval
+                              }
+                              loading={
+                                loadingRedux.approval &&
+                                loadingRedux.approvalALT
+                              }
                             >
-                              <Button
-                                variant="retro"
-                                fullWidth
-                                onClick={onClickApprove}
-                                disabled={
-                                  !selectedPortal ||
-                                  chainId !== CONSTANTS.CHAIN_ID ||
-                                  allowanceALT ||
-                                  loadingRedux.approval
-                                }
-                                loading={
-                                  loadingRedux.approval &&
-                                  loadingRedux.approvalALT
-                                }
-                              >
-                                APPROVE{" "}
-                                {selectedRewardToken?.tokenB?.symbol || ""}
-                              </Button>
-                            </Grid>
-                            <Grid
-                              item
-                              xs={6}
-                              className={classes.btnPaddingLeft}
-                            >
-                              <Button
-                                variant="retro"
-                                fullWidth
-                                onClick={() => onClickSwap(quantity)}
-                                disabled={
-                                  !selectedPortal ||
-                                  !(quantity > 0) ||
-                                  parseFloat(balanceALT) <
-                                    parseFloat(quantity) ||
-                                  !allowanceALT ||
-                                  chainId !== CONSTANTS.CHAIN_ID ||
-                                  loadingRedux.swap
-                                }
-                                loading={loadingRedux.swap}
-                              >
-                                SWAP
-                              </Button>
-                            </Grid>
+                              APPROVE{" "}
+                              {selectedRewardToken?.tokenB?.symbol || ""}
+                            </Button>
                           </Grid>
-                        ) : (
-                          <Grid container item xs={12}>
+                          <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
                               variant="retro"
                               fullWidth
@@ -744,243 +710,262 @@ function Swap({
                               SWAP
                             </Button>
                           </Grid>
-                        )}
-                      </Box>
-                      <Box className={classes.btn}>
-                        {!(active && account) ? (
-                          <Grid
-                            item
-                            xs={12}
-                            className={`${classes.msgContainer} ${classes.cursorPointer}`}
-                            onClick={showWalletHint}
+                        </Grid>
+                      ) : (
+                        <Grid container item xs={12}>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={() => onClickSwap(quantity)}
+                            disabled={
+                              !selectedPortal ||
+                              !(quantity > 0) ||
+                              parseFloat(balanceALT) < parseFloat(quantity) ||
+                              !allowanceALT ||
+                              chainId !== CONSTANTS.CHAIN_ID ||
+                              loadingRedux.swap
+                            }
+                            loading={loadingRedux.swap}
                           >
-                            <Typography
-                              variant="body2"
-                              className={classes.redText}
-                            >
-                              Connect wallet to swap
-                            </Typography>
-                          </Grid>
-                        ) : chainId !==
-                          CONSTANTS.CHAIN_ID ? null : !allowanceALT ? (
-                          <Grid item xs={12} className={classes.msgContainer}>
-                            <Typography
-                              variant="body2"
-                              className={classes.redText}
-                            >
-                              Approve <b>FLASH</b> before <b>swapping</b>{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""}
-                            </Typography>
-                          </Grid>
-                        ) : null}
-                      </Box>
-                    </Grid>
-                  )}
-                  <Dialog
-                    open={showStakeDialog}
-                    // open={true}
-                    steps={["APPROVE", "SWAP"]}
-                    title="SWAP"
-                    onClose={() => setShowStakeDialog(false)}
-                    status={[
-                      "pending",
-                      "success",
-                      "failed",
-                      "rejected",
-                    ].find((item) => dialogStep2.includes(item))}
-                    step={dialogStep2}
-                    // stepperShown={
-                    //   dialogStep2 === "pendingApproval" ||
-                    //   dialogStep2 === "swapProposal"
-                    // }
-                    stepperShown={
-                      quantity > 0
-                        ? dialogStep2 === "pendingApproval" ||
-                          dialogStep2 === "swapProposal"
-                        : null
-                    }
+                            SWAP
+                          </Button>
+                        </Grid>
+                      )}
+                    </Box>
+                    <Box className={classes.btn}>
+                      {!(active && account) ? (
+                        <Grid
+                          item
+                          xs={12}
+                          className={`${classes.msgContainer} ${classes.cursorPointer}`}
+                          onClick={showWalletHint}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.redText}
+                          >
+                            Connect wallet to swap
+                          </Typography>
+                        </Grid>
+                      ) : chainId !==
+                        CONSTANTS.CHAIN_ID ? null : !allowanceALT ? (
+                        <Grid item xs={12} className={classes.msgContainer}>
+                          <Typography
+                            variant="body2"
+                            className={classes.redText}
+                          >
+                            Approve <b>FLASH</b> before <b>swapping</b>{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""}
+                          </Typography>
+                        </Grid>
+                      ) : null}
+                    </Box>
+                  </Grid>
+                )}
+                <Dialog
+                  open={showStakeDialog}
+                  // open={true}
+                  steps={["APPROVE", "SWAP"]}
+                  title="SWAP"
+                  onClose={() => setShowStakeDialog(false)}
+                  status={[
+                    "pending",
+                    "success",
+                    "failed",
+                    "rejected",
+                  ].find((item) => dialogStep2.includes(item))}
+                  step={dialogStep2}
+                  // stepperShown={
+                  //   dialogStep2 === "pendingApproval" ||
+                  //   dialogStep2 === "swapProposal"
+                  // }
+                  stepperShown={
+                    quantity > 0
+                      ? dialogStep2 === "pendingApproval" ||
+                        dialogStep2 === "swapProposal"
+                      : null
+                  }
 
-                    // status="success"
-                  >
+                  // status="success"
+                >
+                  {
                     {
-                      {
-                        pendingApproval: (
+                      pendingApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL PENDING
+                            <br />
+                          </Typography>
+                        </Fragment>
+                      ),
+                      successApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                      swapProposal:
+                        quantity > 0 ? (
                           <Fragment>
                             <Typography
                               variant="body1"
                               className={classes.textBold}
                             >
-                              APPROVAL PENDING
-                              <br />
-                            </Typography>
-                          </Fragment>
-                        ),
-                        successApproval: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              APPROVAL
-                              <br />
-                              <span className={classes.greenText}>
-                                SUCCESSFUL
-                              </span>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={onClickClose}
-                            >
-                              CLOSE
-                            </Button>
-                          </Fragment>
-                        ),
-                        swapProposal:
-                          quantity > 0 ? (
-                            <Fragment>
-                              <Typography
-                                variant="body1"
-                                className={classes.textBold}
-                              >
-                                SWAP
-                              </Typography>
-                              <Typography
-                                variant="body1"
-                                className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                              >
-                                If you swap{" "}
-                                <Tooltip
-                                  title={`${quantity} ${
-                                    selectedRewardToken?.tokenB?.symbol || ""
-                                  }`}
-                                >
-                                  <span className={classes.infoTextSpan}>
-                                    {trunc(quantity)}{" "}
-                                    {selectedRewardToken?.tokenB?.symbol || ""}
-                                  </span>
-                                </Tooltip>{" "}
-                                you will{" "}
-                                <span className={classes.infoTextSpan}>
-                                  immediately
-                                </span>{" "}
-                                earn{" "}
-                                {loadingRedux.reward ? (
-                                  <CircularProgress
-                                    size={12}
-                                    className={classes.loaderStyle}
-                                  />
-                                ) : (
-                                  <Tooltip title={`${preciseSwap} FLASH`}>
-                                    <span className={classes.infoTextSpan}>
-                                      {" "}
-                                      {trunc(preciseSwap)} FLASH
-                                    </span>
-                                  </Tooltip>
-                                )}
-                              </Typography>
-
-                              <Button
-                                variant="retro"
-                                fullWidth
-                                onClick={
-                                  !allowanceALT
-                                    ? () => {}
-                                    : () => onClickSwap(quantity)
-                                }
-                                disabled={
-                                  !selectedPortal ||
-                                  !(quantity > 0) ||
-                                  parseFloat(balanceALT) <
-                                    parseFloat(quantity) ||
-                                  !allowanceALT ||
-                                  chainId !== CONSTANTS.CHAIN_ID ||
-                                  loadingRedux.swap
-                                }
-                                loading={loadingRedux.swap}
-                              >
-                                SWAP
-                              </Button>
-                            </Fragment>
-                          ) : (
-                            <Fragment>
-                              <Typography
-                                variant="body1"
-                                className={classes.textBold}
-                              >
-                                APPROVAL
-                                <br />
-                                <CheckCircleOutline
-                                  className={`${classes.dialogIcon} ${classes.greenText}`}
-                                />
-                                <div className={classes.redText}>
-                                  You have successfully approved
-                                </div>
-                              </Typography>
-                              <Button
-                                variant="retro"
-                                fullWidth
-                                onClick={closeDialog}
-                              >
-                                DISMISS
-                              </Button>
-                            </Fragment>
-                          ),
-                        failedApproval: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              APPROVAL
-                              <br />
-                              <span className={classes.redText}>FAILED</span>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={closeDialog}
-                            >
-                              DISMISS
-                            </Button>
-                          </Fragment>
-                        ),
-                        rejectedApproval: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              APPROVAL
-                              <br />
-                              <span className={classes.redText}>REJECTED</span>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={closeDialog}
-                            >
-                              DISMISS
-                            </Button>
-                          </Fragment>
-                        ),
-                        pendingSwap: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              SWAP PENDING
-                              <br />
+                              SWAP
                             </Typography>
                             <Typography
                               variant="body1"
                               className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                             >
-                              Swapping {trunc(swapHist?.amount)}{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
-                              {trunc(preciseSwap)} FLASH{" "}
-                              {/* <Tooltip
+                              If you swap{" "}
+                              <Tooltip
+                                title={`${quantity} ${
+                                  selectedRewardToken?.tokenB?.symbol || ""
+                                }`}
+                              >
+                                <span className={classes.infoTextSpan}>
+                                  {trunc(quantity)}{" "}
+                                  {selectedRewardToken?.tokenB?.symbol || ""}
+                                </span>
+                              </Tooltip>{" "}
+                              you will{" "}
+                              <span className={classes.infoTextSpan}>
+                                immediately
+                              </span>{" "}
+                              earn{" "}
+                              {loadingRedux.reward ? (
+                                <CircularProgress
+                                  size={12}
+                                  className={classes.loaderStyle}
+                                />
+                              ) : (
+                                <Tooltip title={`${preciseSwap} FLASH`}>
+                                  <span className={classes.infoTextSpan}>
+                                    {" "}
+                                    {trunc(preciseSwap)} FLASH
+                                  </span>
+                                </Tooltip>
+                              )}
+                            </Typography>
+
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={
+                                !allowanceALT
+                                  ? () => {}
+                                  : () => onClickSwap(quantity)
+                              }
+                              disabled={
+                                !selectedPortal ||
+                                !(quantity > 0) ||
+                                parseFloat(balanceALT) < parseFloat(quantity) ||
+                                !allowanceALT ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
+                                loadingRedux.swap
+                              }
+                              loading={loadingRedux.swap}
+                            >
+                              SWAP
+                            </Button>
+                          </Fragment>
+                        ) : (
+                          <Fragment>
+                            <Typography
+                              variant="body1"
+                              className={classes.textBold}
+                            >
+                              APPROVAL
+                              <br />
+                              <CheckCircleOutline
+                                className={`${classes.dialogIcon} ${classes.greenText}`}
+                              />
+                              <div className={classes.redText}>
+                                You have successfully approved
+                              </div>
+                            </Typography>
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={closeDialog}
+                            >
+                              DISMISS
+                            </Button>
+                          </Fragment>
+                        ),
+                      failedApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedApproval: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            APPROVAL
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      pendingSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP PENDING
+                            <br />
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            Swapping {trunc(swapHist?.amount)}{" "}
+                            {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
+                            {trunc(preciseSwap)} FLASH{" "}
+                            {/* <Tooltip
                               title={`${stakeRequest.reward} ${stakeRequest.token}`}
                             >
                               <span>
@@ -988,125 +973,125 @@ function Swap({
                                 {stakeRequest.token}
                               </span>
                             </Tooltip>{" "} */}
-                              instantly
-                            </Typography>
-                          </Fragment>
-                        ),
-                        failedSwap: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
+                            instantly
+                          </Typography>
+                        </Fragment>
+                      ),
+                      failedSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      successSwap: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            SWAP
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            You have successfully swapped {swapHist?.amount}{" "}
+                            {swapHist?.token || ""} for {trunc(preciseSwap)}{" "}
+                            FLASH
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={`${classes.textBold} ${classes.redText}`}
+                          >
+                            <a
+                              href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={classes.link}
                             >
-                              SWAP
-                              <br />
-                              <span className={classes.redText}>FAILED</span>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={closeDialog}
-                            >
-                              DISMISS
-                            </Button>
-                          </Fragment>
-                        ),
-                        rejectedSwap: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              SWAP
-                              <br />
-                              <span className={classes.redText}>REJECTED</span>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={closeDialog}
-                            >
-                              DISMISS
-                            </Button>
-                          </Fragment>
-                        ),
-                        successSwap: (
-                          <Fragment>
-                            <Typography
-                              variant="body1"
-                              className={classes.textBold}
-                            >
-                              SWAP
-                              <br />
-                              <span className={classes.greenText}>
-                                SUCCESSFUL
-                              </span>
-                            </Typography>
-                            <Typography
-                              variant="body1"
-                              className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                            >
-                              You have successfully swapped {swapHist?.amount}{" "}
-                              {swapHist?.token || ""} for {trunc(preciseSwap)}{" "}
-                              FLASH
-                            </Typography>
-                            <Typography
-                              variant="body1"
-                              className={`${classes.textBold} ${classes.redText}`}
-                            >
-                              <a
-                                href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={classes.link}
-                              >
-                                <Link
-                                  fontSize="small"
-                                  className={classes.linkIcon}
-                                />
-                                View on etherscan
-                              </a>
-                            </Typography>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={onClickClose}
-                            >
-                              CLOSE
-                            </Button>
-                          </Fragment>
-                        ),
-                      }[dialogStep2]
-                    }
-                  </Dialog>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
+                              <Link
+                                fontSize="small"
+                                className={classes.linkIcon}
+                              />
+                              View on etherscan
+                            </a>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                    }[dialogStep2]
+                  }
+                </Dialog>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
 
-            <Accordion square expanded={!expanded2}>
-              <AccordionSummary
-                aria-controls="panel2d-content"
-                id="panel2d-header"
-                onClick={() => setExpanded2(!expanded2)}
-                className={`${classes.dashboardAccordian} ${
-                  expanded2 ? classes.btn3 : classes._btn3
-                }`}
-              >
-                {expanded2 ? (
-                  <ArrowDropUpIcon size="large" className={classes.icon} />
-                ) : (
-                  <ArrowDropDownIcon size="large" className={classes.icon} />
-                )}
-                <Typography variant="body2" className={classes.stakeDashBtn}>
-                  SWAP HISTORY
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordion}>
-                {heightToggle ? <SwapTable /> : <SwapTable />}
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-        </AnimateHeight>
+          <Accordion square expanded={!expanded2}>
+            <AccordionSummary
+              aria-controls="panel2d-content"
+              id="panel2d-header"
+              onClick={() => setExpanded2(!expanded2)}
+              className={`${classes.dashboardAccordian} ${
+                expanded2 ? classes.btn3 : classes._btn3
+              }`}
+            >
+              {expanded2 ? (
+                <ArrowDropUpIcon size="large" className={classes.icon} />
+              ) : (
+                <ArrowDropDownIcon size="large" className={classes.icon} />
+              )}
+              <Typography variant="body2" className={classes.stakeDashBtn}>
+                SWAP HISTORY
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordion}>
+              {heightToggle ? <SwapTable /> : <SwapTable />}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+        {/* </SlideDown> */}
       </Fragment>
     </PageAnimation>
   );

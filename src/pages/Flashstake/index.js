@@ -70,6 +70,7 @@ import AnimateHeight from "react-animate-height";
 import { store } from "../../config/reduxStore";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
+import { SlideDown } from "react-slidedown";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -680,11 +681,13 @@ function Flashstake({
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
-        <AnimateHeight
+        {/* <AnimateHeight
           id="example-panel"
           duration={400}
           height={heightVal} // see props documentation below
-        >
+        > */}
+
+        {/* <SlideDown className={"my-dropdown-slidedown"}> */}
           <Box
             ref={ref}
             className={`${classes.contentContainer} contentContainer1`}
@@ -1218,7 +1221,8 @@ function Flashstake({
               </AccordionDetails>
             </Accordion>
           </Box>
-        </AnimateHeight>
+        {/* </SlideDown> */}
+        {/* </AnimateHeight> */}
 
         <Dialog
           open={showStakeDialog}
