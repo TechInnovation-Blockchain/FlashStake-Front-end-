@@ -244,7 +244,7 @@ function DropdownDialog({
         id: pools.find(
           (_pool) => _pool.tokenB.id === String(_token.address).toLowerCase()
         )?.id,
-        tokenB: { ..._token?.tokenB, id: String(_token.address).toLowerCase() },
+        tokenB: { ..._token, id: String(_token.address).toLowerCase() },
       }))
     );
   };
@@ -680,7 +680,7 @@ function DropdownDialog({
                     }
                   }) ||
                   token?.tokenB?.chainId === CONSTANTS.CHAIN_ID ||
-                  "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" === token.address 
+                  "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" === token.address
                   // Object.keys(allPoolsData).find((_item) => {
                   //   if (_item === token.address) {
                   //     return true;
