@@ -335,6 +335,7 @@ function DropdownDialog2({
   }, [search, items, tokenList]);
 
   const onClose = useCallback(() => {
+    setSearch("");
     setOpen(false);
   }, []);
 
@@ -503,7 +504,7 @@ function DropdownDialog2({
                   }
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
-                  // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
+                  // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID} 
                   disabled={
                     pools?.find(
                       (_item) =>

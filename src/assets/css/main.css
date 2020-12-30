@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
+
 html,
 body,
 #root {
@@ -10,6 +11,12 @@ body,
 
 /* .transitionEase {
   transition: all 5s ease;
+} */
+
+
+/* .react-slidedown.my-dropdown-slidedown {
+  transition-duration: 0.3s;
+ 
 } */
 
 body {
