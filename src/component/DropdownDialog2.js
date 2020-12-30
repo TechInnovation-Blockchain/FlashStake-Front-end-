@@ -31,7 +31,7 @@ import {
 import { debounce } from "../utils/debounceFunc";
 import { CONSTANTS } from "../utils/constants";
 import { addToTokenList } from "../redux/actions/contractActions";
-
+// import {getTokensList} from "../"
 // const _localStorage = localStorage.getItem("themeMode");
 
 const useStyles = makeStyles((theme, _theme) => ({
@@ -327,7 +327,8 @@ function DropdownDialog2({
         (item) =>
           item?.symbol?.toUpperCase().includes(search.toUpperCase()) &&
           !pools?.find(
-            (__item) => __item?.tokenB?.id == String(item.address).toLowerCase()
+            (__item) =>
+              __item?.tokenB?.id == String(item?.address)?.toLowerCase()
           ) &&
           pools
       );
@@ -358,6 +359,21 @@ function DropdownDialog2({
     }
   };
 
+  // const addTokenToList = useCallback(async () => {
+  //   let tokenList = [];
+  //   try {
+  //     tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+  //   } catch (e) {}
+  //   if (
+  //     !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+  //   ) {
+  //     tokenList.push(token);
+  //     localStorage.setItem("tokenList", JSON.stringify(tokenList));
+  //     addToTokenList(token);
+  //     setSearch("");
+  //   }
+  // }, [token]);
+
   const addTokenToList = useCallback(async () => {
     let tokenList = [];
     try {
@@ -371,7 +387,7 @@ function DropdownDialog2({
       addToTokenList(token);
       setSearch("");
     }
-  }, [token]);
+  }, [token, tokenList]);
 
   const tryRequireLogo = (path, add) => {
     if (path?.startsWith("ipfs")) {

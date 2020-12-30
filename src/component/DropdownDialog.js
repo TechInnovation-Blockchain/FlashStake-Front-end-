@@ -413,10 +413,27 @@ function DropdownDialog({
     return path;
   };
 
+  // const addTokenToList = useCallback(async () => {
+  //   let _tokenList = [];
+  //   try {
+  //     _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+  //   } catch (e) {}
+  //   if (
+  //     !_tokenList?.find(
+  //       (_tokenItem) => _tokenItem.address === token?.tokenB?.address
+  //     )
+  //   ) {
+  //     _tokenList.push(token?.tokenB);
+  //     localStorage.setItem("tokenList", JSON.stringify(_tokenList));
+  //     addToTokenList(token);
+  //     setSearch("");
+  //   }
+  // }, [token]);
+
   const addTokenToList = useCallback(async () => {
     let _tokenList = [];
     try {
-      _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
+      tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
     } catch (e) {}
     if (
       !_tokenList?.find(
