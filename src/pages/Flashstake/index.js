@@ -712,7 +712,7 @@ function Flashstake({
                   </Typography>
                   <DropdownDialog
                     className={classes.dropDown}
-                    items={pools}
+                    pools={pools}
                     selectedValue={selectedRewardToken}
                     onSelect={setSelectedRewardToken}
                     heading="SELECT TOKEN"

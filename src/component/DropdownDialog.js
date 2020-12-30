@@ -196,7 +196,6 @@ const useStyles = makeStyles((theme, _theme) => ({
 function DropdownDialog({
   children,
   closeTimeout,
-  items,
   onSelect = () => {},
   selectedValue = {},
   heading = "SELECT TOKEN",
@@ -257,7 +256,7 @@ function DropdownDialog({
 
   useEffect(() => {
     setNativePrice(nativePoolPrice());
-  }, [items]);
+  }, [pools]);
 
   const searchExistingToken = (id) => {
     if (
@@ -269,7 +268,9 @@ function DropdownDialog({
 
   const searchToken = async (_address) => {
     if (searchExistingToken(_address)) {
+      console.log("HERE1");
     } else {
+      console.log("HERE2");
       if (Web3.utils.isAddress(_address)) {
         await initializeErc20TokenContract(_address);
         const _decimals = await decimals();
@@ -278,8 +279,16 @@ function DropdownDialog({
           const _symbol = await symbol();
 
           // setTokensList({ id: "", tokenB: _token });
-
+          console.log(
+            "POOOOOOL",
+            pools.find(
+              (_pool) => _pool?.tokenB?.id === String(_address).toLowerCase()
+            )?.id
+          );
           setToken({
+            id: pools.find((_pool) =>
+              _pool.tokenB.id === String(_address).toLowerCase() ? _pool.id : ""
+            ),
             tokenB: {
               id: _address,
               address: _address,
@@ -327,7 +336,7 @@ function DropdownDialog({
     // } else {
     // return tokensList;
     // }
-  }, [search, items, tokensList, pools]);
+  }, [search, pools, tokensList]);
 
   const onClose = useCallback(() => {
     if (overrideOpen) {
@@ -474,10 +483,7 @@ function DropdownDialog({
                   <img
                     src={
                       // selectedValue?.tokenB?.logoURI ||
-                      tryRequireLogo(
-                        selectedValue?.tokenB?.logoURI,
-                        selectedValue?.tokenB?.address?.toLowerCase()
-                      )
+                      tryRequireLogo(selectedValue?.tokenB?.logoURI)
                     }
                     alt="Logo"
                     srcSet=""
@@ -521,10 +527,7 @@ function DropdownDialog({
                     //     item?.tokenB?.address === selectedValue?.tokenB?.address
                     // )
                     //   ?
-                    tryRequireLogo(
-                      selectedValue?.tokenB?.logoURI,
-                      selectedValue?.tokenB?.address?.toLowerCase()
-                    )
+                    tryRequireLogo(selectedValue?.tokenB?.logoURI)
                     // : require(`../assets/Tokens/NOTFOUND.png`)
                   }
                   alt="Logo"
