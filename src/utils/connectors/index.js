@@ -5,16 +5,16 @@ import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 
 const REACT_APP_NETWORK_URL1 = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
-const REACT_APP_NETWORK_URL3 = `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
-const REACT_APP_NETWORK_URL4 = `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+// const REACT_APP_NETWORK_URL3 = `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
+// const REACT_APP_NETWORK_URL4 = `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
 // const REACT_APP_NETWORK_URL5 = `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
 // const REACT_APP_NETWORK_URL42 = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY1}`;
 
 const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
   1: REACT_APP_NETWORK_URL1,
-  4: REACT_APP_NETWORK_URL4,
-  3: REACT_APP_NETWORK_URL3,
+  // 4: REACT_APP_NETWORK_URL4,
+  // 3: REACT_APP_NETWORK_URL3,
 };
 
 export const injected = new InjectedConnector({
@@ -43,25 +43,30 @@ export const injected = new InjectedConnector({
 //   networks: [4],
 // });
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 3: RPC_URLS[3] },
+  rpc: { 1: RPC_URLS[1] },
   bridge: "https://bridge.walletconnect.org",
   qrcode: true,
   pollingInterval: POLLING_INTERVAL,
 });
 
 export const walletlink = new WalletLinkConnector({
-  url: RPC_URLS[3],
-  appName: "XIOStakeX",
+  url: RPC_URLS[1],
+  appName: "Flashstake",
 });
 
+const fortmaticKey =
+  process.env.REACT_APP_ENVIRONMENT === "PRODUCTION"
+    ? process.env.REACT_APP_FORTMATIC_PRODUCTION_KEY
+    : process.env.REACT_APP_FORTMATIC_DEVELOPMENT_KEY;
+
 export const fortmatic = new FortmaticConnector({
-  apiKey: process.env.REACT_APP_FORTMATIC_KEY,
-  chainId: 3,
+  apiKey: fortmaticKey,
+  chainId: 1,
 });
 
 export const portis = new PortisConnector({
   dAppId: process.env.REACT_APP_PORTIS_ID,
-  networks: [3],
+  networks: [1],
 });
 
 export const walletList = [
