@@ -126,7 +126,6 @@ export const setClearField = (data) => {
   };
 };
 export const setTokensURI = (data) => {
-  console.log(data);
   localStorage.setItem("tokensURI", JSON.stringify(data));
   return {
     type: "SELECT_TOKENS_LIST",

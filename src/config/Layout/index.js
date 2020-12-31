@@ -177,8 +177,6 @@ function Layout({
     !localStorage.getItem("disabledDisclaimer")
   );
 
-  console.log("OPEEEEN", open);
-
   return (
     <Fragment>
       <Disclaimer open={open} setOpen={setOpen} />

@@ -304,7 +304,6 @@ function DropdownDialog2({
   });
 
   const searchToken = async (_address) => {
-    console.log("yada77 Hereeeeeeeeeeeeeeeeeeeeeee");
     if (searchExistingToken(_address)) {
       setExist(true);
     } else {
@@ -312,7 +311,6 @@ function DropdownDialog2({
       if (Web3.utils.isAddress(_address)) {
         setLoader(true);
         const _token = await getTokenDetails(_address);
-        console.log("yada77 Hereeeeeeeeeeeeeeeeeeeeeee token", _token);
 
         setToken(_token);
         setLoader(false);
@@ -361,15 +359,10 @@ function DropdownDialog2({
 
   const onSelectLocal = (_pool) => {
     // onSelect(_pool);
-    console.log("yada77 _pool", _pool);
     setToken(_pool);
     setTokenParent(_pool);
     onClose();
   };
-
-  useEffect(() => {
-    console.log("yada77 token", token, token.address);
-  }, [token]);
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -416,7 +409,6 @@ function DropdownDialog2({
   }, [token, tokenList]);
 
   const tryRequireLogo = (path, add) => {
-    console.log("yadaaaaaaaaaapa", path);
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
@@ -431,7 +423,6 @@ function DropdownDialog2({
       //   )}/logo.png`;
       // }
       // } catch (e) {
-      // console.log(e);
       // return require(`../assets/Tokens/NOTFOUND.png`);
       // }
 

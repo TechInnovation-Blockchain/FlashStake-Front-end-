@@ -235,10 +235,6 @@ function DropdownDialog({
     }
   });
 
-  useEffect(() => {
-    console.log("HEREEE", tokensList);
-  }, [tokensList]);
-
   const updateTokensList = () => {
     setTokensList(
       tokenList.map((_token) => ({
@@ -261,7 +257,6 @@ function DropdownDialog({
   }, [pools]);
 
   const searchExistingToken = (id) => {
-    console.log("yadattt", tokensList);
     if (
       tokensList.find((_pool) => _pool?.tokenB?.address?.toLowerCase() === id)
     ) {
@@ -296,11 +291,9 @@ function DropdownDialog({
 
   const searchToken = async (_address) => {
     if (searchExistingToken(_address)) {
-      console.log("yadattt passdddddad yolo");
     } else {
       if (Web3.utils.isAddress(_address)) {
         const _token = await getTokenDetails(_address);
-        console.log("yadattt passdddddad", _token);
         setToken({
           id: pools.find((_pool) =>
             _pool.tokenB.id === String(_address).toLowerCase() ? _pool.id : ""
@@ -370,7 +363,6 @@ function DropdownDialog({
 
   const tryRequireLogo = (path, add) => {
     // if(pools.find(add))
-    console.log("yadaaaaaaaaaaa do", path, selectedValue);
 
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
@@ -378,13 +370,11 @@ function DropdownDialog({
       return joined;
     }
     // if (path?.includes("raw.githubusercontent.com/")) {
-    //   // console.log("ADD", Web3.utils.toChecksumAddress(add));
     //   try {
     //     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${Web3.utils.toChecksumAddress(
     //       add
     //     )}/logo.png`;
     //   } catch (e) {
-    //     // console.log(e);
     //     return require(`../assets/Tokens/NOTFOUND.png`);
     //   }
 
@@ -400,7 +390,6 @@ function DropdownDialog({
       //   )}/logo.png`;
       // }
       // } catch (e) {
-      // console.log(e);
       // return require(`../assets/Tokens/NOTFOUND.png`);
       // }
 
@@ -645,7 +634,15 @@ function DropdownDialog({
                 button
                 className={classes.listItem}
                 onClick={() => {
-                  onSelectLocal(token);
+                  onSelectLocal({
+                    ...token,
+                    id: pools.find((_pool) =>
+                      _pool.tokenB.id ===
+                      String(token?.tokenB?.address).toLowerCase()
+                        ? _pool.id
+                        : ""
+                    ),
+                  });
                 }}
                 key={token.tokenB.address}
                 disabled={
