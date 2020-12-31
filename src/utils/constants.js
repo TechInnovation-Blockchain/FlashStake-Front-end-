@@ -30,7 +30,8 @@ export const CONSTANTS = {
   CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
   CHAIN_ID: 3,
   NETWORK: "ROPSTEN",
-
+  NO_TOKEN_IMAGE:
+    "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
   TOKENS_LIST: [
     {
       name: "Default",
