@@ -515,10 +515,6 @@ function Swap({
     }
   }, [expanding, setExpandAccodion]);
 
-  // useEffect(() => {
-  //   console.log("Alll pools Data", allPoolsData[selectedRewardToken?.id]);
-  // }, [selectedRewardToken]);
-  //#endregion
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>

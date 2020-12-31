@@ -119,8 +119,13 @@ export const setBtn = (data) => {
     payload: data,
   };
 };
+export const setClearField = (data) => {
+  return {
+    type: "CLEAR_FIELD",
+    payload: data,
+  };
+};
 export const setTokensURI = (data) => {
-  console.log(data);
   localStorage.setItem("tokensURI", JSON.stringify(data));
   return {
     type: "SELECT_TOKENS_LIST",

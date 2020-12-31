@@ -16,6 +16,7 @@ export const uiReducer = (
     close: false,
     btn: 5,
     closeApproval: false,
+    clearField: false,
     // tokensURI: {
     //   name: "Default",
     //   uri:
@@ -105,6 +106,11 @@ export const uiReducer = (
       return {
         ...state,
         heightVal: payload,
+      };
+    case "CLEAR_FIELD":
+      return {
+        ...state,
+        clearField: payload,
       };
 
     case "RETRO_THEME":

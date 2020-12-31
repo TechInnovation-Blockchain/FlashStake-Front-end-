@@ -1402,7 +1402,13 @@ function Flashstake({
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
                       <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                        {trunc(
+                          utils.formatUnits(
+                            preciseReward.toString(),
+                            selectedRewardToken?.tokenB?.decimals || 18
+                          )
+                        )}{" "}
+                        {stakeRequest.token}
                       </span>
                     </Tooltip>{" "}
                     instantly
@@ -1819,9 +1825,23 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
                     UNSTAKING{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
-                    </Tooltip>
+                    {totalBurn?.totalBurn > 0 ? (
+                      <Tooltip
+                        title={`${
+                          totalBurn.totalXIO - totalBurn.totalBurn
+                        } FLASH`}
+                      >
+                        <span>
+                          {" "}
+                          {trunc(totalBurn.totalXIO - totalBurn.totalBurn)}{" "}
+                          FLASH
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                        <span>{trunc(unstakeRequest.quantity)} FLASH</span>
+                      </Tooltip>
+                    )}
                   </Typography>
                 </Fragment>
               ),
