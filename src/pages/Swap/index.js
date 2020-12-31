@@ -421,7 +421,7 @@ function Swap({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Swap - FLASH | THE TIME TRAVEL OF MONEY";
+    // document.title = "Swap - FLASH | THE TIME TRAVEL OF MONEY";
     setRefetch();
     // setLoading({ dapp: true });
   }, [setRefetch]);

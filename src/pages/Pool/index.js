@@ -524,7 +524,7 @@ function Pool({
     }
   }, [history.location.pathname]);
   useEffect(() => {
-    document.title = "Pool - FLASH | THE TIME TRAVEL OF MONEY";
+    // document.title = "Pool - FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
@@ -1122,7 +1122,7 @@ function Pool({
                       >
                         You are the first liquidity provider for this pool. The
                         ratio of tokens you add will set the price. Please
-                        proceed carefully
+                        proceed carefully.
                       </Typography>
                     </Grid>
                   )
@@ -1621,7 +1621,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You have successfully withdrawn{" "}
+                    You have successfully redeemed{" "}
                     <Tooltip
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >
