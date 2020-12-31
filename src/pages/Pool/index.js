@@ -210,6 +210,7 @@ const useStyles = makeStyles((theme) => ({
     },
     transition: "none !important",
   },
+  liquidityText: {},
   linkIcon: {
     color: theme.palette.xioRed.main,
     paddingRight: 5,
@@ -508,7 +509,7 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-  useEffect(() => { 
+  useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
         (__pool) => __pool.pool.id === selectedRewardToken.id
@@ -1112,13 +1113,16 @@ function Pool({
                       </Grid>
                     </Fragment>
                   ) : (
-                    <Grid xs={12} item className={classes.outerBox2}>
+                    <Grid xs={12} item className={classes.liquidityText}>
                       <Typography
                         variant="body1"
                         // variant="body2"
                         className={classes.redText}
+                        // style={{ textAlign: "center" }}
                       >
-                        You are the first one to provide liquidity in this pool
+                        You are the first liquidity provider for this pool. The
+                        ratio of tokens you add will set the price. Please
+                        proceed carefully
                       </Typography>
                     </Grid>
                   )

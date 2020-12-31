@@ -444,12 +444,13 @@ function DropdownDialog2({
           {token.address ? (
             <Fragment>
               <img
-                src={tryRequireLogo(
-                  token?.logoURI,
-                  token?.address?.toLowerCase()
-                )}
+                src={
+                  tryRequireLogo(
+                    token?.logoURI,
+                    token?.address?.toLowerCase()
+                  ) || CONSTANTS.NO_TOKEN_IMAGE
+                }
                 alt="Logo"
-                srcSet=""
                 width={15}
                 style={{ marginRight: 5 }}
               />
@@ -530,16 +531,15 @@ function DropdownDialog2({
                   <Typography variant="body1" className={classes.listItemText}>
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
+                    {/* THIS IS THE ONE */}
                     <img
-                      src={tryRequireLogo(
-                        _pool?.logoURI,
-                        _pool?.address?.toLowerCase()
-                      )}
-                      // onError={(e) => {
-                      //   e.target.onerror = null;
-                      //   e.target.src = tryRequire(_pool?.symbol);
-                      // }}
-                      srcSet=""
+                      src={
+                        tryRequireLogo(
+                          _pool?.logoURI,
+                          _pool?.address?.toLowerCase()
+                        ) || CONSTANTS.NO_TOKEN_IMAGE
+                      }
+                      alt="tokenIcon"
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
@@ -591,9 +591,11 @@ function DropdownDialog2({
                     {/* <MonetizationOn /> */}
                     {/* require(`../assets/Tokens/${_pool.tokenB.symbol}.png`) */}
                     <img
-                      src={require(`../assets/Tokens/NOTFOUND.png`)}
-                      // alt={require(`../assets/Tokens/NOTFOUND.png`)}
-                      srcSet=""
+                      src={
+                        require(`../assets/Tokens/NOTFOUND.png`) ||
+                        CONSTANTS.NO_TOKEN_IMAGE
+                      }
+                      alt={"tokenLogo"}
                       width={20}
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
@@ -619,10 +621,12 @@ function DropdownDialog2({
           <Box className={classes.tokensListBox}>
             <Box className={classes.DefaultListBox}>
               <img
-                src={tryRequireLogo(
-                  tokensURI?.logo,
-                  tokensURI?.address?.toLowerCase()
-                )}
+                src={
+                  tryRequireLogo(
+                    tokensURI?.logo,
+                    tokensURI?.address?.toLowerCase()
+                  ) || CONSTANTS.NO_TOKEN_IMAGE
+                }
                 // src={themeModeflash}
                 alt="logo"
                 width={tokensURI?.name !== "Default" ? 20 : 10}
