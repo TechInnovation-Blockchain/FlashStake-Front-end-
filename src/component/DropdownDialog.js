@@ -32,6 +32,8 @@ import { debounce } from "../utils/debounceFunc";
 import { fetchTokenList } from "../utils/utilFunc";
 import { CONSTANTS } from "../utils/constants";
 import { addToTokenList } from "../redux/actions/contractActions";
+import { _error } from "../utils/log";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme, _theme) => ({
   primaryText: {
@@ -259,6 +261,7 @@ function DropdownDialog({
   }, [pools]);
 
   const searchExistingToken = (id) => {
+    console.log("yadattt", tokensList);
     if (
       tokensList.find((_pool) => _pool?.tokenB?.address?.toLowerCase() === id)
     ) {
@@ -266,42 +269,44 @@ function DropdownDialog({
     }
   };
 
+  const getTokenDetails = _.memoize(async (_address) => {
+    try {
+      await initializeErc20TokenContract(_address);
+      const _decimals = await decimals();
+      if (_decimals) {
+        const _name = await name();
+        const _symbol = await symbol();
+
+        return {
+          address: _address,
+          name: _name,
+          symbol: _symbol,
+          decimals: _decimals,
+          logoURI:
+            "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
+        };
+      } else {
+        return {};
+      }
+    } catch (e) {
+      _error("ERROR getTokenDetails -> ", e);
+      return {};
+    }
+  });
+
   const searchToken = async (_address) => {
     if (searchExistingToken(_address)) {
-      console.log("HERE1");
+      console.log("yadattt passdddddad yolo");
     } else {
-      console.log("HERE2");
       if (Web3.utils.isAddress(_address)) {
-        await initializeErc20TokenContract(_address);
-        const _decimals = await decimals();
-        if (_decimals) {
-          const _name = await name();
-          const _symbol = await symbol();
-
-          // setTokensList({ id: "", tokenB: _token });
-          console.log(
-            "POOOOOOL",
-            pools.find(
-              (_pool) => _pool?.tokenB?.id === String(_address).toLowerCase()
-            )?.id
-          );
-          setToken({
-            id: pools.find((_pool) =>
-              _pool.tokenB.id === String(_address).toLowerCase() ? _pool.id : ""
-            ),
-            tokenB: {
-              id: _address,
-              address: _address,
-              name: _name,
-              symbol: _symbol,
-              decimals: _decimals,
-              logoURI:
-                "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
-            },
-          });
-        } else {
-          setToken({});
-        }
+        const _token = await getTokenDetails(_address);
+        console.log("yadattt passdddddad", _token);
+        setToken({
+          id: pools.find((_pool) =>
+            _pool.tokenB.id === String(_address).toLowerCase() ? _pool.id : ""
+          ),
+          tokenB: _token,
+        });
       } else {
         setToken({});
       }
@@ -314,7 +319,6 @@ function DropdownDialog({
   }, [search]);
 
   const filteredData = useCallback(() => {
-    // if (tokensURI.name === "Default") {
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokensList?.filter((item) =>
@@ -333,9 +337,6 @@ function DropdownDialog({
             __item?.tokenB?.id === String(item.tokenB.address).toLowerCase()
         )
     );
-    // } else {
-    // return tokensList;
-    // }
   }, [search, pools, tokensList]);
 
   const onClose = useCallback(() => {
@@ -349,8 +350,6 @@ function DropdownDialog({
   }, []);
 
   const onSelectLocal = (_pool) => {
-    console.log("POOL", _pool);
-    // setToken(_pool);
     onSelect(_pool);
     onClose();
   };
@@ -361,20 +360,6 @@ function DropdownDialog({
     }
   }, [closeTimeout, open, openProp, overrideOpen, onClose]);
 
-  // {{
-  //   if(selectedValue) {
-  //     (
-  //       <img
-  //         src={require(`../assets/Tokens/${selectedValue}.png`)}
-  //         alt="Logo"
-  //         srcSet=""
-  //         width={20}
-  //         style={{ marginRight: 5 }}
-  //       />
-  //     ),
-  //       selectedValue;
-  //   },
-  // }() || <span className={classes.disabledText}>SELECT</span>}
   const tryRequire = (path, add) => {
     try {
       return require(`../assets/Tokens/${path}.png`);
@@ -385,6 +370,7 @@ function DropdownDialog({
 
   const tryRequireLogo = (path, add) => {
     // if(pools.find(add))
+    console.log("yadaaaaaaaaaaa do", path, selectedValue);
 
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
@@ -424,24 +410,10 @@ function DropdownDialog({
     return path;
   };
 
-  // const addTokenToList = useCallback(async () => {
-  //   let _tokenList = [];
-  //   try {
-  //     _tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
-  //   } catch (e) {}
-  //   if (
-  //     !_tokenList?.find(
-  //       (_tokenItem) => _tokenItem.address === token?.tokenB?.address
-  //     )
-  //   ) {
-  //     _tokenList.push(token?.tokenB);
-  //     localStorage.setItem("tokenList", JSON.stringify(_tokenList));
-  //     addToTokenList(token);
-  //     setSearch("");
-  //   }
-  // }, [token]);
-
   const addTokenToList = useCallback(async () => {
+    if (!token?.tokenB) {
+      return;
+    }
     let _tokenList = [];
     try {
       tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
@@ -451,9 +423,9 @@ function DropdownDialog({
         (_tokenItem) => _tokenItem.address === token?.tokenB?.address
       )
     ) {
-      _tokenList.push(token?.tokenB);
       localStorage.setItem("tokenList", JSON.stringify(_tokenList));
-      addToTokenList(token);
+      _tokenList.push(token?.tokenB);
+      addToTokenList(token?.tokenB);
       setSearch("");
     }
   }, [token]);
