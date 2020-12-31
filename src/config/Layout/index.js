@@ -18,6 +18,7 @@ import "../../assets/css/main.css";
 import AnimateHeight from "react-animate-height";
 import Image from "../../assets/retroBackground.jpg";
 import { store } from "../reduxStore";
+import Disclaimer from "../../component/Disclaimer";
 
 import {
   showWalletBackdrop,
@@ -141,6 +142,12 @@ function Layout({
     showWalletBackdrop(false);
   };
 
+  // const [showDisclaim, setShowDisclaim] = React.useState();
+
+  // useEffect(() => {
+  // setShowDisclaim(localStorage.getItem("disabledDisclaimer"));
+  // }, []);
+
   useEffect(() => {
     const body = document.querySelector("#body");
     // css = {
@@ -166,10 +173,18 @@ function Layout({
     }
   }, [themeMode]);
 
+  const [open, setOpen] = React.useState(
+    !localStorage.getItem("disabledDisclaimer")
+  );
+
+  console.log("OPEEEEN", open);
+
   return (
     <Fragment>
       {/* <Box> */}
       <Container maxWidth="sm" className={classes.mainContainer}>
+        <Disclaimer open={open} setOpen={setOpen} />
+
         <Box
           // ref={ref}
           className={`transitionEase ${classes.contentContainer} contentContainer1 `}
