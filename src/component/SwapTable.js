@@ -305,7 +305,7 @@ function SwapTable({
                                     <img
                                       // src={tryRequire("FlashPro5")}
                                       src={tryRequire(
-                                        theme === "dark" ? "FlashPro5" : "FLASH"
+                                        theme === "dark" ? "FlashLogo" : "FLASH"
                                       )}
                                       alt="Logo"
                                       srcSet=""

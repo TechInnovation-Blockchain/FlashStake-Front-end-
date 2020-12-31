@@ -68,6 +68,7 @@ import { JSBI } from "@uniswap/sdk";
 import { _error } from "../../utils/log";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
+import Fade from "@material-ui/core/Fade";
 
 import { SlideDown } from "react-slidedown";
 
@@ -209,6 +210,7 @@ const useStyles = makeStyles((theme) => ({
     },
     transition: "none !important",
   },
+  liquidityText: {},
   linkIcon: {
     color: theme.palette.xioRed.main,
     paddingRight: 5,
@@ -507,7 +509,7 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-  useEffect(() => { 
+  useEffect(() => {
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
         (__pool) => __pool.pool.id === selectedRewardToken.id
@@ -995,120 +997,135 @@ function Pool({
                   </Fragment>
                 ) : null}
 
-                {poolsLiquidityList.find(
-                  (__pool) => __pool.pool.id === selectedRewardToken.id
-                ) ? (
-                  <Fragment>
-                    <Grid container className={classes.outerBG}>
-                      <Grid xs={12} item className={classes.outerBoxHeading}>
-                        <Box className={classes.headingBox}>
-                          <Typography className={classes.mainHeading}>
-                            YOUR POSITION
-                          </Typography>
-                        </Box>
-                      </Grid>
-
-                      <Grid xs={12} item className={classes.outerBox2}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox2}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
-                          >
-                            Your total pool tokens:
-                          </Typography>
+                {selectedRewardToken?.id ? (
+                  poolsLiquidityList.find(
+                    (__pool) => __pool.pool.id === selectedRewardToken.id
+                  ) ? (
+                    <Fragment>
+                      <Grid container className={classes.outerBG}>
+                        <Grid xs={12} item className={classes.outerBoxHeading}>
+                          <Box className={classes.headingBox}>
+                            <Typography className={classes.mainHeading}>
+                              YOUR POSITION
+                            </Typography>
+                          </Box>
                         </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={currentPool?.balance || 0}>
+
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
+                          >
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              {trunc(currentPool?.balance || 0)}
+                              Your total pool tokens:
                             </Typography>
-                          </Tooltip>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool?.balance || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool?.balance || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                      </Grid>
 
-                      <Grid xs={12} item className={classes.outerBox2}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox2}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
                           >
-                            Pooled FLASH:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={currentPool.pooledFlash || 0}>
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              {trunc(currentPool.pooledFlash || 0)}
+                              Pooled FLASH:
                             </Typography>
-                          </Tooltip>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool.pooledFlash || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.pooledFlash || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                      </Grid>
 
-                      <Grid xs={12} item className={classes.outerBox2}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox2}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
                           >
-                            Pooled {currentPool?.pool?.tokenB?.symbol}:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={currentPool.pooledAlt || 0}>
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              {trunc(currentPool.pooledAlt || 0)}
+                              Pooled {currentPool?.pool?.tokenB?.symbol}:
                             </Typography>
-                          </Tooltip>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={currentPool.pooledAlt || 0}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.pooledAlt || 0)}
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
-                      </Grid>
 
-                      <Grid xs={12} item className={classes.outerBox2}>
-                        <Grid
-                          xs={6}
-                          style={{ textAlign: "left" }}
-                          className={classes.innerBox2}
-                        >
-                          <Typography
-                            variant="body2"
-                            className={classes.fontWeight}
+                        <Grid xs={12} item className={classes.outerBox2}>
+                          <Grid
+                            xs={6}
+                            style={{ textAlign: "left" }}
+                            className={classes.innerBox2}
                           >
-                            Your pool share:
-                          </Typography>
-                        </Grid>
-                        <Grid xs={6} style={{ textAlign: "right" }}>
-                          <Tooltip title={`${currentPool.poolShare || 0}%`}>
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              {trunc(currentPool.poolShare || 0)}%
+                              Your pool share:
                             </Typography>
-                          </Tooltip>
+                          </Grid>
+                          <Grid xs={6} style={{ textAlign: "right" }}>
+                            <Tooltip title={`${currentPool.poolShare || 0}%`}>
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {trunc(currentPool.poolShare || 0)}%
+                              </Typography>
+                            </Tooltip>
+                          </Grid>
                         </Grid>
                       </Grid>
+                    </Fragment>
+                  ) : (
+                    <Grid xs={12} item className={classes.liquidityText}>
+                      <Typography
+                        variant="body1"
+                        // variant="body2"
+                        className={classes.redText}
+                        // style={{ textAlign: "center" }}
+                      >
+                        You are the first liquidity provider for this pool. The
+                        ratio of tokens you add will set the price. Please
+                        proceed carefully
+                      </Typography>
                     </Grid>
-                  </Fragment>
+                  )
                 ) : null}
 
                 {!selectedRewardToken?.tokenB?.symbol ? (
