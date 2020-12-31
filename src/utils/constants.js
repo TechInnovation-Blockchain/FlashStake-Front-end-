@@ -28,8 +28,8 @@ export const CONSTANTS = {
   BALANCE_CONTRACT: "0x8558f19bd70b31c8693397e4df67c8127f8a2b7b",
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
   CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
-  CHAIN_ID: 1,
-  NETWORK: "MAINNET",
+  CHAIN_ID: 3,
+  NETWORK: "ROPSTEN",
   NO_TOKEN_IMAGE:
     "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
   TOKENS_LIST: [
