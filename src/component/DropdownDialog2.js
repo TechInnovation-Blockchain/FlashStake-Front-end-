@@ -31,6 +31,8 @@ import {
 import { debounce } from "../utils/debounceFunc";
 import { CONSTANTS } from "../utils/constants";
 import { addToTokenList } from "../redux/actions/contractActions";
+import { _error } from "../utils/log";
+import _ from "lodash";
 // import {getTokensList} from "../"
 // const _localStorage = localStorage.getItem("themeMode");
 
@@ -268,33 +270,44 @@ function DropdownDialog2({
     }
   };
 
+  const getTokenDetails = _.memoize(async (_address) => {
+    try {
+      await initializeErc20TokenContract(_address);
+      const _decimals = await decimals();
+      if (_decimals) {
+        const _name = await name();
+        const _symbol = await symbol();
+
+        return {
+          address: _address,
+          name: _name,
+          symbol: _symbol,
+          decimals: _decimals,
+          logoURI:
+            "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
+        };
+      } else {
+        return {};
+      }
+    } catch (e) {
+      _error("ERROR getTokenDetails -> ", e);
+      return {};
+    }
+  });
+
   const searchToken = async (_address) => {
+    console.log("yada77 Hereeeeeeeeeeeeeeeeeeeeeee");
     if (searchExistingToken(_address)) {
       setExist(true);
     } else {
       setExist(false);
       if (Web3.utils.isAddress(_address)) {
         setLoader(true);
-        await initializeErc20TokenContract(_address);
-        const _decimals = await decimals();
-        if (_decimals) {
-          const _name = await name();
-          const _symbol = await symbol();
+        const _token = await getTokenDetails(_address);
+        console.log("yada77 Hereeeeeeeeeeeeeeeeeeeeeee token", _token);
 
-          // setTokensList({ id: "", tokenB: _token });
-
-          setToken({
-            address: _address,
-            name: _name,
-            symbol: _symbol,
-            decimals: _decimals,
-            logoURI:
-              "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
-          });
-          setLoader(false);
-        } else {
-          setToken({});
-        }
+        setToken(_token);
+        setLoader(false);
       } else {
         setToken({});
       }
@@ -303,9 +316,9 @@ function DropdownDialog2({
 
   const debouncedSearchToken = useCallback(debounce(searchToken, 500), []);
 
-  useEffect(() => {
-    debouncedSearchToken(search);
-  }, [search]);
+  // useEffect(() => {
+  //   debouncedSearchToken(search);
+  // }, [search]);
 
   const filteredData = useCallback(() => {
     // if (tokensURI.name === "Default") {
@@ -320,7 +333,6 @@ function DropdownDialog2({
           item?.address?.toLowerCase().includes(search)
         );
       }
-
       debouncedSearchToken(search);
     } else
       return tokenList.filter(
@@ -341,10 +353,15 @@ function DropdownDialog2({
 
   const onSelectLocal = (_pool) => {
     // onSelect(_pool);
+    console.log("yada77 _pool", _pool);
     setToken(_pool);
     setTokenParent(_pool);
     onClose();
   };
+
+  useEffect(() => {
+    console.log("yada77 token", token, token.address);
+  }, [token]);
 
   useEffect(() => {
     if (open && closeTimeout) {
@@ -391,6 +408,7 @@ function DropdownDialog2({
   }, [token, tokenList]);
 
   const tryRequireLogo = (path, add) => {
+    console.log("yadaaaaaaaaaapa", path);
     if (path?.startsWith("ipfs")) {
       const _val = path?.split("//");
       const joined = "https://ipfs.io/ipfs/" + _val[1];
@@ -427,15 +445,10 @@ function DropdownDialog2({
           {token.address ? (
             <Fragment>
               <img
-                src={
-                  // selectedValue?.tokenB?.logoURI ||
-                  pools.find((item) => item?.tokenB?.address === token?.address)
-                    ? tryRequireLogo(
-                        token?.logoURI,
-                        token?.address?.toLowerCase()
-                      )
-                    : require(`../assets/Tokens/NOTFOUND.png`)
-                }
+                src={tryRequireLogo(
+                  token?.logoURI,
+                  token?.address?.toLowerCase()
+                )}
                 alt="Logo"
                 srcSet=""
                 width={15}
@@ -504,7 +517,7 @@ function DropdownDialog2({
                   }
                   onClick={() => onSelectLocal(_pool)}
                   key={_pool.address}
-                  // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID} 
+                  // hidden={_pool?.chainId !== CONSTANTS.CHAIN_ID}
                   disabled={
                     pools?.find(
                       (_item) =>
