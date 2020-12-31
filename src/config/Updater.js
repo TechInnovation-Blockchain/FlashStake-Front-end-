@@ -91,18 +91,6 @@ function Updater({
         userTokens = JSON.parse(await localStorage.getItem("tokenList"));
       } catch (e) {}
 
-      console.log(
-        "HERE----->",
-        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
-          (_item) =>
-            // !_item.chainId ||
-            // _item.chainId === CONSTANTS.CHAIN_ID ||
-
-            allPoolsData[_item.address]
-        )
-        // allPoolsData[]
-      );
-
       updateTokenList(
         [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
           (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID

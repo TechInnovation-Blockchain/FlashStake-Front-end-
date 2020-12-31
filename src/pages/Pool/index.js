@@ -507,8 +507,7 @@ function Pool({
       })
     );
   }, [poolDashboard, allPoolsData]);
-  useEffect(() => {
-    console.log("SHARE", selectedRewardToken);
+  useEffect(() => { 
     if (selectedRewardToken?.id) {
       const _pool = poolsLiquidityList.find(
         (__pool) => __pool.pool.id === selectedRewardToken.id

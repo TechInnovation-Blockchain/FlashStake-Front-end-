@@ -37,7 +37,6 @@ export default function AlertDialogSlide({ open, setOpen }) {
     setOpen(false);
   };
 
-  console.log("DISCLAIMER", localStorage.getItem("disabledDisclaimer"));
   const classes = useStyles();
   return (
     <div>
