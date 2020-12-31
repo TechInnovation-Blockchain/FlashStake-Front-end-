@@ -1122,7 +1122,7 @@ function Pool({
                       >
                         You are the first liquidity provider for this pool. The
                         ratio of tokens you add will set the price. Please
-                        proceed carefully
+                        proceed carefully.
                       </Typography>
                     </Grid>
                   )
