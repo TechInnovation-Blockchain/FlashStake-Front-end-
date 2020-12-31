@@ -634,7 +634,15 @@ function DropdownDialog({
                 button
                 className={classes.listItem}
                 onClick={() => {
-                  onSelectLocal(token);
+                  onSelectLocal({
+                    ...token,
+                    id: pools.find((_pool) =>
+                      _pool.tokenB.id ===
+                      String(token?.tokenB?.address).toLowerCase()
+                        ? _pool.id
+                        : ""
+                    ),
+                  });
                 }}
                 key={token.tokenB.address}
                 disabled={
