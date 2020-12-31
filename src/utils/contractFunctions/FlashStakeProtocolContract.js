@@ -7,6 +7,7 @@ import {
   setLoadingIndep,
   showSnackbarIndep,
   showSnackbarTxnIndep,
+  setClearField,
 } from "../../redux/actions/uiActions";
 import {
   setDialogStepIndep,
@@ -663,6 +664,7 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
 
 export const createPool = (_token) => {
   setLoadingIndep({ createPool: true });
+  store.dispatch(setClearField(false));
 
   try {
     showSnackbarIndep("Transaction Pending.", "info");
@@ -699,6 +701,7 @@ export const createPool = (_token) => {
             .then(function (receipt) {
               setCreateDialogStepIndep("successCreatePool");
               setSelectedRewardToken({});
+              store.dispatch(setClearField(true));
               store.dispatch(setRefetchProtocols(true));
               showSnackbarTxnIndep(
                 "Create Pool Transaction Successful.",
@@ -710,6 +713,7 @@ export const createPool = (_token) => {
 
               // setRefetchIndep(true);
               setLoadingIndep({ createPool: false });
+
               _log(receipt);
               return receipt;
             })

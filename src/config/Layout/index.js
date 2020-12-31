@@ -181,9 +181,10 @@ function Layout({
 
   return (
     <Fragment>
+      <Disclaimer open={open} setOpen={setOpen} />
       {/* <Box> */}
       <Container maxWidth="sm" className={classes.mainContainer}>
-        <Disclaimer open={open} setOpen={setOpen} />
+        {/* <Disclaimer open={open} setOpen={setOpen} /> */}
 
         <Box
           // ref={ref}
