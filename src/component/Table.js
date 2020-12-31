@@ -430,7 +430,7 @@ function TableComponent({
                                     //   theme === "dark" ? "FlashPro5" : "FLASH"
                                     // )}
                                     src={tryRequire(
-                                      theme === "dark" ? "FlashPro5" : "FLASH"
+                                      theme === "dark" ? "FlashLogo" : "FLASH"
                                     )}
                                     alt="Logo"
                                     srcSet=""
@@ -560,11 +560,9 @@ function TableComponent({
                         fontSizeLocal="body2"
                         loading={loadingRedux.unstake}
                       >
-                        <Tooltip title={`${expiredDappBalance} FLASH`}>
-                          <span>
-                            {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
-                          </span>
-                        </Tooltip>
+                        <span>
+                          {isStakesSelected ? "UNSTAKE SELECTED" : "UNSTAKE"}
+                        </span>
                       </Button>
                     </Grid>
                   </Fragment>

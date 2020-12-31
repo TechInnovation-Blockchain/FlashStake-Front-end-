@@ -237,6 +237,7 @@ function DropdownDialog2({
   pools,
   tokenList,
   addToTokenList,
+  clearField,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -248,6 +249,13 @@ function DropdownDialog2({
   const [loader, setLoader] = useState(false);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (clearField) {
+      setToken({});
+      setTokenParent({});
+    }
+  }, [clearField]);
 
   useEffect(() => {
     if (pools.length) {
@@ -640,12 +648,13 @@ function DropdownDialog2({
 
 const mapStateToProps = ({
   user: { poolsApy, pools, nativePrices },
-  ui: { tokensURI },
+  ui: { tokensURI, clearField },
   query: { allPoolsData },
   contract: { tokenList },
 }) => ({
   poolsApy,
   pools,
+  clearField,
   tokensURI,
   allPoolsData,
   nativePrices,

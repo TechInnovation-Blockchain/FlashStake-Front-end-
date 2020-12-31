@@ -405,6 +405,7 @@ function Vote({
   unstakeEarly,
   setLoading,
   dialogStep,
+  clearField,
   setDialogStep,
   stakeRequest,
   unstakeRequest,
@@ -582,6 +583,11 @@ function Vote({
     }
   }, [expanding, setExpandAccodion]);
 
+  // useEffect(() => {
+  //   if (token) {
+  //     console.log("mnmnmnmn", token);
+  //   }
+  // }, [token]);
   // props.history.location.pathname === "/swap" ? true :
   const [isDisabled, setIsDisabled] = useState(false);
   const setDisable = () => {
@@ -782,7 +788,7 @@ function Vote({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal, changeApp },
+  ui: { loading, expanding, animation, heightVal, changeApp, clearField },
   web3: { active, account, chainId },
   dashboard: { selectedStakes, isStakesSelected, totalBurn },
   user: {
@@ -816,6 +822,7 @@ const mapStateToProps = ({
   selectedStakes,
   stakes,
   totalBurn,
+  clearField,
   changeApp,
   ...contract,
 });

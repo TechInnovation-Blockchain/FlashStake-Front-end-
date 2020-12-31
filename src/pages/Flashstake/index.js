@@ -1402,7 +1402,13 @@ function Flashstake({
                       title={`${stakeRequest.reward} ${stakeRequest.token}`}
                     >
                       <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                        {trunc(
+                          utils.formatUnits(
+                            preciseReward.toString(),
+                            selectedRewardToken?.tokenB?.decimals || 18
+                          )
+                        )}{" "}
+                        {stakeRequest.token}
                       </span>
                     </Tooltip>{" "}
                     instantly

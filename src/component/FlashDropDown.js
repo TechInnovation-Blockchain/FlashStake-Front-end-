@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import flash from "../assets/FLASH2.svg";
+import flash from "../assets/FlashLogo.png";
 import Flash from "../assets/Tokens/FLASH.png";
 import { connect } from "react-redux";
 
