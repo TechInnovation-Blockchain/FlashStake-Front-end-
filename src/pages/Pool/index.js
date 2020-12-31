@@ -524,7 +524,7 @@ function Pool({
     }
   }, [history.location.pathname]);
   useEffect(() => {
-    document.title = "Pool - FLASH | THE TIME TRAVEL OF MONEY";
+    // document.title = "Pool - FLASH | THE TIME TRAVEL OF MONEY";
   }, []);
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
@@ -1621,7 +1621,7 @@ function Pool({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You have successfully withdrawn{" "}
+                    You have successfully redeemed{" "}
                     <Tooltip
                       title={`${withdrawLiquidityRequest._liquidity} FLASH`}
                     >

@@ -65,15 +65,21 @@ export default function AlertDialogSlide({ open, setOpen }) {
               in DeFi, this technology should be used with caution and at your
               own discretion. <br /> <br />
               We understand and acknowledge the importance of security. Over the
-              last four months, 1000+ people have helped us battle test the
-              Flash protocol. With over $75,000 paid throughout the security and
+              last four months, 1000+ people have helped battle test the Flash
+              Protocol. With over $75,000 paid throughout the security and
               auditing process, not one smart contract issue was discovered.{" "}
-              <br /> <br /> Flash has been audited by Solidified.io, the same
-              agency who has audited Loopring, Argent, Kyper Network, Gnosis,
-              and many other technologies. You can view the audit here. <br />{" "}
-              <br /> Flash was built by Blockzero Labs, a blockchain token
-              studio with over 15 core team members from all across the world.{" "}
-              <br /> <br />
+              <br /> <br /> Flash has been audited by{" "}
+              <a href="http://solidified.io/" target="_blank">
+                Solidified.io
+              </a>
+              , the same agency who has audited Loopring, Argent, Kyper Network,
+              Gnosis, and many other technologies. You can view the audit here.{" "}
+              <br /> <br /> Flash was built by{" "}
+              <a href="https://blockzerolabs.io/" target="_blank">
+                Blockzero Labs
+              </a>
+              , a blockchain token studio with over 15 core team members from
+              all across the world. <br /> <br />
               Flash is a 100% permissionless protocol. There are no admin keys.
               There are no backdoors. Now that we are on mainnet, we don't
               control Flash any more than you do. In accepting this reality, you
