@@ -952,8 +952,16 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
 };
 
 export const createPool = (_token) => async (dispatch, getState) => {
+  const {
+    users: { pools },
+  } = getState();
+
   try {
     if (!Web3.utils.isAddress(_token.address)) {
+      return;
+    }
+
+    if (pools.find((_pool) => _pool?.tokenB?.id === _token.address)) {
       return;
     }
 

@@ -359,9 +359,26 @@ function DropdownDialog2({
   }, [search, items, tokenList]);
 
   const onClose = useCallback(() => {
+    // if (pools?.find((_pool) => pools?.tokenB?.id === token?.id)) {
+    //   setToken({});
+    //   setTokenParent({});
+    // }
+    // setToken({});
     setSearch("");
+    // setTokenParent({});
     setOpen(false);
-  }, []);
+  }, [pools]);
+
+  // useEffect(() => {
+  //   console.log("POOLL", pools);
+
+  //   if (open === false) {
+  //     if (pools?.find((_pool) => pools?.tokenB?.id === token?.id)) {
+  //       setToken({});
+  //       setTokenParent({});
+  //     }
+  //   }
+  // }, [open]);
 
   const onSelectLocal = (_pool) => {
     // onSelect(_pool);
