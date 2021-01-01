@@ -953,6 +953,7 @@ export const createPool = (_token) => async (dispatch, getState) => {
     if (!Web3.utils.isAddress(_token.address)) {
       return;
     }
+
     _log("createPool params -> ", _token.address);
     dispatch({
       type: "CREATE_POOL_REQUEST",
