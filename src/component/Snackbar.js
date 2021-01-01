@@ -79,7 +79,7 @@ function Snackbar({ snackbar, hideSnackbar, showSnackbar }) {
         {snackbar.typeT === "txnEtherScan" ? (
           <a
             className={classes.link}
-            href={`https://ropsten.etherscan.io/tx/${snackbar.txn}`}
+            href={`https://etherscan.io/tx/${snackbar.txn}`}
             target="_blank"
             rel="noopener noreferrer"
           >

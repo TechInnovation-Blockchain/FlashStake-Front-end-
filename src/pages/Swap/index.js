@@ -1036,7 +1036,7 @@ function Swap({
                             className={`${classes.textBold} ${classes.redText}`}
                           >
                             <a
-                              href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
+                              href={`https://etherscan.io/tx/${stakeTxnHash}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={classes.link}
