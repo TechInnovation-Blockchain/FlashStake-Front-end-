@@ -528,6 +528,12 @@ function Vote({
     setInitialValues(quantity, days);
   }, [days, quantity, setInitialValues]);
 
+  // useEffect(() => {
+  //   if (token.id && pools.find((_pool) => _pool.tokenB.id === token.id)) {
+  //     setToken({});
+  //   }
+  // }, [token]);
+
   useEffect(() => {
     if (reset) {
       // getBalanceXIO();

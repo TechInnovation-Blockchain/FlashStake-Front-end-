@@ -1468,10 +1468,21 @@ function Flashstake({
                       : time}{" "}
                     and you were sent{" "}
                     <Tooltip
-                      title={`${stakeRequest.reward} ${stakeRequest.token}`}
+                      title={`${trunc(
+                        utils.formatUnits(
+                          preciseReward.toString(),
+                          selectedRewardToken?.tokenB?.decimals || 18
+                        )
+                      )} ${stakeRequest.token}`}
                     >
                       <span>
-                        {trunc(stakeRequest.reward)} {stakeRequest.token}
+                        {trunc(
+                          utils.formatUnits(
+                            preciseReward.toString(),
+                            selectedRewardToken?.tokenB?.decimals || 18
+                          )
+                        )}{" "}
+                        {stakeRequest.token}
                       </span>
                     </Tooltip>
                   </Typography>
@@ -1575,7 +1586,7 @@ function Flashstake({
                     variant="body2"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    Your are about to unstake{" "}
+                    You are about to unstake{" "}
                     <Tooltip title={`${totalBurn.totalXIO} FLASH`}>
                       <span className={classes.redText}>
                         {totalBurn.totalXIO} FLASH

@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
   BTn: {
     color: theme.palette.xioRed.main,
   },
+  hyperlink: {
+    color: theme.palette.xioRed.main,
+  },
 }));
 
 export default function AlertDialogSlide({ open, setOpen }) {
@@ -69,13 +72,28 @@ export default function AlertDialogSlide({ open, setOpen }) {
               Protocol. With over $75,000 paid throughout the security and
               auditing process, not one smart contract issue was discovered.{" "}
               <br /> <br /> Flash has been audited by{" "}
-              <a href="http://solidified.io/" target="_blank">
+              <a
+                className={classes.hyperlink}
+                href="http://solidified.io/"
+                target="_blank"
+              >
                 Solidified.io
               </a>
               , the same agency who has audited Loopring, Argent, Kyper Network,
-              Gnosis, and many other technologies. You can view the audit here.{" "}
-              <br /> <br /> Flash was built by{" "}
-              <a href="https://blockzerolabs.io/" target="_blank">
+              Gnosis, and many other technologies. You can view the audit{" "}
+              <a
+                className={classes.hyperlink}
+                href="https://github.com/solidified-platform/audits/blob/master/Audit%20Report%20-%20Flash%20Protocol%20%5B04.12.2020%5D.pdf"
+                target="_blank"
+              >
+                here
+              </a>
+              . <br /> <br /> Flash was built by{" "}
+              <a
+                className={classes.hyperlink}
+                href="https://blockzerolabs.io/"
+                target="_blank"
+              >
                 Blockzero Labs
               </a>
               , a blockchain token studio with over 15 core team members from
@@ -84,7 +102,7 @@ export default function AlertDialogSlide({ open, setOpen }) {
               There are no backdoors. Now that we are on mainnet, we don't
               control Flash any more than you do. In accepting this reality, you
               acknowledge the risks and implications of using the Flash
-              protocol.
+              Protocol.
             </Typography>
           </DialogContentText>
         </DialogContent>

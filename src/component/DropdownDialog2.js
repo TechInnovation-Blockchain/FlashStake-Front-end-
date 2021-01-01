@@ -56,6 +56,10 @@ const useStyles = makeStyles((theme, _theme) => ({
     borderRadius: theme.palette.ButtonRadius.small,
     // boxShadow: `0px 0px 6px 4px ${theme.palette.shadowColor.secondary}`,
   },
+  alreadyExist: {
+    color: theme.palette.xioRed.main,
+    paddingLeft: 5,
+  },
 
   retroDropdown: {
     background: theme.palette.background.secondary2,
@@ -546,7 +550,22 @@ function DropdownDialog2({
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {_pool.symbol}
+                    {_pool.symbol}{" "}
+                    {pools?.find(
+                      (_item) =>
+                        _item?.tokenB?.id ===
+                        String(_pool.address).toLowerCase()
+                    ) ||
+                    "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
+                      _pool.address ? (
+                      <Typography
+                        variant="body1"
+                        className={classes.alreadyExist}
+                      >
+                        {" "}
+                        (Pool already exists)
+                      </Typography>
+                    ) : null}
                     {/* {""}
                     {_pool?.chainId === 1 ? (
                       <span className={classes.redText}> Mainnet Token</span>
