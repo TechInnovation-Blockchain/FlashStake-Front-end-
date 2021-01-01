@@ -519,7 +519,7 @@ function Vote({
   }, [active, account, showWalletBackdrop]);
 
   useEffect(() => {
-    document.title = "Create - FLASH | THE TIME TRAVEL OF MONEY";
+    // document.title = "Create - FLASH | THE TIME TRAVEL OF MONEY";
     // setLoading({ dapp: true });
     setRefetch(true);
   }, [setRefetch]);
