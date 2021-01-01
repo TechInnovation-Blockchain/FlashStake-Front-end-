@@ -180,12 +180,13 @@ function WalletConnect({
   }, [web3context, storeWeb3Context]);
 
   useEffect(() => {
-    setTimeout(() => {
+    const _timeout = setTimeout(() => {
       if (window?.ethereum?._state?.accounts?.length) {
         activateWallet();
       }
-    }, 400);
-  });
+    }, 2000);
+    return () => clearInterval(_timeout);
+  }, []);
 
   return (
     <Fragment>

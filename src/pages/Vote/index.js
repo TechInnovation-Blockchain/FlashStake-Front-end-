@@ -528,6 +528,12 @@ function Vote({
     setInitialValues(quantity, days);
   }, [days, quantity, setInitialValues]);
 
+  // useEffect(() => {
+  //   if (token.id && pools.find((_pool) => _pool.tokenB.id === token.id)) {
+  //     setToken({});
+  //   }
+  // }, [token]);
+
   useEffect(() => {
     if (reset) {
       // getBalanceXIO();
@@ -585,7 +591,6 @@ function Vote({
 
   // useEffect(() => {
   //   if (token) {
-  //     console.log("mnmnmnmn", token);
   //   }
   // }, [token]);
   // props.history.location.pathname === "/swap" ? true :
