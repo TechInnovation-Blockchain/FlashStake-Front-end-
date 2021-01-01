@@ -755,17 +755,7 @@ function Swap({
                             before <b>swapping</b>{" "}
                           </Typography>
                         </Grid>
-                      ) : (
-                        <Grid item xs={12} className={classes.msgContainer}>
-                          <Typography
-                            variant="body2"
-                            className={classes.redText}
-                          >
-                            Approve <b>FLASH</b> before <b>swapping</b>{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
-                          </Typography>
-                        </Grid>
-                      )}
+                      ) : null}
                     </Box>
                   </Grid>
                 )}
