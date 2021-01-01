@@ -997,122 +997,126 @@ function Pool({
                   </Fragment>
                 ) : null}
 
-                {selectedRewardToken?.id ? (
-                  poolsLiquidityList.find(
-                    (__pool) => __pool.pool.id === selectedRewardToken.id
-                  ) ? (
-                    <Fragment>
-                      <Grid container className={classes.outerBG}>
-                        <Grid xs={12} item className={classes.outerBoxHeading}>
-                          <Box className={classes.headingBox}>
-                            <Typography className={classes.mainHeading}>
-                              YOUR POSITION
-                            </Typography>
-                          </Box>
-                        </Grid>
+                {poolsLiquidityList.find(
+                  (__pool) => __pool.pool.id === selectedRewardToken.id
+                ) ? (
+                  <Fragment>
+                    <Grid container className={classes.outerBG}>
+                      <Grid xs={12} item className={classes.outerBoxHeading}>
+                        <Box className={classes.headingBox}>
+                          <Typography className={classes.mainHeading}>
+                            YOUR POSITION
+                          </Typography>
+                        </Box>
+                      </Grid>
 
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
                           >
+                            Your total pool tokens:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool?.balance || 0}>
                             <Typography
                               variant="body2"
                               className={classes.fontWeight}
                             >
-                              Your total pool tokens:
+                              {trunc(currentPool?.balance || 0)}
                             </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool?.balance || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool?.balance || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Pooled FLASH:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool.pooledFlash || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.pooledFlash || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Pooled {currentPool?.pool?.tokenB?.symbol}:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={currentPool.pooledAlt || 0}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.pooledAlt || 0)}
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
-                        </Grid>
-
-                        <Grid xs={12} item className={classes.outerBox2}>
-                          <Grid
-                            xs={6}
-                            style={{ textAlign: "left" }}
-                            className={classes.innerBox2}
-                          >
-                            <Typography
-                              variant="body2"
-                              className={classes.fontWeight}
-                            >
-                              Your pool share:
-                            </Typography>
-                          </Grid>
-                          <Grid xs={6} style={{ textAlign: "right" }}>
-                            <Tooltip title={`${currentPool.poolShare || 0}%`}>
-                              <Typography
-                                variant="body2"
-                                className={classes.fontWeight}
-                              >
-                                {trunc(currentPool.poolShare || 0)}%
-                              </Typography>
-                            </Tooltip>
-                          </Grid>
+                          </Tooltip>
                         </Grid>
                       </Grid>
-                    </Fragment>
-                  ) : (
+
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled FLASH:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool.pooledFlash || 0}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.pooledFlash || 0)}
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Pooled {currentPool?.pool?.tokenB?.symbol}:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={currentPool.pooledAlt || 0}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.pooledAlt || 0)}
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+
+                      <Grid xs={12} item className={classes.outerBox2}>
+                        <Grid
+                          xs={6}
+                          style={{ textAlign: "left" }}
+                          className={classes.innerBox2}
+                        >
+                          <Typography
+                            variant="body2"
+                            className={classes.fontWeight}
+                          >
+                            Your pool share:
+                          </Typography>
+                        </Grid>
+                        <Grid xs={6} style={{ textAlign: "right" }}>
+                          <Tooltip title={`${currentPool.poolShare || 0}%`}>
+                            <Typography
+                              variant="body2"
+                              className={classes.fontWeight}
+                            >
+                              {trunc(currentPool.poolShare || 0)}%
+                            </Typography>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Fragment>
+                ) : null}
+
+                {selectedRewardToken?.id ? (
+                  allPoolsData[selectedRewardToken.id].reserveFlashAmount > 0 &&
+                  allPoolsData[selectedRewardToken.id].reserveAltAmount >
+                    0 ? null : (
                     <Grid xs={12} item className={classes.liquidityText}>
                       <Typography
                         variant="body1"
@@ -1127,7 +1131,6 @@ function Pool({
                     </Grid>
                   )
                 ) : null}
-
                 {!selectedRewardToken?.tokenB?.symbol ? (
                   <Typography
                     variant="body1"
