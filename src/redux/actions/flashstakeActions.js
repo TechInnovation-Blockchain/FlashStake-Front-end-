@@ -948,7 +948,7 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
 
 export const createPool = (_token) => async (dispatch, getState) => {
   const {
-    users: { pools },
+    user: { pools },
   } = getState();
 
   try {

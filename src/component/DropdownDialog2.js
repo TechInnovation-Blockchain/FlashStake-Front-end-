@@ -249,6 +249,7 @@ function DropdownDialog2({
   const [nativePrice, setNativePrice] = useState();
   const [getTokensLoader, setTokensLoader] = useState(true);
   const [token, setToken] = useState({});
+  const [tokenSearch, setTokenSearch] = useState({});
   const [exist, setExist] = useState(false);
   const [loader, setLoader] = useState(false);
 
@@ -318,10 +319,10 @@ function DropdownDialog2({
         setLoader(true);
         const _token = await getTokenDetails(_address);
 
-        setToken(_token);
+        setTokenSearch(_token);
         setLoader(false);
       } else {
-        setToken({});
+        setTokenSearch({});
       }
     }
   };
@@ -370,7 +371,6 @@ function DropdownDialog2({
   }, [pools]);
 
   // useEffect(() => {
-  //   console.log("POOLL", pools);
 
   //   if (open === false) {
   //     if (pools?.find((_pool) => pools?.tokenB?.id === token?.id)) {
@@ -422,14 +422,16 @@ function DropdownDialog2({
       tokenList = JSON.parse(await localStorage.getItem("tokenList")) || [];
     } catch (e) {}
     if (
-      !tokenList?.find((_tokenItem) => _tokenItem.address === token.address)
+      !tokenList?.find(
+        (_tokenItem) => _tokenItem.address === tokenSearch.address
+      )
     ) {
-      tokenList.push(token);
+      tokenList.push(tokenSearch);
       localStorage.setItem("tokenList", JSON.stringify(tokenList));
-      addToTokenList(token);
+      addToTokenList(tokenSearch);
       setSearch("");
     }
-  }, [token, tokenList]);
+  }, [tokenSearch, tokenList]);
 
   const tryRequireLogo = (path, add) => {
     if (path?.startsWith("ipfs")) {
@@ -600,23 +602,23 @@ function DropdownDialog2({
               />{" "}
               GETTING TOKENS
             </Typography>
-          ) : token.decimals ? (
+          ) : tokenSearch.decimals ? (
             <Fragment>
               <List className={classes.list}>
                 <ListItem
                   button
                   className={classes.listItem}
-                  onClick={() => onSelectLocal(token)}
-                  key={token?.address}
+                  onClick={() => onSelectLocal(tokenSearch)}
+                  key={tokenSearch?.address}
                   disabled={
                     pools?.find((_item) => {
-                      if (_item?.tokenB?.id === token.address) {
+                      if (_item?.tokenB?.id === tokenSearch.address) {
                         return true;
                       }
                     }) ||
-                    allPoolsData[token.address] ||
+                    allPoolsData[tokenSearch.address] ||
                     "0xb4467e8d621105312a914f1d42f10770c0ffe3c8" ===
-                      token.address
+                      tokenSearch.address
 
                     // Object.keys(allPoolsData).find((_item) => {
                     //   if (_item === token.address) {
@@ -638,7 +640,7 @@ function DropdownDialog2({
                       className={classes.tokensLogo}
                       style={{ marginRight: 5 }}
                     />
-                    {token.symbol}
+                    {tokenSearch.symbol}
                   </Typography>
                 </ListItem>
                 <Typography
