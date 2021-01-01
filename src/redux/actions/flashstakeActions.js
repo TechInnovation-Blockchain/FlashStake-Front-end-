@@ -74,7 +74,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
+      // console.log("yadaaaaaaaaaaa", String(_fpy));
       _maxDays = _maxDays / String(_fpy);
+      // console.log("yadaaaaaaaaaaa MAX", String(_maxDays));
+
       const _mintAmount = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
         JSBI.multiply(_precision, JSBI.BigInt("31536000"))
