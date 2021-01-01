@@ -68,82 +68,83 @@ export const stake = async (_token, xioQuantity, days, reward) => {
     if (!walletAddress) {
       throw new _error("Wallet not activated.");
     }
-    contract.methods
-      .stake(_token, xioQuantity, days, reward)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        async function (error, gasAmount) {
-          // const txHash = await web3.utils.sha3(
-          //   contract.methods.stake(_token, xioQuantity, days, reward)
-          // );
-          contract.methods
-            .stake(_token, xioQuantity, days, reward)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", async (txnHash) => {
-              analytics.logEvent("USER_STAKE_TXN", {
-                address: `Address -> ${walletAddress}`,
-                txnHash,
-                amount: xioQuantity,
-                days: days,
-                selctedToken: _token,
-              });
-              addToTxnQueueIndep(txnHash);
-              setStakeTxnHashIndep(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-
-              // const data = {
-              //   _id: txnHash,
-              //   txn: {
-              //     amount: xioQuantity,
-              //     days: days,
-              //     selctedToken: _token,
-              //   },
-              //   type: "stake",
-              // };
-
-              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              //   _log("Transaction Hash Added", res);
-              // });
-            })
-            .then(function (receipt) {
-              setTimeout(() => {
-                setRefetchIndep(true);
-              }, 2000);
-              setStakeDialogStepIndep("successStake");
-              setLoadingIndep({ stake: false });
-
-              setResetIndep(true);
-              showSnackbarTxnIndep(
-                "Stake Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setStakeDialogStepIndep("rejectedStake");
-                showSnackbarIndep("Stake Transaction Rejected.", "error");
-              } else {
-                setStakeDialogStepIndep("failedStake");
-                showSnackbarIndep("Stake Transaction Failed.", "error");
-              }
-              setLoadingIndep({ stake: false });
-              _error("ERROR stake -> ", e);
+    contract.methods.stake(_token, xioQuantity, days, reward).estimateGas(
+      {
+        //  gas: 10000000,
+        from: walletAddress,
+      },
+      async function (error, gasAmount) {
+        // const txHash = await web3.utils.sha3(
+        //   contract.methods.stake(_token, xioQuantity, days, reward)
+        // );
+        contract.methods
+          .stake(_token, xioQuantity, days, reward)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_STAKE_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              amount: xioQuantity,
+              days: days,
+              selctedToken: _token,
             });
-        }
-      );
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     amount: xioQuantity,
+            //     days: days,
+            //     selctedToken: _token,
+            //   },
+            //   type: "stake",
+            // };
+
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 2000);
+            setStakeDialogStepIndep("successStake");
+            setLoadingIndep({ stake: false });
+
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Stake Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedStake");
+              showSnackbarIndep("Stake Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedStake");
+              showSnackbarIndep("Stake Transaction Failed.", "error");
+            }
+            setLoadingIndep({ stake: false });
+            _error("ERROR stake -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedStake");
@@ -174,75 +175,76 @@ export const unstake = async (_expiredIds) => {
     if (!walletAddress) {
       throw new _error("Wallet not activated.");
     }
-    contract.methods
-      .unstake(_expiredIds)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        function (error, gasAmount) {
-          contract.methods
-            .unstake(_expiredIds)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", async (txnHash) => {
-              analytics.logEvent("USER_UNSTAKE_TXN", {
-                address: `Address -> ${walletAddress}`,
-                txnHash,
-                _expiredIds,
-              });
-              addToTxnQueueIndep(txnHash);
-              setStakeTxnHashIndep(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-
-              // const data = {
-              //   _id: txnHash,
-              //   txn: {
-              //     _expiredIds,
-              //   },
-              //   type: "unstake",
-              // };
-
-              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              //   _log("Transaction Hash Added", res);
-              // });
-            })
-            .then(function (receipt) {
-              setTimeout(() => {
-                setRefetchIndep(true);
-              }, 2000);
-              setStakeDialogStepIndep("successUnstake");
-              setLoadingIndep({ unstake: false });
-
-              setResetIndep(true);
-              showSnackbarTxnIndep(
-                "Unstake Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setStakeDialogStepIndep("rejectedUnstake");
-                showSnackbarIndep("Unstake Transaction Rejected.", "error");
-              } else {
-                setStakeDialogStepIndep("failedUnstake");
-                showSnackbarIndep("Unstake Transaction Failed.", "error");
-              }
-              setLoadingIndep({ unstake: false });
-              _error("ERROR stake -> ", e);
+    contract.methods.unstake(_expiredIds).estimateGas(
+      {
+        // gas: 10000000,
+        from: walletAddress,
+      },
+      function (error, gasAmount) {
+        contract.methods
+          .unstake(_expiredIds)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_UNSTAKE_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              _expiredIds,
             });
-        }
-      );
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     _expiredIds,
+            //   },
+            //   type: "unstake",
+            // };
+
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 2000);
+            setStakeDialogStepIndep("successUnstake");
+            setLoadingIndep({ unstake: false });
+
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Unstake Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedUnstake");
+              showSnackbarIndep("Unstake Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedUnstake");
+              showSnackbarIndep("Unstake Transaction Failed.", "error");
+            }
+            setLoadingIndep({ unstake: false });
+            _error("ERROR stake -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedUnstake");
@@ -272,79 +274,80 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
     if (!walletAddress) {
       throw new _error("Wallet not activated.");
     }
-    contract.methods
-      .swap(_altQuantity, _token, _expectedOutput)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        function (error, gasAmount) {
-          contract.methods
-            .swap(_altQuantity, _token, _expectedOutput)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", async (txnHash) => {
-              analytics.logEvent("USER_SWAP_TXN", {
-                address: `Address -> ${walletAddress}`,
-                txnHash,
-                _altQuantity,
-                _token,
-                _expectedOutput,
-              });
-              addToTxnQueueIndep(txnHash);
-              setStakeTxnHashIndep(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-
-              // const data = {
-              //   _id: txnHash,
-              //   txn: {
-              //     _altQuantity,
-              //     _token,
-              //     _expectedOutput,
-              //   },
-              //   type: "swap",
-              // };
-
-              // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
-              //   _log("Transaction Hash Added", res);
-              // });
-            })
-            .then(function (receipt) {
-              setTimeout(() => {
-                setRefetchIndep(true);
-              }, 2000);
-              setSwapDialogStepIndep("successSwap");
-              setLoadingIndep({ swap: false });
-
-              setResetIndep(true);
-              showSnackbarTxnIndep(
-                "Swap Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setSwapDialogStepIndep("rejectedSwap");
-                showSnackbarIndep("Swap Transaction Rejected.", "error");
-              } else {
-                setSwapDialogStepIndep("failedSwap");
-                showSnackbarIndep("Swap Transaction Failed.", "error");
-              }
-              setLoadingIndep({ swap: false });
-              _error("ERROR swap -> ", e);
+    contract.methods.swap(_altQuantity, _token, _expectedOutput).estimateGas(
+      {
+        //  gas: 10000000,
+        from: walletAddress,
+      },
+      function (error, gasAmount) {
+        contract.methods
+          .swap(_altQuantity, _token, _expectedOutput)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_SWAP_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              _altQuantity,
+              _token,
+              _expectedOutput,
             });
-        }
-      );
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+
+            // const data = {
+            //   _id: txnHash,
+            //   txn: {
+            //     _altQuantity,
+            //     _token,
+            //     _expectedOutput,
+            //   },
+            //   type: "swap",
+            // };
+
+            // axios.post(CONSTANTS.TXN_SERVER, data).then((res) => {
+            //   _log("Transaction Hash Added", res);
+            // });
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 2000);
+            setSwapDialogStepIndep("successSwap");
+            setLoadingIndep({ swap: false });
+
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Swap Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setSwapDialogStepIndep("rejectedSwap");
+              showSnackbarIndep("Swap Transaction Rejected.", "error");
+            } else {
+              setSwapDialogStepIndep("failedSwap");
+              showSnackbarIndep("Swap Transaction Failed.", "error");
+            }
+            setLoadingIndep({ swap: false });
+            _error("ERROR swap -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setSwapDialogStepIndep("rejectedSwap");
@@ -401,55 +404,56 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
       throw new _error("Wallet not activated.");
     }
 
-    contract.methods
-      .unstakeALT(expiredIds, xioQuantity)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        (error, gasAmount) => {
-          unstakeALT(expiredIds, xioQuantity)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", (txnHash) => {
-              setWithdrawTxnHashIndep(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-            })
-            .then(function (receipt) {
-              setDialogStepIndep("success");
-              showSnackbarTxnIndep(
-                "Withdraw Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
-              setRefetchIndep(true);
-              setLoadingIndep({ unstake: false });
+    contract.methods.unstakeALT(expiredIds, xioQuantity).estimateGas(
+      {
+        // gas: 10000000,
+        from: walletAddress,
+      },
+      (error, gasAmount) => {
+        unstakeALT(expiredIds, xioQuantity)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", (txnHash) => {
+            setWithdrawTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setDialogStepIndep("success");
+            showSnackbarTxnIndep(
+              "Withdraw Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+            setRefetchIndep(true);
+            setLoadingIndep({ unstake: false });
 
-              return receipt;
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setDialogStepIndep("rejected");
-                showSnackbarIndep("Withdraw Transaction Rejected.", "error");
-              } else {
-                setDialogStepIndep("failed");
-                showSnackbarIndep("Withdraw Transaction Failed.", "error");
-              }
-              setLoadingIndep({ unstake: false });
+            return receipt;
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setDialogStepIndep("rejected");
+              showSnackbarIndep("Withdraw Transaction Rejected.", "error");
+            } else {
+              setDialogStepIndep("failed");
+              showSnackbarIndep("Withdraw Transaction Failed.", "error");
+            }
+            setLoadingIndep({ unstake: false });
 
-              _error("ERROR unstakeALT -> ", e);
-            });
-        }
-      );
+            _error("ERROR unstakeALT -> ", e);
+          });
+      }
+    );
     // .on("confirmation", (confirmationNumber, reciept) => {
     //   if (confirmationNumber === 1) {
     //   }
@@ -494,7 +498,10 @@ export const addLiquidityInPool = (
         _token
       )
       .estimateGas(
-        { gas: 10000000, from: walletAddress },
+        {
+          // gas: 10000000,
+          from: walletAddress,
+        },
         (error, gasAmount) => {
           contract.methods
             .addLiquidityInPool(
@@ -586,67 +593,68 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
       throw new _error("Wallet not activated.");
     }
 
-    contract.methods
-      .removeLiquidityInPool(_liquidity, _token)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        (error, gasAmount) => {
-          contract.methods
-            .removeLiquidityInPool(_liquidity, _token)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", (txnHash) => {
-              setWithdrawLiquidityTxnHashIndep(txnHash);
-              setCloseLiquidityTxnHashIndep(true);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
+    contract.methods.removeLiquidityInPool(_liquidity, _token).estimateGas(
+      {
+        // gas: 10000000,
+        from: walletAddress,
+      },
+      (error, gasAmount) => {
+        contract.methods
+          .removeLiquidityInPool(_liquidity, _token)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", (txnHash) => {
+            setWithdrawLiquidityTxnHashIndep(txnHash);
+            setCloseLiquidityTxnHashIndep(true);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+            setCloseLiquidityTxnHashIndep(false);
+          })
+          .then(function (receipt) {
+            setPoolDialogStepIndep("successWithdrawLiquidity");
+            setCloseLiquidityTxnHashIndep(true);
+            showSnackbarTxnIndep(
+              "Withdraw Liquidity Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+            setRefetchIndep(true);
+            setLoadingIndep({ withdrawPool: false });
+            setCloseLiquidityTxnHashIndep(false);
+            return receipt;
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setPoolDialogStepIndep("rejectedWithdrawLiquidity");
+              // setCloseLiquidityTxnHashIndep(true);
+              showSnackbarIndep(
+                "Withdraw Liquidity Transaction Rejected.",
+                "error"
               );
-              setCloseLiquidityTxnHashIndep(false);
-            })
-            .then(function (receipt) {
-              setPoolDialogStepIndep("successWithdrawLiquidity");
-              setCloseLiquidityTxnHashIndep(true);
-              showSnackbarTxnIndep(
-                "Withdraw Liquidity Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
+            } else {
+              setPoolDialogStepIndep("failedWithdrawLiquidity");
+              showSnackbarIndep(
+                "Withdraw Liquidity Transaction Failed.",
+                "error"
               );
-              setRefetchIndep(true);
-              setLoadingIndep({ withdrawPool: false });
-              setCloseLiquidityTxnHashIndep(false);
-              return receipt;
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setPoolDialogStepIndep("rejectedWithdrawLiquidity");
-                // setCloseLiquidityTxnHashIndep(true);
-                showSnackbarIndep(
-                  "Withdraw Liquidity Transaction Rejected.",
-                  "error"
-                );
-              } else {
-                setPoolDialogStepIndep("failedWithdrawLiquidity");
-                showSnackbarIndep(
-                  "Withdraw Liquidity Transaction Failed.",
-                  "error"
-                );
-              }
-              setLoadingIndep({ withdrawPool: false });
-              // setCloseLiquidityTxnHashIndep(false);
+            }
+            setLoadingIndep({ withdrawPool: false });
+            // setCloseLiquidityTxnHashIndep(false);
 
-              _error("ERROR removeLiquidityInPool -> ", e);
-            });
-        }
-      );
+            _error("ERROR removeLiquidityInPool -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setDialogStepIndep("rejectedWithdrawLiquidity");
@@ -676,61 +684,62 @@ export const createPool = (_token) => {
       throw new _error("Wallet not activated.");
     }
 
-    contract.methods
-      .createPool(_token)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        (error, gasAmount) => {
-          contract.methods
-            .createPool(_token)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", (txnHash) => {
-              setWithdrawLiquidityTxnHash(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-            })
-            .then(function (receipt) {
-              setCreateDialogStepIndep("successCreatePool");
-              setSelectedRewardToken({});
-              store.dispatch(setClearField(true));
-              store.dispatch(setRefetchProtocols(true));
-              showSnackbarTxnIndep(
-                "Create Pool Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
+    contract.methods.createPool(_token).estimateGas(
+      {
+        // gas: 10000000,
+        from: walletAddress,
+      },
+      (error, gasAmount) => {
+        contract.methods
+          .createPool(_token)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", (txnHash) => {
+            setWithdrawLiquidityTxnHash(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setCreateDialogStepIndep("successCreatePool");
+            setSelectedRewardToken({});
+            store.dispatch(setClearField(true));
+            store.dispatch(setRefetchProtocols(true));
+            showSnackbarTxnIndep(
+              "Create Pool Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
 
-              // setRefetchIndep(true);
-              setLoadingIndep({ createPool: false });
+            // setRefetchIndep(true);
+            setLoadingIndep({ createPool: false });
 
-              _log(receipt);
-              return receipt;
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setCreateDialogStepIndep("rejectedCreatePool");
-                showSnackbarIndep("Create Pool Transaction Rejected.", "error");
-              } else {
-                setCreateDialogStepIndep("failedCreatePool");
-                showSnackbarIndep("Create Pool Transaction Failed.", "error");
-              }
-              setLoadingIndep({ createPool: false });
+            _log(receipt);
+            return receipt;
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setCreateDialogStepIndep("rejectedCreatePool");
+              showSnackbarIndep("Create Pool Transaction Rejected.", "error");
+            } else {
+              setCreateDialogStepIndep("failedCreatePool");
+              showSnackbarIndep("Create Pool Transaction Failed.", "error");
+            }
+            setLoadingIndep({ createPool: false });
 
-              _error("ERROR CreatePool  -> ", e);
-            });
-        }
-      );
+            _error("ERROR CreatePool  -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setCreateDialogStepIndep("rejectedCreatePool");

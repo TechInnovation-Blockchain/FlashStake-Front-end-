@@ -86,7 +86,10 @@ export const approve = async (address, tab, step, success = false, amount) => {
       gasAmount = await contract.methods
         .approve(address, amount ? amount : MaxUint256._hex)
         // .approve(address, "0")
-        .estimateGas({ gas: 10000000, from: walletAddress });
+        .estimateGas({
+          // gas: 10000000,
+          from: walletAddress,
+        });
     } catch (e) {
       _error("ERROR Approve gasAmount -> ", e);
     }
