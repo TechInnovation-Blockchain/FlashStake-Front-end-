@@ -278,8 +278,9 @@ function DropdownDialog2({
     }
   };
 
-  const getTokenDetails = _.memoize(async (_address) => {
+  const getTokenDetails = _.memoize(async (address) => {
     try {
+      const _address = String(address).toLowerCase();
       await initializeErc20TokenContract(_address);
       const _decimals = await decimals();
       if (_decimals) {
@@ -287,6 +288,7 @@ function DropdownDialog2({
         const _symbol = await symbol();
 
         return {
+          id: _address,
           address: _address,
           name: _name,
           symbol: _symbol,

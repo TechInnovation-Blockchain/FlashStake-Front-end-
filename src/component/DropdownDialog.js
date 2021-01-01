@@ -264,8 +264,9 @@ function DropdownDialog({
     }
   };
 
-  const getTokenDetails = _.memoize(async (_address) => {
+  const getTokenDetails = _.memoize(async (address) => {
     try {
+      const _address = String(address).toLowerCase();
       await initializeErc20TokenContract(_address);
       const _decimals = await decimals();
       if (_decimals) {
@@ -273,6 +274,7 @@ function DropdownDialog({
         const _symbol = await symbol();
 
         return {
+          id: _address,
           address: _address,
           name: _name,
           symbol: _symbol,
@@ -412,8 +414,8 @@ function DropdownDialog({
         (_tokenItem) => _tokenItem.address === token?.tokenB?.address
       )
     ) {
-      localStorage.setItem("tokenList", JSON.stringify(_tokenList));
       _tokenList.push(token?.tokenB);
+      localStorage.setItem("tokenList", JSON.stringify(_tokenList));
       addToTokenList(token?.tokenB);
       setSearch("");
     }
@@ -633,7 +635,7 @@ function DropdownDialog({
                       String(token?.tokenB?.address).toLowerCase()
                         ? _pool.id
                         : ""
-                    ),
+                    )?.id,
                   });
                 }}
                 key={token.tokenB.address}

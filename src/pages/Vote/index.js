@@ -585,7 +585,6 @@ function Vote({
 
   // useEffect(() => {
   //   if (token) {
-  //     console.log("mnmnmnmn", token);
   //   }
   // }, [token]);
   // props.history.location.pathname === "/swap" ? true :
