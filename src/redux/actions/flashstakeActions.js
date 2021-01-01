@@ -41,14 +41,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
-  let _maxDays = 5e17 * 365 * 86400;
   try {
     const {
       flashstake: {
-        selectedRewardToken: {
-          id,
-          tokenB: { decimal },
-        },
+        selectedRewardToken: { id },
         slip,
       },
     } = getState();
@@ -74,9 +70,12 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
-      // console.log("yadaaaaaaaaaaa", String(_fpy));
-      _maxDays = _maxDays / String(_fpy);
-      // console.log("yadaaaaaaaaaaa MAX", String(_maxDays));
+      let _maxDays = (5e17 * 365 * 86400) / String(_fpy);
+
+      dispatch({
+        type: "MAX_DAYS",
+        payload: _maxDays,
+      });
 
       const _mintAmount = JSBI.divide(
         JSBI.multiply(JSBI.multiply(_quantity, _expiry), _fpy),
@@ -142,10 +141,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
     payload: reward,
   });
 
-  dispatch({
-    type: "MAX_DAYS",
-    payload: _maxDays,
-  });
   dispatch(setLoading({ reward: false }));
 };
 
@@ -952,8 +947,16 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
 };
 
 export const createPool = (_token) => async (dispatch, getState) => {
+  const {
+    user: { pools },
+  } = getState();
+
   try {
     if (!Web3.utils.isAddress(_token.address)) {
+      return;
+    }
+
+    if (pools.find((_pool) => _pool?.tokenB?.id === _token.address)) {
       return;
     }
 

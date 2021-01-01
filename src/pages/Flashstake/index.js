@@ -608,7 +608,7 @@ function Flashstake({
       // updateAllBalances();
       showWalletBackdrop(false);
     }
-  }, [active, account]);
+  }, [active, account, chainId]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
@@ -673,6 +673,10 @@ function Flashstake({
     _setMaxDays(__maxDays);
     return __maxDays;
   };
+
+  useEffect(() => {
+    getMaxTime();
+  }, [maxDays]);
 
   const maxDuration = () => {
     setDays(getMaxTime());
