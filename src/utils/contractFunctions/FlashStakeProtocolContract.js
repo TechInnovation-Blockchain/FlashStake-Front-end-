@@ -80,8 +80,8 @@ export const stake = async (_token, xioQuantity, days, reward) => {
             .stake(_token, xioQuantity, days, reward)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_STAKE_TXN", {
@@ -183,8 +183,8 @@ export const unstake = async (_expiredIds) => {
             .unstake(_expiredIds)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_UNSTAKE_TXN", {
@@ -281,8 +281,8 @@ export const swap = async (_altQuantity, _token, _expectedOutput) => {
             .swap(_altQuantity, _token, _expectedOutput)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_SWAP_TXN", {
@@ -409,8 +409,8 @@ export const unstakeALT = (expiredIds = [], xioQuantity) => {
           unstakeALT(expiredIds, xioQuantity)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
               setWithdrawTxnHashIndep(txnHash);
@@ -506,8 +506,8 @@ export const addLiquidityInPool = (
             )
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
               setLiquidityTxnHashIndep(txnHash);
@@ -595,8 +595,8 @@ export const removeLiquidityInPool = (_liquidity, _token) => {
             .removeLiquidityInPool(_liquidity, _token)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
               setWithdrawLiquidityTxnHashIndep(txnHash);
@@ -685,8 +685,8 @@ export const createPool = (_token) => {
             .createPool(_token)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", (txnHash) => {
               setWithdrawLiquidityTxnHash(txnHash);

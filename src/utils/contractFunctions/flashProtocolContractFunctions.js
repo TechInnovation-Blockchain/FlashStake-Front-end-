@@ -135,8 +135,8 @@ export const stake = async (_amountIn, _expiry, _data) => {
             )
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_STAKE_TXN", {
@@ -224,8 +224,8 @@ export const unstakeEarly = (_id) => {
             .unstakeEarly(_id)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_UNSTAKE_TXN", {
