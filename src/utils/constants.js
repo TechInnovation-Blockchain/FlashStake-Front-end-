@@ -28,26 +28,19 @@ export const CONSTANTS = {
   BALANCE_CONTRACT: "0x8558f19bd70b31c8693397e4df67c8127f8a2b7b",
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
   CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
-  CHAIN_ID: 3,
-  NETWORK: "ROPSTEN",
+  CHAIN_ID: 1,
+  NETWORK: "MAINNNET",
   NO_TOKEN_IMAGE:
     "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
   TOKENS_LIST: [
     {
-      name: "Default",
+      name: "Flash Default List",
       uri:
-        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
-      logoURI:
-        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
-    },
-
-    {
-      name: "Flash",
-      uri:
-        "https://gateway.pinata.cloud/ipfs/QmeEwJKNvMTSSZpSPM1UyVy5ktxdRtNvwQmkkM4rTtBJhh/flashtest.tokenlist.json",
+        "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
       logoURI:
         "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
     },
+
     {
       name: "1inch",
       uri:
