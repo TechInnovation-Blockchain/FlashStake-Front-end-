@@ -25,11 +25,11 @@ export const uiReducer = (
     //     "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
     // },
     tokensURI: JSON.parse(localStorage.getItem("tokensURI")) || {
-      name: "Default",
+      name: "Flash Default List",
       uri:
-        "https://gateway.pinata.cloud/ipfs/QmehgcQBpkFnkNAGfxz22pjm3WG8raVvDwNzEJSDFWDXHo/flash-default-rinkeby.tokenlist.json",
-      logo:
-        "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
+        "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
+      logoURI:
+        "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
     },
     // defaultTokenList:[{
     //   name: "Default List",
