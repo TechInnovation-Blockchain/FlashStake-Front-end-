@@ -471,7 +471,7 @@ function Swap({
     if (selectedPortal) {
       checkAllowance();
     }
-  }, [selectedPortal]);
+  }, [selectedPortal, chainId]);
 
   useEffect(() => {
     if (active && account) {
@@ -479,7 +479,7 @@ function Swap({
       getBalanceALT();
       showWalletBackdrop(false);
     }
-  }, [active, account, getBalanceALT, showWalletBackdrop]);
+  }, [active, account, getBalanceALT, showWalletBackdrop, chainId]);
 
   const onClickApprove = () => {
     setDialogStep("pendingApproval");

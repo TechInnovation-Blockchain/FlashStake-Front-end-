@@ -608,7 +608,7 @@ function Flashstake({
       // updateAllBalances();
       showWalletBackdrop(false);
     }
-  }, [active, account]);
+  }, [active, account, chainId]);
 
   const onClickStake = (quantity, days) => {
     setDialogStep("pendingStake");
