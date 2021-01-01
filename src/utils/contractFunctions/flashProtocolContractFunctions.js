@@ -117,7 +117,10 @@ export const stake = async (_amountIn, _expiry, _data) => {
         _data
       )
       .estimateGas(
-        { gas: 10000000, from: walletAddress },
+        {
+          //  gas: 10000000,
+          from: walletAddress,
+        },
         async function (error, gasAmount) {
           contract.methods
             .stake(
@@ -208,63 +211,64 @@ export const unstakeEarly = (_id) => {
     if (!walletAddress) {
       throw new _error("Wallet not activated.");
     }
-    contract.methods
-      .unstakeEarly(_id)
-      .estimateGas(
-        { gas: 10000000, from: walletAddress },
-        function (error, gasAmount) {
-          contract.methods
-            .unstakeEarly(_id)
-            .send({
-              from: walletAddress,
-              // gasLimit: gasAmount || 400000,
-              // gasPrice: "10000000000",
-            })
-            .on("transactionHash", async (txnHash) => {
-              analytics.logEvent("USER_UNSTAKE_TXN", {
-                address: `Address -> ${walletAddress}`,
-                txnHash,
-                _id,
-              });
-              addToTxnQueueIndep(txnHash);
-              setStakeTxnHashIndep(txnHash);
-              showSnackbarTxnIndep(
-                "Transaction Pending.",
-                "info",
-                "txnEtherScan",
-                txnHash,
-                true
-              );
-            })
-            .then(function (receipt) {
-              setTimeout(() => {
-                setRefetchIndep(true);
-              }, 5000);
-              setStakeDialogStepIndep("successUnstake");
-              setLoadingIndep({ unstake: false });
-
-              setResetIndep(true);
-              showSnackbarTxnIndep(
-                "Unstake Transaction Successful.",
-                "success",
-                "txnEtherScan",
-                receipt.transactionHash,
-                false
-              );
-            })
-            .catch((e) => {
-              if (e.code === 4001) {
-                setStakeDialogStepIndep("rejectedUnstake");
-                showSnackbarIndep("Unstake Transaction Rejected.", "error");
-              } else {
-                setStakeDialogStepIndep("failedUnstake");
-                showSnackbarIndep("Unstake Transaction Failed.", "error");
-              }
-              setLoadingIndep({ unstake: false });
-              _error("ERROR stake -> ", e);
+    contract.methods.unstakeEarly(_id).estimateGas(
+      {
+        // gas: 10000000,
+        from: walletAddress,
+      },
+      function (error, gasAmount) {
+        contract.methods
+          .unstakeEarly(_id)
+          .send({
+            from: walletAddress,
+            // gasLimit: gasAmount || 400000,
+            // gasPrice: "10000000000",
+          })
+          .on("transactionHash", async (txnHash) => {
+            analytics.logEvent("USER_UNSTAKE_TXN", {
+              address: `Address -> ${walletAddress}`,
+              txnHash,
+              _id,
             });
-        }
-      );
+            addToTxnQueueIndep(txnHash);
+            setStakeTxnHashIndep(txnHash);
+            showSnackbarTxnIndep(
+              "Transaction Pending.",
+              "info",
+              "txnEtherScan",
+              txnHash,
+              true
+            );
+          })
+          .then(function (receipt) {
+            setTimeout(() => {
+              setRefetchIndep(true);
+            }, 5000);
+            setStakeDialogStepIndep("successUnstake");
+            setLoadingIndep({ unstake: false });
+
+            setResetIndep(true);
+            showSnackbarTxnIndep(
+              "Unstake Transaction Successful.",
+              "success",
+              "txnEtherScan",
+              receipt.transactionHash,
+              false
+            );
+          })
+          .catch((e) => {
+            if (e.code === 4001) {
+              setStakeDialogStepIndep("rejectedUnstake");
+              showSnackbarIndep("Unstake Transaction Rejected.", "error");
+            } else {
+              setStakeDialogStepIndep("failedUnstake");
+              showSnackbarIndep("Unstake Transaction Failed.", "error");
+            }
+            setLoadingIndep({ unstake: false });
+            _error("ERROR stake -> ", e);
+          });
+      }
+    );
   } catch (e) {
     if (e.code === 4001) {
       setStakeDialogStepIndep("rejectedUnstake");
