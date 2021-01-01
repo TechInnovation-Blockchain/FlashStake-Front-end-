@@ -103,11 +103,11 @@ function Updater({
 
   useEffect(() => {
     getTokensList();
-  }, [tokensURI, pools]);
+  }, [tokensURI, pools, chainId]);
 
   useEffect(() => {
     updateAllBalances();
-  }, [tokenList]);
+  }, [tokenList, chainId]);
 
   useEffect(() => {
     if (active && account) {
@@ -170,14 +170,14 @@ function Updater({
       updateAllBalances();
       setRefetch(false);
     }
-  }, [refetchData]);
+  }, [refetchData, chainId]);
 
   useEffect(() => {
     if (refetchPools) {
       refetchProtocols();
       setRefetchProtocols(false);
     }
-  }, [refetchPools]);
+  }, [refetchPools, chainId]);
 
   useEffect(() => {
     updatePools(dataProtocols?.protocols[0]?.pools);

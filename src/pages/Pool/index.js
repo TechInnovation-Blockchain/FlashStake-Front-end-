@@ -669,7 +669,7 @@ function Pool({
       // updateAllBalances();
       showWalletBackdrop(false);
     }
-  }, [active, account, selectedRewardToken, allowanceXIOPool]);
+  }, [active, account, selectedRewardToken, allowanceXIOPool, chainId]);
 
   // const onClickPool = () => {
   //  return <AddDropDown
