@@ -68,14 +68,7 @@ export const getFPY = async (amount = "1") => {
   try {
     checkContractInitialized();
 
-    const fpy = await contract.methods
-      .getFPY(
-        utils.parseUnits(
-          amount.toString(),
-          selectedRewardToken?.tokenB?.decimal
-        )
-      )
-      .call();
+    const fpy = await contract.methods.getFPY("1000000000000000000").call();
     return fpy;
   } catch (e) {
     _error("ERROR getFPY -> ", e);
