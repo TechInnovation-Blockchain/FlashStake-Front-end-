@@ -1495,7 +1495,7 @@ function Flashstake({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://etherscan.io/tx/${stakeTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1896,17 +1896,31 @@ function Flashstake({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    You successfully unstaked{" "}
-                    <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
-                      <span>{trunc(unstakeRequest.quantity)} FLASH</span>
-                    </Tooltip>
+                    You successfully unstaked {}
+                    {totalBurn?.totalBurn > 0 ? (
+                      <Tooltip
+                        title={`${
+                          totalBurn.totalXIO - totalBurn.totalBurn
+                        } FLASH`}
+                      >
+                        <span>
+                          {" "}
+                          {trunc(totalBurn.totalXIO - totalBurn.totalBurn)}{" "}
+                          FLASH
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={`${unstakeRequest.quantity} FLASH`}>
+                        <span>{trunc(unstakeRequest.quantity)} FLASH</span>
+                      </Tooltip>
+                    )}
                   </Typography>
                   <Typography
                     variant="body2"
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
+                      href={`https://etherscan.io/tx/${stakeTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}

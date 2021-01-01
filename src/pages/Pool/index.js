@@ -1551,7 +1551,7 @@ function Pool({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://ropsten.etherscan.io/tx/${liquidityTxnHash}`}
+                      href={`https://etherscan.io/tx/${liquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={classes.link}
@@ -1639,7 +1639,7 @@ function Pool({
                     className={`${classes.textBold} ${classes.redText}`}
                   >
                     <a
-                      href={`https://ropsten.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
+                      href={`https://etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       // href={`https://ropsten.etherscan.io/tx/${withdrawLiquidityTxnHash}`}
                       target="_blank"
                       rel="noopener noreferrer"

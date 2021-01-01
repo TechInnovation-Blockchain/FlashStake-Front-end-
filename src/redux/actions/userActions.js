@@ -27,10 +27,10 @@ import { store } from "../../config/reduxStore";
 import { trunc } from "../../utils/utilFunc";
 import { utils } from "ethers";
 
-export const _getTokenPrice = _.memoize(async () => {
+export const _getTokenPrice = _.memoize(async (_addresses) => {
   const response = await axios.get(
     `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Object.values(
-      CONSTANTS.MAINNET_ADDRESSES
+      _addresses
     ).join(",")}&vs_currencies=USD`
   );
   return response;
@@ -76,7 +76,10 @@ export const updateApyPools = (quantity, poolsParam) => async (
       _pools = pools;
     }
 
-    let response = await _getTokenPrice();
+    let response = await _getTokenPrice([
+      ...pools.map((_pools) => _pools.tokenB.id),
+      CONSTANTS.MAINNET_ADDRESSES.FLASH,
+    ]);
     const queryData = await getAllQueryData();
 
     if (response?.data) {
@@ -135,13 +138,12 @@ export const updateApyPools = (quantity, poolsParam) => async (
             )
           )
         );
-        const tokenPrice =
-          response.data[CONSTANTS.MAINNET_ADDRESSES[_pools[i].tokenB.symbol]]
-            .usd || 0;
+        const tokenPrice = response.data[_pools[i].tokenB.id].usd || 0;
         // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
+
         _apyAllPools[_pools[i].id] = trunc(
           ((_apyStake * tokenPrice) /
-            response.data[CONSTANTS.MAINNET_ADDRESSES.XIO].usd || 0) * 100
+            response.data[CONSTANTS.MAINNET_ADDRESSES.FLASH].usd || 0) * 100
         );
       }
     }

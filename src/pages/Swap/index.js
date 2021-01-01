@@ -750,8 +750,9 @@ function Swap({
                             variant="body2"
                             className={classes.redText}
                           >
-                            Approve <b>FLASH</b> before <b>swapping</b>{" "}
-                            {selectedRewardToken?.tokenB?.symbol || ""}
+                            Approve{" "}
+                            <b>{selectedRewardToken?.tokenB?.symbol || ""}</b>{" "}
+                            before <b>swapping</b>{" "}
                           </Typography>
                         </Grid>
                       ) : null}
@@ -1036,7 +1037,7 @@ function Swap({
                             className={`${classes.textBold} ${classes.redText}`}
                           >
                             <a
-                              href={`https://ropsten.etherscan.io/tx/${stakeTxnHash}`}
+                              href={`https://etherscan.io/tx/${stakeTxnHash}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={classes.link}

@@ -96,8 +96,8 @@ export const approve = async (address, tab, step, success = false, amount) => {
       .approve(address, amount ? amount : MaxUint256._hex)
       .send({
         from: walletAddress,
-        gasLimit: gasAmount || 400000,
-        gasPrice: "10000000000",
+        // gasLimit: gasAmount || 400000,
+        // gasPrice: "10000000000",
       })
       .then(function (receipt) {
         store.dispatch(checkAllowance());

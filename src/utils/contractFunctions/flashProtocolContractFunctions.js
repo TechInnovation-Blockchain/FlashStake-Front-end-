@@ -68,14 +68,7 @@ export const getFPY = async (amount = "1") => {
   try {
     checkContractInitialized();
 
-    const fpy = await contract.methods
-      .getFPY(
-        utils.parseUnits(
-          amount.toString(),
-          selectedRewardToken?.tokenB?.decimal
-        )
-      )
-      .call();
+    const fpy = await contract.methods.getFPY("1000000000000000000").call();
     return fpy;
   } catch (e) {
     _error("ERROR getFPY -> ", e);
@@ -135,8 +128,8 @@ export const stake = async (_amountIn, _expiry, _data) => {
             )
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_STAKE_TXN", {
@@ -224,8 +217,8 @@ export const unstakeEarly = (_id) => {
             .unstakeEarly(_id)
             .send({
               from: walletAddress,
-              gasLimit: gasAmount || 400000,
-              gasPrice: "10000000000",
+              // gasLimit: gasAmount || 400000,
+              // gasPrice: "10000000000",
             })
             .on("transactionHash", async (txnHash) => {
               analytics.logEvent("USER_UNSTAKE_TXN", {
