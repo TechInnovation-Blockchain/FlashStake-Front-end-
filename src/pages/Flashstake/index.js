@@ -674,6 +674,10 @@ function Flashstake({
     return __maxDays;
   };
 
+  useEffect(() => {
+    getMaxTime();
+  }, [maxDays]);
+
   const maxDuration = () => {
     setDays(getMaxTime());
   };

@@ -18,7 +18,7 @@ export const flashstakeReducer = (
     reward: "0",
     preciseReward: "0",
     preciseSwap: "0",
-    maxDays: 99999999,
+    maxDays: 31449600,
     swapOutput: "0",
     balanceXIO: 0,
     balanceALT: 0,
