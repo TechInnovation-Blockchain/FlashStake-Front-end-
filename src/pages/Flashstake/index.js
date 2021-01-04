@@ -1263,7 +1263,21 @@ function Flashstake({
                       </span>{" "}
                       for{" "}
                       <span className={classes.infoTextSpan}>
-                        {days || 0} hours
+                        {trunc(days) || 0}{" "}
+                        {time === "Hrs"
+                          ? days > 1
+                            ? "hours"
+                            : "hour"
+                          : time === "Mins"
+                          ? days > 1
+                            ? "Mins"
+                            : "Min"
+                          : time === "Days"
+                          ? days > 1
+                            ? "Days"
+                            : "Day"
+                          : time}
+                        {/* {days > 1 ? "hours" : "hour"} */}
                       </span>{" "}
                       you will{" "}
                       <span className={classes.infoTextSpan}>immediately</span>{" "}

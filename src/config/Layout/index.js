@@ -113,6 +113,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "250px",
   },
   btn2: {},
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
+  },
 }));
 
 export let walletBtnRef = createRef();
@@ -203,6 +206,7 @@ function Layout({
         <WalletConnect toggleThemeMode={toggleThemeMode} />
         <Snackbar />
       </Container>
+
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -220,7 +224,7 @@ function Layout({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Typography variant="body2" className={classes.poweredText}>
+          <Typography variant="body1" className={classes.poweredText}>
             POWERED BY
           </Typography>
           <img src={xordLogo} alt="xord.one" width={70} />

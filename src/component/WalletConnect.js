@@ -21,6 +21,7 @@ import { _error } from "../utils/log";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SlippageDialogue from "./SlippageDialogue";
 import { CONSTANTS } from "../utils/constants";
+import blockZero from "../assets/blockzero.png";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.xioRed.main,
     fontWeight: 600,
     padding: theme.spacing(0, 0, 2, 0),
+  },
+  branding: {
+    display: "flex",
+    flexDirection: "column",
   },
   BtnsContainer: {
     // "&:hover": {
@@ -85,6 +90,12 @@ const useStyles = makeStyles((theme) => ({
   connectText: {
     paddingRight: theme.spacing(1),
     // textAlign: "left !important",
+  },
+  parentText: {
+    color: theme.palette.text.primary,
+  },
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
   },
 }));
 
@@ -259,6 +270,18 @@ function WalletConnect({
             <SettingsIcon />
           </Button>
         </Box>
+      </Box>
+      <Box className={classes.branding}>
+        <Typography className={classes.parentText} variant="body2">
+          Created By{" "}
+        </Typography>
+        <a
+          className={classes.blockZeroLink}
+          href="https://blockzerolabs.io/"
+          target="_blank"
+        >
+          <img src={blockZero} width={100} />
+        </a>
       </Box>
     </Fragment>
   );
