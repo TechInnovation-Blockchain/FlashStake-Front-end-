@@ -20,6 +20,9 @@ import Image from "../../assets/retroBackground.jpg";
 import { store } from "../reduxStore";
 import Disclaimer from "../../component/Disclaimer";
 
+import blockZero from "../../assets/blockzero.png";
+import blockZeroB from "../../assets/bzeroblack.png";
+
 import {
   showWalletBackdrop,
   themeSwitchAction,
@@ -43,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2, 1),
     },
     // transition: "all 2s ease",
+  },
+  parentText: {
+    color: theme.palette.text.primary,
+  },
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
   },
   contentContainer: {
     backgroundColor: theme.palette.background.secondary,
@@ -131,6 +140,7 @@ function Layout({
   toggleThemeMode2,
   themeSwitchAction,
   animation,
+  theme,
 }) {
   const classes = useStyles();
 
@@ -205,6 +215,29 @@ function Layout({
         ></Backdrop>
         <WalletConnect toggleThemeMode={toggleThemeMode} />
         <Snackbar />
+        <Box className={classes.branding}>
+          <Typography className={classes.parentText} variant="body2">
+            Created By{" "}
+          </Typography>
+
+          {theme === "light" ? (
+            <a
+              className={classes.blockZeroLink}
+              href="https://blockzerolabs.io/"
+              target="_blank"
+            >
+              <img src={blockZeroB} width={100} />
+            </a>
+          ) : (
+            <a
+              className={classes.blockZeroLink}
+              href="https://blockzerolabs.io/"
+              target="_blank"
+            >
+              <img src={blockZero} width={100} />
+            </a>
+          )}
+        </Box>
       </Container>
 
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>
@@ -231,6 +264,7 @@ function Layout({
         </a>
       </Backdrop>
       <div ref={walletBtnRef}></div>
+
       {/* </Box> */}
     </Fragment>
   );
@@ -241,8 +275,9 @@ const mapStateToProps = ({
     loading: { dapp, themeSwitch },
     walletBackdrop,
     animation,
+    theme,
   },
-}) => ({ dapp, walletBackdrop, themeSwitch });
+}) => ({ dapp, walletBackdrop, themeSwitch, theme });
 
 export default connect(mapStateToProps, {
   // setReset,

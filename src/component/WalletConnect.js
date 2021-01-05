@@ -22,6 +22,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import SlippageDialogue from "./SlippageDialogue";
 import { CONSTANTS } from "../utils/constants";
 import blockZero from "../assets/blockzero.png";
+import blockZeroB from "../assets/bzeroblack.png";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -110,6 +111,7 @@ function WalletConnect({
   setLoading,
   changeApp,
   toggleThemeMode,
+  theme,
   chainId,
 }) {
   const classes = useStyles();
@@ -271,26 +273,14 @@ function WalletConnect({
           </Button>
         </Box>
       </Box>
-      <Box className={classes.branding}>
-        <Typography className={classes.parentText} variant="body2">
-          Created By{" "}
-        </Typography>
-        <a
-          className={classes.blockZeroLink}
-          href="https://blockzerolabs.io/"
-          target="_blank"
-        >
-          <img src={blockZero} width={100} />
-        </a>
-      </Box>
     </Fragment>
   );
 }
 
 const mapStateToProps = ({
-  ui: { walletBackdrop, changeApp },
+  ui: { walletBackdrop, changeApp, theme },
   web3: { active, account, chainId },
-}) => ({ walletBackdrop, active, account, changeApp, chainId });
+}) => ({ walletBackdrop, active, account, changeApp, chainId, theme });
 
 export default connect(mapStateToProps, { storeWeb3Context, setLoading })(
   WalletConnect
