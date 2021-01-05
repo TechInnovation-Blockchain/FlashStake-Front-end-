@@ -69,6 +69,7 @@ import { _error } from "../../utils/log";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
 import Fade from "@material-ui/core/Fade";
+import BigNumber from "bignumber.js";
 
 import { SlideDown } from "react-slidedown";
 
@@ -567,36 +568,46 @@ function Pool({
   }, [selectedPortal]);
 
   const quote = useCallback(
-    async (_amountA, _amountType = "alt") => {
+    async (amountA, _amountType = "alt") => {
       try {
         const _queryData = await getQueryData(selectedPortal);
         const { reserveFlashAmount, reserveAltAmount } = _queryData;
         if (reserveFlashAmount <= 0 && reserveAltAmount <= 0) {
           return true;
         }
-        const [_reserveA, _reserveB] =
+        const [reserveA, reserveB] =
           _amountType === "alt"
             ? [reserveAltAmount, reserveFlashAmount]
             : [reserveFlashAmount, reserveAltAmount];
+        const _amountA = new BigNumber(amountA?.toString());
+        //  utils.parseUnits(
+        //   amountA?.toString(),
+        //   _amountType === "alt" ? selectedRewardToken?.tokenB?.decimals : 18
+        // );
+
+        const _reserveA = new BigNumber(
+          utils.formatUnits(
+            reserveA,
+            _amountType === "alt" ? selectedRewardToken?.tokenB?.decimals : 18
+          )
+        );
+
+        const _reserveB = new BigNumber(
+          utils.formatUnits(
+            reserveB,
+            _amountType === "alt" ? 18 : selectedRewardToken?.tokenB?.decimals
+          )
+        );
 
         /////////////////////////////////////////
-        return utils.formatUnits(
-          String(
-            JSBI.divide(
-              JSBI.multiply(
-                JSBI.BigInt(
-                  utils.parseUnits(
-                    _amountA?.toString(),
-                    selectedRewardToken?.tokenB?.decimal
-                  )
-                ),
-                JSBI.BigInt(_reserveB)
-              ),
-              JSBI.BigInt(_reserveA)
-            )
-          ),
-          selectedRewardToken?.tokenB?.decimal
-        );
+        // return String(
+        //   JSBI.divide(
+        //     JSBI.multiply(JSBI.BigInt(_amountA), JSBI.BigInt(_reserveB)),
+        //     JSBI.BigInt(_reserveA)
+        //   )
+        // );
+
+        return _amountA.multipliedBy(_reserveB).di;
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
         return 0;
@@ -902,8 +913,14 @@ function Pool({
                         </Typography>
                         <Tooltip
                           title={
-                            queryData.reserveFlashAmount /
-                              queryData.reserveAltAmount || 0
+                            utils.formatUnits(
+                              queryData?.reserveFlashAmount?.toString() || "0",
+                              18
+                            ) /
+                            utils.formatUnits(
+                              queryData?.reserveAltAmount?.toString() || "0",
+                              selectedRewardToken?.tokenB?.decimals
+                            )
                           }
                         >
                           <Typography
@@ -911,9 +928,17 @@ function Pool({
                             className={classes.secondaryText}
                           >
                             {trunc(
-                              queryData.reserveFlashAmount /
-                                queryData.reserveAltAmount
-                            ) || 0}
+                              utils.formatUnits(
+                                queryData?.reserveFlashAmount?.toString() ||
+                                  "0",
+                                18
+                              ) /
+                                utils.formatUnits(
+                                  queryData?.reserveAltAmount?.toString() ||
+                                    "0",
+                                  selectedRewardToken?.tokenB?.decimals
+                                )
+                            )}
                           </Typography>
                         </Tooltip>
                       </Box>
@@ -931,8 +956,14 @@ function Pool({
 
                         <Tooltip
                           title={
-                            queryData.reserveAltAmount /
-                              queryData.reserveFlashAmount || 0
+                            utils.formatUnits(
+                              queryData?.reserveAltAmount?.toString() || "0",
+                              selectedRewardToken?.tokenB?.decimals
+                            ) /
+                            utils.formatUnits(
+                              queryData?.reserveFlashAmount?.toString() || "0",
+                              18
+                            )
                           }
                         >
                           <Typography
@@ -940,9 +971,16 @@ function Pool({
                             className={classes.secondaryText}
                           >
                             {trunc(
-                              queryData.reserveAltAmount /
-                                queryData.reserveFlashAmount
-                            ) || 0}
+                              utils.formatUnits(
+                                queryData?.reserveAltAmount?.toString() || "0",
+                                selectedRewardToken?.tokenB?.decimals
+                              ) /
+                                utils.formatUnits(
+                                  queryData?.reserveFlashAmount?.toString() ||
+                                    "0",
+                                  18
+                                )
+                            )}
                           </Typography>
                         </Tooltip>
                         {/* <Box className={classes.textFieldContainer}></Box> */}
@@ -966,7 +1004,7 @@ function Pool({
                                   utils.formatUnits(
                                     queryData?.reserveFlashAmount?.toString() ||
                                       "0",
-                                    selectedRewardToken?.tokenB?.decimal
+                                    18
                                   )
                                 ))) *
                               100 || 0
@@ -983,7 +1021,7 @@ function Pool({
                                     utils.formatUnits(
                                       queryData?.reserveFlashAmount?.toString() ||
                                         "0",
-                                      selectedRewardToken?.tokenB?.decimal
+                                      18
                                     )
                                   ))) *
                                 100
@@ -1114,8 +1152,9 @@ function Pool({
                 ) : null}
 
                 {selectedRewardToken?.id ? (
-                  allPoolsData[selectedRewardToken.id].reserveFlashAmount > 0 &&
-                  allPoolsData[selectedRewardToken.id].reserveAltAmount >
+                  allPoolsData[selectedRewardToken.id]?.reserveFlashAmount >
+                    0 &&
+                  allPoolsData[selectedRewardToken.id]?.reserveAltAmount >
                     0 ? null : (
                     <Grid xs={12} item className={classes.liquidityText}>
                       <Typography

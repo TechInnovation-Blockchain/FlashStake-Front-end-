@@ -21,6 +21,8 @@ import { _error } from "../utils/log";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SlippageDialogue from "./SlippageDialogue";
 import { CONSTANTS } from "../utils/constants";
+import blockZero from "../assets/blockzero.png";
+import blockZeroB from "../assets/bzeroblack.png";
 
 const useStyles = makeStyles((theme) => ({
   connectWalletButtonContainer: {
@@ -35,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.xioRed.main,
     fontWeight: 600,
     padding: theme.spacing(0, 0, 2, 0),
+  },
+  branding: {
+    display: "flex",
+    flexDirection: "column",
   },
   BtnsContainer: {
     // "&:hover": {
@@ -86,6 +92,12 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
     // textAlign: "left !important",
   },
+  parentText: {
+    color: theme.palette.text.primary,
+  },
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
+  },
 }));
 
 function WalletConnect({
@@ -99,6 +111,7 @@ function WalletConnect({
   setLoading,
   changeApp,
   toggleThemeMode,
+  theme,
   chainId,
 }) {
   const classes = useStyles();
@@ -265,9 +278,9 @@ function WalletConnect({
 }
 
 const mapStateToProps = ({
-  ui: { walletBackdrop, changeApp },
+  ui: { walletBackdrop, changeApp, theme },
   web3: { active, account, chainId },
-}) => ({ walletBackdrop, active, account, changeApp, chainId });
+}) => ({ walletBackdrop, active, account, changeApp, chainId, theme });
 
 export default connect(mapStateToProps, { storeWeb3Context, setLoading })(
   WalletConnect

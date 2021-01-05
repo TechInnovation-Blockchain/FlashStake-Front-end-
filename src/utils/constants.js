@@ -36,9 +36,10 @@ export const CONSTANTS = {
     {
       name: "Flash Default List",
       uri:
-        "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
+        "https://gateway.pinata.cloud/ipfs/QmcetpH7sLwrdfZEpyk6eebpq7bYdBAfMDKdsmtw8pjQTf/flash.tokenlist.json",
+      // "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
       logoURI:
-        "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
+        "https://gateway.pinata.cloud/ipfs/QmTNkn1Fho2aJMjTiaMaNzqjapo6zAecapNtEZnP2nmh9A",
     },
 
     {

@@ -20,6 +20,9 @@ import Image from "../../assets/retroBackground.jpg";
 import { store } from "../reduxStore";
 import Disclaimer from "../../component/Disclaimer";
 
+import blockZero from "../../assets/blockzero.png";
+import blockZeroB from "../../assets/bzeroblack.png";
+
 import {
   showWalletBackdrop,
   themeSwitchAction,
@@ -43,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2, 1),
     },
     // transition: "all 2s ease",
+  },
+  parentText: {
+    color: theme.palette.text.primary,
+  },
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
   },
   contentContainer: {
     backgroundColor: theme.palette.background.secondary,
@@ -113,6 +122,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "250px",
   },
   btn2: {},
+  blockZeroLink: {
+    color: theme.palette.xioRed.main,
+  },
 }));
 
 export let walletBtnRef = createRef();
@@ -128,6 +140,7 @@ function Layout({
   toggleThemeMode2,
   themeSwitchAction,
   animation,
+  theme,
 }) {
   const classes = useStyles();
 
@@ -202,7 +215,31 @@ function Layout({
         ></Backdrop>
         <WalletConnect toggleThemeMode={toggleThemeMode} />
         <Snackbar />
+        <Box className={classes.branding}>
+          <Typography className={classes.parentText} variant="body2">
+            Created By{" "}
+          </Typography>
+
+          {theme === "light" ? (
+            <a
+              className={classes.blockZeroLink}
+              href="https://blockzerolabs.io/"
+              target="_blank"
+            >
+              <img src={blockZeroB} width={100} />
+            </a>
+          ) : (
+            <a
+              className={classes.blockZeroLink}
+              href="https://blockzerolabs.io/"
+              target="_blank"
+            >
+              <img src={blockZero} width={100} />
+            </a>
+          )}
+        </Box>
       </Container>
+
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -220,13 +257,14 @@ function Layout({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Typography variant="body2" className={classes.poweredText}>
+          <Typography variant="body1" className={classes.poweredText}>
             POWERED BY
           </Typography>
           <img src={xordLogo} alt="xord.one" width={70} />
         </a>
       </Backdrop>
       <div ref={walletBtnRef}></div>
+
       {/* </Box> */}
     </Fragment>
   );
@@ -237,8 +275,9 @@ const mapStateToProps = ({
     loading: { dapp, themeSwitch },
     walletBackdrop,
     animation,
+    theme,
   },
-}) => ({ dapp, walletBackdrop, themeSwitch });
+}) => ({ dapp, walletBackdrop, themeSwitch, theme });
 
 export default connect(mapStateToProps, {
   // setReset,

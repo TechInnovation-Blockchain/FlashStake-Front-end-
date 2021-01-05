@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { utils } from "ethers";
 import { ClearOutlined } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { store } from "../config/reduxStore";
@@ -427,17 +428,29 @@ function RemoveLiquidityDropDown({
           <Typography className={classes.fontWeight}>
             1 FLASH ={" "}
             {trunc(
-              pool?.poolQueryData?.reserveAltAmount /
-                pool?.poolQueryData?.reserveFlashAmount
-            ) || 0}{" "}
+              utils.formatUnits(
+                pool?.poolQueryData?.reserveAltAmount?.toString() || "0",
+                selectedRewardToken?.tokenB?.decimal
+              ) /
+                utils.formatUnits(
+                  pool?.poolQueryData?.reserveFlashAmount?.toString() || "0",
+                  18
+                )
+            )}{" "}
             {pool?.pool?.tokenB?.symbol}
           </Typography>
           <Typography className={classes.fontWeight}>
             1 {pool.pool?.tokenB?.symbol} ={" "}
             {trunc(
-              pool?.poolQueryData?.reserveFlashAmount /
-                pool?.poolQueryData?.reserveAltAmount
-            ) || 0}{" "}
+              utils.formatUnits(
+                pool?.poolQueryData?.reserveFlashAmount?.toString() || "0",
+                18
+              ) /
+                utils.formatUnits(
+                  pool?.poolQueryData?.reserveAltAmount?.toString() || "0",
+                  selectedRewardToken?.tokenB?.decimal
+                )
+            )}{" "}
             FLASH
           </Typography>
         </Box>
