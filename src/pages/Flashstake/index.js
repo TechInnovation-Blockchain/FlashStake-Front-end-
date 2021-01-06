@@ -872,7 +872,7 @@ function Flashstake({
                               variant="body1"
                               className={`${classes.redText}  `}
                             >
-                              Duration limit exceeds
+                              Time Duration Limit Exceeded
                             </Typography>
                           ) : (
                             ///////////////////
