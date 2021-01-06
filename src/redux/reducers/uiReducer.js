@@ -25,11 +25,9 @@ export const uiReducer = (
     //     "https://gateway.pinata.cloud/ipfs/QmUXXHhTpqc53zF1kXkY1MNr7aUFGL11L1bCM9XSFJkDJk/FLASH.png",
     // },
     tokensURI: JSON.parse(localStorage.getItem("tokensURI")) || {
-      name: "Flash Default List",
-      uri:
-        "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
-      logoURI:
-        "https://gateway.pinata.cloud/ipfs/QmWew1cUQQrpQnRuaf4gbKJt3eVWE4NzxFMbxxpDq7uGei",
+      name: "Uniswap Default List",
+      uri: "https://gateway.ipfs.io/ipns/tokens.uniswap.org",
+      logoURI: "ipfs://QmNa8mQkrNKp1WEEeGjFezDmDeodkWRevGFN8JCV7b4Xir",
     },
     // defaultTokenList:[{
     //   name: "Default List",

@@ -121,9 +121,8 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     maxWidth: "250px",
   },
-  btn2: {},
-  blockZeroLink: {
-    color: theme.palette.xioRed.main,
+  branding: {
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -213,31 +212,32 @@ function Layout({
           open={walletBackdrop}
           onClick={handleClose}
         ></Backdrop>
-        <WalletConnect toggleThemeMode={toggleThemeMode} />
-        <Snackbar />
-        <Box className={classes.branding}>
-          <Typography className={classes.parentText} variant="body2">
-            Created By{" "}
-          </Typography>
+        <WalletConnect toggleThemeMode={toggleThemeMode}>
+          <Box className={classes.branding}>
+            <Typography className={classes.parentText} variant="body2">
+              Created By{" "}
+            </Typography>
 
-          {theme === "light" ? (
-            <a
-              className={classes.blockZeroLink}
-              href="https://blockzerolabs.io/"
-              target="_blank"
-            >
-              <img src={blockZeroB} width={100} />
-            </a>
-          ) : (
-            <a
-              className={classes.blockZeroLink}
-              href="https://blockzerolabs.io/"
-              target="_blank"
-            >
-              <img src={blockZero} width={100} />
-            </a>
-          )}
-        </Box>
+            {theme === "light" ? (
+              <a
+                className={classes.blockZeroLink}
+                href="https://blockzerolabs.io/"
+                target="_blank"
+              >
+                <img src={blockZeroB} width={100} />
+              </a>
+            ) : (
+              <a
+                className={classes.blockZeroLink}
+                href="https://blockzerolabs.io/"
+                target="_blank"
+              >
+                <img src={blockZero} width={100} />
+              </a>
+            )}
+          </Box>
+        </WalletConnect>
+        <Snackbar />
       </Container>
 
       <Backdrop className={classes.backdropThemeSwitch} open={themeSwitch}>

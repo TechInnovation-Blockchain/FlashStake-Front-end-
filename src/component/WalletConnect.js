@@ -113,6 +113,7 @@ function WalletConnect({
   toggleThemeMode,
   theme,
   chainId,
+  children,
 }) {
   const classes = useStyles();
   const web3context = useWeb3React();
@@ -272,6 +273,7 @@ function WalletConnect({
             <SettingsIcon />
           </Button>
         </Box>
+        {children}
       </Box>
     </Fragment>
   );
