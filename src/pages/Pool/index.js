@@ -607,7 +607,7 @@ function Pool({
         //   )
         // );
 
-        return _amountA.multipliedBy(_reserveB).di;
+        return _amountA.multipliedBy(_reserveB).dividedBy(_reserveA);
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
         return 0;
