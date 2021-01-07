@@ -49,7 +49,7 @@ import {
   removeTokenLiquidityInPool,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
-import { trunc } from "../../utils/utilFunc";
+import { trunc, stringToFixed } from "../../utils/utilFunc";
 import {
   setLoading,
   showWalletBackdrop,
@@ -607,7 +607,9 @@ function Pool({
         //   )
         // );
 
-        return _amountA.multipliedBy(_reserveB).dividedBy(_reserveA);
+        return stringToFixed(
+          _amountA.multipliedBy(_reserveB).dividedBy(_reserveA).toFixed()
+        );
       } catch (e) {
         _error("ERROR quote Pool -> ", e);
         return 0;

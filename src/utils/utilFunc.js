@@ -57,6 +57,10 @@ export const trunc = (val, test) => {
   }
 };
 
+export const stringToFixed = (number) => {
+  return number.toString().match(/^-?\d+(?:\.\d{0,18})?/)[0];
+};
+
 export const getExtendedFloatValue = (val) => {
   if (Number(val)) {
     return parseFloat(val).toFixed(18);
