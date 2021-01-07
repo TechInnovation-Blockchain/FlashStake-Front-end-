@@ -49,6 +49,7 @@ export const getBalances = async () => {
           String(_pool.tokenB.id).toLowerCase()
       )
     );
+    console.log("yolo yooooo ", _tokenList);
 
     const _balances = await contract.methods
       .getBalances(
@@ -56,6 +57,7 @@ export const getBalances = async () => {
         _tokenList.map((_token) => _token.address)
       )
       .call();
+    console.log("yolo yooooo2222 ");
 
     let _balancesObj = {};
     let walletBalanceUSD = 0;
