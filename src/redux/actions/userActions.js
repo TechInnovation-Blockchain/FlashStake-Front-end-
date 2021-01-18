@@ -8,7 +8,11 @@ import {
   initializeBalanceContract,
   getBalances,
 } from "../../utils/contractFunctions/balanceContractFunctions";
-import { getBalanceALT, getBalanceXIO } from "./flashstakeActions";
+import {
+  getBalanceALT,
+  getBalanceXIO,
+  rewardPercentage,
+} from "./flashstakeActions";
 import { _error } from "../../utils/log";
 import {
   initializeFlashProtocolContract,
@@ -61,12 +65,13 @@ export const _getAPYStake = _.memoize(async (_pool, _xpy) => {
   return _apyStake;
 });
 
-export const updateApyPools = (quantity, poolsParam) => async (
+export const updateApyPools = (quantity, days, poolsParam) => async (
   dispatch,
   getState
 ) => {
   let _apyAllPools = {};
   let _pools = poolsParam;
+  // console.log("poolsParam", poolsParam);
   try {
     const {
       user: { pools },
@@ -140,6 +145,10 @@ export const updateApyPools = (quantity, poolsParam) => async (
         );
         const tokenPrice = response.data[_pools[i].tokenB.id].usd || 0;
         // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
+        // console.log("Stake", response.data);
+        // console.log("Stake", tokenPrice);
+
+        // rewardPercentage(stakeQty.toString() || "1", days);
 
         _apyAllPools[_pools[i].id] = trunc(
           ((_apyStake * tokenPrice) /

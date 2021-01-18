@@ -52,6 +52,7 @@ import {
   unstakeXIO,
   unstakeEarly,
   changeQuantityRedux,
+  rewardPercentage,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
@@ -458,7 +459,9 @@ function Flashstake({
   changeApp,
   maxDays,
   changeQuantityRedux,
+  rewardPercentage,
   poolsApy,
+  rewardPercent,
   allPoolsData,
   ...props
 }) {
@@ -528,6 +531,14 @@ function Flashstake({
   useEffect(() => {
     changeQuantityRedux(quantity);
   }, [quantity]);
+
+  useEffect(() => {
+    // if (rewardPercent.length) {
+    // if (reward > 0) {
+     rewardPercentage(quantity, days);
+    // }
+    // }
+  }, [quantity, days]);
 
   useEffect(() => {
     document
@@ -950,7 +961,7 @@ function Flashstake({
                                 </span> */}
                                 </Fragment>
                               )}{" "}
-                              {poolsApy[selectedRewardToken.id]
+                              {/* {poolsApy[selectedRewardToken.id]
                                 ? `at ${
                                     parseFloat(
                                       poolsApy[selectedRewardToken.id]
@@ -966,6 +977,12 @@ function Flashstake({
                                           poolsApy[selectedRewardToken.id]
                                         )
                                   }% APY`
+                                : null} */}
+                              {rewardPercent &&
+                              rewardPercent[selectedRewardToken.id]
+                                ? `at ${trunc(
+                                    rewardPercent[selectedRewardToken.id]
+                                  )}% yearly`
                                 : null}
                             </Typography>
                           )
@@ -1332,6 +1349,9 @@ function Flashstake({
                               : parseInt(poolsApy[selectedRewardToken.id])
                           }% APY`
                         : null}
+                      {/* {poolsApy[selectedRewardToken.id]
+                        ? `${trunc(rewardPercent[selectedValue.id])}% yearly`
+                        : null} */}
                     </Typography>
                     <Button
                       variant="retro"
@@ -2035,4 +2055,5 @@ export default connect(mapStateToProps, {
   unstakeXIO,
   selectStake,
   changeQuantityRedux,
+  rewardPercentage,
 })(Flashstake);
