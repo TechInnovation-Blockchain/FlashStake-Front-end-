@@ -55,6 +55,7 @@ export const flashstakeReducer = (
     removeLiquidity: "",
     createPoolData: {},
     closeLiquidityTxnHash: false,
+    rewardPercent: {},
   },
   { type, payload }
 ) => {
@@ -64,6 +65,18 @@ export const flashstakeReducer = (
         ...state,
         stakeQty: payload,
       };
+    case "DAYS_QTY":
+      return {
+        ...state,
+        daysQty: payload,
+      };
+
+    case "REWARD_PERCENTAGE":
+      return {
+        ...state,
+        rewardPercent: payload,
+      };
+
     case "FACTORY_ADDRESS":
       return {
         ...state,

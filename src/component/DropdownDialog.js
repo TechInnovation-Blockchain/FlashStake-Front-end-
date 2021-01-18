@@ -205,6 +205,7 @@ function DropdownDialog({
   link,
   _theme,
   poolsApy,
+  rewardPercent,
   type = "stake",
   tokensURI,
   allPoolsData,
@@ -216,6 +217,7 @@ function DropdownDialog({
   overrideOpen,
   openProp,
   setOpenProp,
+  initialValues,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -493,7 +495,7 @@ function DropdownDialog({
                   style={{ marginRight: 5 }}
                 />
                 {selectedValue.tokenB.symbol}{" "}
-                {history.location.pathname === "/stake" &&
+                {/* {history.location.pathname === "/stake" &&
                 poolsApy[selectedValue.id]
                   ? `(${
                       parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
@@ -502,6 +504,12 @@ function DropdownDialog({
                         ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
                         : parseInt(poolsApy[selectedValue.id])
                     }%)`
+                  : null} */}
+                {history.location.pathname === "/stake" &&
+                rewardPercent &&
+                rewardPercent[selectedValue.id] &&
+                initialValues.days !== "0"
+                  ? `(${trunc(rewardPercent[selectedValue.id])}%)`
                   : null}
               </Fragment>
             ) : (
@@ -718,13 +726,16 @@ const mapStateToProps = ({
   ui: { tokensURI },
   query: { allPoolsData },
   contract: { tokenList },
+  flashstake: { rewardPercent, initialValues },
 }) => ({
   poolsApy,
   pools,
+  rewardPercent,
   tokensURI,
   allPoolsData,
   nativePrices,
   tokenList,
+  initialValues,
 });
 
 export default connect(mapStateToProps, { nativePoolPrice, addToTokenList })(

@@ -24,15 +24,80 @@ import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
 import { JSBI } from "@uniswap/sdk";
 import { _log, _error } from "../../utils/log";
 import { utils } from "ethers";
-import { updateApyPools } from "./userActions";
+import { updateApyPools, _getTokenPrice } from "./userActions";
 import { setRefetchProtocols } from "./dashboardActions";
+import { trunc } from "../../utils/utilFunc";
 
 export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch({
     type: "STAKE_QTY",
     payload: quantity,
   });
+
   dispatch(updateApyPools(quantity));
+};
+
+export const rewardPercentage = (quantity, days) => async (
+  dispatch,
+  getState
+) => {
+  let rewardPercent = {};
+
+  console.log("Here");
+  try {
+    const {
+      flashstake: { reward, selectedRewardToken },
+      user: { pools },
+      ui: { loading },
+    } = getState();
+    console.log("Here2");
+    let response = await _getTokenPrice([
+      ...pools.map((_pools) => _pools.tokenB.id),
+      CONSTANTS.MAINNET_ADDRESSES.FLASH,
+    ]);
+
+    console.log("Here", response);
+
+    if (response?.data && days && quantity) {
+      for (let i = 0; i < pools.length; i++) {
+        const tokenPrice = response?.data[pools[i]?.tokenB?.id]?.usd || 0;
+        console.log(
+          "Reward",
+          days,
+          trunc(
+            utils.formatUnits(
+              reward.toString(),
+              selectedRewardToken?.tokenB?.decimals || 18
+            )
+          ),
+          tokenPrice,
+          // (365 / days) * reward * tokenPrice
+          quantity,
+          response?.data["0xb4467e8d621105312a914f1d42f10770c0ffe3c8"]?.usd
+        );
+        rewardPercent[pools[i]?.id] =
+          (((365 / days) *
+            utils.formatUnits(
+              reward.toString(),
+              selectedRewardToken?.tokenB?.decimals || 18
+            ) *
+            tokenPrice) /
+            (quantity *
+              response?.data["0xb4467e8d621105312a914f1d42f10770c0ffe3c8"]
+                ?.usd)) *
+          100;
+      }
+    }
+
+    console.log("rewardPercent", rewardPercent);
+
+    dispatch({
+      type: "REWARD_PERCENTAGE",
+      payload: rewardPercent,
+    });
+  } catch (e) {
+    console.log("ERROR calculating Reward percentage", e);
+  }
 };
 
 export const calculateReward = (xioQuantity, days, time) => async (
