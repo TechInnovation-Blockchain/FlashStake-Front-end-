@@ -48,6 +48,7 @@ export const rewardPercentage = (quantity, days) => async (
     const {
       flashstake: { reward, selectedRewardToken },
       user: { pools },
+      ui: { loading },
     } = getState();
     console.log("Here2");
     let response = await _getTokenPrice([
@@ -57,7 +58,7 @@ export const rewardPercentage = (quantity, days) => async (
 
     console.log("Here", response);
 
-    if (response?.data && days && reward > 0) {
+    if (response?.data && days && quantity) {
       for (let i = 0; i < pools.length; i++) {
         const tokenPrice = response?.data[pools[i]?.tokenB?.id]?.usd || 0;
         console.log(

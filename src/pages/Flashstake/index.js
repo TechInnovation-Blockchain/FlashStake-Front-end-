@@ -534,11 +534,11 @@ function Flashstake({
 
   useEffect(() => {
     // if (rewardPercent.length) {
-    // if (reward > 0) {
-     rewardPercentage(quantity, days);
+    if (!loadingRedux.reward) {
+      rewardPercentage(quantity, days);
+    }
     // }
-    // }
-  }, [quantity, days]);
+  }, [quantity, days, loadingRedux.reward]);
 
   useEffect(() => {
     document
