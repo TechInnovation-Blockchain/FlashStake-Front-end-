@@ -508,7 +508,8 @@ function DropdownDialog({
                 {history.location.pathname === "/stake" &&
                 rewardPercent &&
                 rewardPercent[selectedValue.id] &&
-                initialValues.days !== "0"
+                initialValues.days !== "0" &&
+                initialValues.quantity !== "0"
                   ? `(${trunc(rewardPercent[selectedValue.id])}%)`
                   : `(${
                       parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
