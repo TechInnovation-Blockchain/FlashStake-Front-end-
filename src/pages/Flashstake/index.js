@@ -534,11 +534,13 @@ function Flashstake({
 
   useEffect(() => {
     // if (rewardPercent.length) {
-    if (!loadingRedux.reward) {
+    // if (!loadingRedux.reward) {
+    setTimeout(() => {
       rewardPercentage(quantity, days);
-    }
+    }, 200);
     // }
-  }, [quantity, days, loadingRedux.reward]);
+    // }
+  }, [quantity, days]);
 
   useEffect(() => {
     document

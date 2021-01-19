@@ -510,7 +510,13 @@ function DropdownDialog({
                 rewardPercent[selectedValue.id] &&
                 initialValues.days !== "0"
                   ? `(${trunc(rewardPercent[selectedValue.id])}%)`
-                  : null}
+                  : `(${
+                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
+                        parseInt(poolsApy[selectedValue.id]) >
+                      0
+                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                        : parseInt(poolsApy[selectedValue.id])
+                    }%)`}
               </Fragment>
             ) : (
               <span className={classes.disabledText}>SELECT</span>
