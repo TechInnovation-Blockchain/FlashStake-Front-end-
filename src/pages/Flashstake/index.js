@@ -55,7 +55,10 @@ import {
   rewardPercentage,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
-import { setExpandAccodion } from "../../redux/actions/uiActions";
+import {
+  setExpandAccodion,
+  setPercentLoader,
+} from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import {
@@ -463,6 +466,8 @@ function Flashstake({
   poolsApy,
   rewardPercent,
   allPoolsData,
+  percentLoader,
+  setPercentLoader,
   ...props
 }) {
   let classes = useStyles();
@@ -532,13 +537,21 @@ function Flashstake({
     changeQuantityRedux(quantity);
   }, [quantity]);
 
+  const getPercentageReward = useCallback(() =>
+    rewardPercentage(quantity, days)
+  );
+
   useEffect(() => {
-    // if (rewardPercent.length) {
-    if (!loadingRedux.reward) {
-      rewardPercentage(quantity, days);
+    if (!percentLoader) {
+      // rewardPercentage(quantity, days));
+      setPercentLoader(true);
+      setTimeout(() => {
+        rewardPercentage(quantity, days);
+        setPercentLoader(false);
+      }, 2000);
+      // debounce();
     }
-    // }
-  }, [quantity, days, loadingRedux.reward]);
+  }, [quantity, days, preciseReward]);
 
   useEffect(() => {
     document
@@ -978,12 +991,20 @@ function Flashstake({
                                         )
                                   }% APY`
                                 : null} */}
-                              {rewardPercent &&
-                              rewardPercent[selectedRewardToken.id]
-                                ? `at ${trunc(
-                                    rewardPercent[selectedRewardToken.id]
-                                  )}% yearly`
-                                : null}
+                              at{" "}
+                              {!percentLoader &&
+                              !loadingRedux.reward &&
+                              rewardPercent &&
+                              rewardPercent[selectedRewardToken.id] ? (
+                                `${trunc(
+                                  rewardPercent[selectedRewardToken.id]
+                                )}% yearly`
+                              ) : (
+                                <CircularProgress
+                                  size={12}
+                                  className={classes.loaderStyle}
+                                />
+                              )}
                             </Typography>
                           )
                         ) : (
@@ -1992,7 +2013,7 @@ function Flashstake({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal, changeApp },
+  ui: { loading, expanding, animation, heightVal, changeApp, percentLoader },
   web3: { active, account, chainId },
   dashboard: { selectedStakes, isStakesSelected, totalBurn },
   user: {
@@ -2031,6 +2052,7 @@ const mapStateToProps = ({
   changeApp,
   poolsApy,
   allPoolsData,
+  percentLoader,
   ...contract,
 });
 
@@ -2056,4 +2078,5 @@ export default connect(mapStateToProps, {
   selectStake,
   changeQuantityRedux,
   rewardPercentage,
+  setPercentLoader,
 })(Flashstake);

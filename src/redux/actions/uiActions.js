@@ -146,3 +146,9 @@ export const setClose = (data) => {
     payload: data,
   };
 };
+export const setPercentLoader = (data) => {
+  return {
+    type: "PERCENT_LOADER",
+    payload: data,
+  };
+};
