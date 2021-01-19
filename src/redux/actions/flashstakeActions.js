@@ -17,7 +17,12 @@ import {
   stake,
   unstakeEarly as unstakeEarlyFunc,
 } from "../../utils/contractFunctions/flashProtocolContractFunctions";
-import { setLoading, setLoadingIndep, showSnackbarIndep } from "./uiActions";
+import {
+  setLoading,
+  setLoadingIndep,
+  showSnackbarIndep,
+  setPercentLoader,
+} from "./uiActions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
@@ -45,10 +50,11 @@ export const rewardPercentage = (quantity, days) => async (
 
   console.log("Here");
   try {
+    setPercentLoader(true);
     const {
-      flashstake: { reward, selectedRewardToken },
+      flashstake: { preciseReward, reward, selectedRewardToken },
       user: { pools },
-      ui: { loading },
+      ui: { percentLoader },
     } = getState();
     console.log("Here2");
     let response = await _getTokenPrice([
@@ -66,7 +72,7 @@ export const rewardPercentage = (quantity, days) => async (
           days,
           trunc(
             utils.formatUnits(
-              reward.toString(),
+              preciseReward.toString(),
               selectedRewardToken?.tokenB?.decimals || 18
             )
           ),
@@ -78,7 +84,7 @@ export const rewardPercentage = (quantity, days) => async (
         rewardPercent[pools[i]?.id] =
           (((365 / days) *
             utils.formatUnits(
-              reward.toString(),
+              preciseReward.toString(),
               selectedRewardToken?.tokenB?.decimals || 18
             ) *
             tokenPrice) /
@@ -95,7 +101,9 @@ export const rewardPercentage = (quantity, days) => async (
       type: "REWARD_PERCENTAGE",
       payload: rewardPercent,
     });
+    setPercentLoader(false);
   } catch (e) {
+    setPercentLoader(false);
     console.log("ERROR calculating Reward percentage", e);
   }
 };

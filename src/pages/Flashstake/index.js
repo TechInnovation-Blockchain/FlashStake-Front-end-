@@ -463,6 +463,7 @@ function Flashstake({
   poolsApy,
   rewardPercent,
   allPoolsData,
+  percentLoader,
   ...props
 }) {
   let classes = useStyles();
@@ -534,13 +535,13 @@ function Flashstake({
 
   useEffect(() => {
     // if (rewardPercent.length) {
-    // if (!loadingRedux.reward) {
-    setTimeout(() => {
-      rewardPercentage(quantity, days);
-    }, 200);
+    if (!loadingRedux.reward) {
+      setTimeout(() => {
+        rewardPercentage(quantity, days);
+      }, 1000);
+    }
     // }
-    // }
-  }, [quantity, days]);
+  }, [quantity, days, loadingRedux.reward]);
 
   useEffect(() => {
     document
@@ -980,12 +981,20 @@ function Flashstake({
                                         )
                                   }% APY`
                                 : null} */}
-                              {rewardPercent &&
-                              rewardPercent[selectedRewardToken.id]
-                                ? `at ${trunc(
-                                    rewardPercent[selectedRewardToken.id]
-                                  )}% yearly`
-                                : null}
+                              at{" "}
+                              {!percentLoader &&
+                              !loadingRedux.reward &&
+                              rewardPercent &&
+                              rewardPercent[selectedRewardToken.id] ? (
+                                `${trunc(
+                                  rewardPercent[selectedRewardToken.id]
+                                )}% yearly`
+                              ) : (
+                                <CircularProgress
+                                  size={12}
+                                  className={classes.loaderStyle}
+                                />
+                              )}
                             </Typography>
                           )
                         ) : (
@@ -1994,7 +2003,7 @@ function Flashstake({
 
 const mapStateToProps = ({
   flashstake,
-  ui: { loading, expanding, animation, heightVal, changeApp },
+  ui: { loading, expanding, animation, heightVal, changeApp, percentLoader },
   web3: { active, account, chainId },
   dashboard: { selectedStakes, isStakesSelected, totalBurn },
   user: {
@@ -2033,6 +2042,7 @@ const mapStateToProps = ({
   changeApp,
   poolsApy,
   allPoolsData,
+  percentLoader,
   ...contract,
 });
 

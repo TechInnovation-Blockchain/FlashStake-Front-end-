@@ -17,6 +17,7 @@ export const uiReducer = (
     btn: 5,
     closeApproval: false,
     clearField: false,
+    percentLoader: false,
     // tokensURI: {
     //   name: "Default",
     //   uri:
@@ -132,6 +133,11 @@ export const uiReducer = (
       return {
         ...state,
         tokensURI: payload,
+      };
+    case "PERCENT_LOADER":
+      return {
+        ...state,
+        percentLoader: payload,
       };
 
     default:
