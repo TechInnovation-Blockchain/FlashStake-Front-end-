@@ -103,7 +103,6 @@ export const rewardPercentage = (quantity, days) => async (
     });
     setPercentLoader(false);
   } catch (e) {
-    setPercentLoader(false);
     console.log("ERROR calculating Reward percentage", e);
   }
 };

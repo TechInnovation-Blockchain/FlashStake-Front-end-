@@ -55,7 +55,10 @@ import {
   rewardPercentage,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
-import { setExpandAccodion } from "../../redux/actions/uiActions";
+import {
+  setExpandAccodion,
+  setPercentLoader,
+} from "../../redux/actions/uiActions";
 import { debounce } from "../../utils/debounceFunc";
 import { trunc } from "../../utils/utilFunc";
 import {
@@ -464,6 +467,7 @@ function Flashstake({
   rewardPercent,
   allPoolsData,
   percentLoader,
+  setPercentLoader,
   ...props
 }) {
   let classes = useStyles();
@@ -533,15 +537,21 @@ function Flashstake({
     changeQuantityRedux(quantity);
   }, [quantity]);
 
+  const getPercentageReward = useCallback(() =>
+    rewardPercentage(quantity, days)
+  );
+
   useEffect(() => {
-    // if (rewardPercent.length) {
-    if (!loadingRedux.reward) {
+    if (!percentLoader) {
+      // rewardPercentage(quantity, days));
+      setPercentLoader(true);
       setTimeout(() => {
         rewardPercentage(quantity, days);
-      }, 1000);
+        setPercentLoader(false);
+      }, 2000);
+      // debounce();
     }
-    // }
-  }, [quantity, days, loadingRedux.reward]);
+  }, [quantity, days, preciseReward]);
 
   useEffect(() => {
     document
@@ -2068,4 +2078,5 @@ export default connect(mapStateToProps, {
   selectStake,
   changeQuantityRedux,
   rewardPercentage,
+  setPercentLoader,
 })(Flashstake);
