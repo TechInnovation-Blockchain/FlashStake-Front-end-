@@ -42,7 +42,7 @@ export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch(updateApyPools(quantity));
 };
 
-export const rewardPercentage = (quantity, days) => async (
+export const rewardPercentage = (quantity, days, timeUnit) => async (
   dispatch,
   getState
 ) => {
@@ -81,8 +81,12 @@ export const rewardPercentage = (quantity, days) => async (
           quantity,
           response?.data["0xb4467e8d621105312a914f1d42f10770c0ffe3c8"]?.usd
         );
+
+        let time =
+          timeUnit === "Days" ? 365 : timeUnit === "Mins" ? 525600 : 8760;
+        console.log("time", time);
         rewardPercent[pools[i]?.id] =
-          (((365 / days) *
+          (((time / days) *
             utils.formatUnits(
               preciseReward.toString(),
               selectedRewardToken?.tokenB?.decimals || 18

@@ -546,12 +546,12 @@ function Flashstake({
       // rewardPercentage(quantity, days));
       setPercentLoader(true);
       setTimeout(() => {
-        rewardPercentage(quantity, days);
+        rewardPercentage(quantity, days , time);
         setPercentLoader(false);
       }, 2000);
       // debounce();
     }
-  }, [quantity, days, preciseReward]);
+  }, [quantity, days, preciseReward , time]);
 
   useEffect(() => {
     document
