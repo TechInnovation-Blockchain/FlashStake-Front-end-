@@ -517,6 +517,10 @@ export const setSelectedRewardToken = (_pool) => async (dispatch, getState) => {
   try {
     // initializeTrade(CONSTANTS.ADDRESS_XIO_RINKEBY, address);
     dispatch({
+      type: "REWARD_PERCENTAGE",
+      payload: 0,
+    });
+    dispatch({
       type: "SELECTED_REWARD_TOKEN",
       payload: _pool,
     });
