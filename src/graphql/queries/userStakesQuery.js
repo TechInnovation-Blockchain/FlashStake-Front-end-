@@ -80,3 +80,16 @@ export const protocolsQuery = gql`
     }
   }
 `;
+
+export const tokensQuery = gql`
+  {
+    pools {
+      id
+      tokenB {
+        id
+        symbol
+        decimal
+      }
+    }
+  }
+`;
