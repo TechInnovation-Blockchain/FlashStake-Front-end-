@@ -52,7 +52,7 @@ import {
   unstakeXIO,
   unstakeEarly,
   changeQuantityRedux,
-  rewardPercentage,
+  // rewardPercentage,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import {
@@ -462,7 +462,7 @@ function Flashstake({
   changeApp,
   maxDays,
   changeQuantityRedux,
-  rewardPercentage,
+  // rewardPercentage,
   poolsApy,
   rewardPercent,
   allPoolsData,
@@ -528,6 +528,10 @@ function Flashstake({
     debounce(calculateReward, 500),
     []
   );
+  // const debouncedCalculateApy = useCallback(
+  //   debounce(rewardPercentage, 500),
+  //   []
+  // );
 
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState(initialValues.quantity);
@@ -537,21 +541,16 @@ function Flashstake({
     changeQuantityRedux(quantity);
   }, [quantity]);
 
-  const getPercentageReward = useCallback(() =>
-    rewardPercentage(quantity, days)
-  );
-
-  useEffect(() => {
-    if (!percentLoader) {
-      // rewardPercentage(quantity, days));
-      setPercentLoader(true);
-      setTimeout(() => {
-        rewardPercentage(quantity, days , time);
-        setPercentLoader(false);
-      }, 2000);
-      // debounce();
-    }
-  }, [quantity, days, preciseReward , time]);
+  // useEffect(() => {
+  //   if (!percentLoader) {
+  //     setPercentLoader(true);
+  //     debouncedCalculateApy(quantity, days, time);
+  //     setTimeout(() => {
+  //       setPercentLoader(false);
+  //     }, 2000);
+  //     // debounce();
+  //   }
+  // }, [quantity, days, preciseReward, time]);
 
   useEffect(() => {
     document
@@ -608,8 +607,10 @@ function Flashstake({
   useEffect(() => {
     if (selectedPortal) {
       getMaxTime();
+      // debouncedCalculateApy(quantity, days, time);
       debouncedCalculateReward(quantity, days, time);
       const _rewardRefreshInterval = setInterval(() => {
+        // debouncedCalculateApy(quantity, days, time);
         debouncedCalculateReward(quantity, days, time);
       }, 60000);
       return () => {
@@ -2077,6 +2078,6 @@ export default connect(mapStateToProps, {
   unstakeXIO,
   selectStake,
   changeQuantityRedux,
-  rewardPercentage,
+  // rewardPercentage,
   setPercentLoader,
 })(Flashstake);

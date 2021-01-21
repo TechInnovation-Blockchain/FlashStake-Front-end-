@@ -11,7 +11,7 @@ import {
 import {
   getBalanceALT,
   getBalanceXIO,
-  rewardPercentage,
+  // rewardPercentage,
 } from "./flashstakeActions";
 import { _error } from "../../utils/log";
 import {
@@ -72,7 +72,6 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
 ) => {
   let _apyAllPools = {};
   let _pools = poolsParam;
-  // console.log("poolsParam", poolsParam);
   try {
     const {
       user: { pools },
@@ -148,16 +147,8 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
         );
         const tokenPrice = response.data[_pools[i].tokenB.id]?.usd || 0;
         // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
-        // console.log("Stake", response.data);
-        // console.log("Stake", tokenPrice);
 
         // rewardPercentage(stakeQty.toString() || "1", days);
-        console.log(
-          "YOLOY -> ",
-          _apyStake.toString(),
-          _pools[i].tokenB.symbol,
-          tokenPrice
-        );
 
         _apyAllPools[_pools[i].id] = trunc(
           ((_apyStake * tokenPrice) /

@@ -43,50 +43,35 @@ export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch(updateApyPools(quantity));
 };
 
-export const rewardPercentage = (quantity, days, timeUnit) => async (
-  dispatch,
-  getState
-) => {
+export const rewardPercentage = (
+  quantity,
+  days,
+  timeUnit,
+  preciseReward
+) => async (dispatch, getState) => {
   let rewardPercent = {};
-
-  console.log("Here");
   try {
     setPercentLoader(true);
     const {
-      flashstake: { preciseReward, reward, selectedRewardToken },
+      flashstake: {
+        // preciseReward,
+        reward,
+        selectedRewardToken,
+      },
       user: { pools },
       ui: { percentLoader },
     } = getState();
-    console.log("Here2");
     let response = await _getTokenPrice([
       ...pools.map((_pools) => _pools.tokenB.id),
       CONSTANTS.MAINNET_ADDRESSES.FLASH,
     ]);
-    // let response = await getTokenPrices();
-
-    console.log("Here", response);
 
     if (response?.data && days && quantity) {
       for (let i = 0; i < pools.length; i++) {
         const tokenPrice = response?.data[pools[i]?.tokenB?.id]?.usd || 0;
-        console.log(
-          "Reward",
-          days,
-          trunc(
-            utils.formatUnits(
-              preciseReward.toString(),
-              selectedRewardToken?.tokenB?.decimals || 18
-            )
-          ),
-          tokenPrice,
-          // (365 / days) * reward * tokenPrice
-          quantity,
-          response?.data["0xb4467e8d621105312a914f1d42f10770c0ffe3c8"]?.usd
-        );
 
         let time =
           timeUnit === "Days" ? 365 : timeUnit === "Mins" ? 525600 : 8760;
-        console.log("time", time);
         rewardPercent[pools[i]?.id] =
           (((time / days) *
             utils.formatUnits(
@@ -101,16 +86,14 @@ export const rewardPercentage = (quantity, days, timeUnit) => async (
       }
     }
 
-    console.log("rewardPercent", rewardPercent);
-
     dispatch({
       type: "REWARD_PERCENTAGE",
       payload: rewardPercent,
     });
-    setPercentLoader(false);
   } catch (e) {
-    console.log("ERROR calculating Reward percentage", e);
+    _error("ERROR calculating Reward percentage", e);
   }
+  setPercentLoader(false);
 };
 
 export const calculateReward = (xioQuantity, days, time) => async (
@@ -194,7 +177,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
         type: "PRECISE_STAKE_REWARD",
         payload: _reward.toString(),
       });
-
+      dispatch(rewardPercentage(xioQuantity, days, time, _reward.toString()));
       // await initializeFlashstakePoolContract(id);
       // const _apyStake = await getAPYStake(String(_mintAmount));
       _log("reward ==>", {
@@ -213,6 +196,7 @@ export const calculateReward = (xioQuantity, days, time) => async (
     }
   } catch (e) {
     _error("ERROR calculateReward -> ", e);
+    // rewardPercentage(xioQuantity, days, time, _reward.toString());
   }
   dispatch({
     type: "STAKE_REWARD",
