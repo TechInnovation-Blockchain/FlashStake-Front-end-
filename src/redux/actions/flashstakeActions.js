@@ -32,6 +32,7 @@ import { utils } from "ethers";
 import { updateApyPools, _getTokenPrice } from "./userActions";
 import { setRefetchProtocols } from "./dashboardActions";
 import { trunc } from "../../utils/utilFunc";
+import { getTokenPrices } from "../../utils/tokenPrices";
 
 export const changeQuantityRedux = (quantity) => async (dispatch) => {
   dispatch({
@@ -61,6 +62,7 @@ export const rewardPercentage = (quantity, days, timeUnit) => async (
       ...pools.map((_pools) => _pools.tokenB.id),
       CONSTANTS.MAINNET_ADDRESSES.FLASH,
     ]);
+    // let response = await getTokenPrices();
 
     console.log("Here", response);
 

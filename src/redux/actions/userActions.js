@@ -30,6 +30,7 @@ import { getQueryData, getAllQueryData } from "./queryActions";
 import { store } from "../../config/reduxStore";
 import { trunc } from "../../utils/utilFunc";
 import { utils } from "ethers";
+import { getTokenPrices } from "../../utils/tokenPrices";
 
 export const _getTokenPrice = _.memoize(async (_addresses) => {
   const response = await axios.get(
@@ -77,6 +78,7 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
       user: { pools },
       flashstake: { stakeQty, selectedRewardToken },
     } = await getState();
+
     if (!_pools) {
       _pools = pools;
     }
@@ -85,6 +87,7 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
       ...pools.map((_pools) => _pools.tokenB.id),
       CONSTANTS.MAINNET_ADDRESSES.FLASH,
     ]);
+    // let response = await getTokenPrices();
     const queryData = await getAllQueryData();
 
     if (response?.data) {
@@ -143,12 +146,18 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
             )
           )
         );
-        const tokenPrice = response.data[_pools[i].tokenB.id].usd || 0;
+        const tokenPrice = response.data[_pools[i].tokenB.id]?.usd || 0;
         // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
         // console.log("Stake", response.data);
         // console.log("Stake", tokenPrice);
 
         // rewardPercentage(stakeQty.toString() || "1", days);
+        console.log(
+          "YOLOY -> ",
+          _apyStake.toString(),
+          _pools[i].tokenB.symbol,
+          tokenPrice
+        );
 
         _apyAllPools[_pools[i].id] = trunc(
           ((_apyStake * tokenPrice) /
@@ -214,7 +223,7 @@ export const updatePools = (data) => async (dispatch) => {
         payload: _pools,
       });
       // _tokenList = _pools.map((_pool) => _pool.tokenB);
-      dispatch(updateApyPools("1", _pools));
+      dispatch(updateApyPools("1", "1", _pools));
     }
   } catch (e) {
     _error("ERROR updatePools -> ", e);
