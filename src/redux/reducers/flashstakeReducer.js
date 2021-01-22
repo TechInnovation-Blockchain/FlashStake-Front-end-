@@ -57,6 +57,7 @@ export const flashstakeReducer = (
     closeLiquidityTxnHash: false,
     rewardPercent: {},
     maxTimeDuration: "",
+    FPY: "",
   },
   { type, payload }
 ) => {
@@ -65,6 +66,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         stakeQty: payload,
+      };
+    case "FPY_CAL":
+      return {
+        ...state,
+        FPY: payload,
       };
     case "DAYS_QTY":
       return {

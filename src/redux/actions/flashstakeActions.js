@@ -102,6 +102,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
+  dispatch({
+    type: "FPY_CAL",
+    payload: "",
+  });
   try {
     const {
       flashstake: {
@@ -131,6 +135,21 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.subtract(_precision, _getPercentStaked),
         JSBI.BigInt("2")
       );
+      if (_fpy.toString() < 0) {
+        dispatch({
+          type: "MAX_DAYS",
+          payload: 0,
+        });
+        dispatch({
+          type: "STAKE_REWARD",
+          payload: 0,
+        });
+        dispatch({
+          type: "FPY_CAL",
+          payload: _fpy.toString(),
+        });
+        return;
+      }
       let _maxDays = (5e17 * 365 * 86400) / String(_fpy);
 
       dispatch({
@@ -158,16 +177,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
       const _lpFee = JSBI.subtract(
         JSBI.BigInt("1000"),
         JSBI.divide(_fpy0, JSBI.BigInt(5e15))
-      );
-
-      console.log(
-        "NEGATIVE",
-        _lpFee.toString(),
-        _fpy0.toString(),
-        _fpy.toString(),
-        _precision.toString(),
-        _getPercentStaked.toString(),
-        JSBI.subtract(_precision, _getPercentStaked).toString()
       );
 
       const _reward = JSBI.divide(

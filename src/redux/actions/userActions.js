@@ -152,10 +152,11 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
 
         // rewardPercentage(stakeQty.toString() || "1", days);
 
-        _apyAllPools[_pools[i].id] = trunc(
+        const _tempApy = trunc(
           ((_apyStake * tokenPrice) /
             response.data[CONSTANTS.MAINNET_ADDRESSES.FLASH].usd || 0) * 100
         );
+        _apyAllPools[_pools[i].id] = _tempApy > 0 ? _tempApy : 0;
       }
     }
   } catch (e) {
