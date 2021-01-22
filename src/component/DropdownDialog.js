@@ -520,7 +520,9 @@ function DropdownDialog({
                       parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
                         parseInt(poolsApy[selectedValue.id]) >
                       0
-                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                        ? poolsApy[selectedValue.id]
+                          ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                          : 0
                         : parseInt(poolsApy[selectedValue.id])
                     }%)`}
               </Fragment>
@@ -625,7 +627,9 @@ function DropdownDialog({
                           parseFloat(poolsApy[_pool.id]).toFixed(2) -
                             parseInt(poolsApy[_pool.id]) >
                           0
-                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                            ? poolsApy[_pool.id]
+                              ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                              : 0
                             : parseInt(poolsApy[_pool.id])
                         }%)`
                       : null}
