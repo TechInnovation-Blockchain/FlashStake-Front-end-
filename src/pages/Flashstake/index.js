@@ -469,6 +469,7 @@ function Flashstake({
   percentLoader,
   setPercentLoader,
   setMaxTimeDuration,
+  FPY,
   ...props
 }) {
   let classes = useStyles();
@@ -895,12 +896,21 @@ function Flashstake({
                       quantity && days > 0 ? (
                         time !== "Select" ? (
                           days > _maxDays ? (
-                            <Typography
-                              variant="body1"
-                              className={`${classes.redText}  `}
-                            >
-                              Time Duration Limit Exceeded
-                            </Typography>
+                            FPY.toString() < 0 ? (
+                              <Typography
+                                variant="body1"
+                                className={`${classes.redText}  `}
+                              >
+                                Fuel Limit Exceeded
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="body1"
+                                className={`${classes.redText}  `}
+                              >
+                                Time Duration Limit Exceeded
+                              </Typography>
+                            )
                           ) : parseFloat(quantity) >
                             parseFloat(walletBalance) ? (
                             <Typography

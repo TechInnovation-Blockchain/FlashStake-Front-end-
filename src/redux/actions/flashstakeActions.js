@@ -102,6 +102,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
 ) => {
   dispatch(setLoading({ reward: true }));
   let reward = "0";
+  dispatch({
+    type: "FPY_CAL",
+    payload: "",
+  });
   try {
     const {
       flashstake: {
@@ -139,6 +143,10 @@ export const calculateReward = (xioQuantity, days, time) => async (
         dispatch({
           type: "STAKE_REWARD",
           payload: 0,
+        });
+        dispatch({
+          type: "FPY_CAL",
+          payload: _fpy.toString(),
         });
         return;
       }
