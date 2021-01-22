@@ -50,7 +50,6 @@ export const rewardPercentage = (
   preciseReward
 ) => async (dispatch, getState) => {
   let rewardPercent = {};
-  console.log("yala yolo -> ", preciseReward);
   try {
     setPercentLoader(true);
     const {
@@ -170,16 +169,6 @@ export const calculateReward = (xioQuantity, days, time) => async (
       const _lpFee = JSBI.subtract(
         JSBI.BigInt("1000"),
         JSBI.divide(_fpy0, JSBI.BigInt(5e15))
-      );
-
-      console.log(
-        "NEGATIVE",
-        _lpFee.toString(),
-        _fpy0.toString(),
-        _fpy.toString(),
-        _precision.toString(),
-        _getPercentStaked.toString(),
-        JSBI.subtract(_precision, _getPercentStaked).toString()
       );
 
       const _reward = JSBI.divide(
