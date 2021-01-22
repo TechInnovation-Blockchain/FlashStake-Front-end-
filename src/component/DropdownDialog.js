@@ -218,6 +218,7 @@ function DropdownDialog({
   openProp,
   setOpenProp,
   initialValues,
+  maxTimeDuration,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -510,7 +511,11 @@ function DropdownDialog({
                 rewardPercent[selectedValue.id] &&
                 initialValues.days > 0 &&
                 initialValues.quantity > 0
-                  ? `(${trunc(rewardPercent[selectedValue.id])}%)`
+                  ? `(${
+                      trunc(rewardPercent[selectedValue.id]) > 0
+                        ? trunc(rewardPercent[selectedValue.id])
+                        : "0"
+                    }%)`
                   : `(${
                       parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
                         parseInt(poolsApy[selectedValue.id]) >
@@ -733,7 +738,7 @@ const mapStateToProps = ({
   ui: { tokensURI },
   query: { allPoolsData },
   contract: { tokenList },
-  flashstake: { rewardPercent, initialValues },
+  flashstake: { rewardPercent, initialValues, maxTimeDuration },
 }) => ({
   poolsApy,
   pools,
@@ -743,6 +748,7 @@ const mapStateToProps = ({
   nativePrices,
   tokenList,
   initialValues,
+  maxTimeDuration,
 });
 
 export default connect(mapStateToProps, { nativePoolPrice, addToTokenList })(

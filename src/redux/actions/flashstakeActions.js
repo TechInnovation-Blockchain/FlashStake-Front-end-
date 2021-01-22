@@ -159,6 +159,17 @@ export const calculateReward = (xioQuantity, days, time) => async (
         JSBI.BigInt("1000"),
         JSBI.divide(_fpy0, JSBI.BigInt(5e15))
       );
+
+      console.log(
+        "NEGATIVE",
+        _lpFee.toString(),
+        _fpy0.toString(),
+        _fpy.toString(),
+        _precision.toString(),
+        _getPercentStaked.toString(),
+        JSBI.subtract(_precision, _getPercentStaked).toString()
+      );
+
       const _reward = JSBI.divide(
         JSBI.multiply(
           JSBI.multiply(_mintAmount, _lpFee),
@@ -1154,6 +1165,12 @@ export const setSlip = (val) => {
 export const setRemoveLiquidity = (data) => {
   return {
     type: "REMOVE_LIQUIDITY",
+    payload: data,
+  };
+};
+export const setMaxTimeDuration = (data) => {
+  return {
+    type: "MAX_TIME_DURATION",
     payload: data,
   };
 };

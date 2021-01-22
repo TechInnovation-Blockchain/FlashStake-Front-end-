@@ -56,6 +56,7 @@ export const flashstakeReducer = (
     createPoolData: {},
     closeLiquidityTxnHash: false,
     rewardPercent: {},
+    maxTimeDuration: "",
   },
   { type, payload }
 ) => {
@@ -126,6 +127,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         maxDays: payload,
+      };
+    case "MAX_TIME_DURATION":
+      return {
+        ...state,
+        maxTimeDuration: payload,
       };
     case "ALLOWANCE_ALT":
       return {

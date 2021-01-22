@@ -52,7 +52,7 @@ import {
   unstakeXIO,
   unstakeEarly,
   changeQuantityRedux,
-  // rewardPercentage,
+  setMaxTimeDuration,
 } from "../../redux/actions/flashstakeActions";
 // import { unstakeEarly } from "../../utils/contractFunctions/flashProtocolContractFunctions";
 import {
@@ -468,6 +468,7 @@ function Flashstake({
   allPoolsData,
   percentLoader,
   setPercentLoader,
+  setMaxTimeDuration,
   ...props
 }) {
   let classes = useStyles();
@@ -696,6 +697,7 @@ function Flashstake({
     );
 
     _setMaxDays(__maxDays);
+    setMaxTimeDuration(__maxDays);
     return __maxDays;
   };
 
@@ -2080,4 +2082,5 @@ export default connect(mapStateToProps, {
   changeQuantityRedux,
   // rewardPercentage,
   setPercentLoader,
+  setMaxTimeDuration,
 })(Flashstake);
