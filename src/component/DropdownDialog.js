@@ -621,15 +621,12 @@ function DropdownDialog({
                             return `$${trunc(nativePrices[_item])}`;
                           }
                         })
-                      : history.location.pathname === "/stake" &&
-                        poolsApy[_pool.id]
+                      : history.location.pathname === "/stake"
                       ? `(${
                           parseFloat(poolsApy[_pool.id]).toFixed(2) -
                             parseInt(poolsApy[_pool.id]) >
                           0
-                            ? poolsApy[_pool.id]
-                              ? parseFloat(poolsApy[_pool.id]).toFixed(2)
-                              : 0
+                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
                             : parseInt(poolsApy[_pool.id])
                         }%)`
                       : null}
