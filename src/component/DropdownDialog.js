@@ -506,25 +506,26 @@ function DropdownDialog({
                         : parseInt(poolsApy[selectedValue.id])
                     }%)`
                   : null} */}
-                {history.location.pathname === "/stake" &&
-                rewardPercent &&
-                rewardPercent[selectedValue.id] &&
-                initialValues.days > 0 &&
-                initialValues.quantity > 0
-                  ? `(${
-                      trunc(rewardPercent[selectedValue.id]) > 0
-                        ? trunc(rewardPercent[selectedValue.id])
-                        : "0"
-                    }%)`
-                  : `(${
-                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
-                        parseInt(poolsApy[selectedValue.id]) >
-                      0
-                        ? poolsApy[selectedValue.id]
-                          ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
-                          : 0
-                        : parseInt(poolsApy[selectedValue.id])
-                    }%)`}
+                {history.location.pathname === "/stake"
+                  ? rewardPercent &&
+                    rewardPercent[selectedValue.id] &&
+                    initialValues.days > 0 &&
+                    initialValues.quantity > 0
+                    ? `(${
+                        trunc(rewardPercent[selectedValue.id]) > 0
+                          ? trunc(rewardPercent[selectedValue.id])
+                          : "0"
+                      }%)`
+                    : `(${
+                        parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
+                          parseInt(poolsApy[selectedValue.id]) >
+                        0
+                          ? poolsApy[selectedValue.id]
+                            ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
+                            : 0
+                          : parseInt(poolsApy[selectedValue.id])
+                      }%)`
+                  : null}
               </Fragment>
             ) : (
               <span className={classes.disabledText}>SELECT</span>
