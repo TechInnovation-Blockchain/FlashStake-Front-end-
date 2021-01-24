@@ -911,14 +911,6 @@ function Flashstake({
                                 Time Duration Limit Exceeded
                               </Typography>
                             )
-                          ) : parseFloat(quantity) >
-                            parseFloat(walletBalance) ? (
-                            <Typography
-                              variant="body1"
-                              className={`${classes.redText}  `}
-                            >
-                              Insufficient fuel
-                            </Typography>
                           ) : (
                             ///////////////////
                             <Typography
