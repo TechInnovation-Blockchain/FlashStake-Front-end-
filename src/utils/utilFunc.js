@@ -80,3 +80,8 @@ export const fetchTokenList = _.memoize(async (_tokenListUri) => {
   const response = await axios.get(_tokenListUri);
   return response;
 });
+
+export const getPercentageAmount = (total, outOf) => {
+  const calculatedPercentage = (outOf / total) * 100;
+  return trunc(calculatedPercentage);
+};

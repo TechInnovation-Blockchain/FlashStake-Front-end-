@@ -31,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
   flexCenter: {
     display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingCenter: {
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -96,6 +102,18 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: "none",
     display: "contents",
+  },
+  swapHistBox: {
+    background: theme.palette.background.historyTableBox,
+    padding: theme.spacing(1.5, 0),
+    borderRadius: 5,
+  },
+  swappedFlash: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: "600",
+    paddingBottom: 10,
   },
 }));
 
@@ -264,23 +282,32 @@ function SwapTable({
                               item
                               xs={12}
                               key={_swap.id}
-                              className={`${classes.cursorPointer} ${_swap.id}`}
+                              className={`${classes.cursorPointer} ${classes.swapHistBox} ${_swap.id}`}
                             >
                               <Grid item xs={6} className={classes.gridItem}>
                                 <Tooltip
                                   title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
                                 >
-                                  <span className={classes.flexCenter}>
-                                    <img
-                                      src={tryRequire(_swap.pool.tokenB.symbol)}
-                                      alt="Logo"
-                                      srcSet=""
-                                      width={15}
-                                      style={{ marginRight: 5 }}
-                                    />{" "}
-                                    {trunc(_swap.swapAmount)}{" "}
-                                    {_swap.pool.tokenB.symbol}
-                                  </span>
+                                  <Box className={classes.flexCenter}>
+                                    <span className={classes.swappedFlash}>
+                                      <img
+                                        src={tryRequire(
+                                          _swap.pool.tokenB.symbol
+                                        )}
+                                        alt="Logo"
+                                        srcSet=""
+                                        width={20}
+                                        style={{ marginRight: 5 }}
+                                      />
+                                      {_swap.pool.tokenB.symbol}
+                                    </span>{" "}
+                                    <Typography
+                                      variant="h6"
+                                      style={{ fontWeight: 700 }}
+                                    >
+                                      {trunc(_swap.swapAmount)}
+                                    </Typography>
+                                  </Box>
                                 </Tooltip>
                               </Grid>
                               {/* 
@@ -301,19 +328,29 @@ function SwapTable({
 
                               <Grid item xs={6} className={classes.gridItem}>
                                 <Tooltip title={`${_swap.flashReceived} FLASH`}>
-                                  <span className={classes.flexCenter}>
-                                    <img
-                                      // src={tryRequire("FlashPro5")}
-                                      src={tryRequire(
-                                        theme === "dark" ? "FlashLogo" : "FLASH"
-                                      )}
-                                      alt="Logo"
-                                      srcSet=""
-                                      width={15}
-                                      style={{ marginRight: 5 }}
-                                    />{" "}
-                                    {trunc(_swap.flashReceived)} FLASH
-                                  </span>
+                                  <Box className={classes.flexCenter}>
+                                    <span className={classes.swappedFlash}>
+                                      <img
+                                        // src={tryRequire("FlashPro5")}
+                                        src={tryRequire(
+                                          theme === "dark"
+                                            ? "FlashLogo"
+                                            : "FLASH"
+                                        )}
+                                        alt="Logo"
+                                        srcSet=""
+                                        width={20}
+                                        style={{ marginRight: 5 }}
+                                      />
+                                      FLASH
+                                    </span>{" "}
+                                    <Typography
+                                      variant="h6"
+                                      style={{ fontWeight: 700 }}
+                                    >
+                                      {trunc(_swap.flashReceived)}
+                                    </Typography>
+                                  </Box>
                                 </Tooltip>
                               </Grid>
                             </Grid>
@@ -347,7 +384,7 @@ function SwapTable({
           )
         ) : (
           <Grid item xs={12} className={classes.msgContainer}>
-            <Typography variant="overline" className={classes.flexCenter}>
+            <Typography variant="overline" className={classes.loadingCenter}>
               <CircularProgress size={12} className={classes.loadingIcon} />{" "}
               LOADING
             </Typography>

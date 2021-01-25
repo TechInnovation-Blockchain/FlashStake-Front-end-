@@ -54,6 +54,7 @@ export const retroTheme = createMuiTheme({
       selected: "#171717",
       liquidity: "#424242",
       disabled: "#000000",
+      historyTableBox: "#393939",
     },
     xioRed: {
       main: "#ed3293",
@@ -129,6 +130,7 @@ export const darkTheme = createMuiTheme({
       selected: "#171717",
       liquidity: "#424242",
       disabled: "#000000",
+      historyTableBox: "#393939",
     },
     xioRed: {
       main: "#D89C74",
@@ -188,6 +190,7 @@ export const lightTheme = createMuiTheme({
       selected: "#e5e5e5",
       liquidity: "#e5e5e5",
       disabled: "#E2E2E2",
+      historyTableBox: "#393939",
     },
     button: {
       dark: "#555555",

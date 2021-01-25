@@ -128,7 +128,7 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
           JSBI.BigInt("1000"),
           JSBI.divide(_fpy0, JSBI.BigInt(5e15))
         );
-        const _apyStake = Web3.utils.fromWei(
+        const _apyStake = utils.formatUnits(
           String(
             JSBI.divide(
               JSBI.multiply(
@@ -143,7 +143,8 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
                 JSBI.multiply(_fpy, _lpFee)
               )
             )
-          )
+          ),
+          _pools[i]?.tokenB?.decimal || _pools[i]?.tokenB?.decimals
         );
         const tokenPrice = response.data[_pools[i].tokenB.id]?.usd || 0;
         // const _apyStake = await _getAPYStake(_pools[i].id, _fpy);
