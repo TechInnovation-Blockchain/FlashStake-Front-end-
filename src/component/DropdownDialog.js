@@ -511,11 +511,15 @@ function DropdownDialog({
                     rewardPercent[selectedValue.id] &&
                     initialValues.days > 0 &&
                     initialValues.quantity > 0
-                    ? `(${
-                        trunc(rewardPercent[selectedValue.id]) > 0
-                          ? trunc(rewardPercent[selectedValue.id])
-                          : "0"
-                      }%)`
+                    ? isNaN(rewardPercent[selectedValue.id])
+                      ? "(0%)"
+                      : `(${
+                          trunc(rewardPercent[selectedValue.id]) > 0
+                            ? trunc(rewardPercent[selectedValue.id])
+                            : "0"
+                        }%)`
+                    : isNaN(poolsApy[selectedValue.id])
+                    ? "(0%)"
                     : `(${
                         parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
                           parseInt(poolsApy[selectedValue.id]) >
@@ -623,13 +627,15 @@ function DropdownDialog({
                           }
                         })
                       : history.location.pathname === "/stake"
-                      ? `(${
-                          parseFloat(poolsApy[_pool.id]).toFixed(2) -
-                            parseInt(poolsApy[_pool.id]) >
-                          0
-                            ? parseFloat(poolsApy[_pool.id]).toFixed(2)
-                            : parseInt(poolsApy[_pool.id])
-                        }%)`
+                      ? isNaN(parseInt(poolsApy[_pool.id]))
+                        ? "(0%)"
+                        : `(${
+                            parseFloat(poolsApy[_pool.id]).toFixed(2) -
+                              parseInt(poolsApy[_pool.id]) >
+                            0
+                              ? parseFloat(poolsApy[_pool.id]).toFixed(2)
+                              : parseInt(poolsApy[_pool.id])
+                          }%)`
                       : null}
                   </Typography>
                 </ListItem>
