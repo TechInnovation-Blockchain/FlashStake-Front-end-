@@ -29,14 +29,14 @@ export const CONSTANTS = {
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
   CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
   CHAIN_ID: 1,
-  NETWORK: "MAINNNET",
+  NETWORK: "MAINNET",
   NO_TOKEN_IMAGE:
     "https://gateway.pinata.cloud/ipfs/QmPjZKfLBxZH5DCnbVM55FNnVeMEwJuP2b1oquMw5z8ECA",
   TOKENS_LIST: [
     {
       name: "Flash Default List",
       uri:
-        "https://gateway.pinata.cloud/ipfs/QmcetpH7sLwrdfZEpyk6eebpq7bYdBAfMDKdsmtw8pjQTf/flash.tokenlist.json",
+        "https://gateway.pinata.cloud/ipfs/QmVkvf4DCgqDFtz2pbbMssFi69FHLEKUntZR9WW169PfYv",
       // "https://gateway.pinata.cloud/ipfs/QmegBvuMRxTtJpUsnZtJX42FxUimFokAEaCCQUNhGuntBc/flash.tokenlist.json",
       logoURI:
         "https://gateway.pinata.cloud/ipfs/QmTNkn1Fho2aJMjTiaMaNzqjapo6zAecapNtEZnP2nmh9A",

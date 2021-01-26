@@ -189,6 +189,27 @@ function Layout({
     !localStorage.getItem("disabledDisclaimer")
   );
 
+  useEffect(() => {
+    let tokenList = JSON.parse(localStorage.getItem("tokensURI"));
+    console.log(tokenList);
+    if (
+      tokenList?.uri?.includes(
+        "https://gateway.pinata.cloud/ipfs/QmcetpH7sLwrdfZEpyk6eebpq7bYdBAfMDKdsmtw8pjQTf/flash.tokenlist.json"
+      )
+    ) {
+      localStorage.setItem(
+        "tokensURI",
+        JSON.stringify({
+          name: "Flash Default List",
+          uri:
+            "https://gateway.pinata.cloud/ipfs/QmVkvf4DCgqDFtz2pbbMssFi69FHLEKUntZR9WW169PfYv",
+          logoURI:
+            "https://gateway.pinata.cloud/ipfs/QmTNkn1Fho2aJMjTiaMaNzqjapo6zAecapNtEZnP2nmh9A",
+        })
+      );
+    }
+  });
+
   return (
     <Fragment>
       <Disclaimer open={open} setOpen={setOpen} />
