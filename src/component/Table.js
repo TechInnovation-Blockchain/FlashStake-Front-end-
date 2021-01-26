@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   selected: {
-    background: theme.palette.background.selected,
+    background: `${theme.palette.background.selected} !important`,
   },
   checkbox: {
     padding: 0,
@@ -522,7 +522,7 @@ function TableComponent({
                                   )}
                                   /{trunc(_stake.stakeAmount)} FLASH */}
                                   <Typography
-                                    variant="body2"
+                                    variant="body1"
                                     className={classes.fontWeight}
                                   >
                                     {`${getPercentageAmount(

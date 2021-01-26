@@ -26,6 +26,7 @@ export const userStakesQuery = gql`
         receiver
         active
         transactionHash
+        timestamp
         pool {
           id
           tokenB {

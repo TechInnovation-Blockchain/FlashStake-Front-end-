@@ -23,6 +23,10 @@ import {
   showSnackbarIndep,
   setPercentLoader,
 } from "./uiActions";
+import {
+  initializeEthToWethContract,
+  deposit,
+} from "../../utils/contractFunctions/ethToWethContractFunctions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
@@ -1029,6 +1033,30 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
     await removeLiquidityInPool(removeLiquidity, _pool.pool.tokenB.id);
   } catch (e) {
     _error("ERROR removeTokenLiquidityInPool -> ", e);
+  }
+};
+
+export const depositEth = (useEth) => async (dispatch, getState) => {
+  const {
+    flashstake: {
+      initialValues: { quantity },
+    },
+    user: { walletBalances },
+  } = getState;
+
+  try {
+    if (
+      quantity <=
+      parseFloat(walletBalances["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]) +
+        useEth
+        ? parseFloat(walletBalances[CONSTANTS.ETH_ADDRESS])
+        : 0
+    ) {
+      initializeEthToWethContract();
+      deposit(quantity);
+    }
+  } catch (e) {
+    console.log("ERROR ->", e);
   }
 };
 
