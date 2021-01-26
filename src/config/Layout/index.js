@@ -22,6 +22,7 @@ import Disclaimer from "../../component/Disclaimer";
 
 import blockZero from "../../assets/blockzero.png";
 import blockZeroB from "../../assets/bzeroblack.png";
+import { CONSTANTS } from "../../utils/constants";
 
 import {
   showWalletBackdrop,
@@ -143,22 +144,9 @@ function Layout({
 }) {
   const classes = useStyles();
 
-  // const [height2, setHeight2] = useState(0);
-  // const ref = useRef(null);
-
-  // useEffect(() => {
-  //   setHeight2(ref?.current?.clientHeight);
-  // }, [ref?.current?.clientHeight]);
-
   const handleClose = () => {
     showWalletBackdrop(false);
   };
-
-  // const [showDisclaim, setShowDisclaim] = React.useState();
-
-  // useEffect(() => {
-  // setShowDisclaim(localStorage.getItem("disabledDisclaimer"));
-  // }, []);
 
   useEffect(() => {
     const body = document.querySelector("#body");
@@ -190,25 +178,24 @@ function Layout({
   );
 
   useEffect(() => {
+    validateTokensList();
+  }, []);
+
+  const validateTokensList = () => {
     let tokenList = JSON.parse(localStorage.getItem("tokensURI"));
-    console.log(tokenList);
-    if (
-      tokenList?.uri?.includes(
-        "https://gateway.pinata.cloud/ipfs/QmcetpH7sLwrdfZEpyk6eebpq7bYdBAfMDKdsmtw8pjQTf/flash.tokenlist.json"
-      )
-    ) {
-      localStorage.setItem(
-        "tokensURI",
-        JSON.stringify({
-          name: "Flash Default List",
-          uri:
-            "https://gateway.pinata.cloud/ipfs/QmVkvf4DCgqDFtz2pbbMssFi69FHLEKUntZR9WW169PfYv",
-          logoURI:
-            "https://gateway.pinata.cloud/ipfs/QmTNkn1Fho2aJMjTiaMaNzqjapo6zAecapNtEZnP2nmh9A",
-        })
-      );
+
+    const tok = CONSTANTS.TOKENS_LIST.find(
+      (_item) => _item.name === tokenList?.name
+    );
+
+    if (tok && tokenList) {
+      if (tokenList?.uri !== tok?.uri)
+        return localStorage.setItem("tokensURI", JSON.stringify(tok));
+      // console.log(tok);
+    } else {
+      return;
     }
-  });
+  };
 
   return (
     <Fragment>
