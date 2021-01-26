@@ -22,6 +22,7 @@ import Disclaimer from "../../component/Disclaimer";
 
 import blockZero from "../../assets/blockzero.png";
 import blockZeroB from "../../assets/bzeroblack.png";
+import { CONSTANTS } from "../../utils/constants";
 
 import {
   showWalletBackdrop,
@@ -143,22 +144,9 @@ function Layout({
 }) {
   const classes = useStyles();
 
-  // const [height2, setHeight2] = useState(0);
-  // const ref = useRef(null);
-
-  // useEffect(() => {
-  //   setHeight2(ref?.current?.clientHeight);
-  // }, [ref?.current?.clientHeight]);
-
   const handleClose = () => {
     showWalletBackdrop(false);
   };
-
-  // const [showDisclaim, setShowDisclaim] = React.useState();
-
-  // useEffect(() => {
-  // setShowDisclaim(localStorage.getItem("disabledDisclaimer"));
-  // }, []);
 
   useEffect(() => {
     const body = document.querySelector("#body");
@@ -188,6 +176,26 @@ function Layout({
   const [open, setOpen] = React.useState(
     !localStorage.getItem("disabledDisclaimer")
   );
+
+  useEffect(() => {
+    validateTokensList();
+  }, []);
+
+  const validateTokensList = () => {
+    let tokenList = JSON.parse(localStorage.getItem("tokensURI"));
+
+    const tok = CONSTANTS.TOKENS_LIST.find(
+      (_item) => _item.name === tokenList?.name
+    );
+
+    if (tok && tokenList) {
+      if (tokenList?.uri !== tok?.uri)
+        return localStorage.setItem("tokensURI", JSON.stringify(tok));
+      // console.log(tok);
+    } else {
+      return;
+    }
+  };
 
   return (
     <Fragment>
