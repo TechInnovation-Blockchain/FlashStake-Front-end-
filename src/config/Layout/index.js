@@ -187,9 +187,13 @@ function Layout({
     const tok = CONSTANTS.TOKENS_LIST.find(
       (_item) => _item.name === tokenList?.name
     );
-    if (tokenList?.uri !== tok?.uri) {
-      localStorage.setItem("tokensURI", JSON.stringify(tok));
-      console.log(tok);
+
+    if (tok && tokenList) {
+      if (tokenList?.uri !== tok?.uri)
+        return localStorage.setItem("tokensURI", JSON.stringify(tok));
+      // console.log(tok);
+    } else {
+      return;
     }
   };
 
