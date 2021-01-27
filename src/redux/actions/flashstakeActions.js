@@ -1036,25 +1036,14 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
   }
 };
 
-export const depositEth = (useEth) => async (dispatch, getState) => {
+export const depositEth = (_quantity) => async (dispatch, getState) => {
   const {
-    flashstake: {
-      initialValues: { quantity },
-    },
     user: { walletBalances },
-  } = getState;
-
+  } = getState();
+  console.log("in HEre", _quantity);
   try {
-    if (
-      quantity <=
-      parseFloat(walletBalances["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]) +
-        useEth
-        ? parseFloat(walletBalances[CONSTANTS.ETH_ADDRESS])
-        : 0
-    ) {
-      initializeEthToWethContract();
-      deposit(quantity);
-    }
+    initializeEthToWethContract();
+    deposit(utils.parseUnits(_quantity.toString(), 18).toString());
   } catch (e) {
     console.log("ERROR ->", e);
   }
@@ -1130,6 +1119,13 @@ export const setCreateDialogStep = (step) => {
   };
 };
 
+export const setConvertDialogStep = (step) => {
+  return {
+    type: "CONVERT_DIALOG_STEP",
+    payload: step,
+  };
+};
+
 export const setSwapDialogStepIndep = (step) => {
   store.dispatch(setSwapDialogStep(step));
 };
@@ -1139,6 +1135,10 @@ export const setPoolDialogStepIndep = (step) => {
 };
 export const setCreateDialogStepIndep = (step) => {
   store.dispatch(setCreateDialogStep(step));
+};
+
+export const setConvertDialogStepIndep = (step) => {
+  store.dispatch(setConvertDialogStep(step));
 };
 
 // export const setReset = (val) => {
@@ -1158,9 +1158,18 @@ export const setStakeTxnHash = (val) => {
     payload: val,
   };
 };
+export const setConvertTxnHash = (val) => {
+  return {
+    type: "CONVERT_TXN_HASH",
+    payload: val,
+  };
+};
 
 export const setStakeTxnHashIndep = (val) => {
   store.dispatch(setStakeTxnHash(val));
+};
+export const setConvertTxnHashIndep = (val) => {
+  store.dispatch(setConvertTxnHash(val));
 };
 export const setLiquidityTxnHash = (val) => {
   return {

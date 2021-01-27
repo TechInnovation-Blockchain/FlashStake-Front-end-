@@ -5,6 +5,19 @@ import {
 import { getWalletAddressReduxState } from "../../redux/state";
 import { _error, _log } from "../log";
 
+import {
+  setLoadingIndep,
+  showSnackbarIndep,
+  showSnackbarTxnIndep,
+} from "../../redux/actions/uiActions";
+import { setRefetchIndep } from "../../redux/actions/dashboardActions";
+import {
+  setConvertDialogStepIndep,
+  setConvertTxnHashIndep,
+  setResetIndep,
+} from "../../redux/actions/flashstakeActions";
+import { addToTxnQueueIndep } from "../../redux/actions/txnsActions";
+
 let contract;
 let isContractInitialized = false;
 
@@ -22,19 +35,61 @@ const checkContractInitialized = () => {
   }
 };
 
-export const deposit = async () => {
+export const deposit = async (_quantity) => {
   try {
+    setConvertDialogStepIndep("pendingConvert");
+    showSnackbarIndep("Conversion Pending.", "info");
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
     if (!walletAddress) {
       // throw new _error("Wallet not activated.");
       return "0";
     }
-    console.log("In here", contract.methods);
-    const receivedWeth = await contract.methods.deposit().send({
-      value: 1000000000000000,
-      from: walletAddress,
-    });
+    console.log("In here", _quantity);
+    const receivedWeth = await contract.methods
+      .deposit()
+      .send({
+        value: _quantity,
+        from: walletAddress,
+      })
+      .on("transactionHash", async (txnHash) => {
+        addToTxnQueueIndep(txnHash);
+        setConvertTxnHashIndep(txnHash);
+        showSnackbarTxnIndep(
+          "Conversion Pending.",
+          "info",
+          "txnEtherScan",
+          txnHash,
+          true
+        );
+      })
+      .then(function (receipt) {
+        setTimeout(() => {
+          setRefetchIndep(true);
+        }, 2000);
+        setConvertDialogStepIndep("successConvert");
+        setLoadingIndep({ convert: false });
+
+        setResetIndep(true);
+        showSnackbarTxnIndep(
+          "Conversion Transaction Successful.",
+          "success",
+          "txnEtherScan",
+          receipt.transactionHash,
+          false
+        );
+      })
+      .catch((e) => {
+        if (e.code === 4001) {
+          setConvertDialogStepIndep("rejectedConvert");
+          showSnackbarIndep("Convert Transaction Rejected.", "error");
+        } else {
+          setConvertDialogStepIndep("failedConvert");
+          showSnackbarIndep("Convert Transaction Failed.", "error");
+        }
+        setLoadingIndep({ convert: false });
+        _error("ERROR convert -> ", e);
+      });
 
     // receivedWeth
     return receivedWeth;

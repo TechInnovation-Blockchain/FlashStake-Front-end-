@@ -76,10 +76,6 @@ import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
 import { SlideDown } from "react-slidedown";
 import Checkbox from "@material-ui/core/Checkbox";
-import {
-  initializeEthToWethContract,
-  deposit,
-} from "../../utils/contractFunctions/ethToWethContractFunctions";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -658,13 +654,13 @@ function Flashstake({
     }
   }, [active, account, chainId]);
 
-  const onClickStake = (quantity, days) => {
-    if (
-      selectedRewardToken?.tokenB?.address?.toLowerCase() ===
-      "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-    ) {
-      // depositEth(useEth);
-    }
+  const onClickStake = async (quantity, days) => {
+    // if (
+    //   selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+    //   "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    // ) {
+    //   await depositEth(useEth);
+    // }
 
     setDialogStep("pendingStake");
     setShowStakeDialog(true);

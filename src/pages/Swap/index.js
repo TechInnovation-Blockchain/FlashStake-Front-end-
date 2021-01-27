@@ -44,6 +44,7 @@ import {
   // setReset,
   setInitialValues,
   swapALT,
+  depositEth,
 } from "../../redux/actions/flashstakeActions";
 import {
   setExpandAccodion,
@@ -59,6 +60,7 @@ import AnimateHeight from "react-animate-height";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { useHistory } from "react-router-dom";
 import { store } from "../../config/reduxStore";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import { SlideDown } from "react-slidedown";
 
@@ -276,6 +278,15 @@ const useStyles = makeStyles((theme) => ({
   boxSizing: {
     boxSizing: "border-box",
   },
+  useEthCheckBox: {
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  checkboxGrid: {
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -374,6 +385,8 @@ function Swap({
   heightVal,
   recalcSwap,
   allPoolsData,
+  walletBalances,
+  depositEth,
   ...props
 }) {
   const classes = useStyles();
@@ -382,6 +395,10 @@ function Swap({
   const [recalc, setRecalc] = useState(false);
   const [heightToggle, setHeightToggle] = useState(false);
   const [height2, setHeight2] = useState(0);
+  const [ethBalance, setEthBalance] = useState(0);
+  const [wethBalance, setWethBalance] = useState(0);
+
+  const [useEth, setUseEth] = useState(false);
   const ref = useRef(null);
   // useEffect(() => {
   //   setTimeout(() => {
@@ -389,6 +406,19 @@ function Swap({
   //     setHeightValue(ref?.current?.clientHeight);
   //   }, 100);
   // });
+
+  const handleEth = () => {
+    setUseEth(!useEth);
+  };
+
+  useEffect(() => {
+    setEthBalance(walletBalances[CONSTANTS?.ETH_ADDRESS?.toLowerCase()]);
+  }, [account, active, walletBalances]);
+  useEffect(() => {
+    setWethBalance(
+      walletBalances["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]
+    );
+  }, [account, active, walletBalances]);
 
   const toggle = () => {};
 
@@ -411,6 +441,9 @@ function Swap({
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
+    }
+    if (!value) {
+      setUseEth(false);
     }
   };
 
@@ -491,6 +524,12 @@ function Swap({
     setDialogStep("pendingSwap");
     setShowStakeDialog(true);
     swapALT(quantity);
+  };
+
+  const onClickConvert = (quantity) => {
+    setDialogStep("pendingConvert");
+    setShowStakeDialog(true);
+    depositEth(quantity);
   };
 
   const onClickClose = () => {
@@ -594,6 +633,30 @@ function Swap({
                   </Box>
                 </Grid>
 
+                {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" &&
+                parseFloat(quantity) > parseFloat(balanceALT) ? (
+                  <Grid item className={` ${classes.checkboxGrid}`} xs={12}>
+                    <Typography
+                      variant="body1"
+                      className={classes.secondaryText}
+                    >
+                      Include your current Eth balance{" "}
+                      <span className={classes.infoTextSpan}>
+                        {`(${trunc(
+                          walletBalances[CONSTANTS.ETH_ADDRESS.toLowerCase()]
+                        )})`}
+                      </span>
+                      <Checkbox
+                        className={classes.useEthCheckBox}
+                        color="inherit"
+                        checked={useEth}
+                        onChange={handleEth}
+                      />
+                    </Typography>
+                  </Grid>
+                ) : null}
+
                 {parseFloat(quantity) >
                 parseFloat(
                   allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
@@ -669,24 +732,46 @@ function Swap({
                           // className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
-                            <Button
-                              variant="retro"
-                              fullWidth
-                              onClick={onClickApprove}
-                              disabled={
-                                !selectedPortal ||
-                                chainId !== CONSTANTS.CHAIN_ID ||
-                                allowanceALT ||
-                                loadingRedux.approval
-                              }
-                              loading={
-                                loadingRedux.approval &&
-                                loadingRedux.approvalALT
-                              }
-                            >
-                              APPROVE{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""}
-                            </Button>
+                            {useEth ? (
+                              <Button
+                                variant="retro"
+                                fullWidth
+                                onClick={() => onClickConvert(quantity)}
+                                disabled={
+                                  !selectedPortal ||
+                                  !(quantity > 0) ||
+                                  chainId !== CONSTANTS.CHAIN_ID ||
+                                  parseFloat(ethBalance) <
+                                    parseFloat(quantity) -
+                                      parseFloat(wethBalance) +
+                                      0.01
+
+                                  // loadingRedux.swap
+                                }
+                                // loading={loadingRedux.swap}
+                              >
+                                Convert ETH
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="retro"
+                                fullWidth
+                                onClick={onClickApprove}
+                                disabled={
+                                  !selectedPortal ||
+                                  chainId !== CONSTANTS.CHAIN_ID ||
+                                  allowanceALT ||
+                                  loadingRedux.approval
+                                }
+                                loading={
+                                  loadingRedux.approval &&
+                                  loadingRedux.approvalALT
+                                }
+                              >
+                                APPROVE{" "}
+                                {selectedRewardToken?.tokenB?.symbol || ""}
+                              </Button>
+                            )}
                           </Grid>
                           <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
@@ -816,6 +901,83 @@ function Swap({
                             onClick={onClickClose}
                           >
                             CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                      pendingConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION PENDING
+                            <br />
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            Converting {trunc(quantity)} ETH for {quantity} WETH{" "}
+                          </Typography>
+                        </Fragment>
+                      ),
+
+                      successConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                      failedConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
                           </Button>
                         </Fragment>
                       ),
@@ -1098,7 +1260,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
-  user: { currentStaked, pools },
+  user: { currentStaked, pools, walletBalances },
   flashstake: { swapHist },
   query: { recalcSwap, allPoolsData },
   contract,
@@ -1116,6 +1278,7 @@ const mapStateToProps = ({
   heightVal,
   recalcSwap,
   allPoolsData,
+  walletBalances,
   ...contract,
 });
 
@@ -1132,6 +1295,7 @@ export default connect(mapStateToProps, {
   setInitialValues,
   showWalletBackdrop,
   swapALT,
+  depositEth,
   calculateSwap,
   setExpandAccodion,
   setRefetch,
