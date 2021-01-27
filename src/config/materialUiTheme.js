@@ -182,7 +182,7 @@ export const lightTheme = createMuiTheme({
     },
     xioRed: {
       main: "#e2874a",
-      dark: "#996745",
+      dark: "#D89C74",
     },
     background: {
       primary: "#ffffff",
