@@ -86,16 +86,16 @@ function Updater({
   const getTokensList = async () => {
     const data = await fetchTokenList(tokensURI?.uri);
     if (data?.data?.tokens && pools) {
-      let userTokens;
+      let userTokens = [];
       try {
-        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
+        userTokens = JSON.parse(await localStorage.getItem("tokenList")) || [];
       } catch (e) {}
 
       updateTokenList(
         [
           ...(data?.data?.tokens || []),
           // ...(userTokens || []),
-          ...(userTokens.filter(
+          ...(userTokens?.filter(
             (_token) =>
               !data?.data?.tokens.find(
                 (_tok) =>

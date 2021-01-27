@@ -907,35 +907,6 @@ function Flashstake({
                   </Grid>
                 </Grid>
 
-                {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
-                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" &&
-                quantity > 0 &&
-                days > 0 ? (
-                  <Grid
-                    container
-                    className={` ${classes.checkboxGrid}`}
-                    xs={12}
-                  >
-                    <Typography
-                      variant="body1"
-                      className={classes.secondaryText}
-                    >
-                      Include your current Eth balance{" "}
-                      <span className={classes.infoTextSpan}>
-                        {`(${trunc(
-                          walletBalances[CONSTANTS.ETH_ADDRESS.toLowerCase()]
-                        )})`}
-                      </span>
-                      <Checkbox
-                        className={classes.useEthCheckBox}
-                        color="inherit"
-                        checked={useEth}
-                        onChange={handleEth}
-                      />
-                    </Typography>
-                  </Grid>
-                ) : null}
-
                 {parseFloat(quantity) >
                 parseFloat(
                   allPoolsData[selectedRewardToken?.id]?.reserveAltAmount
