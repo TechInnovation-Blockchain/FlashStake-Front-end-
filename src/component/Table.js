@@ -18,7 +18,7 @@ import {
 
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { connect } from "react-redux";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles, withStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
 
 import { showWalletBackdrop, setHeightValue } from "../redux/actions/uiActions";
@@ -181,6 +181,11 @@ const useStyles = makeStyles((theme) => ({
 
     // },
   },
+  progressBarColor: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      color: `${theme.palette.xioRed.main} !important`,
+    },
+  },
   startPoint: {
     position: "absolute",
     left: 0,
@@ -194,6 +199,15 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
 }));
+
+const StyledLinearProgress = withStyles((theme) => ({
+  colorPrimary: {
+    backgroundColor: theme.palette.xioRed.dark,
+  },
+  barColorPrimary: {
+    backgroundColor: theme.palette.xioRed.main,
+  },
+}))(LinearProgress);
 
 function TableComponent({
   stakes,
@@ -246,9 +260,8 @@ function TableComponent({
         alignItems="center"
       >
         <Box width="100%">
-          <LinearProgress
-            // className={classes.progressBar}
-
+          <StyledLinearProgress
+            className={classes.progressBarColor}
             variant="determinate"
             value={total === outof ? 100 : getPercentageAmount(total, outof)}
           />

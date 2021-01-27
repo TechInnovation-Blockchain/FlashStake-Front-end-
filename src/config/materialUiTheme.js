@@ -58,6 +58,7 @@ export const retroTheme = createMuiTheme({
     },
     xioRed: {
       main: "#ed3293",
+      dark: "#91235c",
     },
 
     navLink: {
@@ -134,6 +135,7 @@ export const darkTheme = createMuiTheme({
     },
     xioRed: {
       main: "#D89C74",
+      dark: "#996745",
     },
 
     navLink: {
@@ -180,6 +182,7 @@ export const lightTheme = createMuiTheme({
     },
     xioRed: {
       main: "#e2874a",
+      dark: "#996745",
     },
     background: {
       primary: "#ffffff",
