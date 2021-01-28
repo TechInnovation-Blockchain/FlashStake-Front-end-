@@ -106,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
   swapHistBox: {
     background: theme.palette.background.historyTableBox,
     padding: theme.spacing(1.5, 0),
+    margin: theme.spacing(1, 0),
     borderRadius: 5,
   },
   swappedFlash: {
