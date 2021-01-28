@@ -61,6 +61,7 @@ import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { useHistory } from "react-router-dom";
 import { store } from "../../config/reduxStore";
 import Checkbox from "@material-ui/core/Checkbox";
+import BigNumber from "bignumber.js";
 
 import { SlideDown } from "react-slidedown";
 
@@ -397,6 +398,7 @@ function Swap({
   const [height2, setHeight2] = useState(0);
   const [ethBalance, setEthBalance] = useState(0);
   const [wethBalance, setWethBalance] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const [useEth, setUseEth] = useState(false);
   const ref = useRef(null);
@@ -458,6 +460,22 @@ function Swap({
     setRefetch();
     // setLoading({ dapp: true });
   }, [setRefetch]);
+
+  useEffect(() => {
+    if (
+      new BigNumber(quantity).gt(
+        new BigNumber(ethBalance)
+          .plus(new BigNumber(wethBalance))
+          .minus(new BigNumber(0.01))
+      )
+    ) {
+      // setTimeout(() => {
+      setDisabled(true);
+      // }, 700);
+    } else {
+      setDisabled(false);
+    }
+  }, [quantity, ethBalance, wethBalance]);
 
   useEffect(() => () => setInitialValues(quantity, days), [
     days,
@@ -527,9 +545,23 @@ function Swap({
   };
 
   const onClickConvert = (quantity) => {
+    const _q = new BigNumber(quantity);
+    const _w = new BigNumber(wethBalance);
+    let _quantity = _q.minus(_w).toFixed(18);
     setDialogStep("pendingConvert");
     setShowStakeDialog(true);
-    depositEth(quantity);
+    console.log(
+      "DEBUG",
+      new BigNumber(quantity).toString(),
+      new BigNumber(wethBalance).toString(),
+      new BigNumber(ethBalance).toString(),
+      { _quantity: _quantity.toString() },
+      new BigNumber(quantity)
+        .eq(new BigNumber(ethBalance).minus(new BigNumber(0.01)))
+        .toString(),
+      new BigNumber(ethBalance).minus(new BigNumber(0.01)).toString()
+    );
+    depositEth(_quantity);
   };
 
   const onClickClose = () => {
@@ -621,10 +653,23 @@ function Swap({
                         disabled={
                           !(active || account) ||
                           !selectedPortal ||
-                          balanceALT == quantity
+                          balanceALT == quantity ||
+                          new BigNumber(quantity).eq(
+                            new BigNumber(ethBalance).minus(new BigNumber(0.01))
+                          )
                         }
                         onClick={() =>
-                          onChangeQuantity({ target: { value: balanceALT } })
+                          onChangeQuantity({
+                            target: {
+                              value: useEth
+                                ? new BigNumber(ethBalance).plus(
+                                    new BigNumber(wethBalance).minus(
+                                      new BigNumber(0.01)
+                                    )
+                                  )
+                                : balanceALT,
+                            },
+                          })
                         }
                       >
                         <MaxBtn width={10} />
@@ -741,11 +786,15 @@ function Swap({
                                   !selectedPortal ||
                                   !(quantity > 0) ||
                                   chainId !== CONSTANTS.CHAIN_ID ||
-                                  parseFloat(ethBalance) <
-                                    parseFloat(quantity) -
-                                      parseFloat(wethBalance) +
-                                      0.01
-
+                                  new BigNumber(ethBalance).lt(
+                                    new BigNumber(quantity)
+                                      .minus(new BigNumber(wethBalance))
+                                      .plus(new BigNumber(0.01))
+                                  ) ||
+                                  disabled ||
+                                  new BigNumber(quantity).lte(
+                                    new BigNumber(wethBalance)
+                                  )
                                   // loadingRedux.swap
                                 }
                                 // loading={loadingRedux.swap}
@@ -772,6 +821,61 @@ function Swap({
                                 {selectedRewardToken?.tokenB?.symbol || ""}
                               </Button>
                             )}
+                          </Grid>
+                          <Grid item xs={6} className={classes.btnPaddingLeft}>
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={() => onClickSwap(quantity)}
+                              disabled={
+                                !selectedPortal ||
+                                !(quantity > 0) ||
+                                parseFloat(balanceALT) < parseFloat(quantity) ||
+                                !allowanceALT ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
+                                loadingRedux.swap
+                              }
+                              loading={loadingRedux.swap}
+                            >
+                              SWAP
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      ) : useEth &&
+                        !new BigNumber(quantity).lte(
+                          new BigNumber(wethBalance)
+                        ) ? (
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          className={classes.gridSpace}
+                          // className={classes.msgContainer}
+                        >
+                          <Grid item xs={6} className={classes.btnPaddingRight}>
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={() => onClickConvert(quantity)}
+                              disabled={
+                                !selectedPortal ||
+                                !(quantity > 0) ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
+                                new BigNumber(ethBalance).lt(
+                                  new BigNumber(quantity)
+                                    .minus(new BigNumber(wethBalance))
+                                    .plus(new BigNumber(0.01))
+                                ) ||
+                                disabled ||
+                                new BigNumber(quantity).lte(
+                                  new BigNumber(wethBalance)
+                                )
+                                // loadingRedux.swap
+                              }
+                              // loading={loadingRedux.swap}
+                            >
+                              Convert ETH
+                            </Button>
                           </Grid>
                           <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
@@ -917,7 +1021,8 @@ function Swap({
                             variant="body1"
                             className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                           >
-                            Converting {trunc(quantity)} ETH for {quantity} WETH{" "}
+                            Converting {trunc(quantity)} ETH for{" "}
+                            {trunc(quantity)} WETH{" "}
                           </Typography>
                         </Fragment>
                       ),
