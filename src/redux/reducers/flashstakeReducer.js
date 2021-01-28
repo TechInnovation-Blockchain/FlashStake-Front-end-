@@ -295,15 +295,7 @@ export const flashstakeReducer = (
         ...state,
         slip: payload,
       };
-    // case "RESET":
-    //   return {
-    //     ...state,
-    //     reset: payload,
-    //     selectedPortal: payload ? "" : state.selectedPortal,
-    //     selectedRewardToken: {},
-    //     quantity: "",
-    //     days: "",
-    //   };
+
     case "INITIAL_VALUES":
       return {
         ...state,

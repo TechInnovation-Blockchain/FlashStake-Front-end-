@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    // height: "200px",
   },
   comingSoon: {
     color: theme.palette.xioRed.main,
@@ -97,11 +96,7 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: theme.palette.text.secondary,
     fontWeight: 500,
-    // fontSize: 10,
     marginBottom: theme.spacing(1),
-    // [theme.breakpoints.down("xs")]: {
-    //   fontSize: 8,
-    // },
   },
   secondaryText2: {
     color: theme.palette.text.secondary,
@@ -737,8 +732,8 @@ function Pool({
     let _quantity = _q.minus(_w).toFixed(18);
     setPoolDialogStep("pendingConvert");
     setShowStakeDialog(true);
-
-    depositEth(_quantity, (inPool = true));
+    const inPool = true;
+    depositEth(_quantity, inPool);
   };
 
   useEffect(() => {
@@ -1663,7 +1658,8 @@ function Pool({
                     variant="body1"
                     className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                   >
-                    Converting {trunc(quantity)} ETH for {trunc(quantity)} WETH{" "}
+                    Converting {trunc(quantityAlt)} ETH for {trunc(quantityAlt)}{" "}
+                    WETH{" "}
                   </Typography>
                 </Fragment>
               ),

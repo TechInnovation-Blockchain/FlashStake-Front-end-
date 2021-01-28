@@ -35,9 +35,9 @@ const checkContractInitialized = () => {
   }
 };
 
-export const deposit = async (_quantity) => {
+export const deposit = async (_quantity, inPool = false) => {
   try {
-    setConvertDialogStepIndep("pendingConvert");
+    setConvertDialogStepIndep("pendingConvert", inPool);
     showSnackbarIndep("Conversion Pending.", "info");
     checkContractInitialized();
     const walletAddress = getWalletAddressReduxState();
@@ -67,7 +67,7 @@ export const deposit = async (_quantity) => {
         setTimeout(() => {
           setRefetchIndep(true);
         }, 2000);
-        setConvertDialogStepIndep("successConvert");
+        setConvertDialogStepIndep("successConvert", inPool);
         setLoadingIndep({ convert: false });
 
         setResetIndep(true);
@@ -81,10 +81,10 @@ export const deposit = async (_quantity) => {
       })
       .catch((e) => {
         if (e.code === 4001) {
-          setConvertDialogStepIndep("rejectedConvert");
+          setConvertDialogStepIndep("rejectedConvert", inPool);
           showSnackbarIndep("Convert Transaction Rejected.", "error");
         } else {
-          setConvertDialogStepIndep("failedConvert");
+          setConvertDialogStepIndep("failedConvert", inPool);
           showSnackbarIndep("Convert Transaction Failed.", "error");
         }
         setLoadingIndep({ convert: false });

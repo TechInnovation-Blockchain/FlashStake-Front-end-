@@ -1036,14 +1036,14 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
   }
 };
 
-export const depositEth = (_quantity) => async (dispatch, getState) => {
+export const depositEth = (_quantity, inPool) => async (dispatch, getState) => {
   const {
     user: { walletBalances },
   } = getState();
   console.log("in HEre", _quantity);
   try {
     initializeEthToWethContract();
-    deposit(utils.parseUnits(_quantity.toString(), 18).toString());
+    deposit(utils.parseUnits(_quantity.toString(), 18).toString(), inPool);
   } catch (e) {
     console.log("ERROR ->", e);
   }
@@ -1119,9 +1119,9 @@ export const setCreateDialogStep = (step) => {
   };
 };
 
-export const setConvertDialogStep = (step) => {
+export const setConvertDialogStep = (step, inPool) => {
   return {
-    type: "CONVERT_DIALOG_STEP",
+    type: inPool ? "POOL_DIALOG_STEP" : "CONVERT_DIALOG_STEP",
     payload: step,
   };
 };
@@ -1137,8 +1137,8 @@ export const setCreateDialogStepIndep = (step) => {
   store.dispatch(setCreateDialogStep(step));
 };
 
-export const setConvertDialogStepIndep = (step) => {
-  store.dispatch(setConvertDialogStep(step));
+export const setConvertDialogStepIndep = (step, inPool) => {
+  store.dispatch(setConvertDialogStep(step, inPool));
 };
 
 // export const setReset = (val) => {
