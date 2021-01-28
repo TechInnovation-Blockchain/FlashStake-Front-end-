@@ -36,6 +36,7 @@ import { useHistory } from "react-router-dom";
 import { CONSTANTS } from "../utils/constants";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import Zoom from "@material-ui/core/Zoom";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const useStyles = makeStyles((theme) => ({
@@ -198,6 +199,10 @@ const useStyles = makeStyles((theme) => ({
     top: -15,
     fontWeight: 600,
   },
+  tooltip: {
+    background: `${theme.palette.background.primary} !important`,
+    // color:
+  },
 }));
 
 const StyledLinearProgress = withStyles((theme) => ({
@@ -251,7 +256,7 @@ function TableComponent({
   const [height, setHeight] = useState(heightVal);
   const ref = useRef(null);
 
-  function LinearProgressWithLabel({ total, outof }) {
+  function LinearProgressWithLabel({ total, outof, time }) {
     return (
       <Box
         display="flex"
@@ -260,11 +265,19 @@ function TableComponent({
         alignItems="center"
       >
         <Box width="100%">
-          <StyledLinearProgress
-            className={classes.progressBarColor}
-            variant="determinate"
-            value={total === outof ? 100 : getPercentageAmount(total, outof)}
-          />
+          <Tooltip
+            title={`Staked on ${new Date(time * 1000)
+              .toString()
+              .substring(4, 15)}`}
+            arrow
+            TransitionComponent={Zoom}
+          >
+            <StyledLinearProgress
+              className={classes.progressBarColor}
+              variant="determinate"
+              value={total === outof ? 100 : getPercentageAmount(total, outof)}
+            />
+          </Tooltip>
         </Box>
         {/* <Box minWidth={35}>
           <Typography variant="body2" color="textSecondary">
@@ -640,6 +653,7 @@ function TableComponent({
                                 >
                                   {trunc(_stake.stakeAmount)}
                                 </Typography>
+
                                 <LinearProgressWithLabel
                                   // style={{ paddingTop: 5 }}
                                   total={trunc(_stake.stakeAmount)}
@@ -648,6 +662,7 @@ function TableComponent({
                                       ? _stake.amountAvailable
                                       : _stake.stakeAmount - _stake.burnAmount
                                   )}
+                                  time={_stake.timestamp}
                                 />
                               </div>
                             </Grid>
