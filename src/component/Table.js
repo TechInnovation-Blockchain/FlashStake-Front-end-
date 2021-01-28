@@ -634,7 +634,6 @@ function TableComponent({
                                 )
                               ) : null}
                             </Grid>
-                            {/* </Box> */}
                             <Grid
                               item
                               xs={12}
@@ -651,7 +650,7 @@ function TableComponent({
                                   variant="caption"
                                   className={classes.endPoint}
                                 >
-                                  {trunc(_stake.stakeAmount)}
+                                  {trunc(_stake.stakeAmount)} Flash
                                 </Typography>
 
                                 <LinearProgressWithLabel

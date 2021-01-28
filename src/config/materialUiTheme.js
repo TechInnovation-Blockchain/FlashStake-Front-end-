@@ -51,7 +51,7 @@ export const retroTheme = createMuiTheme({
       secondary2: "#000000",
       secondary4: "#1a1a1a",
       secondary3: "#000000",
-      selected: "#171717",
+      selected: "#292626",
       liquidity: "#424242",
       disabled: "#000000",
       historyTableBox: "#393939",
