@@ -128,7 +128,6 @@ export const updateApyPools = (quantity, days, poolsParam) => async (
           JSBI.BigInt("1000"),
           JSBI.divide(_fpy0, JSBI.BigInt(5e15))
         );
-
         const _apyStake = utils.formatUnits(
           String(
             JSBI.divide(

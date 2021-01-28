@@ -6,6 +6,7 @@ import { abi as FlashstakePoolAbi } from "./abi/FlashstakePoolAbi.json";
 import { abi as BalanceContractAbi } from "./abi/BalanceContract.json";
 import { abi as QueryContractAbi } from "./abi/QueryContractAbi.json";
 import { abi as FlashProtocolAbi } from "./abi/FlashProtocolAbi.json";
+import { abi as EthToWethAbi } from "./abi/EthToWeth.json";
 
 import { CONSTANTS } from "../utils/constants";
 import { _error } from "../utils/log";
@@ -14,6 +15,7 @@ const {
   BALANCE_CONTRACT,
   QUERY_CONTRACT,
   FLASH_PROTOCOL_CONTRACT,
+  ETH_CONVERSION_CONTRACT,
 } = CONSTANTS;
 
 let web3js;
@@ -169,5 +171,29 @@ export const flashProtocolInfuraContract = () => {
     return contract;
   } catch (e) {
     _error("ERROR queryInfuraContract -> ", e);
+  }
+};
+
+export const EthToWethConversionContract = (tokenAddress) => {
+  try {
+    const contract = new web3js.eth.Contract(
+      EthToWethAbi,
+      ETH_CONVERSION_CONTRACT
+    );
+    return contract;
+  } catch (e) {
+    _error("ERROR EthToWethConversionContract -> ", e);
+  }
+};
+
+export const EthToWethConversionInfuraContract = () => {
+  try {
+    const contract = new web3jsInfura.eth.Contract(
+      EthToWethAbi,
+      ETH_CONVERSION_CONTRACT
+    );
+    return contract;
+  } catch (e) {
+    _error("ERROR EthToWethConversionInfuraContract -> ", e);
   }
 };

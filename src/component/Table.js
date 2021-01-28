@@ -18,11 +18,11 @@ import {
 
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { connect } from "react-redux";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles, withStyles } from "@material-ui/styles";
 import { UnfoldMore } from "@material-ui/icons";
 
 import { showWalletBackdrop, setHeightValue } from "../redux/actions/uiActions";
-import { trunc } from "../utils/utilFunc";
+import { trunc, getPercentageAmount } from "../utils/utilFunc";
 import Button from "./Button";
 import PageAnimation from "./PageAnimation";
 import { unstakeXIO } from "../redux/actions/flashstakeActions";
@@ -36,6 +36,8 @@ import { useHistory } from "react-router-dom";
 import { CONSTANTS } from "../utils/constants";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import Zoom from "@material-ui/core/Zoom";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const useStyles = makeStyles((theme) => ({
   gridHead: {
@@ -74,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
   sortIcon: {
     color: theme.palette.xioRed.main,
   },
+  fontWeight: {
+    fontWeight: 700,
+  },
   tableHeadItemBtn: {
     fontWeight: 500,
     // fontSize: 10,
@@ -93,10 +98,13 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   selected: {
-    background: theme.palette.background.selected,
+    background: `${theme.palette.background.selected} !important`,
   },
   checkbox: {
     padding: 0,
+    position: "absolute",
+    right: 10,
+    top: 35,
     "&.Mui-checked": {
       color: theme.palette.xioRed.main,
     },
@@ -109,6 +117,9 @@ const useStyles = makeStyles((theme) => ({
   },
   radioBtn: {
     padding: 0,
+    position: "absolute",
+    right: 10,
+    top: 35,
     "&.Mui-checked": {
       color: theme.palette.xioRed.main,
     },
@@ -152,7 +163,56 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.disabled,
     textAlign: "center",
   },
+  progressBox: {
+    background: theme.palette.background.historyTableBox,
+    padding: theme.spacing(1, 0),
+    height: "100% !important",
+    margin: theme.spacing(1, 0),
+    position: "relative",
+    // paddingRight: 26,
+    // borderRadius: 5,
+  },
+
+  progressBar: {
+    // root: {
+    width: "90% !important",
+    height: "10px !important",
+    position: "relative",
+    paddingTop: 5,
+
+    // },
+  },
+  progressBarColor: {
+    "& .MuiLinearProgress-barColorPrimary": {
+      color: `${theme.palette.xioRed.main} !important`,
+    },
+  },
+  startPoint: {
+    position: "absolute",
+    left: 0,
+    top: -15,
+    fontWeight: 600,
+  },
+  endPoint: {
+    position: "absolute",
+    right: 0,
+    top: -15,
+    fontWeight: 600,
+  },
+  tooltip: {
+    background: `${theme.palette.background.primary} !important`,
+    // color:
+  },
 }));
+
+const StyledLinearProgress = withStyles((theme) => ({
+  colorPrimary: {
+    backgroundColor: theme.palette.xioRed.dark,
+  },
+  barColorPrimary: {
+    backgroundColor: theme.palette.xioRed.main,
+  },
+}))(LinearProgress);
 
 function TableComponent({
   stakes,
@@ -195,6 +255,38 @@ function TableComponent({
   const history = useHistory();
   const [height, setHeight] = useState(heightVal);
   const ref = useRef(null);
+
+  function LinearProgressWithLabel({ total, outof, time }) {
+    return (
+      <Box
+        display="flex"
+        // height="100%"
+        // flexDirection="column"
+        alignItems="center"
+      >
+        <Box width="100%">
+          <Tooltip
+            title={`Staked on ${new Date(time * 1000)
+              .toString()
+              .substring(4, 15)}`}
+            arrow
+            TransitionComponent={Zoom}
+          >
+            <StyledLinearProgress
+              className={classes.progressBarColor}
+              variant="determinate"
+              value={total === outof ? 100 : getPercentageAmount(total, outof)}
+            />
+          </Tooltip>
+        </Box>
+        {/* <Box minWidth={35}>
+          <Typography variant="body2" color="textSecondary">
+            {props.value}
+          </Typography>
+        </Box> */}
+      </Box>
+    );
+  }
 
   useEffect(() => {
     // setTimeout(() => {
@@ -398,9 +490,16 @@ function TableComponent({
                               selectedStakes[_stake.id]
                                 ? classes.selected
                                 : null
-                            }`}
+                            } ${classes.progressBox}`}
+                            style={{ paddingRight: isStakesSelected ? 26 : 0 }}
                           >
-                            <Grid item xs={4} className={classes.gridItem}>
+                            {/* <Box className={classes.progressBox}> */}
+                            <Grid
+                              item
+                              xs={4}
+                              style={{ justifyContent: "flexStart" }}
+                              className={classes.gridItem}
+                            >
                               {/* <Tooltip
                         title={`${_stake.rewardEarned} ${_stake.tokenB}`}
                       > */}
@@ -409,10 +508,15 @@ function TableComponent({
                                   src={tryRequire(_stake.pool.tokenB.symbol)}
                                   alt="Logo"
                                   srcSet=""
-                                  width={15}
+                                  width={20}
                                   style={{ marginRight: 5 }}
                                 />
-                                {_stake.pool.tokenB.symbol}
+                                <Typography
+                                  variant="body2"
+                                  className={classes.fontWeight}
+                                >
+                                  {_stake.pool.tokenB.symbol}
+                                </Typography>
                               </span>
                               {/* </Tooltip> */}
                             </Grid>
@@ -425,7 +529,7 @@ function TableComponent({
                                 }/${_stake.stakeAmount} FLASH`}
                               >
                                 <span className={classes.flexCenter}>
-                                  <img
+                                  {/* <img
                                     // src={tryRequire(
                                     //   theme === "dark" ? "FlashPro5" : "FLASH"
                                     // )}
@@ -442,7 +546,18 @@ function TableComponent({
                                       ? _stake.amountAvailable
                                       : _stake.stakeAmount - _stake.burnAmount
                                   )}
-                                  /{trunc(_stake.stakeAmount)} FLASH
+                                  /{trunc(_stake.stakeAmount)} FLASH */}
+                                  <Typography
+                                    variant="body1"
+                                    className={classes.fontWeight}
+                                  >
+                                    {`${getPercentageAmount(
+                                      trunc(_stake.stakeAmount),
+                                      _stake.amountAvailable > 0
+                                        ? _stake.amountAvailable
+                                        : _stake.stakeAmount - _stake.burnAmount
+                                    )}%`}
+                                  </Typography>
                                 </span>
                               </Tooltip>
                             </Grid>
@@ -452,25 +567,30 @@ function TableComponent({
                               xs={4}
                               className={`${classes.gridItem} ${classes.gridSp}`}
                             >
-                              {!_stake.expired &&
-                              _stake.expiryTime > Date.now() / 1000 ? (
-                                <Fragment>
-                                  {_daysRem > 0
-                                    ? `${_daysRem} ${
-                                        _daysRem > 1 ? "days" : "day"
-                                      } ${_hoursRem} ${
-                                        _hoursRem > 1 ? "hrs" : "hr"
-                                      }`
-                                    : _hoursRem > 0
-                                    ? `${_hoursRem} ${
-                                        _hoursRem > 1 ? "hrs" : "hr"
-                                      } ${_minsRem} ${
-                                        _minsRem > 1 ? "mins" : "min"
-                                      }`
-                                    : `${_minsRem} ${
-                                        _minsRem > 1 ? "mins" : "min"
-                                      }`}
-                                  {/* // {_daysRem || _minRem}{" "}
+                              <Typography
+                                variant="body2"
+                                className={classes.fontWeight}
+                              >
+                                {" "}
+                                {!_stake.expired &&
+                                _stake.expiryTime > Date.now() / 1000 ? (
+                                  <Fragment>
+                                    {_daysRem > 0
+                                      ? `${_daysRem} ${
+                                          _daysRem > 1 ? "days" : "day"
+                                        } ${_hoursRem} ${
+                                          _hoursRem > 1 ? "hrs" : "hr"
+                                        }`
+                                      : _hoursRem > 0
+                                      ? `${_hoursRem} ${
+                                          _hoursRem > 1 ? "hrs" : "hr"
+                                        } ${_minsRem} ${
+                                          _minsRem > 1 ? "mins" : "min"
+                                        }`
+                                      : `${_minsRem} ${
+                                          _minsRem > 1 ? "mins" : "min"
+                                        }`}
+                                    {/* // {_daysRem || _minRem}{" "}
                                 // {_daysRem
                                 //   ? _daysRem === 1
                                 //     ? "hour"
@@ -478,10 +598,11 @@ function TableComponent({
                                 //   : _minRem === 1
                                 //   ? "min"
                                 //   : "mins"} */}
-                                </Fragment>
-                              ) : (
-                                "Completed"
-                              )}
+                                  </Fragment>
+                                ) : (
+                                  "Completed"
+                                )}
+                              </Typography>
                               {/* && _stake.burnAmount > 0  */}
                               {isStakesSelected ? (
                                 _stake.burnAmount > 0 ? (
@@ -492,6 +613,7 @@ function TableComponent({
                                     // onChange={handleChange}
                                     color="inherit"
                                     // value=
+
                                     className={classes.radioBtn}
                                     name="radio-button-demo"
                                     inputProps={{ "aria-label": "A" }}
@@ -511,6 +633,38 @@ function TableComponent({
                                   />
                                 )
                               ) : null}
+                            </Grid>
+                            {/* </Box> */}
+                            <Grid
+                              item
+                              xs={12}
+                              className={`${classes.gridItem} `}
+                            >
+                              <div className={classes.progressBar}>
+                                <Typography
+                                  variant="caption"
+                                  className={classes.startPoint}
+                                >
+                                  0
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  className={classes.endPoint}
+                                >
+                                  {trunc(_stake.stakeAmount)}
+                                </Typography>
+
+                                <LinearProgressWithLabel
+                                  // style={{ paddingTop: 5 }}
+                                  total={trunc(_stake.stakeAmount)}
+                                  outof={trunc(
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}
+                                  time={_stake.timestamp}
+                                />
+                              </div>
                             </Grid>
                           </Grid>
                         );

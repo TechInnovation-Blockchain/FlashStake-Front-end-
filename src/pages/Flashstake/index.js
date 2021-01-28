@@ -75,6 +75,7 @@ import { store } from "../../config/reduxStore";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
 import { SlideDown } from "react-slidedown";
+import Checkbox from "@material-ui/core/Checkbox";
 
 let useStyles = makeStyles((theme) => ({
   contentContainer: {
@@ -354,6 +355,15 @@ let useStyles = makeStyles((theme) => ({
       // },
     },
   },
+  useEthCheckBox: {
+    "&.Mui-checked": {
+      color: theme.palette.xioRed.main,
+    },
+  },
+  checkboxGrid: {
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -446,6 +456,7 @@ function Flashstake({
   currentStaked,
   pools,
   walletBalance,
+  walletBalances,
   setRefetch,
   setExpandAccodion,
   expanding,
@@ -481,6 +492,7 @@ function Flashstake({
   const [time, setTime] = useState("Select");
   const [open, setOpen] = useState(false);
   const [_maxDays, _setMaxDays] = useState();
+  const [useEth, setUseEth] = useState(false);
 
   useEffect(() => {
     // Stop if the preference variable is not set on the client device
@@ -491,6 +503,11 @@ function Flashstake({
       setTime(localStorage.getItem("prefs-stake-time"));
     }
   }, []);
+
+  // useEffect(() => {
+  //   initializeEthToWethContract();
+  //   deposit();
+  // }, [account, active]);
 
   const handleChange = (event) => {
     setTime(event.target.value);
@@ -637,7 +654,14 @@ function Flashstake({
     }
   }, [active, account, chainId]);
 
-  const onClickStake = (quantity, days) => {
+  const onClickStake = async (quantity, days) => {
+    // if (
+    //   selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+    //   "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+    // ) {
+    //   await depositEth(useEth);
+    // }
+
     setDialogStep("pendingStake");
     setShowStakeDialog(true);
     stakeXIO(quantity, days, time);
@@ -710,6 +734,10 @@ function Flashstake({
     setDays(getMaxTime());
   };
 
+  const handleEth = () => {
+    setUseEth(!useEth);
+  };
+
   return (
     <PageAnimation in={true} reverse={animation > 0}>
       <Fragment>
@@ -750,6 +778,7 @@ function Flashstake({
                     heading="SELECT TOKEN"
                   />
                 </Grid>
+
                 <Grid container className={classes.gridSpace} xs={12}>
                   <Grid item xs={5} className={classes.gridSpace}>
                     <Typography
@@ -975,35 +1004,8 @@ function Flashstake({
                                       selectedRewardToken?.tokenB?.symbol || ""
                                     }`}
                                   </span>
-                                  {/* with
-                                <span className={classes.infoTextSpan}>
-                                  `($
-                                  {parseFloat(pools.apy).toFixed(2) -
-                                    parseInt(pools.apy) >
-                                  0
-                                    ? parseFloat(pools.apy).toFixed(2)
-                                    : parseInt(pools.apy)}
-                                  %)`
-                                </span> */}
                                 </Fragment>
                               )}{" "}
-                              {/* {poolsApy[selectedRewardToken.id]
-                                ? `at ${
-                                    parseFloat(
-                                      poolsApy[selectedRewardToken.id]
-                                    ).toFixed(2) -
-                                      parseInt(
-                                        poolsApy[selectedRewardToken.id]
-                                      ) >
-                                    0
-                                      ? parseFloat(
-                                          poolsApy[selectedRewardToken.id]
-                                        ).toFixed(2)
-                                      : parseInt(
-                                          poolsApy[selectedRewardToken.id]
-                                        )
-                                  }% APY`
-                                : null} */}
                               at{" "}
                               {!percentLoader &&
                               !loadingRedux.reward &&
@@ -1030,7 +1032,6 @@ function Flashstake({
                         )
                       ) : (
                         <Typography
-                          // variant="overline"
                           variant="body1"
                           className={classes.infoText}
                         >
@@ -1041,7 +1042,6 @@ function Flashstake({
                           <span className={classes.infoTextSpan}>
                             Time ({time})
                           </span>{" "}
-                          {/* YOU WILL IMMEDIATELY{" "} */}
                           are needed for time travel
                         </Typography>
                       )
@@ -1052,15 +1052,6 @@ function Flashstake({
                     )}
                   </Grid>
                 )}
-                {/* {||
-                  allPoolsData[selectedRewardToken?.id]?.reserveFlashAmount <
-                    quantityXIO ? (
-                    <Grid item xs={12}>
-                      <Typography variant="body2" className={classes.redText}>
-                        Insufficient Liquidity
-                      </Typography>
-                    </Grid>
-                  ) : null} */}
 
                 {!allowanceXIOProtocol ? (
                   <Grid
@@ -2040,6 +2031,7 @@ const mapStateToProps = ({
     totalBalanceWithBurn,
     expired,
     poolsApy,
+    walletBalances,
   },
   query: { allPoolsData },
   contract,
@@ -2066,6 +2058,7 @@ const mapStateToProps = ({
   poolsApy,
   allPoolsData,
   percentLoader,
+  walletBalances,
   ...contract,
 });
 

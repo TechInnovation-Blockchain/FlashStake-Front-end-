@@ -54,9 +54,11 @@ export const retroTheme = createMuiTheme({
       selected: "#171717",
       liquidity: "#424242",
       disabled: "#000000",
+      historyTableBox: "#393939",
     },
     xioRed: {
       main: "#ed3293",
+      dark: "#91235c",
     },
 
     navLink: {
@@ -126,12 +128,14 @@ export const darkTheme = createMuiTheme({
       secondary2: "#000000",
       secondary4: "#1a1a1a",
       secondary3: "#000000",
-      selected: "#171717",
+      selected: "#615f5f",
       liquidity: "#424242",
       disabled: "#000000",
+      historyTableBox: "#393939",
     },
     xioRed: {
       main: "#D89C74",
+      dark: "#996745",
     },
 
     navLink: {
@@ -178,6 +182,7 @@ export const lightTheme = createMuiTheme({
     },
     xioRed: {
       main: "#e2874a",
+      dark: "#D89C74",
     },
     background: {
       primary: "#ffffff",
@@ -185,9 +190,10 @@ export const lightTheme = createMuiTheme({
       secondary3: "#e5e5e5",
       secondary4: "#eeeee",
       secondary2: "#f5f5f5",
-      selected: "#e5e5e5",
+      selected: "#ccc",
       liquidity: "#e5e5e5",
       disabled: "#E2E2E2",
+      historyTableBox: "#e5e5e5",
     },
     button: {
       dark: "#555555",

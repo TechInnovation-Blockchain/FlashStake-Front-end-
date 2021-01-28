@@ -23,6 +23,10 @@ import {
   showSnackbarIndep,
   setPercentLoader,
 } from "./uiActions";
+import {
+  initializeEthToWethContract,
+  deposit,
+} from "../../utils/contractFunctions/ethToWethContractFunctions";
 import { getQueryData } from "./queryActions";
 import { CONSTANTS } from "../../utils/constants";
 import { swap } from "../../utils/contractFunctions/FlashStakeProtocolContract";
@@ -1032,6 +1036,19 @@ export const removeTokenLiquidityInPool = (_pool, percentageToRemove) => async (
   }
 };
 
+export const depositEth = (_quantity, inPool) => async (dispatch, getState) => {
+  const {
+    user: { walletBalances },
+  } = getState();
+  console.log("in HEre", _quantity);
+  try {
+    initializeEthToWethContract();
+    deposit(utils.parseUnits(_quantity.toString(), 18).toString(), inPool);
+  } catch (e) {
+    console.log("ERROR ->", e);
+  }
+};
+
 export const createPool = (_token) => async (dispatch, getState) => {
   const {
     user: { pools },
@@ -1102,6 +1119,13 @@ export const setCreateDialogStep = (step) => {
   };
 };
 
+export const setConvertDialogStep = (step, inPool) => {
+  return {
+    type: inPool ? "POOL_DIALOG_STEP" : "CONVERT_DIALOG_STEP",
+    payload: step,
+  };
+};
+
 export const setSwapDialogStepIndep = (step) => {
   store.dispatch(setSwapDialogStep(step));
 };
@@ -1111,6 +1135,10 @@ export const setPoolDialogStepIndep = (step) => {
 };
 export const setCreateDialogStepIndep = (step) => {
   store.dispatch(setCreateDialogStep(step));
+};
+
+export const setConvertDialogStepIndep = (step, inPool) => {
+  store.dispatch(setConvertDialogStep(step, inPool));
 };
 
 // export const setReset = (val) => {
@@ -1130,9 +1158,18 @@ export const setStakeTxnHash = (val) => {
     payload: val,
   };
 };
+export const setConvertTxnHash = (val) => {
+  return {
+    type: "CONVERT_TXN_HASH",
+    payload: val,
+  };
+};
 
 export const setStakeTxnHashIndep = (val) => {
   store.dispatch(setStakeTxnHash(val));
+};
+export const setConvertTxnHashIndep = (val) => {
+  store.dispatch(setConvertTxnHash(val));
 };
 export const setLiquidityTxnHash = (val) => {
   return {

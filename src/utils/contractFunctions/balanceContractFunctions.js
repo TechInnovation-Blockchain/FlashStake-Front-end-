@@ -38,6 +38,7 @@ export const getBalances = async () => {
     }
     const _tokenList = [
       { address: CONSTANTS.ADDRESS_XIO_RINKEBY, decimals: 18 },
+      { address: CONSTANTS.ETH_ADDRESS, decimals: 18 },
       ...getTokenList(),
     ].filter(
       (_token) => !_token?.chainId || _token.chainId === CONSTANTS.CHAIN_ID

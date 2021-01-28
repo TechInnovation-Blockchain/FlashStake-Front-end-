@@ -58,6 +58,7 @@ export const flashstakeReducer = (
     rewardPercent: {},
     maxTimeDuration: "",
     FPY: "",
+    convertTxnHash: "",
   },
   { type, payload }
 ) => {
@@ -234,6 +235,11 @@ export const flashstakeReducer = (
         ...state,
         dialogStep4: payload,
       };
+    case "CONVERT_DIALOG_STEP":
+      return {
+        ...state,
+        dialogStep2: payload,
+      };
     case "STAKE_REQUEST":
       return {
         ...state,
@@ -258,6 +264,11 @@ export const flashstakeReducer = (
       return {
         ...state,
         stakeTxnHash: payload,
+      };
+    case "CONVERT_TXN_HASH":
+      return {
+        ...state,
+        convertTxnHash: payload,
       };
     case "LIQDUIDITY_TXN_HASH":
       return {
@@ -284,15 +295,7 @@ export const flashstakeReducer = (
         ...state,
         slip: payload,
       };
-    // case "RESET":
-    //   return {
-    //     ...state,
-    //     reset: payload,
-    //     selectedPortal: payload ? "" : state.selectedPortal,
-    //     selectedRewardToken: {},
-    //     quantity: "",
-    //     days: "",
-    //   };
+
     case "INITIAL_VALUES":
       return {
         ...state,

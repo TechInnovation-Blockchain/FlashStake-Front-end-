@@ -86,13 +86,24 @@ function Updater({
   const getTokensList = async () => {
     const data = await fetchTokenList(tokensURI?.uri);
     if (data?.data?.tokens && pools) {
-      let userTokens;
+      let userTokens = [];
       try {
-        userTokens = JSON.parse(await localStorage.getItem("tokenList"));
+        userTokens = JSON.parse(await localStorage.getItem("tokenList")) || [];
       } catch (e) {}
 
       updateTokenList(
-        [...(data?.data?.tokens || []), ...(userTokens || [])].filter(
+        [
+          ...(data?.data?.tokens || []),
+          // ...(userTokens || []),
+          ...(userTokens?.filter(
+            (_token) =>
+              !data?.data?.tokens.find(
+                (_tok) =>
+                  _tok?.address?.toLowerCase() ===
+                  _token?.address?.toLowerCase()
+              )
+          ) || []),
+        ].filter(
           (_item) => !_item.chainId || _item.chainId === CONSTANTS.CHAIN_ID
           // pools.filter((_pool) => _pool.tokenB.id !== _item.address)
           // !allPoolsData[_item.address]

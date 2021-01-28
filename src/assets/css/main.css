@@ -89,3 +89,14 @@ a {
 .MuiAccordion-root.Mui-expanded{
   margin-top: 0 !important
 }
+
+
+.MuiLinearProgress-root{
+  height:10px !important;
+  border-radius:10px
+}
+
+.MuiLinearProgress-barColorPrimary{
+  border-radius:10px
+} 
+
