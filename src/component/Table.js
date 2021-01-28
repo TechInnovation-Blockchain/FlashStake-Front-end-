@@ -634,7 +634,6 @@ function TableComponent({
                                 )
                               ) : null}
                             </Grid>
-                            {/* </Box> */}
                             <Grid
                               item
                               xs={12}
