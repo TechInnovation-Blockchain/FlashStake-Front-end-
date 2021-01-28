@@ -651,7 +651,7 @@ function TableComponent({
                                   variant="caption"
                                   className={classes.endPoint}
                                 >
-                                  {trunc(_stake.stakeAmount)}
+                                  {trunc(_stake.stakeAmount)} Flash
                                 </Typography>
 
                                 <LinearProgressWithLabel
