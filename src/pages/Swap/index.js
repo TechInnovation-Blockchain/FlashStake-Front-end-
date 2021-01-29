@@ -420,6 +420,14 @@ function Swap({
     setWethBalance(
       walletBalances["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]
     );
+    console.log(
+      "wethBalance",
+      parseFloat(wethBalance),
+      parseFloat(new BigNumber(wethBalance)),
+      new BigNumber(parseFloat(quantity)).eq(
+        new BigNumber(parseFloat(wethBalance))
+      )
+    );
   }, [account, active, walletBalances]);
 
   const toggle = () => {};
@@ -621,6 +629,36 @@ function Swap({
                     type="swap"
                   />
                 </Grid>
+
+                {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" ? (
+                  <Grid
+                    item
+                    className={` ${classes.checkboxGrid}`}
+                    xs={12}
+                    style={{ paddingBottom: 0 }}
+                  >
+                    <Typography
+                      variant="body1"
+                      className={classes.secondaryText}
+                      style={{ paddingBottom: 0 }}
+                    >
+                      Include your ETH balance{" "}
+                      <span className={classes.infoTextSpan}>
+                        {`(${trunc(
+                          walletBalances[CONSTANTS.ETH_ADDRESS.toLowerCase()]
+                        )})`}
+                      </span>
+                      <Checkbox
+                        className={classes.useEthCheckBox}
+                        color="inherit"
+                        checked={useEth}
+                        onChange={handleEth}
+                      />
+                    </Typography>
+                  </Grid>
+                ) : null}
+
                 <Grid item className={classes.gridSpace} xs={12}>
                   <Box flex={1}>
                     <Typography
@@ -633,9 +671,13 @@ function Swap({
                       <TextField
                         className={classes.textField}
                         error={
-                          active &&
-                          account &&
-                          parseFloat(quantity) > parseFloat(balanceALT)
+                          active && account && useEth
+                            ? new BigNumber(quantity).gt(
+                                new BigNumber(balanceALT).plus(
+                                  new BigNumber(ethBalance)
+                                )
+                              )
+                            : parseFloat(quantity) > parseFloat(balanceALT)
                         }
                         fullWidth
                         placeholder="0.0"
@@ -651,12 +693,13 @@ function Swap({
                       <IconButton
                         className={classes.maxIconButton}
                         disabled={
-                          !(active || account) ||
-                          !selectedPortal ||
-                          balanceALT == quantity ||
-                          new BigNumber(quantity).eq(
-                            new BigNumber(ethBalance).minus(new BigNumber(0.01))
-                          )
+                          !(active || account) || !selectedPortal || useEth
+                            ? new BigNumber(quantity).eq(
+                                new BigNumber(ethBalance)
+                                  .plus(new BigNumber(wethBalance))
+                                  .minus(new BigNumber(0.01))
+                              )
+                            : parseFloat(balanceALT) == parseFloat(quantity)
                         }
                         onClick={() =>
                           onChangeQuantity({
@@ -677,30 +720,6 @@ function Swap({
                     </Box>
                   </Box>
                 </Grid>
-
-                {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
-                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" &&
-                parseFloat(quantity) > parseFloat(balanceALT) ? (
-                  <Grid item className={` ${classes.checkboxGrid}`} xs={12}>
-                    <Typography
-                      variant="body1"
-                      className={classes.secondaryText}
-                    >
-                      Include your current Eth balance{" "}
-                      <span className={classes.infoTextSpan}>
-                        {`(${trunc(
-                          walletBalances[CONSTANTS.ETH_ADDRESS.toLowerCase()]
-                        )})`}
-                      </span>
-                      <Checkbox
-                        className={classes.useEthCheckBox}
-                        color="inherit"
-                        checked={useEth}
-                        onChange={handleEth}
-                      />
-                    </Typography>
-                  </Grid>
-                ) : null}
 
                 {parseFloat(quantity) >
                 parseFloat(
@@ -777,7 +796,9 @@ function Swap({
                           // className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
-                            {useEth ? (
+                            {useEth &&
+                            selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                              "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" ? (
                               <Button
                                 variant="retro"
                                 fullWidth
@@ -1039,13 +1060,142 @@ function Swap({
                               SUCCESSFUL
                             </span>
                           </Typography>
-                          <Button
+                          {/* <Button
                             variant="retro"
                             fullWidth
                             onClick={onClickClose}
                           >
                             CLOSE
-                          </Button>
+                          </Button> */}
+
+                          <Box className={classes.btn}>
+                            {!allowanceALT ? (
+                              <Grid
+                                container
+                                item
+                                xs={12}
+                                className={classes.gridSpace}
+                                // className={classes.msgContainer}
+                              >
+                                <Grid item xs={12}>
+                                  <Typography
+                                    variant="body1"
+                                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                                  >
+                                    If you swap{" "}
+                                    <Tooltip
+                                      title={`${quantity} ${
+                                        selectedRewardToken?.tokenB?.symbol ||
+                                        ""
+                                      }`}
+                                    >
+                                      <span className={classes.infoTextSpan}>
+                                        {trunc(quantity)}{" "}
+                                        {selectedRewardToken?.tokenB?.symbol ||
+                                          ""}
+                                      </span>
+                                    </Tooltip>{" "}
+                                    you will{" "}
+                                    <span className={classes.infoTextSpan}>
+                                      immediately
+                                    </span>{" "}
+                                    earn{" "}
+                                    {loadingRedux.reward ? (
+                                      <CircularProgress
+                                        size={12}
+                                        className={classes.loaderStyle}
+                                      />
+                                    ) : (
+                                      <Tooltip title={`${preciseSwap} FLASH`}>
+                                        <span className={classes.infoTextSpan}>
+                                          {" "}
+                                          {trunc(preciseSwap)} FLASH
+                                        </span>
+                                      </Tooltip>
+                                    )}
+                                  </Typography>
+                                </Grid>
+
+                                <Grid
+                                  item
+                                  xs={6}
+                                  className={classes.btnPaddingRight}
+                                >
+                                  (
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={onClickApprove}
+                                    disabled={
+                                      !selectedPortal ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      allowanceALT ||
+                                      loadingRedux.approval
+                                    }
+                                    loading={
+                                      loadingRedux.approval &&
+                                      loadingRedux.approvalALT
+                                    }
+                                  >
+                                    APPROVE{" "}
+                                    {selectedRewardToken?.tokenB?.symbol || ""}
+                                  </Button>
+                                  )
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={6}
+                                  className={classes.btnPaddingLeft}
+                                >
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={() => onClickSwap(quantity)}
+                                    disabled={
+                                      !selectedPortal ||
+                                      !(quantity > 0) ||
+                                      parseFloat(balanceALT) <
+                                        parseFloat(quantity) ||
+                                      !allowanceALT ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      loadingRedux.swap
+                                    }
+                                    loading={loadingRedux.swap}
+                                  >
+                                    SWAP
+                                  </Button>
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <Grid
+                                container
+                                item
+                                xs={12}
+                                className={classes.gridSpace}
+                                // className={classes.msgContainer}
+                              >
+                                <Grid container item xs={12}>
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={() => onClickSwap(quantity)}
+                                    disabled={
+                                      !selectedPortal ||
+                                      !(quantity > 0) ||
+                                      parseFloat(balanceALT) <
+                                        parseFloat(quantity) ||
+                                      !allowanceALT ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      loadingRedux.swap
+                                    }
+                                    loading={loadingRedux.swap}
+                                  >
+                                    SWAP
+                                  </Button>
+                                </Grid>
+                              </Grid>
+                            )}
+                          </Box>
                         </Fragment>
                       ),
                       failedConvert: (
