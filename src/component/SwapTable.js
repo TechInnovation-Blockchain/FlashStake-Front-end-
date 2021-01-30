@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   flexCenter: {
     display: "flex",
-    flexDirection: "column",
+    // flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -104,8 +104,8 @@ const useStyles = makeStyles((theme) => ({
     display: "contents",
   },
   swapHistBox: {
-    background: theme.palette.background.historyTableBox,
-    padding: theme.spacing(1, 0),
+    // background: theme.palette.background.historyTableBox,
+    // padding: theme.spacing(1, 0),
     margin: theme.spacing(1, 0),
     borderRadius: 5,
   },
@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     fontWeight: "600",
-    paddingBottom: 10,
+    // paddingBottom: 10,
   },
 }));
 
@@ -286,49 +286,78 @@ function SwapTable({
                               className={`${classes.cursorPointer} ${classes.swapHistBox} ${_swap.id}`}
                             >
                               <Grid item xs={6} className={classes.gridItem}>
-                                <Tooltip
-                                  title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
-                                >
-                                  <Box className={classes.flexCenter}>
-                                    <span className={classes.swappedFlash}>
-                                      <img
-                                        src={tryRequire(
-                                          _swap.pool.tokenB.symbol
-                                        )}
-                                        alt="Logo"
-                                        srcSet=""
-                                        width={20}
-                                        style={{ marginRight: 5 }}
-                                      />
-                                      {_swap.pool.tokenB.symbol}
-                                    </span>{" "}
+                                <Grid item xs={5}>
+                                  <Tooltip
+                                    title={`${_swap.swapAmount} ${_swap.pool.tokenB.symbol}`}
+                                  >
                                     <Typography
-                                      variant="h6"
-                                      style={{ fontWeight: 700 }}
+                                      variant="body1"
+                                      style={{
+                                        fontWeight: 700,
+                                        textAlign: "right",
+                                      }}
                                     >
                                       {trunc(_swap.swapAmount)}
                                     </Typography>
-                                  </Box>
-                                </Tooltip>
-                              </Grid>
-                              {/* 
-                              <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip title={`${_swap.pool.tokenB.symbol}`}>
-                                <span className={classes.flexCenter}>
+                                  </Tooltip>
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={2}
+                                  className={classes.flexCenter}
+                                >
                                   <img
                                     src={tryRequire(_swap.pool.tokenB.symbol)}
                                     alt="Logo"
                                     srcSet=""
-                                    width={15}
-                                    style={{ marginRight: 5 }}
-                                  />{" "}
+                                    width={20}
+                                    // style={{ marginRight: 5 }}
+                                  />
+                                </Grid>
+                                <Grid item xs={5} style={{ textAlign: "left" }}>
                                   {_swap.pool.tokenB.symbol}
-                                </span>
-                              </Tooltip>
-                            </Grid> */}
+                                </Grid>
+                                {/* </Tooltip> */}
+                              </Grid>
 
                               <Grid item xs={6} className={classes.gridItem}>
-                                <Tooltip title={`${_swap.flashReceived} FLASH`}>
+                                <Grid item xs={5}>
+                                  <Tooltip
+                                    title={`${_swap.flashReceived} Flash`}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      style={{
+                                        fontWeight: 700,
+                                        textAlign: "right",
+                                      }}
+                                    >
+                                      {trunc(_swap.flashReceived)}
+                                    </Typography>
+                                  </Tooltip>
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={2}
+                                  className={classes.flexCenter}
+                                >
+                                  <img
+                                    // src={tryRequire("FlashPro5")}
+                                    src={tryRequire(
+                                      theme === "dark" ? "FlashLogo" : "FLASH"
+                                    )}
+                                    alt="Logo"
+                                    srcSet=""
+                                    width={15}
+                                    // style={{ marginRight: 5 }}
+                                  />
+                                </Grid>
+                                <Grid item xs={5} style={{ textAlign: "left" }}>
+                                  FLASH
+                                </Grid>
+                                {/* </Tooltip> */}
+
+                                {/* <Tooltip title={`${_swap.flashReceived} FLASH`}>
                                   <Box className={classes.flexCenter}>
                                     <span className={classes.swappedFlash}>
                                       <img
@@ -346,13 +375,13 @@ function SwapTable({
                                       FLASH
                                     </span>{" "}
                                     <Typography
-                                      variant="h6"
+                                      variant="body1"
                                       style={{ fontWeight: 700 }}
                                     >
                                       {trunc(_swap.flashReceived)}
                                     </Typography>
                                   </Box>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Grid>
                             </Grid>
                           </a>
