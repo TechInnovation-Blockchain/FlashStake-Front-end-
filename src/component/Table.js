@@ -59,6 +59,15 @@ const useStyles = makeStyles((theme) => ({
 
     margin: theme.spacing(1, 0),
   },
+  gridItemProgress: {
+    ...theme.typography.body2,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: 500,
+
+    margin: theme.spacing(0.5, 0, 1, 0),
+  },
   flexCenter: {
     display: "flex",
     justifyContent: "center",
@@ -111,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gridSp: {
     display: "flex",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     padding: theme.spacing(0, 1),
   },
@@ -178,7 +187,7 @@ const useStyles = makeStyles((theme) => ({
     width: "90% !important",
     height: "10px !important",
     position: "relative",
-    paddingTop: 5,
+    paddingBottom: 10,
 
     // },
   },
@@ -190,13 +199,19 @@ const useStyles = makeStyles((theme) => ({
   startPoint: {
     position: "absolute",
     left: 0,
-    top: -15,
+    top: 15,
     fontWeight: 600,
   },
   endPoint: {
     position: "absolute",
     right: 0,
-    top: -15,
+    top: 15,
+    fontWeight: 600,
+  },
+  MidPoint: {
+    position: "absolute",
+    right: "43%",
+    top: 15,
     fontWeight: 600,
   },
   tooltip: {
@@ -529,34 +544,22 @@ function TableComponent({
                                 }/${_stake.stakeAmount} FLASH`}
                               >
                                 <span className={classes.flexCenter}>
-                                  {/* <img
-                                    // src={tryRequire(
-                                    //   theme === "dark" ? "FlashPro5" : "FLASH"
-                                    // )}
-                                    src={tryRequire(
-                                      theme === "dark" ? "FlashLogo" : "FLASH"
-                                    )}
-                                    alt="Logo"
-                                    srcSet=""
-                                    width={15}
-                                    style={{ marginRight: 5 }}
-                                  />
-                                  {trunc(
-                                    _stake.amountAvailable > 0
-                                      ? _stake.amountAvailable
-                                      : _stake.stakeAmount - _stake.burnAmount
-                                  )}
-                                  /{trunc(_stake.stakeAmount)} FLASH */}
                                   <Typography
                                     variant="body1"
                                     className={classes.fontWeight}
                                   >
-                                    {`${getPercentageAmount(
+                                    {trunc(
+                                      _stake.amountAvailable > 0
+                                        ? _stake.amountAvailable
+                                        : _stake.stakeAmount - _stake.burnAmount
+                                    )}
+                                    /{trunc(_stake.stakeAmount)}
+                                    {/* {`${getPercentageAmount(
                                       trunc(_stake.stakeAmount),
                                       _stake.amountAvailable > 0
                                         ? _stake.amountAvailable
                                         : _stake.stakeAmount - _stake.burnAmount
-                                    )}%`}
+                                    )}%`} */}
                                   </Typography>
                                 </span>
                               </Tooltip>
@@ -590,20 +593,12 @@ function TableComponent({
                                       : `${_minsRem} ${
                                           _minsRem > 1 ? "mins" : "min"
                                         }`}
-                                    {/* // {_daysRem || _minRem}{" "}
-                                // {_daysRem
-                                //   ? _daysRem === 1
-                                //     ? "hour"
-                                //     : "hours"
-                                //   : _minRem === 1
-                                //   ? "min"
-                                //   : "mins"} */}
                                   </Fragment>
                                 ) : (
                                   "Completed"
                                 )}
                               </Typography>
-                              {/* && _stake.burnAmount > 0  */}
+
                               {isStakesSelected ? (
                                 _stake.burnAmount > 0 ? (
                                   <Radio
@@ -637,20 +632,31 @@ function TableComponent({
                             <Grid
                               item
                               xs={12}
-                              className={`${classes.gridItem} `}
+                              className={`${classes.gridItemProgress} `}
                             >
                               <div className={classes.progressBar}>
                                 <Typography
                                   variant="caption"
                                   className={classes.startPoint}
                                 >
-                                  0
+                                  Locked
                                 </Typography>
                                 <Typography
                                   variant="caption"
                                   className={classes.endPoint}
                                 >
-                                  {trunc(_stake.stakeAmount)} Flash
+                                  Unlocked
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  className={classes.MidPoint}
+                                >
+                                  {`${getPercentageAmount(
+                                    trunc(_stake.stakeAmount),
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}%`}
                                 </Typography>
 
                                 <LinearProgressWithLabel
