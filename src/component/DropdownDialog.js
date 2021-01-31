@@ -261,8 +261,11 @@ function DropdownDialog({
 
   const searchExistingToken = (id) => {
     if (
-      tokensList.find((_pool) => _pool?.tokenB?.address?.toLowerCase() === id)
-    ) {
+      tokensList.find(
+        (_pool) => _pool?.tokenB?.address?.toLowerCase() === id?.toLowerCase()
+      )
+    );
+    {
       return true;
     }
   };
@@ -320,7 +323,7 @@ function DropdownDialog({
     if (Web3.utils.isAddress(search)) {
       if (searchExistingToken(search)) {
         return tokensList?.filter((item) =>
-          item.tokenB.id.toLowerCase().includes(search)
+          item.tokenB.id.toLowerCase().includes(search.toLowerCase())
         );
       }
 
