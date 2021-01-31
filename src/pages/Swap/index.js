@@ -1030,11 +1030,11 @@ function Swap({
                           >
                             You have successfully swapped{" "}
                             <Tooltip title={swapHist?.amount}>
-                              {swapHist?.amount}
+                              <span> {swapHist?.amount}</span>
                             </Tooltip>{" "}
                             {swapHist?.token || ""} for{" "}
                             <Tooltip title={preciseSwap}>
-                              {trunc(preciseSwap)}
+                              <span>{trunc(preciseSwap)}</span>
                             </Tooltip>{" "}
                             FLASH
                           </Typography>
