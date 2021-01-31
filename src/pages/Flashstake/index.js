@@ -1545,11 +1545,9 @@ function Flashstake({
                       : time}{" "}
                     and you were sent{" "}
                     <Tooltip
-                      title={`${trunc(
-                        utils.formatUnits(
-                          preciseReward.toString(),
-                          selectedRewardToken?.tokenB?.decimals || 18
-                        )
+                      title={`${utils.formatUnits(
+                        preciseReward.toString(),
+                        selectedRewardToken?.tokenB?.decimals || 18
                       )} ${stakeRequest.token}`}
                     >
                       <span>

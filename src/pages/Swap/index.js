@@ -1028,8 +1028,14 @@ function Swap({
                             variant="body1"
                             className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
                           >
-                            You have successfully swapped {swapHist?.amount}{" "}
-                            {swapHist?.token || ""} for {trunc(preciseSwap)}{" "}
+                            You have successfully swapped{" "}
+                            <Tooltip title={swapHist?.amount}>
+                              {swapHist?.amount}
+                            </Tooltip>{" "}
+                            {swapHist?.token || ""} for{" "}
+                            <Tooltip title={preciseSwap}>
+                              {trunc(preciseSwap)}
+                            </Tooltip>{" "}
                             FLASH
                           </Typography>
                           <Typography
