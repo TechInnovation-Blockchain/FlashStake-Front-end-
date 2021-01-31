@@ -259,13 +259,16 @@ function DropdownDialog({
     setNativePrice(nativePoolPrice());
   }, [pools]);
 
-  const searchExistingToken = (id) => {
-    if (
-      tokensList.find(
-        (_pool) => _pool?.tokenB?.address?.toLowerCase() === id?.toLowerCase()
-      )
+  const checkAvailableToken = (id) => {
+    let tok = tokensList.find(
+      (_pool) => _pool?.tokenB?.address?.toLowerCase() === id?.toLowerCase()
     );
-    {
+    if (tok) return true;
+    else return false;
+  };
+
+  const searchExistingToken = (id) => {
+    if (checkAvailableToken(id)) {
       return true;
     }
   };
@@ -299,6 +302,7 @@ function DropdownDialog({
 
   const searchToken = async (_address) => {
     if (searchExistingToken(_address)) {
+      return true;
     } else {
       if (Web3.utils.isAddress(_address)) {
         const _token = await getTokenDetails(_address);
