@@ -279,7 +279,7 @@ function TableComponent({
   const ref = useRef(null);
 
   function LinearProgressWithLabel({ total, outof, time }) {
-    console.log("VALUES", total, outof);
+    // console.log("VALUES", total, outof);
     return (
       <Box
         display="flex"
@@ -543,27 +543,19 @@ function TableComponent({
                               {/* </Tooltip> */}
                             </Grid>
                             <Grid item xs={4} className={classes.gridItem}>
-                              <Tooltip
-                                title={`${
-                                  _stake.amountAvailable > 0
-                                    ? _stake.amountAvailable
-                                    : _stake.stakeAmount - _stake.burnAmount
-                                }/${_stake.stakeAmount} FLASH`}
-                              >
-                                <span className={classes.flexCenter}>
-                                  <Typography
-                                    variant="body1"
-                                    className={classes.fontWeight}
-                                  >
-                                    {`${getPercentageAmount(
-                                      trunc(_stake.stakeAmount),
-                                      _stake.amountAvailable > 0
-                                        ? _stake.amountAvailable
-                                        : _stake.stakeAmount - _stake.burnAmount
-                                    )}%`}
-                                  </Typography>
-                                </span>
-                              </Tooltip>
+                              <span className={classes.flexCenter}>
+                                <Typography
+                                  variant="body1"
+                                  className={classes.fontWeight}
+                                >
+                                  {`${getPercentageAmount(
+                                    _stake.stakeAmount,
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}%`}
+                                </Typography>
+                              </span>
                             </Grid>
 
                             <Grid
@@ -638,12 +630,12 @@ function TableComponent({
                               <Box className={classes.progressBar}>
                                 <LinearProgressWithLabel
                                   // style={{ paddingTop: 5 }}
-                                  total={trunc(_stake.stakeAmount)}
-                                  outof={trunc(
+                                  total={_stake.stakeAmount}
+                                  outof={
                                     _stake.amountAvailable > 0
                                       ? _stake.amountAvailable
                                       : _stake.stakeAmount - _stake.burnAmount
-                                  )}
+                                  }
                                   time={_stake.timestamp}
                                 />
                               </Box>
@@ -657,24 +649,31 @@ function TableComponent({
                                 >
                                   Locked
                                 </Typography>
-                                <Typography
-                                  variant="caption"
-                                  className={classes.MidPoint}
+                                <Tooltip
+                                  title={`${
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  }/${_stake.stakeAmount} FLASH`}
                                 >
-                                  {/* {`${getPercentageAmount(
+                                  <Typography
+                                    variant="caption"
+                                    className={classes.MidPoint}
+                                  >
+                                    {/* {`${getPercentageAmount(
                                     trunc(_stake.stakeAmount),
                                     _stake.amountAvailable > 0
                                       ? _stake.amountAvailable
                                       : _stake.stakeAmount - _stake.burnAmount
                                   )}%`} */}
-                                  {trunc(
-                                    _stake.amountAvailable > 0
-                                      ? _stake.amountAvailable
-                                      : _stake.stakeAmount - _stake.burnAmount
-                                  )}
-                                  /{trunc(_stake.stakeAmount)}
-                                </Typography>
-
+                                    {trunc(
+                                      _stake.amountAvailable > 0
+                                        ? _stake.amountAvailable
+                                        : _stake.stakeAmount - _stake.burnAmount
+                                    )}
+                                    /{trunc(_stake.stakeAmount)}
+                                  </Typography>
+                                </Tooltip>
                                 <Typography
                                   variant="caption"
                                   // className={classes.endPoint}
