@@ -187,7 +187,7 @@ const useStyles = makeStyles((theme) => ({
     width: "90% !important",
     height: "10px !important",
     position: "relative",
-    paddingBottom: 10,
+    // paddingBottom: 10,
 
     // },
   },
@@ -209,14 +209,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   MidPoint: {
-    position: "absolute",
-    right: "43%",
-    top: 15,
+    // position: "absolute",
+    // right: "43%",
+    // top: 15,
     fontWeight: 600,
+    paddingLeft: theme.spacing(1),
   },
   tooltip: {
     background: `${theme.palette.background.primary} !important`,
     // color:
+  },
+  stakeStatus: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignContent: "center",
+    padding: theme.spacing(0, 4),
   },
 }));
 
@@ -548,18 +555,12 @@ function TableComponent({
                                     variant="body1"
                                     className={classes.fontWeight}
                                   >
-                                    {trunc(
-                                      _stake.amountAvailable > 0
-                                        ? _stake.amountAvailable
-                                        : _stake.stakeAmount - _stake.burnAmount
-                                    )}
-                                    /{trunc(_stake.stakeAmount)}
-                                    {/* {`${getPercentageAmount(
+                                    {`${getPercentageAmount(
                                       trunc(_stake.stakeAmount),
                                       _stake.amountAvailable > 0
                                         ? _stake.amountAvailable
                                         : _stake.stakeAmount - _stake.burnAmount
-                                    )}%`} */}
+                                    )}%`}
                                   </Typography>
                                 </span>
                               </Tooltip>
@@ -634,6 +635,60 @@ function TableComponent({
                               xs={12}
                               className={`${classes.gridItemProgress} `}
                             >
+                              <Box className={classes.progressBar}>
+                                <LinearProgressWithLabel
+                                  // style={{ paddingTop: 5 }}
+                                  total={trunc(_stake.stakeAmount)}
+                                  outof={trunc(
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}
+                                  time={_stake.timestamp}
+                                />
+                              </Box>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                              <Box className={classes.stakeStatus}>
+                                <Typography
+                                  variant="caption"
+                                  // className={classes.startPoint}
+                                >
+                                  Locked
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  className={classes.MidPoint}
+                                >
+                                  {/* {`${getPercentageAmount(
+                                    trunc(_stake.stakeAmount),
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}%`} */}
+                                  {trunc(
+                                    _stake.amountAvailable > 0
+                                      ? _stake.amountAvailable
+                                      : _stake.stakeAmount - _stake.burnAmount
+                                  )}
+                                  /{trunc(_stake.stakeAmount)}
+                                </Typography>
+
+                                <Typography
+                                  variant="caption"
+                                  // className={classes.endPoint}
+                                >
+                                  Unlocked
+                                </Typography>
+                              </Box>
+                            </Grid>
+
+                            {/* <Grid
+                              item
+                              xs={12}
+                              className={`${classes.gridItemProgress} `}
+                            >
                               <div className={classes.progressBar}>
                                 <Typography
                                   variant="caption"
@@ -670,7 +725,7 @@ function TableComponent({
                                   time={_stake.timestamp}
                                 />
                               </div>
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         );
                       })}
