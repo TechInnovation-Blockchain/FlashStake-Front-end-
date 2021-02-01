@@ -272,6 +272,7 @@ function TableComponent({
   const ref = useRef(null);
 
   function LinearProgressWithLabel({ total, outof, time }) {
+    console.log("VALUES", total, outof);
     return (
       <Box
         display="flex"
@@ -506,7 +507,6 @@ function TableComponent({
                                 ? classes.selected
                                 : null
                             } ${classes.progressBox}`}
-                            style={{ paddingRight: isStakesSelected ? 26 : 0 }}
                           >
                             {/* <Box className={classes.progressBox}> */}
                             <Grid
@@ -599,7 +599,7 @@ function TableComponent({
                                 )}
                               </Typography>
 
-                              {isStakesSelected ? (
+                              {/* {isStakesSelected ? (
                                 _stake.burnAmount > 0 ? (
                                   <Radio
                                     checked={
@@ -627,7 +627,7 @@ function TableComponent({
                                     className={classes.checkbox}
                                   />
                                 )
-                              ) : null}
+                              ) : null} */}
                             </Grid>
                             <Grid
                               item
