@@ -478,7 +478,7 @@ function TableComponent({
                 <PageAnimation in={true} key={page} reverse={reverse}>
                   <Grid container>
                     {sortedData()
-                      .slice(page * 5, page * 5 + 5)
+                      .slice(page * 4, page * 4 + 4)
                       .map((_stake) => {
                         // const _remDur =
                         //   (_stake.expiryTime - Date.now() / 1000) / 3600;
@@ -730,13 +730,13 @@ function TableComponent({
                       })}
                   </Grid>
                 </PageAnimation>
-                {sortedData().length > 5 ? (
+                {sortedData().length > 4 ? (
                   <Grid item xs={12} className={classes.gridItem}>
                     <TablePagination
                       rowsPerPageOptions={[]}
                       component="div"
                       count={sortedData().length}
-                      rowsPerPage={5}
+                      rowsPerPage={4}
                       page={page}
                       onChangePage={handleChangePage}
                       labelRowsPerPage=""
