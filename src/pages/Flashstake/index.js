@@ -859,7 +859,7 @@ function Flashstake({
 
                       <IconButton
                         className={classes.maxIconButtonTime}
-                        disabled={!(active || account) || _maxDays == days}
+                        disabled={_maxDays == days}
                         onClick={maxDuration}
                       >
                         <MaxBtn width={10} />
