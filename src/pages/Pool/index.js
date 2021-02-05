@@ -1707,12 +1707,14 @@ function Pool({
                     CONVERSION PENDING
                     <br />
                   </Typography>
-                  <Typography
-                    variant="body1"
-                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                  >
-                    Converting {trunc(quantityAlt)} ETH for WETH{" "}
-                  </Typography>
+                  <Tooltip title={`${quantityAlt}`}>
+                    <Typography
+                      variant="body1"
+                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                    >
+                      Converting {trunc(quantityAlt)} ETH for WETH{" "}
+                    </Typography>
+                  </Tooltip>
                 </Fragment>
               ),
 

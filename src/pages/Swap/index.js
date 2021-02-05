@@ -1037,13 +1037,14 @@ function Swap({
                             CONVERSION PENDING
                             <br />
                           </Typography>
-                          <Typography
-                            variant="body1"
-                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
-                          >
-                            Converting {trunc(quantity)} ETH for{" "}
-                          WETH{" "}
-                          </Typography>
+                          <Tooltip title={`${quantity}`}>
+                            <Typography
+                              variant="body1"
+                              className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                            >
+                              Converting {trunc(quantity)} ETH for WETH{" "}
+                            </Typography>
+                          </Tooltip>
                         </Fragment>
                       ),
 
