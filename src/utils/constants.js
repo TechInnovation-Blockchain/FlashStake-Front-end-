@@ -29,6 +29,7 @@ export const CONSTANTS = {
   QUERY_CONTRACT: "0xd92ea80512b6e3ed596c66324eb841e526f5e94b",
   ETH_CONVERSION_CONTRACT: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
   ETH_ADDRESS: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+  WETH_ADDRESS: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
   CACHE_SERVER: "https://server.flashstake.io:2053/getReserves",
   CHAIN_ID: 1,
   NETWORK: "MAINNET",

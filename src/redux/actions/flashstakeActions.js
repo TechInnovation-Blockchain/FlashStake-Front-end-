@@ -1040,7 +1040,7 @@ export const depositEth = (_quantity, inPool) => async (dispatch, getState) => {
   const {
     user: { walletBalances },
   } = getState();
-  console.log("in HEre", _quantity);
+  console.log(" IN HERE ", _quantity);
   try {
     initializeEthToWethContract();
     deposit(utils.parseUnits(_quantity.toString(), 18).toString(), inPool);

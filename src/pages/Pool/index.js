@@ -47,6 +47,7 @@ import {
   setInitialValues,
   addTokenLiquidityInPool,
   removeTokenLiquidityInPool,
+  depositEth,
 } from "../../redux/actions/flashstakeActions";
 import { setExpandAccodion } from "../../redux/actions/uiActions";
 import { trunc, stringToFixed } from "../../utils/utilFunc";
@@ -69,6 +70,7 @@ import { _error } from "../../utils/log";
 import { utils } from "ethers";
 import { CONSTANTS } from "../../utils/constants";
 import Fade from "@material-ui/core/Fade";
+import ETH_WRAP from "../../assets/eth-Plus.svg";
 import BigNumber from "bignumber.js";
 
 import { SlideDown } from "react-slidedown";
@@ -341,6 +343,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     margin: theme.spacing(1),
   },
+  selectGrid: {
+    position: "relative",
+  },
+  ethPlus: {
+    position: "absolute",
+    top: "56%",
+    right: "9%",
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -452,6 +462,8 @@ function Pool({
   theme,
   allPoolsData,
   poolDashboard,
+  depositEth,
+  walletBalances,
   ...props
 }) {
   const classes = useStyles();
@@ -469,10 +481,64 @@ function Pool({
   const [queryData, setQueryData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPool, setCurrentPool] = useState({});
+  const [useEth, setUseEth] = useState(false);
+  const [ethBalance, setEthBalance] = useState(0);
+  const [wethBalance, setWethBalance] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const importTokenFunc = () => {
     // setExpanded2(true);
     setOpenDialog(true);
+  };
+
+  useEffect(() => {
+    setEthBalance(walletBalances[CONSTANTS?.ETH_ADDRESS?.toLowerCase()]);
+    setWethBalance(walletBalances[CONSTANTS?.WETH_ADDRESS]);
+  }, [account, active, walletBalances]);
+
+  useEffect(() => {
+    showAlertToolTip();
+  }, [showAlert]);
+
+  const showAlertToolTip = () => {
+    if (showAlert === true) {
+      setOpenAlert(true);
+      setTimeout(() => {
+        setOpenAlert(false);
+      }, 5000);
+    }
+  };
+
+  const handleAlert = () => {
+    showAlertToolTip();
+  };
+
+  useEffect(() => {
+    if (
+      new BigNumber(quantityAlt).gt(
+        new BigNumber(wethBalance)
+        // .minus(new BigNumber(0.01))
+      )
+    ) {
+      // setTimeout(() => {
+      setUseEth(true);
+      // }, 700);
+    } else {
+      setUseEth(false);
+    }
+  }, [quantityAlt, ethBalance, wethBalance]);
+
+  useEffect(() => {
+    showConversionAlert();
+  }, [quantityAlt, ethBalance, wethBalance]);
+
+  const showConversionAlert = () => {
+    if (new BigNumber(quantityAlt).gt(new BigNumber(wethBalance))) {
+      // setTimeout(() => {
+      setShowAlert(true);
+      // }, 700);
+    } else setShowAlert(false);
   };
 
   const toggle = () => {
@@ -747,6 +813,27 @@ function Pool({
     setShowStakeDialog(false);
   };
 
+  const onClickConvert = (quantity) => {
+    const _q = new BigNumber(quantity);
+    const _w = new BigNumber(wethBalance);
+    let _quantity = _q.minus(_w).toFixed(18);
+    setPoolDialogStep("pendingConvert");
+    setShowStakeDialog(true);
+    console.log(
+      "DEBUG",
+      new BigNumber(quantity).toString(),
+      new BigNumber(wethBalance).toString(),
+      new BigNumber(ethBalance).toString(),
+      { _quantity: _quantity.toString() },
+      new BigNumber(quantity)
+        .eq(new BigNumber(ethBalance).minus(new BigNumber(0.01)))
+        .toString(),
+      new BigNumber(ethBalance).minus(new BigNumber(0.01)).toString()
+    );
+    const inPool = true;
+    depositEth(_quantity, inPool);
+  };
+
   const closeDialog = () => {
     setShowStakeDialog(false);
   };
@@ -832,7 +919,11 @@ function Pool({
                   </Box>
                 </Grid>
 
-                <Grid item className={classes.gridSpace2} xs={6}>
+                <Grid
+                  item
+                  className={`${classes.gridSpace2} ${classes.selectGrid}`}
+                  xs={6}
+                >
                   <Typography
                     // variant="body2"
                     variant="body1"
@@ -851,6 +942,29 @@ function Pool({
                     openProp={openDialog}
                     setOpenProp={setOpenDialog}
                   />
+
+                  {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                    CONSTANTS?.WETH_ADDRESS && showAlert ? (
+                    <Tooltip
+                      arrow
+                      placement="left"
+                      // onClose={handleTooltipClose}
+                      open={openAlert}
+                      title={`Insufficient WETH balance, ${new BigNumber(
+                        quantityAlt
+                      ).minus(
+                        new BigNumber(wethBalance)
+                      )}ETH will be converted into WETH`}
+                    >
+                      <Box
+                        className={classes.ethPlus}
+                        onMouseOver={() => setOpenAlert(true)}
+                        onMouseOut={() => setOpenAlert(false)}
+                      >
+                        <img src={ETH_WRAP} width={15} alt="ETH_LOGO" />
+                      </Box>
+                    </Tooltip>
+                  ) : null}
                 </Grid>
 
                 <Grid container item xs={12}>
@@ -1181,7 +1295,6 @@ function Pool({
                     Select a pool to add liquidity
                   </Typography>
                 ) : null}
-
                 {!allowanceXIOPool || !allowanceALTPool ? (
                   <Grid container item xs={12} onClick={showWalletHint}>
                     <Grid item xs={6} className={classes.btnPaddingRight}>
@@ -1216,29 +1329,117 @@ function Pool({
                       </Button>
                     </Grid>
                     <Grid item xs={6} className={classes.btnPaddingLeft}>
-                      <Button
-                        fullWidth
-                        variant="retro"
-                        onClick={onClickPool}
-                        disabled={
-                          !active ||
-                          !account ||
-                          !selectedPortal ||
-                          !allowanceXIOPool ||
-                          !allowanceALTPool ||
-                          quantityXIO <= 0 ||
-                          quantityAlt <= 0 ||
-                          loadingRedux.pool ||
-                          chainId !== CONSTANTS.CHAIN_ID ||
-                          parseFloat(quantityAlt) > parseFloat(balanceALT) ||
-                          parseFloat(quantityXIO) > parseFloat(walletBalance)
-                        }
-                        loading={loadingRedux.pool}
-                      >
-                        POOL
-                      </Button>
+                      {useEth &&
+                      selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" ? (
+                        <Button
+                          variant="retro"
+                          fullWidth
+                          onClick={() => onClickConvert(quantityAlt)}
+                          disabled={
+                            !selectedPortal ||
+                            !(quantityAlt > 0) ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
+                            new BigNumber(ethBalance).lt(
+                              new BigNumber(quantityAlt)
+                                .minus(new BigNumber(wethBalance))
+                                .plus(new BigNumber(0.01))
+                            )
+                            // loadingRedux.swap
+                          }
+                          // loading={loadingRedux.swap}
+                        >
+                          Convert ETH
+                        </Button>
+                      ) : (
+                        <Button
+                          fullWidth
+                          variant="retro"
+                          onClick={onClickPool}
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            !allowanceXIOPool ||
+                            !allowanceALTPool ||
+                            quantityXIO <= 0 ||
+                            quantityAlt <= 0 ||
+                            loadingRedux.pool ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
+                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
+                          }
+                          loading={loadingRedux.pool}
+                        >
+                          POOL
+                        </Button>
+                      )}
                     </Grid>
                   </Grid>
+                ) : useEth &&
+                  selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                    CONSTANTS.WETH_ADDRESS &&
+                  !new BigNumber(quantityAlt).lte(
+                    new BigNumber(wethBalance)
+                  ) ? (
+                  <Fragment>
+                    <Grid container item xs={12}>
+                      <Grid
+                        item
+                        xs={6}
+                        onClick={showWalletHint}
+                        className={classes.btnPaddingRight}
+                      >
+                        <Button
+                          variant="retro"
+                          fullWidth
+                          onClick={() => onClickConvert(quantityAlt)}
+                          disabled={
+                            !selectedPortal ||
+                            !(quantityAlt > 0) ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
+                            new BigNumber(ethBalance).lt(
+                              new BigNumber(quantityAlt)
+                                .minus(new BigNumber(wethBalance))
+                                .plus(new BigNumber(0.01))
+                            )
+                            // loadingRedux.swap
+                          }
+                          // loading={loadingRedux.swap}
+                        >
+                          Convert ETH
+                        </Button>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={6}
+                        onClick={showWalletHint}
+                        className={classes.btnPaddingRight}
+                      >
+                        <AddDropDown
+                          quantityAlt={quantityAlt}
+                          quantityXIO={quantityXIO}
+                          selectedRewardToken={selectedRewardToken}
+                          queryData={queryData}
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            !allowanceXIOPool ||
+                            !allowanceALTPool ||
+                            quantityXIO <= 0 ||
+                            quantityAlt <= 0 ||
+                            loadingRedux.pool ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
+                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
+                          }
+                          onClickPool={onClickPool}
+                          showBack={false}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Fragment>
                 ) : (
                   <Fragment>
                     <Grid container item xs={12} onClick={showWalletHint}>
@@ -1497,6 +1698,137 @@ function Pool({
 
                   <Button variant="retro" fullWidth onClick={onClickClose}>
                     CLOSE
+                  </Button>
+                </Fragment>
+              ),
+              pendingConvert: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    CONVERSION PENDING
+                    <br />
+                  </Typography>
+                  <Tooltip title={`${quantityAlt}`}>
+                    <Typography
+                      variant="body1"
+                      className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                    >
+                      Converting {trunc(quantityAlt)} ETH for WETH{" "}
+                    </Typography>
+                  </Tooltip>
+                </Fragment>
+              ),
+
+              successConvert: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    CONVERSION
+                    <br />
+                    <span className={classes.greenText}>SUCCESSFUL</span>
+                  </Typography>
+                  {!allowanceXIOPool || !allowanceALTPool ? (
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <Grid item xs={6} className={classes.btnPaddingRight}>
+                        <Button
+                          fullWidth
+                          variant="retro"
+                          onClick={
+                            (!allowanceXIOPool || !allowanceALTPool) &&
+                            !loadingRedux.approval
+                              ? onClickApprove
+                              : () => {}
+                          }
+                          disabled={
+                            !selectedPortal ||
+                            !active ||
+                            !account ||
+                            loadingRedux.pool ||
+                            loadingRedux.approval ||
+                            chainId !== CONSTANTS.CHAIN_ID
+                          }
+                          loading={
+                            loadingRedux.approval && loadingRedux.approvalXIO
+                          }
+                        >
+                          {loadingRedux.approval && loadingRedux.approvalXIO
+                            ? "APPROVING"
+                            : !allowanceXIOPool
+                            ? `APPROVE ${selectedStakeToken}`
+                            : `APPROVE ${
+                                selectedRewardToken?.tokenB?.symbol || ""
+                              }`}
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6} className={classes.btnPaddingLeft}>
+                        <AddDropDown
+                          quantityAlt={quantityAlt}
+                          quantityXIO={quantityXIO}
+                          selectedRewardToken={selectedRewardToken}
+                          queryData={queryData}
+                          disabled={
+                            !active ||
+                            !account ||
+                            !selectedPortal ||
+                            !allowanceXIOPool ||
+                            !allowanceALTPool ||
+                            quantityXIO <= 0 ||
+                            quantityAlt <= 0 ||
+                            loadingRedux.pool ||
+                            chainId !== CONSTANTS.CHAIN_ID ||
+                            parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                            parseFloat(quantityXIO) > parseFloat(walletBalance)
+                          }
+                          onClickPool={onClickPool}
+                        />
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <Grid container item xs={12} onClick={showWalletHint}>
+                      <AddDropDown
+                        quantityAlt={quantityAlt}
+                        quantityXIO={quantityXIO}
+                        selectedRewardToken={selectedRewardToken}
+                        queryData={queryData}
+                        disabled={
+                          !active ||
+                          !account ||
+                          !selectedPortal ||
+                          !allowanceXIOPool ||
+                          !allowanceALTPool ||
+                          quantityXIO <= 0 ||
+                          quantityAlt <= 0 ||
+                          loadingRedux.pool ||
+                          chainId !== CONSTANTS.CHAIN_ID ||
+                          parseFloat(quantityAlt) > parseFloat(balanceALT) ||
+                          parseFloat(quantityXIO) > parseFloat(walletBalance)
+                        }
+                        onClickPool={onClickPool}
+                        showBack={false}
+                      />
+                    </Grid>
+                  )}
+                </Fragment>
+              ),
+              failedConvert: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    CONVERSION
+                    <br />
+                    <span className={classes.redText}>FAILED</span>
+                  </Typography>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
+                    DISMISS
+                  </Button>
+                </Fragment>
+              ),
+              rejectedConvert: (
+                <Fragment>
+                  <Typography variant="body1" className={classes.textBold}>
+                    CONVERSION
+                    <br />
+                    <span className={classes.redText}>REJECTED</span>
+                  </Typography>
+                  <Button variant="retro" fullWidth onClick={closeDialog}>
+                    DISMISS
                   </Button>
                 </Fragment>
               ),
@@ -1783,7 +2115,14 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal, theme },
   web3: { active, account, chainId },
-  user: { currentStaked, pools, walletBalance, walletBalancesPool, poolData },
+  user: {
+    currentStaked,
+    pools,
+    walletBalance,
+    walletBalancesPool,
+    poolData,
+    walletBalances,
+  },
   query: { reserveFlashAmount, reserveAltAmount, allPoolsData },
   contract,
 }) => ({
@@ -1804,6 +2143,7 @@ const mapStateToProps = ({
   poolData,
   theme,
   allPoolsData,
+  walletBalances,
   ...contract,
 });
 
@@ -1828,4 +2168,5 @@ export default connect(mapStateToProps, {
   updateAllBalances,
   setHeightValue,
   setPoolData,
+  depositEth,
 })(Pool);

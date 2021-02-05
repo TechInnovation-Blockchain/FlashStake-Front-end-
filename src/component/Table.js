@@ -212,8 +212,8 @@ const useStyles = makeStyles((theme) => ({
     // position: "absolute",
     // right: "43%",
     // top: 15,
-    fontWeight: 600,
-    paddingLeft: theme.spacing(1),
+    fontWeight: 700,
+    // paddingLeft: theme.spacing(1),
   },
   tooltip: {
     background: `${theme.palette.background.primary} !important`,
@@ -221,9 +221,9 @@ const useStyles = makeStyles((theme) => ({
   },
   stakeStatus: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignContent: "center",
-    padding: theme.spacing(0, 4),
+    // padding: theme.spacing(0, 4),
   },
 }));
 
@@ -643,12 +643,6 @@ function TableComponent({
 
                             <Grid item xs={12}>
                               <Box className={classes.stakeStatus}>
-                                <Typography
-                                  variant="caption"
-                                  // className={classes.startPoint}
-                                >
-                                  Locked
-                                </Typography>
                                 <Tooltip
                                   title={`${
                                     _stake.amountAvailable > 0
@@ -657,7 +651,7 @@ function TableComponent({
                                   }/${_stake.stakeAmount} FLASH`}
                                 >
                                   <Typography
-                                    variant="caption"
+                                    variant="body2"
                                     className={classes.MidPoint}
                                   >
                                     {/* {`${getPercentageAmount(
@@ -674,12 +668,6 @@ function TableComponent({
                                     /{trunc(_stake.stakeAmount)}
                                   </Typography>
                                 </Tooltip>
-                                <Typography
-                                  variant="caption"
-                                  // className={classes.endPoint}
-                                >
-                                  Unlocked
-                                </Typography>
                               </Box>
                             </Grid>
 

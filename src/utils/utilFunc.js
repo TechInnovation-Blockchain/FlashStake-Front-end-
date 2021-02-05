@@ -48,6 +48,11 @@ export const trunc = (val, test) => {
   }
   if (_val.includes(".")) {
     const splitedVal = _val.split(".");
+
+    if (val < 0.0001) {
+      return "<0.0001";
+    }
+
     return [
       splitedVal[0].replace(/\B(?=(\d{3})+(?!\d))/g, ","),
       splitedVal[1],
