@@ -44,6 +44,7 @@ import {
   // setReset,
   setInitialValues,
   swapALT,
+  depositEth,
 } from "../../redux/actions/flashstakeActions";
 import {
   setExpandAccodion,
@@ -59,6 +60,8 @@ import AnimateHeight from "react-animate-height";
 import { setLoading, showWalletBackdrop } from "../../redux/actions/uiActions";
 import { useHistory } from "react-router-dom";
 import { store } from "../../config/reduxStore";
+import ETH_WRAP from "../../assets/eth-Plus.svg";
+import BigNumber from "bignumber.js";
 
 import { SlideDown } from "react-slidedown";
 
@@ -276,6 +279,14 @@ const useStyles = makeStyles((theme) => ({
   boxSizing: {
     boxSizing: "border-box",
   },
+  selectGrid: {
+    position: "relative",
+  },
+  ethPlus: {
+    position: "absolute",
+    top: "56%",
+    right: "5%",
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -374,6 +385,8 @@ function Swap({
   heightVal,
   recalcSwap,
   allPoolsData,
+  walletBalances,
+  depositEth,
   ...props
 }) {
   const classes = useStyles();
@@ -383,12 +396,39 @@ function Swap({
   const [heightToggle, setHeightToggle] = useState(false);
   const [height2, setHeight2] = useState(0);
   const ref = useRef(null);
+  const [useEth, setUseEth] = useState(false);
+  const [ethBalance, setEthBalance] = useState(0);
+  const [wethBalance, setWethBalance] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+
   // useEffect(() => {
   //   setTimeout(() => {
   //     setHeightToggle(!heightToggle);
   //     setHeightValue(ref?.current?.clientHeight);
   //   }, 100);
   // });
+
+  // useEffect(() => {
+  //   setEthBalance(walletBalances[CONSTANTS?.ETH_ADDRESS?.toLowerCase()]);
+  // }, [account, active, walletBalances]);
+  useEffect(() => {
+    setEthBalance(walletBalances[CONSTANTS?.ETH_ADDRESS?.toLowerCase()]);
+    setWethBalance(walletBalances[CONSTANTS?.WETH_ADDRESS]);
+  }, [account, active, walletBalances]);
+
+  useEffect(() => {
+    showAlertToolTip();
+  }, [showAlert]);
+
+  const showAlertToolTip = () => {
+    if (showAlert === true) {
+      setOpenAlert(true);
+      setTimeout(() => {
+        setOpenAlert(false);
+      }, 5000);
+    }
+  };
 
   const toggle = () => {};
 
@@ -398,8 +438,6 @@ function Swap({
     }
   }, [history.location.pathname, heightVal]);
 
-  //#region
-
   const [expanded2, setExpanded2] = useState(true);
 
   const debouncedCalculateSwap = useCallback(debounce(calculateSwap, 500), []);
@@ -407,7 +445,40 @@ function Swap({
   const [days, setDays] = useState(initialValues.days);
   const [quantity, setQuantity] = useState("");
   // const regex = /^[0-9]*[.]?[0-9]*$/;
+  useEffect(() => {}, [quantity]);
 
+  const handleAlert = () => {
+    showAlertToolTip();
+  };
+
+  useEffect(() => {
+    if (
+      new BigNumber(quantity).gt(
+        new BigNumber(wethBalance)
+        // .minus(new BigNumber(0.01))
+      )
+    ) {
+      // setTimeout(() => {
+      setUseEth(true);
+      // }, 700);
+    } else {
+      setUseEth(false);
+    }
+  }, [quantity, ethBalance, wethBalance]);
+
+  useEffect(() => {
+    showConversionAlert();
+  }, [quantity, ethBalance, wethBalance]);
+
+  const showConversionAlert = () => {
+    if (new BigNumber(quantity).gt(new BigNumber(wethBalance))) {
+      // setTimeout(() => {
+      setShowAlert(true);
+      // }, 700);
+    } else setShowAlert(false);
+  };
+
+  //
   const onChangeQuantity = ({ target: { value } }) => {
     if (/^[0-9]*[.]?[0-9]*$/.test(value)) {
       setQuantity(value);
@@ -502,9 +573,31 @@ function Swap({
     setShowStakeDialog(false);
   };
 
+  const onClickConvert = (quantity) => {
+    const _q = new BigNumber(quantity);
+    const _w = new BigNumber(wethBalance);
+    let _quantity = _q.minus(_w).toFixed(18);
+    setDialogStep("pendingConvert");
+    setShowStakeDialog(true);
+    console.log(
+      "DEBUG",
+      new BigNumber(quantity).toString(),
+      new BigNumber(wethBalance).toString(),
+      new BigNumber(ethBalance).toString(),
+      { _quantity: _quantity.toString() },
+      new BigNumber(quantity)
+        .eq(new BigNumber(ethBalance).minus(new BigNumber(0.01)))
+        .toString(),
+      new BigNumber(ethBalance).minus(new BigNumber(0.01)).toString()
+    );
+    depositEth(_quantity);
+  };
+
   const handleKeyDown = (evt) => {
     ["+", "-", "e"].includes(evt.key) && evt.preventDefault();
   };
+
+  const wrapEther = () => {};
 
   useEffect(() => {
     if (!expanding) {
@@ -537,7 +630,11 @@ function Swap({
               className={classes.accordionDetails}
             >
               <Grid container spacing={2}>
-                <Grid item className={classes.gridSpace} xs={12}>
+                <Grid
+                  item
+                  className={`${classes.gridSpace} ${classes.selectGrid}`}
+                  xs={12}
+                >
                   <Typography variant="body1" className={classes.secondaryText}>
                     What do you want to swap for FLASH
                   </Typography>
@@ -549,6 +646,27 @@ function Swap({
                     heading="SELECT TOKEN"
                     type="swap"
                   />
+                  {selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                    CONSTANTS?.WETH_ADDRESS && showAlert ? (
+                    <Tooltip
+                      arrow
+                      placement="left"
+                      // onClose={handleTooltipClose}
+                      open={openAlert}
+                      title={`Insufficient WETH balance, ${new BigNumber(
+                        quantity
+                      ).minus(
+                        new BigNumber(wethBalance)
+                      )}ETH will be converted into WETH`}
+                    >
+                      <Box
+                        className={classes.ethPlus}
+                        onMouseOver={handleAlert}
+                      >
+                        <img src={ETH_WRAP} width={15} alt="ETH_LOGO" />
+                      </Box>
+                    </Tooltip>
+                  ) : null}
                 </Grid>
                 <Grid item className={classes.gridSpace} xs={12}>
                   <Box flex={1}>
@@ -582,10 +700,24 @@ function Swap({
                         disabled={
                           !(active || account) ||
                           !selectedPortal ||
-                          balanceALT == quantity
+                          balanceALT == quantity ||
+                          new BigNumber(quantity).eq(
+                            new BigNumber(ethBalance).minus(new BigNumber(0.01))
+                          )
                         }
                         onClick={() =>
-                          onChangeQuantity({ target: { value: balanceALT } })
+                          onChangeQuantity({
+                            target: {
+                              // value: useEth
+                              //   ? new BigNumber(ethBalance).plus(
+                              //       new BigNumber(wethBalance).minus(
+                              //         new BigNumber(0.01)
+                              //       )
+                              //     )
+                              //   : balanceALT,
+                              value: balanceALT,
+                            },
+                          })
                         }
                       >
                         <MaxBtn width={10} />
@@ -669,23 +801,100 @@ function Swap({
                           // className={classes.msgContainer}
                         >
                           <Grid item xs={6} className={classes.btnPaddingRight}>
+                            {useEth &&
+                            selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                              CONSTANTS.WETH_ADDRESS ? (
+                              <Button
+                                variant="retro"
+                                fullWidth
+                                onClick={() => onClickConvert(quantity)}
+                                disabled={
+                                  !selectedPortal ||
+                                  !(quantity > 0) ||
+                                  chainId !== CONSTANTS.CHAIN_ID ||
+                                  new BigNumber(ethBalance).lt(
+                                    new BigNumber(quantity)
+                                      .minus(new BigNumber(wethBalance))
+                                      .plus(new BigNumber(0.01))
+                                  )
+                                  // loadingRedux.swap
+                                }
+                                // loading={loadingRedux.swap}
+                              >
+                                Convert ETH
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="retro"
+                                fullWidth
+                                onClick={onClickApprove}
+                                disabled={
+                                  !selectedPortal ||
+                                  chainId !== CONSTANTS.CHAIN_ID ||
+                                  allowanceALT ||
+                                  loadingRedux.approval
+                                }
+                                loading={
+                                  loadingRedux.approval &&
+                                  loadingRedux.approvalALT
+                                }
+                              >
+                                APPROVE{" "}
+                                {selectedRewardToken?.tokenB?.symbol || ""}
+                              </Button>
+                            )}
+                          </Grid>
+                          <Grid item xs={6} className={classes.btnPaddingLeft}>
                             <Button
                               variant="retro"
                               fullWidth
-                              onClick={onClickApprove}
+                              onClick={() => onClickSwap(quantity)}
                               disabled={
                                 !selectedPortal ||
+                                !(quantity > 0) ||
+                                parseFloat(balanceALT) < parseFloat(quantity) ||
+                                !allowanceALT ||
                                 chainId !== CONSTANTS.CHAIN_ID ||
-                                allowanceALT ||
-                                loadingRedux.approval
+                                loadingRedux.swap
                               }
-                              loading={
-                                loadingRedux.approval &&
-                                loadingRedux.approvalALT
-                              }
+                              loading={loadingRedux.swap}
                             >
-                              APPROVE{" "}
-                              {selectedRewardToken?.tokenB?.symbol || ""}
+                              SWAP
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      ) : useEth &&
+                        selectedRewardToken?.tokenB?.address?.toLowerCase() ===
+                          CONSTANTS.WETH_ADDRESS &&
+                        !new BigNumber(quantity).lte(
+                          new BigNumber(wethBalance)
+                        ) ? (
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          className={classes.gridSpace}
+                          // className={classes.msgContainer}
+                        >
+                          <Grid item xs={6} className={classes.btnPaddingRight}>
+                            <Button
+                              variant="retro"
+                              fullWidth
+                              onClick={() => onClickConvert(quantity)}
+                              disabled={
+                                !selectedPortal ||
+                                !(quantity > 0) ||
+                                chainId !== CONSTANTS.CHAIN_ID ||
+                                new BigNumber(ethBalance).lt(
+                                  new BigNumber(quantity)
+                                    .minus(new BigNumber(wethBalance))
+                                    .plus(new BigNumber(0.01))
+                                )
+                                // loadingRedux.swap
+                              }
+                              // loading={loadingRedux.swap}
+                            >
+                              Convert ETH
                             </Button>
                           </Grid>
                           <Grid item xs={6} className={classes.btnPaddingLeft}>
@@ -816,6 +1025,213 @@ function Swap({
                             onClick={onClickClose}
                           >
                             CLOSE
+                          </Button>
+                        </Fragment>
+                      ),
+                      pendingConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION PENDING
+                            <br />
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                          >
+                            Converting {trunc(quantity)} ETH for{" "}
+                          WETH{" "}
+                          </Typography>
+                        </Fragment>
+                      ),
+
+                      successConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.greenText}>
+                              SUCCESSFUL
+                            </span>
+                          </Typography>
+                          {/* <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={onClickClose}
+                          >
+                            CLOSE
+                          </Button> */}
+
+                          <Box className={classes.btn}>
+                            {!allowanceALT ? (
+                              <Grid
+                                container
+                                item
+                                xs={12}
+                                className={classes.gridSpace}
+                                // className={classes.msgContainer}
+                              >
+                                <Grid item xs={12}>
+                                  <Typography
+                                    variant="body1"
+                                    className={`${classes.textBold} ${classes.secondaryTextWOMargin}`}
+                                  >
+                                    If you swap{" "}
+                                    <Tooltip
+                                      title={`${quantity} ${
+                                        selectedRewardToken?.tokenB?.symbol ||
+                                        ""
+                                      }`}
+                                    >
+                                      <span className={classes.infoTextSpan}>
+                                        {trunc(quantity)}{" "}
+                                        {selectedRewardToken?.tokenB?.symbol ||
+                                          ""}
+                                      </span>
+                                    </Tooltip>{" "}
+                                    you will{" "}
+                                    <span className={classes.infoTextSpan}>
+                                      immediately
+                                    </span>{" "}
+                                    earn{" "}
+                                    {loadingRedux.reward ? (
+                                      <CircularProgress
+                                        size={12}
+                                        className={classes.loaderStyle}
+                                      />
+                                    ) : (
+                                      <Tooltip title={`${preciseSwap} FLASH`}>
+                                        <span className={classes.infoTextSpan}>
+                                          {" "}
+                                          {trunc(preciseSwap)} FLASH
+                                        </span>
+                                      </Tooltip>
+                                    )}
+                                  </Typography>
+                                </Grid>
+
+                                <Grid
+                                  item
+                                  xs={6}
+                                  className={classes.btnPaddingRight}
+                                >
+                                  (
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={onClickApprove}
+                                    disabled={
+                                      !selectedPortal ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      allowanceALT ||
+                                      loadingRedux.approval
+                                    }
+                                    loading={
+                                      loadingRedux.approval &&
+                                      loadingRedux.approvalALT
+                                    }
+                                  >
+                                    APPROVE{" "}
+                                    {selectedRewardToken?.tokenB?.symbol || ""}
+                                  </Button>
+                                  )
+                                </Grid>
+                                <Grid
+                                  item
+                                  xs={6}
+                                  className={classes.btnPaddingLeft}
+                                >
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={() => onClickSwap(quantity)}
+                                    disabled={
+                                      !selectedPortal ||
+                                      !(quantity > 0) ||
+                                      parseFloat(balanceALT) <
+                                        parseFloat(quantity) ||
+                                      !allowanceALT ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      loadingRedux.swap
+                                    }
+                                    loading={loadingRedux.swap}
+                                  >
+                                    SWAP
+                                  </Button>
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <Grid
+                                container
+                                item
+                                xs={12}
+                                className={classes.gridSpace}
+                                // className={classes.msgContainer}
+                              >
+                                <Grid container item xs={12}>
+                                  <Button
+                                    variant="retro"
+                                    fullWidth
+                                    onClick={() => onClickSwap(quantity)}
+                                    disabled={
+                                      !selectedPortal ||
+                                      !(quantity > 0) ||
+                                      parseFloat(balanceALT) <
+                                        parseFloat(quantity) ||
+                                      !allowanceALT ||
+                                      chainId !== CONSTANTS.CHAIN_ID ||
+                                      loadingRedux.swap
+                                    }
+                                    loading={loadingRedux.swap}
+                                  >
+                                    SWAP
+                                  </Button>
+                                </Grid>
+                              </Grid>
+                            )}
+                          </Box>
+                        </Fragment>
+                      ),
+                      failedConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.redText}>FAILED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
+                          </Button>
+                        </Fragment>
+                      ),
+                      rejectedConvert: (
+                        <Fragment>
+                          <Typography
+                            variant="body1"
+                            className={classes.textBold}
+                          >
+                            CONVERSION
+                            <br />
+                            <span className={classes.redText}>REJECTED</span>
+                          </Typography>
+                          <Button
+                            variant="retro"
+                            fullWidth
+                            onClick={closeDialog}
+                          >
+                            DISMISS
                           </Button>
                         </Fragment>
                       ),
@@ -1104,7 +1520,7 @@ const mapStateToProps = ({
   flashstake,
   ui: { loading, expanding, animation, heightVal },
   web3: { active, account, chainId },
-  user: { currentStaked, pools },
+  user: { currentStaked, pools, walletBalances },
   flashstake: { swapHist },
   query: { recalcSwap, allPoolsData },
   contract,
@@ -1122,6 +1538,7 @@ const mapStateToProps = ({
   heightVal,
   recalcSwap,
   allPoolsData,
+  walletBalances,
   ...contract,
 });
 
@@ -1142,4 +1559,5 @@ export default connect(mapStateToProps, {
   setExpandAccodion,
   setRefetch,
   setHeightValue,
+  depositEth,
 })(Swap);
