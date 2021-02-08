@@ -21,7 +21,7 @@ import { store } from "../reduxStore";
 import Disclaimer from "../../component/Disclaimer";
 
 import blockZero from "../../assets/blockzero.png";
-import blockZeroB from "../../assets/bzeroblack.png";
+import blockZeroB from "../../assets/blockzerolight.png";
 import { CONSTANTS } from "../../utils/constants";
 
 import {
@@ -124,6 +124,9 @@ const useStyles = makeStyles((theme) => ({
   },
   branding: {
     marginTop: theme.spacing(1),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 }));
 
@@ -226,23 +229,16 @@ function Layout({
               Created By{" "}
             </Typography>
 
-            {theme === "light" ? (
-              <a
-                className={classes.blockZeroLink}
-                href="https://blockzerolabs.io/"
-                target="_blank"
-              >
-                <img src={blockZeroB} width={100} />
-              </a>
-            ) : (
-              <a
-                className={classes.blockZeroLink}
-                href="https://blockzerolabs.io/"
-                target="_blank"
-              >
-                <img src={blockZero} width={100} />
-              </a>
-            )}
+            <a
+              className={classes.blockZeroLink}
+              href="https://blockzerolabs.io/"
+              target="_blank"
+            >
+              <img src={blockZeroB} width={40} />
+            </a>
+            <Typography className={classes.parentText} variant="body2">
+              Blockzero
+            </Typography>
           </Box>
         </WalletConnect>
         <Snackbar />
