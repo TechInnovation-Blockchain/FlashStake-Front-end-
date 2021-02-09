@@ -114,6 +114,9 @@ const useStyles = makeStyles((theme) => ({
     // margin: theme.spacing(2, 0),
     textAlign: "center",
   },
+  lastHead: {
+    textAlign: "center",
+  },
   sortButton: {
     display: "flex",
     flexDirection: "column",
@@ -342,6 +345,14 @@ function PoolTable({
             </Tooltip>
           </Typography>
         </Grid>
+        <Grid item xs={12} className={classes.lastHead}>
+          <Typography variant="overline">
+            <a href={CONSTANTS.STATS_PAGE} target="_blank">
+              {" "}
+              <b className={classes.linkText}>SEE CHARTS AND STATS</b>
+            </a>
+          </Typography>
+        </Grid>
       </Grid>
 
       {!(active && account) ? (
@@ -530,6 +541,7 @@ function PoolTable({
                   <Typography variant="overline">NO POOLS AVAILABLE</Typography>
                 </Grid>
               )}
+
               <Grid item xs={12} className={classes.msgContainer}>
                 <Typography variant="overline">
                   DON'T SEE A POOL YOU JOINED?
