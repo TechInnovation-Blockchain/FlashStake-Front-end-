@@ -12,6 +12,7 @@ import { _error } from "../log";
 import { utils } from "ethers";
 import { store } from "../../config/reduxStore";
 import { CONSTANTS } from "../constants";
+import { _getTokenPrice } from "../../redux/actions/userActions";
 
 let contract;
 let isContractInitialized = false;
@@ -67,10 +68,36 @@ export const getBalances = async () => {
       );
       return null;
     });
+
+    let response = await _getTokenPrice([
+      ..._pools.map((pool) => pool.tokenB.id),
+      CONSTANTS.MAINNET_ADDRESSES.FLASH,
+    ]);
+    console.log(
+      "BALANCES ---->",
+      _pools,
+      walletBalanceUSD,
+      _balancesObj,
+      response
+    );
+
+    // console.log("POOL", await _getTokenPrice(_pool?.tokenB?.id));
     _pools.map((_pool) => {
+      // console.log(
+      //   "ababab",
+      //   response?.data[_pool.tokenB.id]?.usd,
+      //   _balancesObj[_pool.tokenB.id],
+      //   _pools,
+      //   walletBalanceUSD,
+      //   _balancesObj
+      // );
       walletBalanceUSD += _pool.tokenPrice * _balancesObj[_pool.tokenB.id] || 0;
+      // walletBalanceUSD +=
+      //   response?.data[_pool.tokenB.id]?.usd * _balancesObj[_pool.tokenB.id] ||
+      //   0;
       return null;
     });
+    console.log("BALANCES --->", walletBalanceUSD);
     let _poolBalanceObj = {};
     const _poolBalances = await contract.methods
       .getBalances(
@@ -85,6 +112,7 @@ export const getBalances = async () => {
       );
       return null;
     });
+    console.log("BALANCES -->", walletBalanceUSD);
     return [_balancesObj, walletBalanceUSD, _poolBalanceObj];
   } catch (e) {
     _error("ERROR getBalances -> ", e);

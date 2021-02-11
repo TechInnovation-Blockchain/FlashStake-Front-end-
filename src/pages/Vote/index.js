@@ -673,7 +673,8 @@ function Vote({
                       !token?.decimals ||
                       loadingRedux.createPool ||
                       !account ||
-                      !active
+                      !active ||
+                      chainId !== CONSTANTS.CHAIN_ID
                     }
                     loading={loadingRedux.createPool}
                     onClick={() => handleCreatePool(token)}
