@@ -237,7 +237,7 @@ function Layout({
               <img src={blockZeroB} width={40} />
             </a>
             <Typography className={classes.parentText} variant="body2">
-              Blockzero
+              Blockzero Labs
             </Typography>
           </Box>
         </WalletConnect>
