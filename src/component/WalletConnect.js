@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 10,
   },
   connectText: {
-    paddingRight: theme.spacing(1),
+    paddingRight: 80,
     paddingLeft: theme.spacing(3),
     // textAlign: "left !important",
     // display: "flex",
