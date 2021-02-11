@@ -19,6 +19,7 @@ import { setWeb3Provider } from "../contracts/getContract";
 import { walletList } from "../utils/connectors";
 import { _error } from "../utils/log";
 import SettingsIcon from "@material-ui/icons/Settings";
+import TimelineRoundedIcon from "@material-ui/icons/TimelineRounded";
 import SlippageDialogue from "./SlippageDialogue";
 import { CONSTANTS } from "../utils/constants";
 import blockZero from "../assets/blockzero.png";
@@ -59,12 +60,14 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   connectWalletButton: {
-    width: 250,
+    width: 300,
     borderRadius: 0,
     // marginTop: theme.spacing(2),
     // marginRight: theme.spacing(1),
     // backgroundColor: theme.palette.,
+    // textAlign: "left",
   },
+
   slippageButton: {
     borderRadius: 0,
     // marginTop: theme.spacing(2),
@@ -76,6 +79,23 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: "none",
     boxShadow: "none",
   },
+  statsButton: {
+    borderRadius: 0,
+    // marginTop: theme.spacing(2),
+    // marginLeft: -10,
+    // backgroundColor: theme.palette.,
+    boxSizing: "border-box",
+    position: "absolute",
+    right: 50,
+    borderLeft: "none",
+    borderRight: "none",
+    boxShadow: "none",
+  },
+
+  // statsButton: {
+  //   position: "absolute",
+  //   // left: 0,
+  // },
   wallentConnectText: {
     color: theme.palette.xioRed.main,
     // fontSize: 15,
@@ -89,8 +109,11 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 10,
   },
   connectText: {
-    paddingRight: theme.spacing(1),
+    paddingRight: 80,
+    paddingLeft: theme.spacing(3),
     // textAlign: "left !important",
+    // display: "flex",
+    // justifyContent: "flex-start",
   },
   parentText: {
     color: theme.palette.text.primary,
@@ -253,13 +276,11 @@ function WalletConnect({
             }}
             disableRipple={true}
           >
-            {web3context.active ? (
-              addressShorten(web3context.account)
-            ) : (
-              <Typography variant="body2" className={classes.connectText}>
-                CONNECT WALLET
-              </Typography>
-            )}
+            <Typography variant="body2" className={classes.connectText}>
+              {web3context.active
+                ? addressShorten(web3context.account)
+                : "CONNECT WALLET"}
+            </Typography>
           </Button>
 
           <Button
@@ -272,6 +293,23 @@ function WalletConnect({
           >
             <SettingsIcon />
           </Button>
+
+          <a
+            // className={classes.statsButton}
+            href={CONSTANTS.STATS_PAGE}
+            target="_blank"
+          >
+            <Button
+              disableRipple={true}
+              variant={!changeApp ? "retro" : "red"}
+              className={classes.statsButton}
+              // onClick={() => {
+              //   setOpen3(true);
+              // }}
+            >
+              <TimelineRoundedIcon />
+            </Button>
+          </a>
         </Box>
         {children}
       </Box>

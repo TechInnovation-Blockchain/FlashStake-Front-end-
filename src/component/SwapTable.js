@@ -116,6 +116,11 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "600",
     // paddingBottom: 10,
   },
+  linkText: {
+    cursor: "pointer",
+    color: theme.palette.xioRed.main,
+    fontWeight: 600,
+  },
 }));
 
 function SwapTable({
@@ -234,6 +239,15 @@ function SwapTable({
           </Typography>
         </Grid>
       </Grid>
+      <Grid item xs={12}>
+        <Typography variant="overline">
+          <a href={CONSTANTS.STATS_PAGE} target="_blank">
+            {" "}
+            <b className={classes.linkText}>SEE CHARTS AND STATS</b>
+          </a>
+        </Typography>
+      </Grid>
+
       <Grid container item xs={12}>
         <Grid container item xs={12} className={classes.gridHead}>
           {headItems.map((headItem, index) => (

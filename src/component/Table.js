@@ -225,6 +225,11 @@ const useStyles = makeStyles((theme) => ({
     alignContent: "center",
     // padding: theme.spacing(0, 4),
   },
+  linkText: {
+    cursor: "pointer",
+    color: theme.palette.xioRed.main,
+    fontWeight: 600,
+  },
 }));
 
 const StyledLinearProgress = withStyles((theme) => ({
@@ -442,6 +447,15 @@ function TableComponent({
             </Tooltip>
           </Typography>
         </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant="overline">
+          <a href={CONSTANTS.STATS_PAGE} target="_blank">
+            {" "}
+            <b className={classes.linkText}>SEE CHARTS AND STATS</b>
+          </a>
+        </Typography>
       </Grid>
 
       <Grid container item xs={12}>

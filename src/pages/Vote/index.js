@@ -669,7 +669,13 @@ function Vote({
                   <Button
                     fullWidth
                     variant="retro"
-                    disabled={!token?.decimals || loadingRedux.createPool}
+                    disabled={
+                      !token?.decimals ||
+                      loadingRedux.createPool ||
+                      !account ||
+                      !active ||
+                      chainId !== CONSTANTS.CHAIN_ID
+                    }
                     loading={loadingRedux.createPool}
                     onClick={() => handleCreatePool(token)}
                   >
