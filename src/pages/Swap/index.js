@@ -287,6 +287,11 @@ const useStyles = makeStyles((theme) => ({
     top: "56%",
     right: "5%",
   },
+  alertMessage: {
+    margin: theme.spacing(2),
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -616,13 +621,23 @@ function Swap({
           ref={ref}
           className={`${classes.contentContainer} contentContainer1`}
         >
+          <Typography variant="body1" className={classes.alertMessage}>
+            We are currently performing a preventative migration to v2. Please
+            remove all FLASH liquidity from the Flashstake dApp and Uniswap. We
+            have taken a snapshot of all holders, stakers and LPs so please do
+            not sell, stake, or transfer your tokens to be eligible for v2
+            migration. We encourage you to not unstake your staked tokens.
+            Please visit <a href={"https://t.me/flashstake"}>Telegram</a> for
+            the latest information.
+          </Typography>
+          {/*         
           <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
               style={{ display: "none" }}
             >
-              {/* <Typography>Collapsible Group Item #1</Typography> */}
+              
             </AccordionSummary>
 
             <AccordionDetails
@@ -758,7 +773,7 @@ function Swap({
                             </span>
                           </Tooltip>{" "}
                           you will immediately{" "}
-                          {/* <span className={classes.infoTextSpan}>IMMEDIATELY</span>{" "} */}
+                        
                           get{" "}
                           {loadingRedux.swapReward ? (
                             <CircularProgress
@@ -1060,13 +1075,7 @@ function Swap({
                               SUCCESSFUL
                             </span>
                           </Typography>
-                          {/* <Button
-                            variant="retro"
-                            fullWidth
-                            onClick={onClickClose}
-                          >
-                            CLOSE
-                          </Button> */}
+                        
 
                           <Box className={classes.btn}>
                             {!allowanceALT ? (
@@ -1379,14 +1388,7 @@ function Swap({
                             Swapping {trunc(swapHist?.amount)}{" "}
                             {selectedRewardToken?.tokenB?.symbol || ""} for{" "}
                             {trunc(preciseSwap)} FLASH{" "}
-                            {/* <Tooltip
-                              title={`${stakeRequest.reward} ${stakeRequest.token}`}
-                            >
-                              <span>
-                                {trunc(stakeRequest.reward)}{" "}
-                                {stakeRequest.token}
-                              </span>
-                            </Tooltip>{" "} */}
+                          
                             instantly
                           </Typography>
                         </Fragment>
@@ -1487,7 +1489,9 @@ function Swap({
               </Grid>
             </AccordionDetails>
           </Accordion>
+        */}
 
+          {/* 
           <Accordion square expanded={!expanded2}>
             <AccordionSummary
               aria-controls="panel2d-content"
@@ -1510,6 +1514,7 @@ function Swap({
               {heightToggle ? <SwapTable /> : <SwapTable />}
             </AccordionDetails>
           </Accordion>
+       */}
         </Box>
         {/* </SlideDown> */}
       </Fragment>
