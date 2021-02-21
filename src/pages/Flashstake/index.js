@@ -751,6 +751,10 @@ function Flashstake({
           ref={ref}
           className={`${classes.contentContainer} contentContainer1`}
         >
+          <p style={{"color": "white", "padding": "10px 10px 10px 10px"}}>
+            We are currently performing a preventative migration to V2. Please remove all liquidity from this Dapp.
+            We encourage you not to unstake early to remain eligible for V2. Please visit <a href={"https://t.me/flashstake"}>Telegram</a> for the latest information.
+          </p>
           <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
