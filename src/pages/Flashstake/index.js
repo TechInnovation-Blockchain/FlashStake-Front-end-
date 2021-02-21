@@ -363,6 +363,16 @@ let useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
   },
+  alertMessage: {
+    margin: theme.spacing(2),
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+  },
+  alertMessage1: {
+    margin: theme.spacing(2),
+    fontWeight: 700,
+    color: theme.palette.text.primary,
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -570,21 +580,21 @@ function Flashstake({
   //   }
   // }, [quantity, days, preciseReward, time]);
 
-  useEffect(() => {
-    document
-      .querySelector("input[type='number']")
-      .addEventListener("keypress", (evt) => {
-        if (evt.which === 8) {
-          return;
-        }
-        if (evt.which === 46) {
-          return;
-        }
-        if (evt.which < 48 || evt.which > 57) {
-          evt.preventDefault();
-        }
-      });
-  }, []);
+  // useEffect(() => {
+  //   document
+  //     .querySelector("input[type='number']")
+  //     .addEventListener("keypress", (evt) => {
+  //       if (evt.which === 8) {
+  //         return;
+  //       }
+  //       if (evt.which === 46) {
+  //         return;
+  //       }
+  //       if (evt.which < 48 || evt.which > 57) {
+  //         evt.preventDefault();
+  //       }
+  //     });
+  // }, []);
 
   const onChangeDays = ({ target: { value } }) => {
     if (/^[0-9]*$/.test(value)) {
@@ -751,18 +761,27 @@ function Flashstake({
           ref={ref}
           className={`${classes.contentContainer} contentContainer1`}
         >
-          <p style={{"color": "white", "padding": "10px 10px 10px 10px"}}>
-            We are currently performing a preventative migration to V2. Please remove all liquidity from this Dapp.
-            We encourage you not to unstake early to remain eligible for V2. Please visit <a href={"https://t.me/flashstake"}>Telegram</a> for the latest information.
-          </p>
+          {/* <Typography variant="body1" className={classes.alertMessage1}>
+            &#9888; WARNING TO BE ELIGIBLE FOR V2 SWAP DO NOT STAKE OR SWAP YOUR
+            FLASH. JUST HOLD! <br /> <br />
+          </Typography> */}
+
+          <Typography variant="body1" className={classes.alertMessage}>
+            We are currently performing a preventative migration to v2. Please
+            remove all FLASH liquidity from the Flashstake dApp and Uniswap. We
+            have taken a snapshot of all holders, stakers and LPs so please do
+            not sell, stake, or transfer your tokens to be eligible for v2
+            migration. We encourage you to not unstake your staked tokens.
+            Please visit <a href={"https://t.me/flashstake"}>Telegram</a> for
+            the latest information.
+          </Typography>
+          {/* 
           <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
               style={{ display: "none" }}
-            >
-              {/* <Typography>Collapsible Group Item #1</Typography> */}
-            </AccordionSummary>
+            ></AccordionSummary>
 
             <AccordionDetails
               style={{ paddingTop: "20px" }}
@@ -791,7 +810,6 @@ function Flashstake({
                       Fuel (FLASH)
                     </Typography>
                     <Box className={classes.textFieldContainer}>
-                      {/* <Tooltip title="Hello world" open={true}> */}
                       <TextField
                         className={classes.textField}
                         error={
@@ -810,7 +828,6 @@ function Flashstake({
                         onFocus={(e) => (e.target.placeholder = "")}
                         onBlur={(e) => (e.target.placeholder = "0.0")}
                       />
-                      {/* </Tooltip> */}
                       <IconButton
                         className={classes.maxIconButton}
                         disabled={
@@ -875,7 +892,6 @@ function Flashstake({
                         // }
                         onClick={() => setOpen(true)}
                       >
-                        {/* <MaxBtn width={10} /> */}
                         <Typography
                           variant="body2"
                           className={classes.timeText}
@@ -894,9 +910,6 @@ function Flashstake({
                       value={time}
                       onChange={handleChange}
                     >
-                      {/* <MenuItem className={classes.item} value="">
-                          <em>None</em>
-                        </MenuItem> */}
                       <MenuItem className={classes.item} value={"Mins"}>
                         Mins
                       </MenuItem>
@@ -970,11 +983,8 @@ function Flashstake({
                                     ? "Days"
                                     : "Day"
                                   : time}
-                                {/* {days > 1 ? "hours" : "hour"} */}
                               </span>{" "}
-                              {/* YOU WILL IMMEDIATELY{" "} */}
-                              you will immediately {/* GET{" "} */}
-                              get{" "}
+                              you will immediately get{" "}
                               {loadingRedux.reward ? (
                                 <CircularProgress
                                   size={12}
@@ -1210,8 +1220,6 @@ function Flashstake({
                       variant="body2"
                       className={`${classes.redText}`}
                     >
-                      {/* BEFORE YOU CAN <b>STAKE</b>, YOU MUST{" "}
-                        <b>APPROVE FLASH</b> */}
                       Approve <b>FLASH</b> before <b>staking</b>
                     </Typography>
                   </Grid>
@@ -1237,46 +1245,8 @@ function Flashstake({
               </Grid>
             </AccordionDetails>
           </Accordion>
-
-          <Accordion square expanded={!expanded2}>
-            <AccordionSummary
-              aria-controls="panel2d-content"
-              id="panel2d-header"
-              onClick={() => setExpanded2(!expanded2)}
-              className={`${classes.dashboardAccordian} ${
-                expanded2 ? classes.btn3 : classes._btn3
-              }`}
-            >
-              {expanded2 ? (
-                <ArrowDropUpIcon size="large" className={classes.icon} />
-              ) : (
-                <ArrowDropDownIcon size="large" className={classes.icon} />
-              )}
-              <Typography variant="body2" className={classes.stakeDashBtn}>
-                STAKE DASHBOARD
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails className={classes.accordion}>
-              {heightToggle ? (
-                <Table
-                  onClickUnstake={onClickUnstake}
-                  onClickUnstake2={onClickUnstake2}
-                  // toggle={toggle}
-                  // heightToggle={heightToggle}
-                />
-              ) : (
-                <Table
-                  onClickUnstake={onClickUnstake}
-                  onClickUnstake2={onClickUnstake2}
-                  // toggle={toggle}
-                  // heightToggle={heightToggle}
-                />
-              )}
-            </AccordionDetails>
-          </Accordion>
+      */}
         </Box>
-        {/* </SlideDown> */}
-        {/* </AnimateHeight> */}
 
         <Dialog
           open={showStakeDialog}
