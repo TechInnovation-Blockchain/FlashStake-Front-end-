@@ -387,21 +387,21 @@ function AddLiquidityDropDown({
 
   const regex = /^\d*(.(\d{1,18})?)?$/;
 
-  useEffect(() => {
-    document
-      .querySelector("input[type='number']")
-      .addEventListener("keypress", (evt) => {
-        if (evt.which === 8) {
-          return;
-        }
-        if (evt.which === 46) {
-          return;
-        }
-        if (evt.which < 48 || evt.which > 57) {
-          evt.preventDefault();
-        }
-      });
-  }, []);
+  // useEffect(() => {
+  //   document
+  //     .querySelector("input[type='number']")
+  //     .addEventListener("keypress", (evt) => {
+  //       if (evt.which === 8) {
+  //         return;
+  //       }
+  //       if (evt.which === 46) {
+  //         return;
+  //       }
+  //       if (evt.which < 48 || evt.which > 57) {
+  //         evt.preventDefault();
+  //       }
+  //     });
+  // }, []);
 
   // useEffect(() => {
   //   quote();
