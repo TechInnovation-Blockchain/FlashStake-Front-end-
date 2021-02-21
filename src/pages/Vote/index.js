@@ -330,6 +330,11 @@ let useStyles = makeStyles((theme) => ({
       // },
     },
   },
+  alertMessage: {
+    margin: theme.spacing(2),
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -621,14 +626,23 @@ function Vote({
           ref={ref}
           className={`${classes.contentContainer} contentContainer1`}
         >
+          <Typography variant="body1" className={classes.alertMessage}>
+            We are currently performing a preventative migration to v2. Please
+            remove all FLASH liquidity from the Flashstake dApp and Uniswap. We
+            have taken a snapshot of all holders, stakers and LPs so please do
+            not sell, stake, or transfer your tokens to be eligible for v2
+            migration. We encourage you to not unstake your staked tokens.
+            Please visit <a href={"https://t.me/flashstake"}>Telegram</a> for
+            the latest information.
+          </Typography>
+
+          {/*           
           <Accordion square expanded={expanded2}>
             <AccordionSummary
               aria-controls="panel1d-content"
               id="panel1d-header"
               style={{ display: "none" }}
-            >
-              {/* <Typography>Collapsible Group Item #1</Typography> */}
-            </AccordionSummary>
+            ></AccordionSummary>
 
             <AccordionDetails
               style={{ paddingTop: "20px" }}
@@ -636,13 +650,7 @@ function Vote({
             >
               <Grid container>
                 <Grid item xs={12}>
-                  {/* <TextField
-                      className={classes.textField}
-                      fullWidth
-                      placeholder="FLASH"
-                      value={"FLASH"}
-                      disabled={true}
-                    /> */}
+                 
                   <FlashDropDown />
                 </Grid>
 
@@ -704,8 +712,8 @@ function Vote({
               </Grid>
             </AccordionDetails>
           </Accordion>
+        */}
         </Box>
-        {/* </SlideDown> */}
 
         <Dialog
           open={showStakeDialog}

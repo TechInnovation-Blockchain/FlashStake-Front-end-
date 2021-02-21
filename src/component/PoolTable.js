@@ -521,7 +521,7 @@ function PoolTable({
                           <Grid item xs={6} className={classes.innerBox}>
                             <Box
                               className={classes.liqBtn}
-                              onClick={() => onClickOpen(_pool, "add")}
+                              // onClick={() => onClickOpen(_pool, "add")}
                             >
                               <Typography
                                 variant="body1"
@@ -553,14 +553,14 @@ function PoolTable({
               </Grid>
             </Grid>
           </PageAnimation>
-          <AddLiquidityDropDown
+          {/* <AddLiquidityDropDown
             open={addLiqOpen}
             pool={currentPool}
             onClose={() => onClickClose("add")}
             queryData={selectedQueryData}
             onClickPool={onClickPool}
             theme={theme}
-          />
+          /> */}
           <RemoveLiquidityDropDown
             open={remLiqOpen}
             pool={currentPool}

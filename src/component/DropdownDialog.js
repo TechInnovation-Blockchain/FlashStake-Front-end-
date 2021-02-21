@@ -433,7 +433,7 @@ function DropdownDialog({
 
   return (
     <Fragment>
-      {link ? (
+      {/* {link ? (
         <a
           href={link}
           target="_blank"
@@ -470,11 +470,8 @@ function DropdownDialog({
               )}
             </Typography>
             {!disableDrop
-              ? {
-                  /* <IconButton className={classes.dropdownIcon} size="small">
-                <ExpandMore fontSize="large" />
-              </IconButton> */
-                }
+              ? ""
+               
               : null}
           </Box>
         </a>
@@ -503,16 +500,7 @@ function DropdownDialog({
                   style={{ marginRight: 5 }}
                 />
                 {selectedValue.tokenB.symbol}{" "}
-                {/* {history.location.pathname === "/stake" &&
-                poolsApy[selectedValue.id]
-                  ? `(${
-                      parseFloat(poolsApy[selectedValue.id]).toFixed(2) -
-                        parseInt(poolsApy[selectedValue.id]) >
-                      0
-                        ? parseFloat(poolsApy[selectedValue.id]).toFixed(2)
-                        : parseInt(poolsApy[selectedValue.id])
-                    }%)`
-                  : null} */}
+              
                 {history.location.pathname === "/stake"
                   ? rewardPercent &&
                     rewardPercent[selectedValue.id] &&
@@ -544,11 +532,11 @@ function DropdownDialog({
           </Typography>
           {!disableDrop ? (
             <IconButton className={classes.dropdownIcon} size="small">
-              {/* <ExpandMore fontSize="large" /> */}
             </IconButton>
           ) : null}
         </Box>
-      )}
+      )} 
+      */}
 
       <MuiDialog
         open={overrideOpen ? openProp : open}

@@ -351,6 +351,11 @@ const useStyles = makeStyles((theme) => ({
     top: "56%",
     right: "9%",
   },
+  alertMessage: {
+    margin: theme.spacing(2),
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+  },
 }));
 
 const Accordion = withStyles((theme) => ({
@@ -597,21 +602,21 @@ function Pool({
   const regex = /^\d*(.(\d{1,18})?)?$/;
   // const [height2, setHeight2] = useState(0);
 
-  useEffect(() => {
-    document
-      .querySelector("input[type='number']")
-      .addEventListener("keypress", (evt) => {
-        if (evt.which === 8) {
-          return;
-        }
-        if (evt.which === 46) {
-          return;
-        }
-        if (evt.which < 48 || evt.which > 57) {
-          evt.preventDefault();
-        }
-      });
-  }, []);
+  // useEffect(() => {
+  //   document
+  //     .querySelector("input[type='number']")
+  //     .addEventListener("keypress", (evt) => {
+  //       if (evt.which === 8) {
+  //         return;
+  //       }
+  //       if (evt.which === 46) {
+  //         return;
+  //       }
+  //       if (evt.which < 48 || evt.which > 57) {
+  //         evt.preventDefault();
+  //       }
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (!expanding) {
@@ -856,14 +861,23 @@ function Pool({
               aria-controls="panel1d-content"
               id="panel1d-header"
               style={{ display: "none" }}
-            >
-              {/* <Typography>Collapsible Group Item #1</Typography> */}
-            </AccordionSummary>
+            ></AccordionSummary>
 
             <AccordionDetails
               style={{ paddingTop: "20px" }}
               className={classes.accordionDetails}
             >
+              <Typography variant="body1" className={classes.alertMessage}>
+                We are currently performing a preventative migration to v2.
+                Please remove all FLASH liquidity from the Flashstake dApp and
+                Uniswap. We have taken a snapshot of all holders, stakers and
+                LPs so please do not sell, stake, or transfer your tokens to be
+                eligible for v2 migration. We encourage you to not unstake your
+                staked tokens. Please visit{" "}
+                <a href={"https://t.me/flashstake"}>Telegram</a> for the latest
+                information.
+              </Typography>
+              {/*             
               <Grid container spacing={2}>
                 <Grid container className={classes.gridSpace2} item xs={6}>
                   <Box flex={1}>
@@ -872,11 +886,9 @@ function Pool({
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      {/* QUANTITY */}
                       Quantity
                     </Typography>
                     <Box className={classes.textFieldContainer}>
-                      {/* <Tooltip title="Hello world" open={true}> */}
                       <TextField
                         className={classes.textField}
                         fullWidth
@@ -896,7 +908,6 @@ function Pool({
                           parseFloat(quantityAlt) > parseFloat(balanceALT)
                         }
                       />
-                      {/* </Tooltip> */}
                       <IconButton
                         className={classes.maxIconButton}
                         disabled={
@@ -974,11 +985,9 @@ function Pool({
                       variant="body1"
                       className={classes.secondaryText}
                     >
-                      {/* AMOUNT OF FLASH REQUIRED TO POOL */}
                       Amount of FLASH required to pool
                     </Typography>
                     <Box className={classes.textFieldContainer}>
-                      {/* <Tooltip title="Hello world" open={true}> */}
                       <TextField
                         className={classes.textField}
                         fullWidth
@@ -997,7 +1006,6 @@ function Pool({
                           parseFloat(quantityXIO) > parseFloat(walletBalance)
                         }
                       />
-                      {/* </Tooltip> */}
                       <IconButton
                         className={classes.maxIconButton}
                         disabled={
@@ -1024,7 +1032,6 @@ function Pool({
                           variant="body2"
                           className={classes.secondaryText}
                         >
-                          {/* AMOUNT OF FLASH REQUIRED TO POOL */}
                           FLASH per {selectedRewardToken?.tokenB?.symbol}
                         </Typography>
                         <Tooltip
@@ -1099,7 +1106,6 @@ function Pool({
                             )}
                           </Typography>
                         </Tooltip>
-                        {/* <Box className={classes.textFieldContainer}></Box> */}
                       </Box>
                     </Grid>
 
@@ -1145,7 +1151,6 @@ function Pool({
                             %
                           </Typography>
                         </Tooltip>
-                        {/* <Box className={classes.textFieldContainer}></Box> */}
                       </Box>
                     </Grid>
                   </Fragment>
@@ -1494,8 +1499,22 @@ function Pool({
                   web3context.error instanceof
                     UnsupportedChainIdError ? null : null}
               </Grid>
+             */}
+
+              <DropdownDialog
+                className={classes.dropDown}
+                items={pools}
+                selectedValue={selectedRewardToken}
+                onSelect={setSelectedRewardToken}
+                heading="SELECT TOKEN"
+                _theme={theme}
+                overrideOpen={true}
+                openProp={openDialog}
+                setOpenProp={setOpenDialog}
+              />
             </AccordionDetails>
           </Accordion>
+
           <Accordion square expanded={!expanded2}>
             <AccordionSummary
               aria-controls="panel2d-content"
